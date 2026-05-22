@@ -66,9 +66,9 @@ spawner_info_item:
     - '&#3498db◈ &#ecf0f1Bilgiler:'
     - '  &#bdc3c7•  Stack: &#3498db{stack_size}'
     - '  &#bdc3c7•  Mesafe: &#3498db{range} &#bdc3c7blok'
-    - '  &#bdc3c7•  Doğma Miktarı: &#3498db{min_mobs} &#bdc3c7- &#3498db{max_mobs}'
+    - '  &#bdc3c7•  Spawn Miktarı: &#3498db{min_mobs} &#bdc3c7- &#3498db{max_mobs}'
     - '  &#bdc3c7•  Gecikme: &#3498db{delay} &#bdc3c7sn'
-    - '  &#bdc3c7•  Yeni Spawn: &#3498db{time}'
+    - '  &#bdc3c7•  Sonraki Spawn: &#3498db{time}'
     - '  &#bdc3c7•  Satılabilir: &a+${total_sell_price}'
     - ''
     - "  &#3498db⊳ &#ecf0f1Sağ Tık: Stacker menüsünü aç"
@@ -79,9 +79,9 @@ spawner_info_item:
     - '&#3498db◈ &#ecf0f1Bilgiler:'
     - '  &#bdc3c7•  Stack: &#3498db{stack_size}'
     - '  &#bdc3c7•  Mesafe: &#3498db{range} &#bdc3c7blok'
-    - '  &#bdc3c7•  Doğma Miktarı: &#3498db{min_mobs} &#bdc3c7- &#3498db{max_mobs}'
+    - '  &#bdc3c7•  Spawn Miktarı: &#3498db{min_mobs} &#bdc3c7- &#3498db{max_mobs}'
     - '  &#bdc3c7•  Gecikme: &#3498db{delay} &#bdc3c7sn'
-    - '  &#bdc3c7•  Yeni Spawn: &#3498db{time}'
+    - '  &#bdc3c7•  Sonraki Spawn: &#3498db{time}'
     - ''
     - "  &#3498db⊳ &#ecf0f1Tıkla: Stacker menüsünü aç"
 
