@@ -1,0 +1,197 @@
+# SmartSpawner – messages.yml
+# Her giriş şunları destekler: message, title, subtitle, action_bar, sound, enabled.
+#
+#   MESAJ YAPISI:
+#   message_name:               # Mesajın benzersiz tanımlayıcısı
+#     enabled: true/false       # Bu mesajın tamamını etkinleştirir veya devre dışı bırakır (varsayılan: true)
+#     message: "Metin içeriği"   # Ana sohbet mesajı (isteğe bağlı)
+#     title: "Başlık metni"      # Ekran başlığı (isteğe bağlı)
+#     subtitle: "Alt başlık"     # Ekran alt başlığı (isteğe bağlı)
+#     action_bar: "Metin"        # Action bar metni (isteğe bağlı)
+#     sound: sound.effect       # Oynatılacak ses efekti (isteğe bağlı)
+#
+#   ÖNEMLİ ÖZELLİKLER:
+#   - "enabled: false" olarak ayarlanırsa, oyuncuya hiçbir bileşen gönderilmez.
+#   - Birden fazla bileşen mevcutsa (message, title, action_bar, sound), hepsi aynı anda gönderilir.
+#   - Tüm bileşenler isteğe bağlıdır; dilediğiniz kombinasyonu kullanabilirsiniz.
+#   - Diğer bileşenleri tek başına kullanmak isterseniz "message" alanını boş bırakabilir veya silebilirsiniz.
+
+prefix: "&8[&#3498dbSmartSpawner&8] &r"
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Oyuncu Etkileşimi
+# ──────────────────────────────────────────────────────
+spawner_activated:
+  message: "&#e6e6faSpawner aktif edildi! Ganimet ve XP'leri spawner arayüzünden toplayın."
+  sound: block.beacon.activate
+
+spawner_protected:
+  action_bar: "&#ff5252⚠ Bu spawner korunuyor ⚠"
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Ana Menü Etkileşimleri
+# ──────────────────────────────────────────────────────
+no_exp:
+  action_bar: "&#ff5252Toplanacak deneyim yok"
+  sound: block.note_block.pling
+
+exp_collected:
+  message: "&#2ecc71+{exp} deneyim toplandı"
+  action_bar: "&#2ecc71+{exp} deneyim toplandı"
+  sound: entity.experience_orb.pickup
+
+exp_collected_with_mending:
+  action_bar: "&#37eb9a+{exp} deneyim toplandı &#f8f8ff| &#ff5252-{exp_mending} tamir için kullanıldı"
+  sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#            Spawner - Depo Menüsü Etkileşimleri
+# ──────────────────────────────────────────────────────
+click_too_fast:
+  message: "&#ff5252Çok hızlı tıklıyorsunuz! Lütfen biraz yavaşlayın."
+  sound: block.note_block.bass
+
+inventory_full:
+  message: "&#ff5252Envanter dolu!"
+  sound: block.note_block.pling
+
+no_items_to_take:
+  message: "&#ff5252Alınacak eşya yok"
+  sound: block.note_block.pling
+
+take_all_items:
+  action_bar: "&#37eb9aSpawner'dan &#f8f8ff{amount} &#37eb9aeşya alındı"
+  sound: entity.item.pickup
+
+no_items_to_drop:
+  message: "&#ff5252Yere atılacak eşya yok"
+  sound: block.note_block.pling
+
+items_not_available:
+  message: "&#ff5252Eşyalar mevcut değil"
+  sound: block.note_block.pling
+
+drop_failed:
+  message: "&#ff5252Yere atma işlemi başarısız"
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#         Spawner - Stacker Menüsü Etkileşimi
+# ──────────────────────────────────────────────────────
+spawner_stacker_minimum_reached:
+  message: "&#ff5252Stack limitine ulaşıldı, &#f8f8ff+{amount} &#ff5252stacklenecek."
+  sound: block.note_block.pling
+
+spawner_cannot_remove_last:
+  action_bar: "&#ff5252Son spawner kaldırılamaz"
+  sound: block.note_block.pling
+
+spawner_insufficient_quantity:
+  action_bar: "&#ff5252Yetersiz spawner sayısı: &#f8f8ff{amountAvailable}&#ff5252/&#f8f8ff{amountChange}"
+  sound: block.note_block.pling
+
+inventory_full_items_dropped:
+  message: "&#f0c857Envanter dolu! &#e6e6faBazı eşyalar yere düştü."
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Stack Etkileşimi
+# ──────────────────────────────────────────────────────
+spawner_invalid:
+  action_bar: "&#ff5252Geçersiz spawner türü"
+  sound: block.note_block.pling
+
+spawner_different:
+  action_bar: "&#ff5252Spawnerlar aynı türde olmalıdır"
+  sound: block.note_block.pling
+
+spawner_stack_full:
+  action_bar: "&#ff5252Maksimum stack limiti: &#f8f8ff{max}"
+  sound: block.note_block.pling
+
+spawner_stack_success:
+  action_bar: "[&#37eb9a&l✓&f] &#37eb9a{amount} &fspawner başarıyla stacklendi"
+  sound: entity.player.levelup
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Liste Menüsü Etkileşimi
+# ──────────────────────────────────────────────────────
+teleported_to_spawner:
+  message: "&#37eb9aSpawner konumuna başarıyla ışınlandınız"
+  sound: entity.enderman.teleport
+
+spawner_not_found:
+  message: "&#ff5252Spawner bulunamadı"
+  sound: entity.enderman.teleport
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Yumurta (Egg) Etkileşimi
+# ──────────────────────────────────────────────────────
+invalid_egg:
+  action_bar: "&#ff5252Geçersiz yumurta"
+  sound: entity.enderman.teleport
+
+entity_changed:
+  action_bar: "&#37eb9aSpawner türü başarıyla {entity} olarak değiştirildi"
+  sound: entity.player.levelup
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Kırma Etkileşimi
+# ──────────────────────────────────────────────────────
+spawner_break_no_permission:
+  action_bar: "&#ff5252Spawnerları kırmak için yetkiniz yok"
+  sound: entity.villager.no
+
+spawner_break_silk_touch_required:
+  action_bar: "&#ff5252İpeksi dokunuş gerekli"
+  sound: item.shield.block
+
+spawner_break_required_tools:
+  action_bar: "&#ff5252Bu aletle spawner'ı kıramazsınız!"
+  sound: item.shield.block
+
+spawner_break_warning:
+  enabled: false
+  title: "&#f0c857Uyarı"
+  subtitle: "&#e6e6faSpawner içindeki eşyalar kaybolacak!"
+  sound: block.note_block.bass
+
+natural_spawner_break_blocked:
+  action_bar: "&#ff5252Doğal spawnerlar kırılamaz ve kullanılamaz"
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#              Satış Entegrasyonu Mesajları
+# ──────────────────────────────────────────────────────
+sell_failed:
+  message: "&#ff5252Eşyalar satılamadı! Lütfen tekrar deneyin."
+  sound: block.note_block.pling
+
+no_items:
+  message: "&#ff5252Satılacak eşya yok"
+  sound: block.note_block.pling
+
+no_sellable_items:
+  message: "&#ff5252Satılabilir eşya bulunamadı"
+  sound: block.note_block.pling
+
+sell_success:
+  message: "&#e6e6fa{amount} eşya &#e67e22+${price}&#e6e6fa fiyatına satıldı"
+  sound: block.note_block.bell
+
+action_in_progress:
+  message: "&#f0c857Şu anda başka bir işlem yapılıyor. Lütfen biraz bekleyip tekrar deneyin."
+  sound: block.note_block.pling
+
+spawner_selling:
+  message: "&#f0c857Spawner şu anda eşyaları satıyor, lütfen bekleyin."
+  sound: block.note_block.pling
+
+action_failed:
+  action_bar: "&#ff5252İşlem başarısız oldu. Lütfen tekrar deneyin."
+  sound: block.note_block.pling
+
+please_wait:
+  action_bar: "&#3498dbİşlem yapılıyor... Lütfen bekleyin."
+  sound: block.note_block.harp
