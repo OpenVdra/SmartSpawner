@@ -331,7 +331,7 @@ tasks.register("generateLanguageChangelog") {
         val newEntry  = buildString {
             appendLine("── v$currentVersion ($today) $separator")
             appendLine()
-            appendLine("  Summary: Version $currentVersion released – fill in details here.")
+            appendLine("  Summary: Version $currentVersion released")
             appendLine("           Compare: https://github.com/NighterDevelopment/SmartSpawner/compare/$githubVersion...$toRef")
             appendLine()
             appendLine(formatSection("ADDED",   addedPerFile))
