@@ -83,6 +83,14 @@ natural_spawner:
   # If false, natural spawners will drop vanilla spawner items
   convert_to_smart_spawner: false
 
+  # Optional spawner item drop chance by entity type when natural spawners are broken.
+  # If this section or an entity is omitted, the drop chance defaults to 100.0.
+  # Values must be percentages from 0.0 to 100.0.
+  # drop_chance:
+  #   ZOMBIE: 75.0
+  #   SKELETON: 50.0
+  #   BLAZE: 25.0
+
   # Whether natural spawners will spawn mobs
   spawn_mobs: true
 

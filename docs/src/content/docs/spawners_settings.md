@@ -21,6 +21,7 @@ default_material: "SPAWNER"
 
 MOB_NAME:
   experience: <number>
+  drop_chance: <percentage>  # Optional, defaults to 100.0 when omitted
   head_texture:
     material: <MATERIAL>
     custom_texture: <texture_hash>  # null for vanilla heads
@@ -41,6 +42,7 @@ MOB_NAME:
 |----------|--------|-------------|
 | **default_material** | `"SPAWNER"` | Fallback material for unknown mobs (global) |
 | **experience** | `5` | XP generated per spawner trigger |
+| **drop_chance** | `75.0` | Optional chance for the Smart Spawner item to drop when the spawner is broken. Omitted entities default to `100.0` |
 | **material** | `"PLAYER_HEAD"` | Head texture material (PLAYER_HEAD, SPAWNER, etc.) |
 | **custom_texture** | `"abc123..."` | Base64 texture hash (use `null` for vanilla heads) |
 
@@ -57,7 +59,26 @@ MOB_NAME:
 - Experience must be non-negative number
 - Amount format: `min-max` where min ≤ max
 - Chance between 0.0-100.0
+- Spawner `drop_chance` must be between 0.0-100.0
 - Custom texture can be `null` for vanilla mob heads
+
+## Spawner Break Drop Chance
+
+`drop_chance` controls whether a Smart Spawner item is returned when that Smart Spawner block is broken. This is separate from loot item `chance`, which controls generated mob drops.
+
+If `drop_chance` is omitted for an entity, SmartSpawner uses `100.0`, so the spawner item always drops. The default `spawners_settings.yml` does not enable a drop chance value by default; it only includes a commented example under `ALLAY`.
+
+```yaml
+ALLAY:
+  experience: 0
+  # Optional spawner item drop chance when this Smart Spawner is broken.
+  # If this key is omitted, the spawner item drop chance defaults to 100.0.
+  # Values must be percentages from 0.0 to 100.0.
+  # drop_chance: 100.0
+  head_texture:
+    material: "PLAYER_HEAD"
+    custom_texture: "df5de940bfe499c59ee8dac9f9c3919e7535eff3a9acb16f4842bf290f4c679f"
+```
 
 ## Understanding Drop Mechanics
 
@@ -254,4 +275,4 @@ See the [Commands](/commands) page for more details.
 
 ---
 
-*Last update: November 8, 2025 23:29:25*
+*Last update: June 2, 2026*

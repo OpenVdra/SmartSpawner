@@ -9,6 +9,7 @@ import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuAction;
 import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewManager;
 import github.nighter.smartspawner.language.MessageService;
+import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig;
 import github.nighter.smartspawner.spawner.item.SpawnerItemFactory;
 import github.nighter.smartspawner.spawner.utils.SpawnerLocationLockManager;
 import lombok.Getter;
@@ -27,11 +28,14 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.logging.Logger;
 
@@ -54,6 +58,7 @@ public class SpawnerBreakListener implements Listener {
     private volatile boolean convertNaturalToSmartSpawner;
     private volatile boolean autoSellAndClaimExpOnBreak;
     private volatile Set<Material> requiredTools = Set.of();
+    private volatile Map<EntityType, Double> naturalSpawnerDropChances = Map.of();
 
     public SpawnerBreakListener(SmartSpawner plugin) {
         this(new SmartSpawnerBreakPluginContext(plugin));
@@ -78,6 +83,7 @@ public class SpawnerBreakListener implements Listener {
         this.naturalBreakable = plugin.getConfig().getBoolean("natural_spawner.breakable", false);
         this.convertNaturalToSmartSpawner = plugin.getConfig().getBoolean("natural_spawner.convert_to_smart_spawner", false);
         this.autoSellAndClaimExpOnBreak = plugin.getConfig().getBoolean("spawner_break.auto_sell_and_claim_exp_on_break", true);
+        this.naturalSpawnerDropChances = loadNaturalSpawnerDropChances(plugin.getConfig());
 
         this.requiredTools = plugin.getConfig().getStringList("spawner_break.required_tools")
             .stream()
@@ -91,6 +97,35 @@ public class SpawnerBreakListener implements Listener {
             })
             .filter(Objects::nonNull)
             .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private Map<EntityType, Double> loadNaturalSpawnerDropChances(FileConfiguration config) {
+        ConfigurationSection section = config.getConfigurationSection("natural_spawner.drop_chance");
+        if (section == null) {
+            return Map.of();
+        }
+
+        Map<EntityType, Double> loadedDropChances = new EnumMap<>(EntityType.class);
+        for (String entityName : section.getKeys(false)) {
+            EntityType entityType;
+            try {
+                entityType = EntityType.valueOf(entityName.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                plugin.getLogger().warning("Invalid entity in natural_spawner.drop_chance: " + entityName);
+                continue;
+            }
+
+            double dropChance = section.getDouble(entityName, 100.0);
+            if (dropChance < 0.0 || dropChance > 100.0) {
+                plugin.getLogger().warning("Invalid drop chance for natural_spawner.drop_chance." + entityName +
+                        ". Value must be between 0.0 and 100.0; using 100.0");
+                dropChance = 100.0;
+            }
+
+            loadedDropChances.put(entityType, dropChance);
+        }
+
+        return Map.copyOf(loadedDropChances);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -236,11 +271,15 @@ public class SpawnerBreakListener implements Listener {
             if (world != null) {
                 block.setType(Material.AIR);
 
-                if (directToInventory) {
-                    giveSpawnersToPlayer(player, 1, spawnerItem);
-                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.2f);
+                if (shouldDropSpawner(getNaturalSpawnerDropChance(entityType))) {
+                    if (directToInventory) {
+                        giveSpawnersToPlayer(player, 1, spawnerItem);
+                        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.2f);
+                    } else {
+                        world.dropItemNaturally(findSafeDropLocation(block, player), spawnerItem);
+                    }
                 } else {
-                    world.dropItemNaturally(findSafeDropLocation(block, player), spawnerItem);
+                    messageService.sendMessage(player, "spawner_drop_chance_failed");
                 }
 
                 reduceDurability(tool, player, durabilityLoss);
@@ -280,7 +319,7 @@ public class SpawnerBreakListener implements Listener {
 
         World world = location.getWorld();
         if (world == null) {
-            return new SpawnerBreakResult(false, 0, durabilityLoss, false, new ItemStack(Material.SPAWNER));
+            return new SpawnerBreakResult(false, 0, 0, durabilityLoss, false, new ItemStack(Material.SPAWNER));
         }
 
         // Create the appropriate spawner item based on type
@@ -314,14 +353,15 @@ public class SpawnerBreakListener implements Listener {
         }
 
         if(callAPIEvent(player, location, dropAmount, spawner.getEntityType())) {
-            return new SpawnerBreakResult(false, dropAmount, 0, false, template);
+            return new SpawnerBreakResult(false, dropAmount, 0, 0, false, template);
         }
 
         if (!shouldDeleteSpawner) {
             spawner.setStackSize(newStackSize);
         }
 
-        return new SpawnerBreakResult(true, dropAmount, durabilityLoss, shouldDeleteSpawner, template);
+        int actualDropAmount = rollDroppedAmount(dropAmount, getSmartSpawnerDropChance(spawner));
+        return new SpawnerBreakResult(true, actualDropAmount, dropAmount, durabilityLoss, shouldDeleteSpawner, template);
     }
 
     void applyBreakResult(Block spawnerBlock, SpawnerData spawner, Player player, SpawnerBreakResult result) {
@@ -332,6 +372,10 @@ public class SpawnerBreakListener implements Listener {
         }
 
         if (directToInventory) {
+            if (result.getDroppedAmount() <= 0) {
+                messageService.sendMessage(player, "spawner_drop_chance_failed");
+                return;
+            }
             giveSpawnersToPlayer(player, result.getDroppedAmount(), result.getDropTemplate());
             player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.2f);
             return;
@@ -342,9 +386,54 @@ public class SpawnerBreakListener implements Listener {
             return;
         }
 
+        if (result.getDroppedAmount() <= 0) {
+            messageService.sendMessage(player, "spawner_drop_chance_failed");
+            return;
+        }
+
         ItemStack dropItem = result.getDropTemplate().clone();
         dropItem.setAmount(result.getDroppedAmount());
         world.dropItemNaturally(findSafeDropLocation(spawnerBlock, player), dropItem);
+    }
+
+    private double getSmartSpawnerDropChance(SpawnerData spawner) {
+        SpawnerSettingsConfig settingsConfig = plugin.getSpawnerSettingsConfig();
+        if (settingsConfig == null) {
+            return 100.0;
+        }
+        return settingsConfig.getSpawnerDropChance(spawner.getEntityType());
+    }
+
+    private double getNaturalSpawnerDropChance(EntityType entityType) {
+        return naturalSpawnerDropChances.getOrDefault(entityType, 100.0);
+    }
+
+    private boolean shouldDropSpawner(double dropChance) {
+        if (dropChance >= 100.0) {
+            return true;
+        }
+        if (dropChance <= 0.0) {
+            return false;
+        }
+        return ThreadLocalRandom.current().nextDouble(100.0) < dropChance;
+    }
+
+    private int rollDroppedAmount(int amount, double dropChance) {
+        if (amount <= 0 || dropChance <= 0.0) {
+            return 0;
+        }
+        if (dropChance >= 100.0) {
+            return amount;
+        }
+
+        int droppedAmount = 0;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int i = 0; i < amount; i++) {
+            if (random.nextDouble(100.0) < dropChance) {
+                droppedAmount++;
+            }
+        }
+        return droppedAmount;
     }
 
     private boolean callAPIEvent(Player player, Location location, int dropAmount, EntityType entityType) {
@@ -483,21 +572,23 @@ public class SpawnerBreakListener implements Listener {
     static class SpawnerBreakResult {
         @Getter private final boolean success;
         @Getter private final int droppedAmount;
+        private final int removedAmount;
         private final int baseDurabilityLoss;
         @Getter private final boolean fullyRemoved;
         @Getter private final ItemStack dropTemplate;
 
-        public SpawnerBreakResult(boolean success, int droppedAmount, int baseDurabilityLoss,
+        public SpawnerBreakResult(boolean success, int droppedAmount, int removedAmount, int baseDurabilityLoss,
                                   boolean fullyRemoved, ItemStack dropTemplate) {
             this.success = success;
             this.droppedAmount = droppedAmount;
+            this.removedAmount = removedAmount;
             this.baseDurabilityLoss = baseDurabilityLoss;
             this.fullyRemoved = fullyRemoved;
             this.dropTemplate = dropTemplate.clone();
         }
 
         public int getDurabilityLoss() {
-            return droppedAmount * baseDurabilityLoss;
+            return removedAmount * baseDurabilityLoss;
         }
     }
 
@@ -553,6 +644,7 @@ public class SpawnerBreakListener implements Listener {
         SpawnerItemFactory getSpawnerItemFactory();
         SpawnerLocationLockManager getSpawnerLocationLockManager();
         SpawnerGuiViewManager getSpawnerGuiViewManager();
+        SpawnerSettingsConfig getSpawnerSettingsConfig();
         boolean hasSellIntegration();
         SpawnerMenuAction getSpawnerMenuAction();
         github.nighter.smartspawner.spawner.sell.SpawnerSellManager getSpawnerSellManager();
@@ -575,6 +667,7 @@ public class SpawnerBreakListener implements Listener {
         @Override public SpawnerItemFactory getSpawnerItemFactory() { return plugin.getSpawnerItemFactory(); }
         @Override public SpawnerLocationLockManager getSpawnerLocationLockManager() { return plugin.getSpawnerLocationLockManager(); }
         @Override public SpawnerGuiViewManager getSpawnerGuiViewManager() { return plugin.getSpawnerGuiViewManager(); }
+        @Override public SpawnerSettingsConfig getSpawnerSettingsConfig() { return plugin.getSpawnerSettingsConfig(); }
         @Override public boolean hasSellIntegration() { return plugin.hasSellIntegration(); }
         @Override public SpawnerMenuAction getSpawnerMenuAction() { return plugin.getSpawnerMenuAction(); }
         @Override public github.nighter.smartspawner.spawner.sell.SpawnerSellManager getSpawnerSellManager() { return plugin.getSpawnerSellManager(); }

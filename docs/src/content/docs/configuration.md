@@ -91,12 +91,17 @@ spawner_break:
 natural_spawner:
   breakable: false
   convert_to_smart_spawner: false
+  # drop_chance:
+  #   ZOMBIE: 75.0
+  #   SKELETON: 50.0
+  #   BLAZE: 25.0
   spawn_mobs: true
   protect_from_explosions: false
 ```
 
 - `breakable`: Allows naturally generated vanilla spawners to be broken.
 - `convert_to_smart_spawner`: If `true`, broken natural spawners become Smart Spawners. If `false`, they drop vanilla spawner items.
+- `drop_chance`: Optional entity-specific chance for broken natural spawners to drop a spawner item. Omit the section, or omit an entity, to use the default `100.0`.
 - `spawn_mobs`: Allows natural spawners to spawn mobs.
 - `protect_from_explosions`: Protects natural spawner blocks from explosions.
 
@@ -344,4 +349,4 @@ Recommended values:
 
 ---
 
-*Last update: May 21, 2026*
+*Last update: June 2, 2026*
