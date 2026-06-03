@@ -13,6 +13,7 @@ allprojects {
     version = "1.6.8"
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven {
             name = "papermc-repo"
@@ -49,6 +50,9 @@ allprojects {
         maven {
             name = "nightexpress-releases"
             url = uri("https://repo.nightexpressdev.com/releases")
+            content {
+                includeGroupByRegex("su\\.nightexpress.*")
+            }
         }
         maven {
             name = "iridiumdevelopment"
