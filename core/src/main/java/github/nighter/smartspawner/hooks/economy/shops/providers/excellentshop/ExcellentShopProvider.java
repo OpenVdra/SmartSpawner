@@ -36,7 +36,8 @@ public class ExcellentShopProvider implements ShopProvider {
 
             Class.forName("su.nightexpress.excellentshop.ShopAPI");
             Class.forName("su.nightexpress.excellentshop.virtualshop.VirtualShopModule");
-            return ShopAPI.isInitialized();
+            // Plugin is enabled — API will be initialized by the time we need it
+            return true;
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             plugin.debug("ExcellentShop API not found: " + e.getMessage());
         } catch (Exception e) {
