@@ -143,20 +143,6 @@ public class ItemPriceManager {
         }
     }
 
-    public PriceSourceMode getPriceSourceMode() {
-        return priceSourceMode;
-    }
-
-    /** Raw shop price for this material (0 if unavailable). Used by price analysis. */
-    public double getShopPriceFor(Material material) {
-        return getShopPrice(material);
-    }
-
-    /** Raw custom price for this material (0 if not configured). Used by price analysis. */
-    public double getCustomPriceFor(Material material) {
-        return getCustomPrice(material);
-    }
-
     public double getPrice(Material material) {
         if (material == null || !economyEnabled) return 0.0;
 
