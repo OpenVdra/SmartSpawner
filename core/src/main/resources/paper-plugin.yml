@@ -42,6 +42,10 @@ dependencies:
       load: BEFORE
       required: false
       join-classpath: true
+    ExcellentShop:
+      load: BEFORE
+      required: false
+      join-classpath: true
 
     # Economy Plugins
     ExcellentEconomy:
