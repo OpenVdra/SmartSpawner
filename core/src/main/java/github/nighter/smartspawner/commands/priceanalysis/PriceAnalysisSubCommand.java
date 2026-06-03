@@ -205,10 +205,19 @@ public class PriceAnalysisSubCommand extends BaseSubCommand {
         if (notConfigured > 0) {
             sender.sendMessage("");
             sender.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
-                    + "⚠ " + notConfigured + " item(s) have no price. Add them to item_prices.yml or your shop.");
+                    + "⚠ " + notConfigured + " item(s) have no price. " + getMissingPriceHint(priceManager.getPriceSourceMode()));
         }
 
         return 1;
+    }
+
+    private String getMissingPriceHint(PriceSourceMode mode) {
+        return switch (mode) {
+            case SHOP_ONLY       -> "Add them to your shop plugin — custom prices are ignored in SHOP_ONLY mode.";
+            case CUSTOM_ONLY     -> "Add them to item_prices.yml — shop prices are ignored in CUSTOM_ONLY mode.";
+            case SHOP_PRIORITY   -> "Add them to your shop plugin (preferred) or item_prices.yml as fallback.";
+            case CUSTOM_PRIORITY -> "Add them to item_prices.yml (preferred) or your shop plugin as fallback.";
+        };
     }
 
     private PriceSource resolveSource(ItemPriceManager pm, Material material) {
