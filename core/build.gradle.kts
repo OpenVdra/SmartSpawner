@@ -18,7 +18,7 @@ dependencies {
 
     shade("com.zaxxer:HikariCP:7.0.2")
     shade("org.mariadb.jdbc:mariadb-java-client:3.5.8")
-    compileOnly("org.xerial:sqlite-jdbc:3.53.1.0")
+    compileOnly("org.xerial:sqlite-jdbc:3.53.2.0")
 
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT")
