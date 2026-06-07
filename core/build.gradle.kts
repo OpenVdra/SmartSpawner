@@ -31,7 +31,7 @@ dependencies {
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
     compileOnly("su.nightexpress.nightcore:main:2.15.3")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.10.0")
-    compileOnly("world.bentobox:bentobox:3.16.2")
+    compileOnly("world.bentobox:bentobox:3.17.0")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.12")
     compileOnly("pl.minecodes.plots:plugin-api:4.6.2")
     compileOnly("fr.maxlego08.shop:zshop-api:3.3.4")
