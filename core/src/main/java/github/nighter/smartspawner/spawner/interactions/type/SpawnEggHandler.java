@@ -25,7 +25,6 @@ public class SpawnEggHandler {
     private static final String PERMISSION_CHANGE_TYPE = "smartspawner.changetype";
     private static final String NO_PERMISSION_KEY = "no_permission";
     private static final String CHANGED_MESSAGE_KEY = "entity_changed";
-    private static final String INVALID_EGG_KEY = "invalid_egg";
     private static final String SPAWN_EGG_SUFFIX = "_SPAWN_EGG";
 
     private final SmartSpawner plugin;
@@ -74,8 +73,6 @@ public class SpawnEggHandler {
             EntityType newType = optionalEntityType.get();
             updateSpawner(player, spawner, spawnerData, newType);
             consumeItemIfSurvival(player, spawnEgg);
-        } else {
-            messageService.sendMessage(player, INVALID_EGG_KEY);
         }
     }
 

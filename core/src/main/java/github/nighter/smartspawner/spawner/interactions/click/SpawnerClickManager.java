@@ -160,7 +160,7 @@ public class SpawnerClickManager implements Listener {
 
         // Block interaction while a sell is in progress
         if (spawner.isSelling()) {
-            messageService.sendMessage(player, "spawner_selling");
+            messageService.sendMessage(player, "action_in_progress");
             return;
         }
 

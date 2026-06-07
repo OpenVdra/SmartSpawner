@@ -66,7 +66,7 @@ public class PricesGUI implements Listener {
         Inventory inventory = Bukkit.createInventory(
                 new PricesHolder(page, totalPages),
                 GUI_SIZE,
-                languageManager.getGuiTitle("prices_gui_title", Map.of(
+                languageManager.commandGui().title("gui_title_prices", Map.of(
                         "current_page", String.valueOf(page),
                         "total_pages", String.valueOf(totalPages)
                 ))
@@ -151,14 +151,14 @@ public class PricesGUI implements Listener {
         placeholders.put("price", languageManager.formatNumber(priceInfo.finalPrice));
         placeholders.put("price_source", priceInfo.source);
 
-        meta.setDisplayName(languageManager.getGuiItemName("price_item.name", placeholders));
+        meta.setDisplayName(languageManager.commandGui().name("price_item.name", placeholders));
 
         // Set lore with price information
         List<String> lore = new ArrayList<>();
         placeholders.put("custom_price", languageManager.formatNumber(priceInfo.customPrice));
         placeholders.put("shop_price", languageManager.formatNumber(priceInfo.shopPrice));
         
-        lore.addAll(languageManager.getGuiItemLoreAsList("price_item.lore", placeholders));
+        lore.addAll(languageManager.commandGui().loreList("price_item.lore", placeholders));
 
         meta.setLore(lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
@@ -170,34 +170,41 @@ public class PricesGUI implements Listener {
     private void addNavigationButtons(Inventory inventory, int currentPage, int totalPages) {
         // Previous page button (slot 45)
         if (currentPage > 1) {
-            ItemStack prevButton = new ItemStack(Material.ARROW);
-            ItemMeta prevMeta = prevButton.getItemMeta();
-            if (prevMeta != null) {
-                prevMeta.setDisplayName(languageManager.getGuiItemName("navigation.previous_page"));
-                prevButton.setItemMeta(prevMeta);
-            }
-            inventory.setItem(45, prevButton);
+            inventory.setItem(45, createNavigationButton(
+                    Material.SPECTRAL_ARROW,
+                    "general_navigation.previous_page",
+                    Map.of("target_page", String.valueOf(currentPage - 1))));
         }
 
         // Close button (slot 49)
-        ItemStack closeButton = new ItemStack(Material.BARRIER);
-        ItemMeta closeMeta = closeButton.getItemMeta();
-        if (closeMeta != null) {
-            closeMeta.setDisplayName(languageManager.getGuiItemName("navigation.close"));
-            closeButton.setItemMeta(closeMeta);
-        }
-        inventory.setItem(49, closeButton);
+        inventory.setItem(49, createNavigationButton(Material.BARRIER, "general_navigation.close"));
 
         // Next page button (slot 53)
         if (currentPage < totalPages) {
-            ItemStack nextButton = new ItemStack(Material.ARROW);
-            ItemMeta nextMeta = nextButton.getItemMeta();
-            if (nextMeta != null) {
-                nextMeta.setDisplayName(languageManager.getGuiItemName("navigation.next_page"));
-                nextButton.setItemMeta(nextMeta);
-            }
-            inventory.setItem(53, nextButton);
+            inventory.setItem(53, createNavigationButton(
+                    Material.SPECTRAL_ARROW,
+                    "general_navigation.next_page",
+                    Map.of("target_page", String.valueOf(currentPage + 1))));
         }
+    }
+
+    private ItemStack createNavigationButton(Material material, String key) {
+        return createNavigationButton(material, key, Collections.emptyMap());
+    }
+
+    private ItemStack createNavigationButton(Material material, String key, Map<String, String> placeholders) {
+        ItemStack button = new ItemStack(material);
+        ItemMeta meta = button.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(languageManager.commandGui().name(key + ".name", placeholders));
+            List<String> lore = languageManager.commandGui().loreList(key + ".lore", placeholders);
+            if (!lore.isEmpty()) {
+                meta.setLore(lore);
+            }
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+            button.setItemMeta(meta);
+        }
+        return button;
     }
 
     @EventHandler

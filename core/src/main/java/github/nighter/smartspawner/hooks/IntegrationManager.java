@@ -143,7 +143,7 @@ public class IntegrationManager {
         hasIridiumSkyblock = checkPlugin("IridiumSkyblock", () -> {
             Plugin is = Bukkit.getPluginManager().getPlugin("IridiumSkyblock");
             if(is != null && is.isEnabled()) {
-                IridiumSkyblock.init();
+                IridiumSkyblock.init(plugin);
                 return true;
             }
             return false;

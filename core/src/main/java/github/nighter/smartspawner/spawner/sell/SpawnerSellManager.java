@@ -59,7 +59,7 @@ public class SpawnerSellManager {
     public void sellAllItems(Player player, SpawnerData spawner, Runnable onComplete) {
         // Single atomic guard – prevents race conditions and double-sell exploits
         if (!spawner.startSelling()) {
-            messageService.sendMessage(player, "spawner_selling");
+            messageService.sendMessage(player, "action_in_progress");
             // Notify caller even on rejection so it can do its own cleanup
             if (onComplete != null) onComplete.run();
             return;
@@ -70,7 +70,7 @@ public class SpawnerSellManager {
         // Quick empty-check before any real work
         if (virtualInv.getUsedSlots() == 0) {
             spawner.stopSelling();
-            messageService.sendMessage(player, "no_items");
+            messageService.sendMessage(player, "spawner_storage_empty");
             if (onComplete != null) onComplete.run();
             return;
         }
@@ -101,7 +101,7 @@ public class SpawnerSellManager {
                     } finally {
                         spawner.stopSelling();
                     }
-                    messageService.sendMessage(player, "sell_failed");
+                    messageService.sendMessage(player, "action_failed");
                 });
                 return;
             }
@@ -149,7 +149,7 @@ public class SpawnerSellManager {
         // Deposit money first
         boolean depositSuccess = plugin.getItemPriceManager().getCurrencyManager().deposit(amount, player);
         if (!depositSuccess) {
-            messageService.sendMessage(player, "sell_failed");
+            messageService.sendMessage(player, "action_failed");
             return;
         }
 

@@ -112,7 +112,7 @@ public class SpawnerStackerHandler implements Listener {
         SpawnerData spawner = holder.getSpawnerData();
         if (!canUseStacker(player, spawner)) {
             player.closeInventory();
-            messageService.sendMessage(player, "spawner_stacker_drop_chance_blocked");
+            messageService.sendMessage(player, "stacker_drop_blocked");
             return;
         }
 
@@ -200,7 +200,7 @@ public class SpawnerStackerHandler implements Listener {
 
         if (!canUseStacker(player, holder.getSpawnerData())) {
             event.setCancelled(true);
-            messageService.sendMessage(player, "spawner_stacker_drop_chance_blocked");
+            messageService.sendMessage(player, "stacker_drop_blocked");
             return;
         }
 
@@ -959,7 +959,7 @@ public class SpawnerStackerHandler implements Listener {
             }
 
             if (!allFit) {
-                messageService.sendMessage(player, "inventory_full_items_dropped");
+                messageService.sendMessage(player, "inventory_full");
             }
         }
 
@@ -1017,7 +1017,7 @@ public class SpawnerStackerHandler implements Listener {
             }
 
             if (!allFit) {
-                messageService.sendMessage(player, "inventory_full_items_dropped");
+                messageService.sendMessage(player, "inventory_full");
             }
         }
 

@@ -1,4 +1,4 @@
-package github.nighter.smartspawner.language;
+package github.nighter.smartspawner.language.format;
 
 import org.bukkit.ChatColor;
 

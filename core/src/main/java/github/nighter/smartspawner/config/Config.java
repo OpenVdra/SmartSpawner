@@ -37,6 +37,11 @@ public class Config {
     private final boolean naturalBreakable;
     private final boolean convertNaturalToSmartSpawner;
 
+    // Particle settings
+    private final boolean spawnerStackParticlesEnabled;
+    private final boolean spawnerActivateParticlesEnabled;
+    private final boolean spawnerGenerateLootParticlesEnabled;
+
     // Parsed lookup data
     @Getter(AccessLevel.NONE)
     private final Set<Material> requiredTools;
@@ -60,6 +65,11 @@ public class Config {
         // Natural spawner settings
         this.naturalBreakable = config.getBoolean("natural_spawner.breakable", false);
         this.convertNaturalToSmartSpawner = config.getBoolean("natural_spawner.convert_to_smart_spawner", false);
+
+        // Particle settings
+        this.spawnerStackParticlesEnabled = config.getBoolean("particle.spawner_stack", true);
+        this.spawnerActivateParticlesEnabled = config.getBoolean("particle.spawner_activate", true);
+        this.spawnerGenerateLootParticlesEnabled = config.getBoolean("particle.spawner_generate_loot", true);
 
         // Parsed lookup data
         this.requiredTools = loadRequiredTools(config, logger);

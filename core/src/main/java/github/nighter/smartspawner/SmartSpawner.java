@@ -62,7 +62,6 @@ import github.nighter.smartspawner.spawner.lootgen.SpawnerLootGenerator;
 import github.nighter.smartspawner.spawner.data.WorldEventHandler;
 import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.updates.ConfigUpdater;
-import github.nighter.smartspawner.nms.VersionInitializer;
 import github.nighter.smartspawner.updates.LanguageUpdater;
 import github.nighter.smartspawner.updates.LanguageChangelogUpdater;
 import github.nighter.smartspawner.updates.UpdateChecker;
@@ -170,9 +169,6 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         instance = this;
         Config.load(this);
 
-        // Initialize version-specific components
-        initializeVersionComponents();
-
         // Initialize plugin integrations
         this.integrationManager = new IntegrationManager(this);
         integrationManager.initializeIntegrations();
@@ -201,15 +197,6 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
     @Override
     public SmartSpawnerAPI getAPI() {
         return apiImpl;
-    }
-
-    private void initializeVersionComponents() {
-        try {
-            new VersionInitializer(this).initialize();
-        } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "Failed to initialize version-specific components", e);
-            getServer().getPluginManager().disablePlugin(this);
-        }
     }
 
     private void migrateDataIfNeeded() {
@@ -424,7 +411,6 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
 
         if (this.hopperService != null) {
             this.hopperService.cleanup();
-            this.hopperService = null;
         }
         
         if (hopperConfig.isHopperEnabled()) {

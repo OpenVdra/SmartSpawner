@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum SortOption {
-    DEFAULT("sort.default"),
-    STACK_SIZE_DESC("sort.stack_size_desc"),
-    STACK_SIZE_ASC("sort.stack_size_asc");
+    DEFAULT("sort.option_name.default"),
+    STACK_SIZE_DESC("sort.option_name.stack_size_desc"),
+    STACK_SIZE_ASC("sort.option_name.stack_size_asc");
 
 
     private final String langPath;

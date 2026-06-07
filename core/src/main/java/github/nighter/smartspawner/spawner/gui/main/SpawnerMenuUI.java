@@ -3,7 +3,7 @@ package github.nighter.smartspawner.spawner.gui.main;
 import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
@@ -273,7 +273,7 @@ public class SpawnerMenuUI {
 
         // Hide tooltip for BUNDLE material (prevents showing bundle contents)
         if (cachedStorageMaterial == Material.BUNDLE) {
-            VersionInitializer.hideTooltip(chestItem);
+            ItemTooltipUtil.hideTooltip(chestItem);
         }
 
         // Cache the result
@@ -543,7 +543,7 @@ public class SpawnerMenuUI {
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, player, metaModifier);
         }
 
-        if (spawnerItem.getType() == Material.SPAWNER) VersionInitializer.hideTooltip(spawnerItem);
+        if (spawnerItem.getType() == Material.SPAWNER) ItemTooltipUtil.hideTooltip(spawnerItem);
         return spawnerItem;
     }
 
@@ -588,7 +588,7 @@ public class SpawnerMenuUI {
 
         // Hide tooltip for BUNDLE material (prevents showing bundle contents)
         if (cachedExpMaterial == Material.BUNDLE) {
-            VersionInitializer.hideTooltip(expItem);
+            ItemTooltipUtil.hideTooltip(expItem);
         }
 
         // Cache the result

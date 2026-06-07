@@ -1,0 +1,19 @@
+# SmartSpawner - iridium_skyblock.yml
+# This file is updated only when the IridiumSkyblock integration is active.
+
+iridium_skyblock:
+  permissions:
+    open_menu:
+      name: '&#5DB5F1ꜱᴘᴀᴡɴᴇʀ ᴍᴇɴᴜ ᴘᴇʀᴍɪꜱꜱɪᴏɴ'
+      lore:
+        - '&7Permission for permit users to open spawners menu.'
+        - ''
+        - '&#5DB5F1&lPermission'
+        - '%permission%'
+    stack:
+      name: '&#37eb9aꜱᴘᴀᴡɴᴇʀ ꜱᴛᴀᴄᴋ ᴘᴇʀᴍɪꜱꜱɪᴏɴ'
+      lore:
+        - '&7Permission for permit users to stack spawners.'
+        - ''
+        - '&#37eb9a&lPermission'
+        - '%permission%'

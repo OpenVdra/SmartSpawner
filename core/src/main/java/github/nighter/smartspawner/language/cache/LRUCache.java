@@ -1,4 +1,4 @@
-package github.nighter.smartspawner.language;
+package github.nighter.smartspawner.language.cache;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

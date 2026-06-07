@@ -2,9 +2,9 @@ package github.nighter.smartspawner.spawner.item;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.nms.VersionInitializer;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -106,20 +106,20 @@ public class SpawnerItemFactory {
                         item.minAmount() + "-" + item.maxAmount();
                 String chance = String.format("%.1f", item.chance());
                 lootComponents.add(languageManager.buildTranslatableLootLine(
-                        "custom_item.spawner.loot_items", item.material(), amountRange, chance));
+                        "smart_spawner.loot_items", item.material(), amountRange, chance));
             }
-            String displayName = languageManager.getItemName("custom_item.spawner.name", placeholders);
+            String displayName = languageManager.getItemName("smart_spawner.name", placeholders);
             meta.setDisplayName(displayName);
             List<Component> lore = languageManager.buildItemLoreAsComponents(
-                    "custom_item.spawner.lore", placeholders, lootComponents,
-                    "custom_item.spawner.loot_items_empty");
+                    "smart_spawner.lore", placeholders, lootComponents,
+                    "smart_spawner.loot_items_empty");
             if (!lore.isEmpty()) {
                 meta.lore(lore);
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
             spawner.setItemMeta(meta);
         }
-        VersionInitializer.hideTooltip(spawner);
+        ItemTooltipUtil.hideTooltip(spawner);
         if (amount == 1) {
             spawnerItemCache.put(entityType, spawner.clone());
             cacheTimestamps.put(entityType, System.currentTimeMillis());
@@ -160,15 +160,15 @@ public class SpawnerItemFactory {
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("entity", entityTypeName);
             placeholders.put("ᴇɴᴛɪᴛʏ", languageManager.getSmallCaps(entityTypeName));
-            String displayName = languageManager.getItemName("custom_item.vanilla_spawner.name", placeholders);
-            if (displayName != null && !displayName.isEmpty() && !displayName.equals("custom_item.vanilla_spawner.name")) {
+            String displayName = languageManager.getItemName("vanilla_spawner.name", placeholders);
+            if (displayName != null && !displayName.isEmpty() && !displayName.equals("vanilla_spawner.name")) {
                 meta.setDisplayName(displayName);
             }
-            List<String> lore = languageManager.getItemLoreWithMultilinePlaceholders("custom_item.vanilla_spawner.lore", placeholders);
+            List<String> lore = languageManager.getItemLoreWithMultilinePlaceholders("vanilla_spawner.lore", placeholders);
             if (lore != null && !lore.isEmpty()) {
                 meta.setLore(lore);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-                VersionInitializer.hideTooltip(spawner);
+                ItemTooltipUtil.hideTooltip(spawner);
             }
             meta.getPersistentDataContainer().set(
                     VANILLA_SPAWNER_KEY,
@@ -220,19 +220,19 @@ public class SpawnerItemFactory {
                         item.minAmount() + "-" + item.maxAmount();
                 String chance = String.format("%.1f", item.chance());
                 lootComponents.add(languageManager.buildTranslatableLootLine(
-                        "custom_item.item_spawner.loot_items", item.material(), amountRange, chance));
+                        "item_spawner.loot_items", item.material(), amountRange, chance));
             }
 
-            String displayName = languageManager.getItemName("custom_item.item_spawner.name", placeholders);
-            if (displayName == null || displayName.isEmpty() || displayName.equals("custom_item.item_spawner.name")) {
-                // Fallback to a generic name if not configured
-                displayName = "§6" + itemName + " Spawner";
+            String displayName = languageManager.getItemName("item_spawner.name", placeholders);
+            if (displayName == null || displayName.isEmpty() || displayName.equals("item_spawner.name")) {
+                String fallbackName = languageManager.getItemName("item_spawner.fallback_name", placeholders);
+                displayName = fallbackName.equals("item_spawner.fallback_name") ? itemName : fallbackName;
             }
             meta.setDisplayName(displayName);
 
             List<Component> lore = languageManager.buildItemLoreAsComponents(
-                    "custom_item.item_spawner.lore", placeholders, lootComponents,
-                    "custom_item.item_spawner.loot_items_empty");
+                    "item_spawner.lore", placeholders, lootComponents,
+                    "item_spawner.loot_items_empty");
             if (!lore.isEmpty()) {
                 meta.lore(lore);
             }
@@ -248,7 +248,7 @@ public class SpawnerItemFactory {
             
             spawner.setItemMeta(meta);
         }
-        VersionInitializer.hideTooltip(spawner);
+        ItemTooltipUtil.hideTooltip(spawner);
         return spawner;
     }
 }

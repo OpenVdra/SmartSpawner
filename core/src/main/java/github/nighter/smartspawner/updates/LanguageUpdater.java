@@ -29,6 +29,7 @@ public class LanguageUpdater {
     public enum LanguageFileType {
         MESSAGES("messages.yml"),
         GUI("gui.yml"),
+        COMMAND_GUI("command_gui.yml"),
         FORMATTING("formatting.yml"),
         ITEMS("items.yml"),
         COMMAND_MESSAGES("command_messages.yml");

@@ -733,12 +733,13 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
     /**
      * Asynchronously get world names with spawner counts for a specific server.
      * @param targetServer The server name to query
-     * @param callback Consumer to receive map of world name -> spawner count
+     * @param callback Consumer to receive map of world name -> spawner statistics
      */
-    public void getWorldsForServerAsync(String targetServer, Consumer<Map<String, Integer>> callback) {
+    public void getWorldsForServerAsync(String targetServer, Consumer<Map<String, WorldSpawnerStats>> callback) {
         Scheduler.runTaskAsync(() -> {
-            Map<String, Integer> worlds = new LinkedHashMap<>();
-            String sql = "SELECT world_name, COUNT(*) as count FROM smart_spawners WHERE server_name = ? GROUP BY world_name ORDER BY world_name";
+            Map<String, WorldSpawnerStats> worlds = new LinkedHashMap<>();
+            String sql = "SELECT world_name, COUNT(*) AS total, COALESCE(SUM(stack_size), 0) AS total_stacked " +
+                    "FROM smart_spawners WHERE server_name = ? GROUP BY world_name ORDER BY world_name";
 
             try (Connection conn = databaseManager.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -747,7 +748,10 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
 
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
-                        worlds.put(rs.getString("world_name"), rs.getInt("count"));
+                        worlds.put(
+                                rs.getString("world_name"),
+                                new WorldSpawnerStats(rs.getInt("total"), rs.getInt("total_stacked"))
+                        );
                     }
                 }
 
@@ -758,6 +762,8 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
             Scheduler.runTask(() -> callback.accept(worlds));
         });
     }
+
+    public record WorldSpawnerStats(int total, int totalStacked) {}
 
     /**
      * Asynchronously get total stacked spawner count for a server/world.
@@ -966,139 +972,6 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
             }
 
             Scheduler.runTask(() -> callback.accept(spawners));
-        });
-    }
-
-    /**
-     * Asynchronously get a single spawner's data from a remote server.
-     * @param targetServer The server name
-     * @param spawnerId The spawner ID
-     * @param callback Consumer to receive the spawner data (null if not found)
-     */
-    public void getRemoteSpawnerByIdAsync(String targetServer, String spawnerId,
-                                          Consumer<CrossServerSpawnerData> callback) {
-        Scheduler.runTaskAsync(() -> {
-            CrossServerSpawnerData spawnerData = null;
-            String sql = """
-                SELECT spawner_id, server_name, world_name, loc_x, loc_y, loc_z,
-                       entity_type, stack_size, spawner_stop, last_interacted_player,
-                       spawner_exp, inventory_data
-                FROM smart_spawners
-                WHERE server_name = ? AND spawner_id = ?
-                """;
-
-            try (Connection conn = databaseManager.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setString(1, targetServer);
-                stmt.setString(2, spawnerId);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        String world = rs.getString("world_name");
-                        int x = rs.getInt("loc_x");
-                        int y = rs.getInt("loc_y");
-                        int z = rs.getInt("loc_z");
-
-                        EntityType entityType;
-                        try {
-                            entityType = EntityType.valueOf(rs.getString("entity_type"));
-                        } catch (IllegalArgumentException e) {
-                            entityType = EntityType.PIG;
-                        }
-
-                        int stackSize = rs.getInt("stack_size");
-                        boolean active = !rs.getBoolean("spawner_stop");
-                        String lastPlayer = rs.getString("last_interacted_player");
-                        long storedExp = rs.getLong("spawner_exp");
-                        long totalItems = estimateItemCount(rs.getString("inventory_data"));
-
-                        spawnerData = new CrossServerSpawnerData(
-                                spawnerId, targetServer, world, x, y, z,
-                                entityType, stackSize, active, lastPlayer,
-                                storedExp, totalItems
-                        );
-                    }
-                }
-
-            } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Error fetching remote spawner " + spawnerId + " from " + targetServer, e);
-            }
-
-            final CrossServerSpawnerData result = spawnerData;
-            Scheduler.runTask(() -> callback.accept(result));
-        });
-    }
-
-    /**
-     * Asynchronously update stack size for a remote spawner.
-     * @param targetServer The server name
-     * @param spawnerId The spawner ID
-     * @param newStackSize The new stack size
-     * @param callback Consumer to receive success status
-     */
-    public void updateRemoteSpawnerStackSizeAsync(String targetServer, String spawnerId,
-                                                   int newStackSize, Consumer<Boolean> callback) {
-        Scheduler.runTaskAsync(() -> {
-            boolean success = false;
-            String sql = "UPDATE smart_spawners SET stack_size = ?, updated_at = CURRENT_TIMESTAMP WHERE server_name = ? AND spawner_id = ?";
-
-            try (Connection conn = databaseManager.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setInt(1, newStackSize);
-                stmt.setString(2, targetServer);
-                stmt.setString(3, spawnerId);
-
-                int affected = stmt.executeUpdate();
-                success = affected > 0;
-
-                if (success) {
-                    plugin.debug("Updated remote spawner " + spawnerId + " on " + targetServer + " to stack size " + newStackSize);
-                }
-
-            } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Error updating remote spawner stack size", e);
-            }
-
-            final boolean result = success;
-            Scheduler.runTask(() -> callback.accept(result));
-        });
-    }
-
-    /**
-     * Asynchronously delete a remote spawner from the database.
-     * Note: This only removes the database record. The physical block on the target server
-     * will remain until that server refreshes its cache.
-     * @param targetServer The server name
-     * @param spawnerId The spawner ID
-     * @param callback Consumer to receive success status
-     */
-    public void deleteRemoteSpawnerAsync(String targetServer, String spawnerId,
-                                          Consumer<Boolean> callback) {
-        Scheduler.runTaskAsync(() -> {
-            boolean success = false;
-            String sql = "DELETE FROM smart_spawners WHERE server_name = ? AND spawner_id = ?";
-
-            try (Connection conn = databaseManager.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setString(1, targetServer);
-                stmt.setString(2, spawnerId);
-
-                int affected = stmt.executeUpdate();
-                success = affected > 0;
-
-                if (success) {
-                    logger.info("Deleted remote spawner " + spawnerId + " from " + targetServer + " database record");
-                }
-
-            } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Error deleting remote spawner", e);
-            }
-
-            final boolean result = success;
-            Scheduler.runTask(() -> callback.accept(result));
         });
     }
 

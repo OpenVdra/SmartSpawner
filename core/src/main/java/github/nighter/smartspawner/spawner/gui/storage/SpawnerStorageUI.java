@@ -2,7 +2,7 @@ package github.nighter.smartspawner.spawner.gui.storage;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
@@ -429,7 +429,7 @@ public class SpawnerStorageUI {
 
         // Hide tooltip for BUNDLE material (prevents showing bundle contents)
         if (material == Material.BUNDLE) {
-            github.nighter.smartspawner.nms.VersionInitializer.hideTooltip(item);
+            ItemTooltipUtil.hideBundleTooltip(item);
         }
 
         return item;
@@ -547,7 +547,7 @@ public class SpawnerStorageUI {
             entityName = languageManager.getFormattedMobName(spawner.getEntityType());
         }
         placeholders.put("entity", entityName);
-        placeholders.put("\u1d07\u0274\u1d1b\u026a\u1d1b\u028f", languageManager.getSmallCaps(entityName));
+        placeholders.put("ᴇɴᴛɪᴛʏ", languageManager.getSmallCaps(entityName));
         placeholders.put("stack_size", String.valueOf(spawner.getStackSize()));
 
         int currentItems = spawner.getVirtualInventory().getUsedSlots();
@@ -581,7 +581,7 @@ public class SpawnerStorageUI {
         }
 
         if (item.getType() == Material.SPAWNER) {
-            VersionInitializer.hideTooltip(item);
+            ItemTooltipUtil.hideTooltip(item);
         }
 
         return item;

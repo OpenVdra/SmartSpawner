@@ -1,0 +1,348 @@
+# SmartSpawner – gui.yml
+# GUI item names, lore, titles, and button labels.
+
+# ──────────────────────────────────────────────────────
+#                  Main GUI
+# ──────────────────────────────────────────────────────
+gui_title_main:
+  single_spawner: '&#545454{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
+  stacked_spawner: '&#545454{amount} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀꜱ'
+
+spawner_storage_item:
+  # Available placeholders for name:
+  # {max_slots} - Maximum number of slots in the storage (formatted with commas)
+  # {current_items} - Current number of items in the storage
+  # {percent_storage_rounded} - Percentage of storage used (0-100)
+  # {entity} - The spawner's entity type (normal capitalization)
+  # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
+  name: '&#F97603sᴘᴀᴡɴᴇʀ sᴛᴏʀᴀɢᴇ'
+
+  # Available placeholders for all lore lines:
+  # {max_slots} - Maximum number of slots in the storage (formatted with commas)
+  # {current_items} - Current number of items in the storage
+  # {percent_storage_rounded} - Percentage of storage used (0-100)
+  # {loot_items} - The complete formatted list of loot items
+  # {entity} - The spawner's entity type (normal capitalization)
+  # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
+  lore:
+    - '{loot_items}'
+
+  # This defines how each loot item will be displayed when using {loot_items}
+  # Available placeholders for each loot item:
+  # {item_name} - The name of the item (normal capitalization)
+  # {amount} - Number of items (formatted with commas)
+  # {raw_amount} - Number of items (without formatting)
+  # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
+  loot_items: '&#F97603{amount} &f{item_name}'
+  loot_items_empty: '&#F97603No items configured'
+
+# Available placeholders:
+# {entity}           - Formatted entity name (e.g., "Zombie")
+# {ᴇɴᴛɪᴛʏ}           - Entity name in small caps (e.g., "ᴢᴏᴍʙɪᴇ")
+# {stack_size}       - Number of spawners stacked at this location
+# {range}            - Spawning range in blocks
+# {delay}            - Spawn delay in seconds
+# {min_mobs}         - Minimum number of mobs to spawn
+# {max_mobs}         - Maximum number of mobs to spawn
+# {current_items}    - Current number of items stored
+# {max_items}        - Maximum storage capacity for items
+# {percent_storage_rounded}  - Storage usage as integer percentage (e.g., "87")
+# {percent_storage_decimal} - Storage usage as formatted percentage with decimal (e.g., "87.5")
+# {current_exp}      - Current experience stored (formatted with commas)
+# {max_exp}          - Maximum experience capacity (formatted with commas)
+# {raw_current_exp}  - Raw current experience number
+# {raw_max_exp}      - Raw maximum experience number
+# {percent_exp_rounded}      - Experience storage as integer percentage
+# {percent_exp_decimal}    - Experience storage as formatted percentage with decimal (e.g., "42.7")
+# {time}             - Time until the next spawn, or a status text when inactive/full/no loot
+# {total_sell_price} - Total sell value currently stored in the spawner
+spawner_info_item:
+  name: '&#FCE300{stack_size} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
+  lore:
+    - '&#FCE300● &fClick to sell items and collect xp'
+    - '&#FCE300Storage:&f {percent_storage_decimal}% &#FCE300Filled.'
+    - '&#FCE300Exp:&f {percent_exp_decimal}% &#FCE300Stored.'
+  lore_no_shop:
+    - '&#FCE300● &fClick to collect xp'
+    - '&#FCE300Storage:&f {percent_storage_decimal}% &#FCE300Filled.'
+    - '&#FCE300Exp:&f {percent_exp_decimal}% &#FCE300Stored.'
+  lore_full: ''
+  lore_inactive: ''
+  lore_no_loot: '&#ff3333ɴᴏ ʟᴏᴏᴛ ᴄᴏɴꜰɪɢᴜʀᴇᴅ'
+
+exp_info_item:
+  name: '&#7AFC00ᴄᴏʟʟᴇᴄᴛ ᴇxᴘ'
+  lore:
+    - '&#7AFC00{current_exp} &fXP Points'
+
+# ──────────────────────────────────────────────────────
+#              Spawner Stacker GUI
+# ──────────────────────────────────────────────────────
+gui_title_stacker: 'ꜱᴘᴀᴡɴᴇʀ ꜱᴛᴀᴄᴋᴇʀ'
+
+button_spawner:
+  name: '&f{ᴇɴᴛɪᴛʏ} &#5DB5F1ꜱᴘᴀᴡɴᴇʀ'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fCurrent stack: &e{stack_size}'
+    - '  &8• &fMaximum limit: &e{max_stack_size}'
+    - ''
+    - '&#5DB5F1 ▸ Click to return to the main menu!'
+
+button_remove:
+  name: '&fʀᴇᴍᴏᴠᴇ &#FF6B6B-{amount}'
+  lore:
+    - ''
+    - ' &#FF6B6B⚠ ᴀᴄᴛɪᴏɴ:'
+    - '  &8• &fYou will remove &e{amount} &fspawner(s)'
+    - '  &8• &fCurrent stack: &e{stack_size}'
+    - ''
+    - '&#FF6B6B ▸ Click to remove from the stack!'
+
+button_add:
+  name: '&fᴀᴅᴅ &#5DB5F1+{amount}'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ᴀᴄᴛɪᴏɴ:'
+    - '  &8• &fYou will add &e{amount} &fspawner(s)'
+    - '  &8• &fCurrent stack: &e{stack_size}'
+    - ''
+    - '&#5DB5F1 ▸ Click to add to the stack!'
+
+button_remove_all:
+  name: '&fʀᴇᴍᴏᴠᴇ &#FF6B6Bᴀʟʟ'
+  lore:
+    - ''
+    - ' &#FF6B6B⚠ ᴀᴄᴛɪᴏɴ:'
+    - '  &8• &fYou will fully empty the stack.'
+    - '  &8• &fCurrent stack: &e{stack_size}'
+    - ''
+    - '&#FF6B6B ▸ Click to empty the stack!'
+
+button_add_all:
+  name: '&fᴀᴅᴅ &#5DB5F1ᴀʟʟ'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ᴀᴄᴛɪᴏɴ:'
+    - '  &8• &fYou will add every compatible'
+    - '   &fspawner from your inventory.'
+    - ''
+    - '&#5DB5F1 ▸ Click to add everything!'
+
+# ──────────────────────────────────────────────────────
+#                Sell Confirmation GUI
+# ──────────────────────────────────────────────────────
+gui_title_sell_confirm: '&#545454ᴄᴏɴꜰɪʀᴍ ꜱᴇʟʟ'
+
+button_sell_cancel:
+  name: '&#f50001ᴄᴀɴᴄᴇʟ'
+  lore:
+    - '&fClick to cancel'
+
+button_sell_confirm:
+  name: '&#01ff00ᴄᴏɴꜰɪʀᴍ'
+  lore:
+    - '&fClick to sell all items'
+    - '&7(${total_sell_price})'
+
+button_sell_confirm_with_exp:
+  name: '&#01ff00ᴄᴏɴꜰɪʀᴍ'
+  lore:
+    - '&fClick to sell all items and collect xp'
+    - '&7(${total_sell_price} + {current_exp} xp)'
+
+# Available placeholders for button_sell_info:
+# {entity} - Formatted entity or item name
+# {ᴇɴᴛɪᴛʏ} - Entity or item name in small caps
+# {current_items} - Used storage slots
+# {max_items} - Maximum storage slots
+# {current_exp} - Stored experience
+# {total_sell_price} - Total sell value
+# {percent_storage_decimal} - Storage usage with 1 decimal (e.g., "87.5")
+# {percent_storage_rounded} - Storage usage rounded to whole number (e.g., "88")
+# {loot_items} - Expands to the generated loot item lines
+# Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
+button_sell_info:
+  name: '&#02e57dʟᴏᴏᴛ'
+  lore:
+    - '{loot_items}'
+  loot_items: '&#02e57d{amount} &f{item_name}'
+  loot_items_empty: '&#02e57dNo items to sell'
+
+# ──────────────────────────────────────────────────────
+#             Spawner Storage GUI
+# ──────────────────────────────────────────────────────
+# Available placeholders for gui_title_storage:
+# {current_page}     - Current page number
+# {total_pages}      - Total number of pages
+# {entity}           - Formatted entity name (e.g., "Zombie")
+# {ᴇɴᴛɪᴛʏ}           - Entity name in small caps (e.g., "ᴢᴏᴍʙɪᴇ")
+# {amount}           - Number of spawners stacked
+gui_title_storage: '&#545454{amount} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀꜱ'
+
+navigation_button_previous:
+  name: '&#7AFC00ᴘʀᴇᴠɪᴏᴜꜱ'
+  lore:
+    - '&fClick to go back a page'
+
+navigation_button_next:
+  name: '&#7AFC00ɴᴇxᴛ'
+  lore:
+    - '&fClick to go forward a page'
+
+sell_button:
+  name: '&#FC0000ꜱᴇʟʟ ᴀʟʟ'
+  lore:
+    - '&fClick to sell all mob drops!'
+
+sell_and_exp_button:
+  name: '&#FC0000ꜱᴇʟʟ & ᴇxᴘ'
+  lore:
+    - '&fClick to sell items and collect experience!'
+
+return_button:
+  name: '&#FC0000ʀᴇᴛᴜʀɴ'
+  lore:
+    - '&fClick to return to the main menu'
+
+take_all_button:
+  name: '&#FCE300ᴛᴀᴋᴇ ᴀʟʟ'
+  lore:
+    - '&#FCE300● &fCollect loot from the storage'
+
+item_filter_button:
+  name: '&fꜰɪʟᴛᴇʀ &#5DB5F1ᴅʀᴏᴘꜱ'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fConfigure allowed and'
+    - '   &fblocked items for this spawner.'
+    - ''
+    - '&#5DB5F1 ▸ Click to configure filters!'
+
+sort_items_button:
+  name: '&fꜱᴏʀᴛ &#5DB5F1ɪᴛᴇᴍꜱ'
+  lore:
+    - ''
+    - '{available_items}'
+    - ''
+    - '&#5DB5F1 ▸ Click to sort!'
+  selected_item: ' &#5DB5F1• {item_name}'
+  unselected_item: ' &f• {item_name}'
+  no_item: ' &7• None'
+
+drop_page_button:
+  name: '&#00F986ᴅʀᴏᴘ ʟᴏᴏᴛ'
+  lore:
+    - '&fClick to drop all the loot on the page'
+
+collect_exp_button:
+  name: '&fᴄᴏʟʟᴇᴄᴛ &#5DB5F1ᴇxᴘ'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fAvailable EXP: &a{current_exp}'
+    - ''
+    - '&#5DB5F1 ▸ Click to collect!'
+
+storage_spawner_info_button:
+  name: '&#00F986{stack_size} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
+  lore:
+    - '{loot_items}'
+    - '&#00F986({percent_storage_decimal}% filled)'
+    - '&#7AFC00({percent_exp_decimal}% xp stored)'
+  loot_items: '&#00F986{amount} &f{item_name}'
+  loot_items_empty: '&#00F986No items in storage'
+
+# ──────────────────────────────────────────────────────
+#             Filter Configuration GUI
+# ──────────────────────────────────────────────────────
+gui_title_filter_config: '    ᴀʟʟᴏᴡᴇᴅ           ʙʟᴏᴄᴋᴇᴅ'
+
+filter_divider:
+  name: '&fᴅʀᴏᴘ &#5DB5F1ꜰɪʟᴛᴇʀ'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fLeft side: allowed items'
+    - '  &8• &fRight side: blocked items'
+    - ''
+    - '&#5DB5F1 ▸ Click to return to storage!'
+
+filter_item_allowed:
+  name: '&f{item_name}&#37eb9a allowed'
+  lore:
+    - '&#37eb9a ▸ &fClick to block this item!'
+
+filter_item_blocked:
+  name: '&f{item_name}&#FF6B6B blocked'
+  lore:
+    - '&#FF6B6B ▸ &fClick to allow this item!'
+
+# ──────────────────────────────────────────────────────
+#                  Bedrock Form GUI
+# ──────────────────────────────────────────────────────
+bedrock:
+  main_gui:
+    title_single_spawner: '{entity} Spawner'
+    title_stacked_spawner: '{amount} {entity} Spawners'
+
+    view_info_title: '{entity} Spawner - Information'
+
+    button_names:
+      storage: 'Open Storage'
+      exp: 'Collect EXP'
+      stacker: 'Manage Stack'
+      sell_and_exp: 'Sell + Collect EXP'
+      sell_all: 'Sell Items'
+      view_info: 'View Info'
+      back: 'Back'
+
+    button_images:
+      storage: 'https://i.pinimg.com/736x/7a/28/50/7a28504d8446ab0ad670757cfa32fe59.jpg'
+      stacker: 'https://cdn.modrinth.com/data/9tQwxSFr/f0f1cc267f587a39acd2c820cfe6b29d0f2ccae3.png'
+      sell_and_exp: 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/8/8a/Gold_Ingot_JE4_BE2.png/revision/latest?cb=20200224211607'
+      sell_all: 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/8/8a/Gold_Ingot_JE4_BE2.png/revision/latest?cb=20200224211607'
+      exp: 'https://minecraft.wiki/images/Bottle_o%27_Enchanting.gif'
+      view_info: 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/9f/Information_sign.png/revision/latest/scale-to-width-down/268?cb=20200105100749'
+
+    # Available placeholders (same as spawner_info_item):
+    # {entity}           - Formatted entity name (e.g., "Zombie")
+    # {stack_size}       - Number of spawners stacked at this location
+    # {range}            - Spawning range in blocks
+    # {delay}            - Spawn delay in seconds
+    # {min_mobs}         - Minimum number of mobs to spawn
+    # {max_mobs}         - Maximum number of mobs to spawn
+    # {current_items}    - Current number of items stored
+    # {max_items}        - Maximum storage capacity for items
+    # {percent_storage_rounded}  - Storage usage as integer percentage (e.g., "87")
+    # {percent_storage_decimal} - Storage usage as formatted percentage with decimal (e.g., "87.5")
+    # {current_exp}      - Current experience stored (formatted with commas)
+    # {max_exp}          - Maximum experience capacity (formatted with commas)
+    # {raw_current_exp}  - Raw current experience number
+    # {raw_max_exp}      - Raw maximum experience number
+    # {percent_exp_rounded}      - Experience storage as integer percentage
+    # {percent_exp_decimal}    - Experience storage as formatted percentage with decimal (e.g., "42.7")
+
+    # IMPORTANT: Only use Bedrock-compatible color codes:
+    # §0=Black, §1=Dark Blue, §2=Dark Green, §3=Dark Aqua, §4=Dark Red, §5=Dark Purple
+    # §6=Gold, §7=Gray, §8=Dark Gray, §9=Blue, §a=Green, §b=Aqua, §c=Red
+    # §d=Light Purple, §e=Yellow, §f=White, §g=Minecoin Gold
+    spawner_info:
+      - ''
+      - '§9☀ §fInformation:'
+      - '  §8• §fStack: §e{stack_size}'
+      - '  §8• §fRange: §e{range} §7blocks'
+      - '  §8• §fMobs: §e{min_mobs}§7-§e{max_mobs}'
+      - '  §8• §fDelay: §e{delay}§7s'
+      - ''
+      - '§9☀ §fStorage:'
+      - '  §8• §fItems: §e{current_items}§7/§e{max_items}'
+      - '  §8• §fUsage: §e{percent_storage_decimal}%'
+      - ''
+      - '§a☀ §fExperience:'
+      - '  §8• §fStored: §a{current_exp}§7/§a{max_exp} §7xp'
+      - '  §8• §fUsage: §a{percent_exp_decimal}%'
+      - ''
+      - '§a☀ §fSell Value: §a${total_sell_price}'

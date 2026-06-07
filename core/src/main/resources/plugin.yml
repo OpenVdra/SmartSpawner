@@ -47,7 +47,7 @@ softdepend:
 commands:
   smartspawner:
     description: Main command for SmartSpawner plugin
-    usage: /smartspawner [reload|give|list|hologram|prices|clear|near|set] [args...]
+    usage: /smartspawner [reload|give|list|hologram|prices|clear|near|set|language|gui_layout] [args...]
     aliases: [ ss, spawner ]
     permission: smartspawner.command.use
     permission-message: "You don't have permission to use SmartSpawner commands!"
@@ -77,7 +77,7 @@ permissions:
 
   smartspawner.command.prices:
     description: Allow viewing sell prices of spawner items
-    default: true
+    default: op
 
   smartspawner.command.clear:
     description: Allow clearing holograms and ghost spawners
@@ -89,6 +89,14 @@ permissions:
 
   smartspawner.command.set:
     description: Allow setting SmartSpawner stack size, range, and delay
+    default: op
+
+  smartspawner.command.language:
+    description: Allow changing the active SmartSpawner language
+    default: op
+
+  smartspawner.command.gui_layout:
+    description: Allow changing the active SmartSpawner GUI layout
     default: op
 
   # Feature permissions

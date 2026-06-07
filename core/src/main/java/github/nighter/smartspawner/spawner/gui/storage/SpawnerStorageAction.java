@@ -89,7 +89,7 @@ public class SpawnerStorageAction implements Listener {
         // which would otherwise allow items to be taken from the virtual inventory twice –
         // once by the player and once by applySellResult.
         if (spawner.isSelling()) {
-            plugin.getMessageService().sendMessage(player, "spawner_selling");
+            plugin.getMessageService().sendMessage(player, "action_in_progress");
             return;
         }
 
@@ -211,7 +211,7 @@ public class SpawnerStorageAction implements Listener {
                 // Pass isSell=true to bypass the inner cooldown check (already checked above)
                 plugin.getSpawnerMenuAction().handleExpBottleClick(player, spawner, true);
             } else {
-                messageService.sendMessage(player, "no_items");
+                messageService.sendMessage(player, "spawner_storage_empty");
             }
             return;
         }
@@ -435,7 +435,7 @@ public class SpawnerStorageAction implements Listener {
         }
 
         if (pageItems.isEmpty()) {
-            messageService.sendMessage(player, "no_items_to_drop");
+            messageService.sendMessage(player, "spawner_storage_empty");
             return;
         }
 
@@ -773,7 +773,7 @@ public class SpawnerStorageAction implements Listener {
         }
 
         if (sourceItems.isEmpty()) {
-            messageService.sendMessage(player, "no_items_to_take");
+            messageService.sendMessage(player, "spawner_storage_empty");
             return;
         }
 

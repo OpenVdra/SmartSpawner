@@ -270,7 +270,7 @@ public class SpawnerMenuAction implements Listener {
 
         // Check if there are items to sell
         if (spawner.getVirtualInventory().getUsedSlots() == 0) {
-            messageService.sendMessage(player, "no_items");
+            messageService.sendMessage(player, "spawner_storage_empty");
             return;
         }
 

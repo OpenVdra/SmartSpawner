@@ -1,32 +1,50 @@
 # SmartSpawner – command_messages.yml
-# Messages related to plugin commands, including usage instructions and error messages.
+# Messages related to plugin commands, including usage instructions and command errors.
 
+# ──────────────────────────────────────────────────────
+#                        General
+# ──────────────────────────────────────────────────────
 player_only:
-  message: "&#ff5252ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜꜱᴇᴅ ʙʏ ᴘʟᴀʏᴇʀꜱ."
+  message: "&#FF4444This command can only be used by players."
   sound: block.note_block.bass
 
 no_permission:
-  message: "&#ff5252ʏᴏᴜ ᴅᴏɴᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴅᴏ ᴛʜɪꜱ"
+  message: "&#FF4444You do not have permission to do this."
   sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#             Spawner - List GUI Interaction
+# ──────────────────────────────────────────────────────
+teleported_to_spawner:
+  message: 'You were teleported to the spawner.'
+  sound: entity.enderman.teleport
+
+teleport_failed:
+  message: '&#FF4444Unable to teleport to spawner.'
+  sound: entity.enderman.teleport
+
+spawner_removed:
+  message: '&fThe spawner was &#FF4444removed &fsuccessfully.'
+  sound: entity.item.break
 
 # ──────────────────────────────────────────────────────
 #                        /ss set
 # ──────────────────────────────────────────────────────
 set:
   usage:
-    message: "&#ff5252Usage: &#f8f8ff/ss set <stack_size|range|delay> <value> [world x y z]"
+    message: "Usage: &#3498db/ss set <stack_size|range|delay> <value> [world x y z]"
     sound: block.note_block.hat
   invalid:
-    message: "&#ff5252Invalid value or SmartSpawner location."
+    message: "&#FF4444Invalid value or SmartSpawner location."
     sound: block.note_block.pling
   stack_size_exceeds_max:
-    message: "&#ff5252Stack size &#f8f8ff{value} &#ff5252exceeds this spawner's max stack size: &#f8f8ff{max}"
+    message: "&#FF4444Stack size &f{value} &#FF4444exceeds this spawner's max stack size: &f{max}"
     sound: block.note_block.pling
   location_required:
-    message: "&#ff5252Console must provide a location: &#f8f8ff/ss set <stack_size|range|delay> <value> <world> <x> <y> <z>"
+    message: "&#F0C857Console must provide a location: &#3498db/ss set <stack_size|range|delay> <value> <world> <x> <y> <z>"
     sound: block.note_block.pling
   success:
-    message: "&#37eb9aSet &#f8f8ff{property} &#37eb9afrom &#f8f8ff{old_value} &#37eb9ato &#f8f8ff{new_value} &#37eb9aat &#f8f8ff{world} {x} {y} {z}&#37eb9a."
+    message: "Set &a{property} &ffrom &e{old_value} &fto &a{new_value} &fat &#3498db{world} {x} {y} {z}&f."
     sound: entity.experience_orb.pickup
 
 # ──────────────────────────────────────────────────────
@@ -34,66 +52,54 @@ set:
 # ──────────────────────────────────────────────────────
 near:
   bossbar:
-    analyzing: "🔍 ᴀɴᴀʟʏᴢɪɴɢ... {percent}%"
-    found: "✓ ꜰᴏᴜɴᴅ {count} ꜱᴘᴀᴡɴᴇʀ(ꜱ) ᴡɪᴛʜɪɴ {radius} ʙʟᴏᴄᴋꜱ"
-    not_found: "✗ ɴᴏ ꜱᴘᴀᴡɴᴇʀꜱ ꜰᴏᴜɴᴅ ᴡɪᴛʜɪɴ {radius} ʙʟᴏᴄᴋꜱ"
+    analyzing: "Scanning nearby spawners... {percent}%"
+    found: "Found {count} spawner(s) within {radius} blocks."
+    not_found: "No spawners found within {radius} blocks."
   view_gui:
-    button: "[ᴠɪᴇᴡ ɪɴ ɢᴜɪ]"
-    hover: "Click to browse the {count} spawner(s) found nearby"
+    button: " [View in GUI]"
+    hover: "Click to browse the {count} spawner(s) found nearby."
   scan_start:
-    message: "&#3498db🔍 ꜱᴄᴀɴɴɪɴɢ ꜰᴏʀ ꜱᴘᴀᴡɴᴇʀꜱ ᴡɪᴛʜɪɴ &#f8f8ff{radius} &#3498dbʙʟᴏᴄᴋꜱ…"
+    message: "Scanning for spawners within &e{radius} &fblocks..."
     sound: block.note_block.hat
   scan_found:
-    message: "&#37eb9a✓ ꜰᴏᴜɴᴅ &#f8f8ff{count} &#37eb9aꜱᴘᴀᴡɴᴇʀ(ꜱ) ᴡɪᴛʜɪɴ &#f8f8ff{radius} &#37eb9aʙʟᴏᴄᴋꜱ. &#f1c40fʜɪɢʜʟɪɢʜᴛꜱ ʟᴀꜱᴛ &#f8f8ff30ꜱ&#f1c40f."
+    message: "Found &a{count} &fspawner(s) within &e{radius} &fblocks. Highlights last &e30s&f."
     sound: entity.experience_orb.pickup
   scan_none:
-    message: "&#ff5252✗ ɴᴏ ꜱᴘᴀᴡɴᴇʀꜱ ꜰᴏᴜɴᴅ ᴡɪᴛʜɪɴ &#f8f8ff{radius} &#ff5252ʙʟᴏᴄᴋꜱ."
+    message: "&#FF4444No spawners found within &f{radius} &#FF4444blocks."
     sound: block.note_block.pling
   scan_cancelled:
-    message: "&#f1c40f⊘ ꜱᴄᴀɴ ᴄᴀɴᴄᴇʟʟᴇᴅ & ʜɪɢʜʟɪɢʜᴛꜱ ʀᴇᴍᴏᴠᴇᴅ."
+    message: "&#F0C857Scan cancelled and highlights removed."
     sound: block.note_block.bass
   no_active_scan:
-    message: "&#ff5252ʏᴏᴜ ʜᴀᴠᴇ ɴᴏ ᴀᴄᴛɪᴠᴇ ꜱᴄᴀɴ ᴛᴏ ᴄᴀɴᴄᴇʟ."
+    message: "&#FF4444You do not have an active scan to cancel."
     sound: block.note_block.bass
   highlights_expired:
-    message: "&#888888⏱ ꜱᴘᴀᴡɴᴇʀ ʜɪɢʜʟɪɢʜᴛꜱ ʜᴀᴠᴇ ᴇxᴘɪʀᴇᴅ."
+    message: "&#888888Spawner highlights have expired."
 
 # ──────────────────────────────────────────────────────
 #                        /ss give
 # ──────────────────────────────────────────────────────
 give:
-  usage:
-    message: "&#ff5252ᴜꜱᴀɢᴇ: /ss give <player> <mobtype> [amount]"
-    sound: block.note_block.hat
-  vanilla_usage:
-    message: "&#ff5252ᴜꜱᴀɢᴇ: /ss giveVanillaSpawner <player> <mobtype> [amount]"
-    sound: block.note_block.hat
   player_not_found:
-    message: "&#ff5252ᴘʟᴀʏᴇʀ ɴᴏᴛ ꜰᴏᴜɴᴅ"
+    message: "&#FF4444Player not found."
     sound: block.note_block.pling
   invalid_mob_type:
-    message: "&#ff5252ɪɴᴠᴀʟɪᴅ ᴍᴏʙ ᴛʏᴘᴇ"
+    message: "&#FF4444Invalid mob type."
     sound: block.note_block.pling
   invalid_item_type:
-    message: "&#ff5252ɪɴᴠᴀʟɪᴅ ɪᴛᴇᴍ ᴛʏᴘᴇ"
+    message: "&#FF4444Invalid item type."
     sound: block.note_block.pling
   invalid_item_spawner:
-    message: "&#ff5252ɪɴᴠᴀʟɪᴅ ɪᴛᴇᴍ ꜱᴘᴀᴡɴᴇʀ ᴛʏᴘᴇ"
-    sound: block.note_block.pling
-  invalid_amount:
-    message: "&#ff5252ɪɴᴠᴀʟɪᴅ ᴀᴍᴏᴜɴᴛ"
-    sound: block.note_block.pling
-  amount_too_large:
-    message: "&#ff5252ᴍᴀx ɢɪᴠᴇ ᴀᴍᴏᴜɴᴛ: &#f8f8ff{max}"
+    message: "&#FF4444Invalid item spawner type."
     sound: block.note_block.pling
   inventory_full:
-    message: "&#ff5252ꜱᴏᴍᴇ ꜱᴘᴀᴡɴᴇʀ ɪᴛᴇᴍꜱ ᴡᴇʀᴇ ᴅʀᴏᴘᴘᴇᴅ ᴏɴ ᴛʜᴇ ɢʀᴏᴜɴᴅ ᴅᴜᴇ ᴛᴏ ꜰᴜʟʟ ɪɴᴠᴇɴᴛᴏʀʏ"
+    message: "&#FF4444Some spawner items were dropped because the inventory is full."
     sound: block.note_block.pling
   spawner_received:
-    message: "&#37eb9aʏᴏᴜ ʀᴇᴄᴇɪᴠᴇᴅ &#f8f8ff{amount} {ᴇɴᴛɪᴛʏ} &#37eb9aꜱᴘᴀᴡɴᴇʀ(ꜱ)"
+    message: "You received &a{amount} {entity} &fspawner(s)."
     sound: entity.experience_orb.pickup
   spawner_given:
-    message: "&#37eb9aɢᴀᴠᴇ &#f8f8ff{amount} {ᴇɴᴛɪᴛʏ} &#37eb9aꜱᴘᴀᴡɴᴇʀ(ꜱ) ᴛᴏ &#f8f8ff{player}"
+    message: "Gave &a{amount} {entity} &fspawner(s) to &#3498db{player}&f."
     sound: entity.experience_orb.pickup
 
 # ──────────────────────────────────────────────────────
@@ -101,16 +107,16 @@ give:
 # ──────────────────────────────────────────────────────
 hologram:
   enabled:
-    message: "&#f8f8ffʜᴏʟᴏɢʀᴀᴍꜱ &#37eb9aᴇɴᴀʙʟᴇᴅ &#f8f8ffꜰᴏʀ ᴀʟʟ ꜱᴘᴀᴡɴᴇʀꜱ"
+    message: "Holograms are &aenabled &ffor all spawners."
     sound: entity.experience_orb.pickup
   disabled:
-    message: "&#f8f8ffʜᴏʟᴏɢʀᴀᴍꜱ &#e05252ᴅɪꜱᴀʙʟᴇᴅ &#f8f8ffꜰᴏʀ ᴀʟʟ ꜱᴘᴀᴡɴᴇʀꜱ"
+    message: "Holograms are &#FF4444disabled &ffor all spawners."
     sound: block.note_block.bass
   cleared:
-    message: "&#37eb9aꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ &#f8f8ffᴄʟᴇᴀʀᴇᴅ ᴀʟʟ ʜᴏʟᴏɢʀᴀᴍꜱ"
+    message: "Successfully cleared &aall holograms&f."
     sound: entity.experience_orb.pickup
   clear_error:
-    message: "&#ff5252ꜰᴀɪʟᴇᴅ ᴛᴏ ᴄʟᴇᴀʀ ʜᴏʟᴏɢʀᴀᴍꜱ"
+    message: "&#FF4444Failed to clear holograms."
     sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
@@ -118,15 +124,16 @@ hologram:
 # ──────────────────────────────────────────────────────
 clear:
   usage:
-    message: "&#f8f8ffᴜꜱᴀɢᴇ: &#3498db/ss clear <holograms|ghost_spawners>"
+    message: "Usage: &#3498db/ss clear <holograms|ghost_spawners>"
+    sound: block.note_block.hat
   ghost_check_start:
-    message: "&#f8f8ffᴄʜᴇᴄᴋɪɴɢ ꜰᴏʀ ɢʜᴏꜱᴛ ꜱᴘᴀᴡɴᴇʀꜱ..."
+    message: "Checking for ghost spawners..."
     sound: block.note_block.hat
   ghost_cleared:
-    message: "&#37eb9aꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ &#f8f8ffʀᴇᴍᴏᴠᴇᴅ &#37eb9a{count} &#f8f8ffɢʜᴏꜱᴛ ꜱᴘᴀᴡɴᴇʀ(ꜱ)"
+    message: "Successfully removed &a{count} &fghost spawner(s)."
     sound: entity.experience_orb.pickup
   ghost_none_found:
-    message: "&#37eb9aɴᴏ ɢʜᴏꜱᴛ ꜱᴘᴀᴡɴᴇʀꜱ ꜰᴏᴜɴᴅ"
+    message: "&#FF4444No ghost spawners found."
     sound: entity.experience_orb.pickup
 
 # ──────────────────────────────────────────────────────
@@ -134,22 +141,62 @@ clear:
 # ──────────────────────────────────────────────────────
 prices:
   not_available:
-    message: "&#ff5252ꜱᴇʟʟ ɪɴᴛᴇɢʀᴀᴛɪᴏɴ ɪꜱ ɴᴏᴛ ᴀᴠᴀɪʟᴀʙʟᴇ. ᴘʟᴇᴀꜱᴇ ᴄᴏɴꜰɪɢᴜʀᴇ ᴇᴄᴏɴᴏᴍʏ ꜱᴇᴛᴛɪɴɢꜱ."
+    message: "&#FF4444Sell integration is not available. Please configure economy settings."
     sound: block.note_block.pling
   no_priceable_items:
-    message: "&#ff5252ɴᴏ ɪᴛᴇᴍꜱ ᴡɪᴛʜ ᴘʀɪᴄᴇꜱ ꜰᴏᴜɴᴅ."
+    message: "&#FF4444No items with prices were found."
     sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
-#                  /ss reload
+#                      /ss reload
 # ──────────────────────────────────────────────────────
 reload_command_start:
-  action_bar: "&#e9b949⌛ ʀᴇʟᴏᴀᴅɪɴɢ ᴘʟᴜɢɪɴ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ!"
+  action_bar: "&#F0C857Reloading plugin... Please wait."
 
 reload_command_success:
-  message: "&#37eb9asuᴄᴄᴇꜱꜱꜰᴜʟʟʏ ʀᴇʟᴏᴀᴅᴇᴅ ꜱᴍᴀʀᴛꜱᴘᴀᴡɴᴇʀ"
+  message: "Successfully reloaded &aSmartSpawner&f."
   sound: entity.experience_orb.pickup
 
 reload_command_error:
-  message: "&#e05252ꜰᴀɪʟᴇᴅ ᴛᴏ ʀᴇʟᴏᴀᴅ ꜱᴍᴀʀᴛꜱᴘᴀᴡɴᴇʀ, ᴘʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ᴄᴏɴꜱᴏʟᴇ ꜰᴏʀ ᴅᴇᴛᴀɪʟ!"
+  message: "&#FF4444Failed to reload SmartSpawner. Please check console for details."
   sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                      /ss language
+# ──────────────────────────────────────────────────────
+language:
+  current:
+    message: "Current language: &a{current} &#888888| &fAvailable: {available}"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444Unknown language: &f{value}&#FF4444. Try: &f{available}"
+    sound: block.note_block.pling
+  already_set:
+    message: "&#F0C857Language is already set to &f{value}&#F0C857."
+    sound: block.note_block.hat
+  success:
+    message: "Language changed from &e{old_value} &fto &a{new_value}&f."
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444Failed to change language. Please check console."
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                     /ss gui_layout
+# ──────────────────────────────────────────────────────
+gui_layout:
+  current:
+    message: "Current layout: &a{current} &#888888| &fAvailable: {available}"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444Unknown GUI layout: &f{value}&#FF4444. Try: &f{available}"
+    sound: block.note_block.pling
+  already_set:
+    message: "&#F0C857GUI layout is already set to &f{value}&#F0C857."
+    sound: block.note_block.hat
+  success:
+    message: "GUI layout changed from &e{old_value} &fto &a{new_value}&f."
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444Failed to change GUI layout. Please check console."
+    sound: block.note_block.pling

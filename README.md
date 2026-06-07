@@ -13,7 +13,7 @@
 
 ## Requirements
 
-- **Minecraft Version:** 1.21 - 26.1.2
+- **Minecraft Version:** 1.21.5 - 26.1.2
 - **Server Software:** Paper, Folia or compatible forks
 - **Java Version:** 25+
 
@@ -22,11 +22,11 @@
 | Language          | Locale Code | Contributor                                     | Status |
 |-------------------|-------------|-------------------------------------------------|--------|
 | Chinese Simplified | `zh_CN` | [SnowCutieOwO](https://github.com/SnowCutieOwO) | v1.2.3 |
-| German            | `de_DE` | [jannispkz](https://github.com/jannispkz)       | Latest |
+| German            | `de_DE` | [jannispkz](https://github.com/jannispkz)       | v1.6.7 |
 | English           | `en_US` | core language                                   | Latest |
 | Italian           | `it_IT` | [RV_SkeLe](https://github.com/RVSkeLe)          | v1.3.5 |
 | Turkish           | `tr_TR` | berkkorkmaz                                     | v1.3.5 |
-| Vietnamese        | `vi_VN` | [ptthanh02](https://github.com/ptthanh02)       | Latest |
+| Vietnamese        | `vi_VN` | [ptthanh02](https://github.com/ptthanh02)       | v1.6.7 |
 
 ## API
 

@@ -155,7 +155,7 @@ permissions:
 
   smartspawner.command.prices:
     description: "Allow viewing sell prices of spawner items"
-    default: true
+    default: op
 
   smartspawner.command.clear:
     description: "Allow clearing holograms and ghost spawners"
@@ -167,6 +167,14 @@ permissions:
 
   smartspawner.command.set:
     description: "Allow setting SmartSpawner stack size, range, and delay"
+    default: op
+
+  smartspawner.command.language:
+    description: "Allow changing the active SmartSpawner language"
+    default: op
+
+  smartspawner.command.gui_layout:
+    description: "Allow changing the active SmartSpawner GUI layout"
     default: op
 
   # Feature permissions

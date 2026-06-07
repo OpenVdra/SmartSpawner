@@ -1,7 +1,7 @@
 package github.nighter.smartspawner.spawner.gui.stacker;
 
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.language.LanguageManager;
@@ -43,7 +43,7 @@ public class SpawnerStackerUI {
             return;
         }
         if (hasSpawnerDropChance(spawner) && !player.hasPermission(DROP_CHANCE_BYPASS_PERMISSION)) {
-            messageService.sendMessage(player, "spawner_stacker_drop_chance_blocked");
+            messageService.sendMessage(player, "stacker_drop_blocked");
             return;
         }
 
@@ -127,7 +127,7 @@ public class SpawnerStackerUI {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
             button.setItemMeta(meta);
         }
-        VersionInitializer.hideTooltip(button);
+        ItemTooltipUtil.hideTooltip(button);
         return button;
     }
 }

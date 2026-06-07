@@ -28,6 +28,8 @@ All commands can be used with these aliases:
 | `/ss near [radius]` | `smartspawner.command.near` |
 | `/ss near cancel` | `smartspawner.command.near` |
 | `/ss set <stack_size|range|delay> <value> [world x y z]` | `smartspawner.command.set` |
+| `/ss language [locale]` | `smartspawner.command.language` |
+| `/ss gui_layout [layout]` | `smartspawner.command.gui_layout` |
 
 ## Command Details
 
@@ -129,6 +131,24 @@ Reload all configuration files without server restart.
 - Language files
 - Hook integrations
 
+### `/ss language`
+
+```bash
+/ss language
+/ss language <locale>
+```
+
+View or change the active language. The `<locale>` argument autocompletes language folders from `plugins/SmartSpawner/language`, including custom folders added by the server owner.
+
+### `/ss gui_layout`
+
+```bash
+/ss gui_layout
+/ss gui_layout <layout>
+```
+
+View or change the active GUI layout. The `<layout>` argument autocompletes layout folders from `plugins/SmartSpawner/gui_layouts`, including custom folders added by the server owner.
+
 ### `/ss clear holograms`
 
 Kill all text display holograms from the server.
@@ -196,4 +216,4 @@ Set a SmartSpawner property. Without coordinates, the command updates the spawne
 
 ---
 
-*Last update: March 22, 2026*
+*Last update: June 2, 2026*

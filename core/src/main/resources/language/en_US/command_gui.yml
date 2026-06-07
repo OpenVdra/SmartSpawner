@@ -1,0 +1,208 @@
+# ──────────────────────────────────────────────────────
+#                  General Components
+# ──────────────────────────────────────────────────────
+general_navigation:
+  previous_page:
+    name: '&#37eb9aᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ'
+    lore:
+      - '&#2cc483 ▸ &#f8f8ffClick to go to page &#37eb9a{target_page}'
+  next_page:
+    name: '&#37eb9aɴᴇxᴛ ᴘᴀɢᴇ'
+    lore:
+      - '&#2cc483 ▸ &#f8f8ffClick to go to page &#37eb9a{target_page}'
+  close:
+    name: '&#FF6B6Bᴄʟᴏꜱᴇ'
+    lore:
+      - '&#FF6B6B ▸ &fClick to close!'
+  back:
+    name: '&fʙᴀᴄᴋ ᴛᴏ &#FF6B6B{previous_menu}'
+    lore:
+      - '&c ▸ &fClick to go back!'
+  menu_names:
+    server_selection: 'ꜱᴇʀᴠᴇʀ ꜱᴇʟᴇᴄᴛɪᴏɴ'
+    world_selection: 'ᴡᴏʀʟᴅ ꜱᴇʟᴇᴄᴛɪᴏɴ'
+    spawner_list: 'ꜱᴘᴀᴡɴᴇʀ ʟɪꜱᴛ'
+    spawner_management: 'ꜱᴘᴀᴡɴᴇʀ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ'
+
+general:
+  selected_option: ' &#5DB5F1• {option_name}'
+  unselected_option: ' &f• {option_name}'
+
+# ──────────────────────────────────────────────────────
+#     Server Selection GUI (for cross-server setups)
+# ──────────────────────────────────────────────────────
+gui_title_server_selection: 'ꜱᴇʟᴇᴄᴛ ꜱᴇʀᴠᴇʀ'
+gui_title_world_selection_server: '{server} ᴡᴏʀʟᴅꜱ'
+
+server_selection:
+  current_server:
+    name: '&#37eb9a{server}'
+    lore:
+      - ''
+      - ' &#37eb9aℹ ꜱᴛᴀᴛᴜꜱ:'
+      - '  &8• &fCurrent server'
+      - ''
+      - '&#37eb9a ▸ Click to view spawners!'
+  remote_server:
+    name: '&#F0C857{server}'
+    lore:
+      - ''
+      - ' &#F0C857ℹ ꜱᴛᴀᴛᴜꜱ:'
+      - '  &8• &fRemote server'
+      - ''
+      - '&#F0C857 ▸ Click to view spawners!'
+
+# ──────────────────────────────────────────────────────
+#              World Selection GUI
+# ──────────────────────────────────────────────────────
+gui_title_world_selection: 'ꜱᴇʟᴇᴄᴛ ᴡᴏʀʟᴅ'
+
+world_display_names:
+  overworld: 'Overworld'
+  nether: 'Nether'
+  the_end: 'The End'
+  custom: 'World {world_name}'
+
+world_buttons:
+  NORMAL:
+    name: '&#37eb9a{world_name}'
+    lore:
+      - ''
+      - ' &#37eb9aℹ ꜱᴛᴀᴛꜱ:'
+      - '  &8• &fSpawner blocks: &e{total}'
+      - '  &8• &fStacked spawners: &e{total_stacked}'
+      - '{remote_world_lore}'
+      - ''
+      - '&#37eb9a ▸ Click to open the list!'
+  NETHER:
+    name: '&#FF6B6B{world_name}'
+    lore:
+      - ''
+      - ' &#FF6B6Bℹ ꜱᴛᴀᴛꜱ:'
+      - '  &8• &fSpawner blocks: &e{total}'
+      - '  &8• &fStacked spawners: &e{total_stacked}'
+      - '{remote_world_lore}'
+      - ''
+      - '&#FF6B6B ▸ Click to open the list!'
+  THE_END:
+    name: '&#C8A2FF{world_name}'
+    lore:
+      - ''
+      - ' &#C8A2FFℹ ꜱᴛᴀᴛꜱ:'
+      - '  &8• &fSpawner blocks: &e{total}'
+      - '  &8• &fStacked spawners: &e{total_stacked}'
+      - '{remote_world_lore}'
+      - ''
+      - '&#C8A2FF ▸ Click to open the list!'
+  CUSTOM:
+    name: '&#5DB5F1{world_name}'
+    lore:
+      - ''
+      - ' &#5DB5F1ℹ ꜱᴛᴀᴛꜱ:'
+      - '  &8• &fSpawner blocks: &e{total}'
+      - '  &8• &fStacked spawners: &e{total_stacked}'
+      - '{remote_world_lore}'
+      - ''
+      - '&#5DB5F1 ▸ Click to open the list!'
+
+remote_world_lore:
+  - ''
+  - ' &#F0C857ℹ ʀᴇᴍᴏᴛᴇ ᴡᴏʀʟᴅ:'
+  - '  &8• &fServer: &e{server}'
+
+# ──────────────────────────────────────────────────────
+#                  Spawner List GUI
+# ──────────────────────────────────────────────────────
+gui_title_spawner_list: '[{current}/{total}] {world}'
+gui_title_spawner_list_remote: '[{current}/{total}] {world} ({server})'
+
+filter:
+  button:
+    name: '&fꜰɪʟᴛᴇʀ &#5DB5F1ꜱᴘᴀᴡɴᴇʀꜱ'
+    lore:
+      - ''
+      - '{available_options}'
+      - ''
+      - '&#5DB5F1 ▸ Click to change filter!'
+  option_name:
+    all: 'All'
+    active: 'Active'
+    inactive: 'Inactive'
+
+sort:
+  button:
+    name: '&fꜱᴏʀᴛ &#5DB5F1ꜱᴘᴀᴡɴᴇʀꜱ'
+    lore:
+      - ''
+      - '{available_options}'
+      - ''
+      - '&#5DB5F1 ▸ Click to change sorting!'
+  option_name:
+    default: 'Default (ID)'
+    stack_size_asc: 'Stack size (↑)'
+    stack_size_desc: 'Stack size (↓)'
+
+spawner_item_list:
+  name: '&fꜱᴘᴀᴡɴᴇʀ &#5DB5F1#{id}'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fEntity: &e{entity}'
+    - '  &8• &fStack: &e{size}'
+    - '  &8• &fStatus: {status}'
+    - '  &8• &fLast player: &e{last_player}'
+    - '  &8• &fLocation: &7x: {x}, y: {y}, z: {z}'
+    - ''
+    - '&#5DB5F1 ▸ Click to manage this spawner!'
+  remote_lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fEntity: &e{entity}'
+    - '  &8• &fStack: &e{size}'
+    - '  &8• &fStatus: {status}'
+    - '  &8• &fLast player: &e{last_player}'
+    - '  &8• &fLocation: &7x: {x}, y: {y}, z: {z}'
+    - ''
+    - '&#FF6B6B ⚠ Cannot manage remote spawner!'
+  last_player_none: 'None'
+  status:
+    active: '&#00E689Active'
+    inactive: '&#ff6b6bInactive'
+
+# ──────────────────────────────────────────────────────
+#              Spawner Management GUI
+# ──────────────────────────────────────────────────────
+gui_title_spawner_management: 'ᴍᴀɴᴀɢᴇ ꜱᴘᴀᴡɴᴇʀ'
+
+spawner_management:
+  teleport:
+    name: '&fᴛᴇʟᴇᴘᴏʀᴛ &#5DB5F1ᴛᴏ ꜱᴘᴀᴡɴᴇʀ'
+    lore:
+      - '&#5DB5F1 ▸ &fClick to teleport!'
+  open_spawner:
+    name: '&fᴏᴘᴇɴ &#5DB5F1ꜱᴘᴀᴡɴᴇʀ ɢᴜɪ'
+    lore:
+      - '&#5DB5F1 ▸ &fClick to open the menu!'
+  stack:
+    name: '&fᴇᴅɪᴛ &#5DB5F1ꜱᴛᴀᴄᴋ'
+    lore:
+      - '&#5DB5F1 ▸ &fClick to edit the stack!'
+  remove:
+    name: '&fʀᴇᴍᴏᴠᴇ &#FF6B6Bꜱᴘᴀᴡɴᴇʀ'
+    lore:
+      - '&#FF6B6B ▸ &fClick to remove this spawner!'
+
+# ──────────────────────────────────────────────────────
+#                    Prices GUI
+# ──────────────────────────────────────────────────────
+gui_title_prices: '[{current_page}/{total_pages}] ꜱᴇʟʟ ᴘʀɪᴄᴇꜱ'
+
+price_item:
+  name: '&f{item_name} &#5DB5F1ᴘʀɪᴄᴇ'
+  lore:
+    - ''
+    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  &8• &fFinal price: &a${price}'
+    - '  &8• &fSource: &e{price_source}'
+    - '  &8• &fCustom price: &a${custom_price}'
+    - '  &8• &fShop price: &a${shop_price}'

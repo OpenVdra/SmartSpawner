@@ -2,6 +2,7 @@ package github.nighter.smartspawner.spawner.interactions.place;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.api.events.SpawnerPlaceEvent;
+import github.nighter.smartspawner.config.Config;
 import github.nighter.smartspawner.extras.HopperService;
 import github.nighter.smartspawner.hooks.protections.CheckStackBlock;
 import github.nighter.smartspawner.language.MessageService;
@@ -43,11 +44,6 @@ public class SpawnerPlaceListener implements Listener {
         this.plugin = plugin;
         this.messageService = plugin.getMessageService();
         this.spawnerManager = plugin.getSpawnerManager();
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        cleanupPlayer(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -278,18 +274,6 @@ public class SpawnerPlaceListener implements Listener {
         SpawnerData existingSpawner = spawnerManager.getSpawnerByLocation(block.getLocation());
         if (existingSpawner != null) {
             plugin.debug("Spawner already exists at " + block.getLocation() + " with ID " + existingSpawner.getSpawnerId());
-            // Update the existing spawner instead of creating a duplicate
-            existingSpawner.updateLastInteractedPlayer(player.getName());
-            if (existingSpawner.getEntityType() == entityType) {
-                // Same type - add to stack
-                int newStackSize = existingSpawner.getStackSize() + stackSize;
-                existingSpawner.setStackSize(Math.min(newStackSize, existingSpawner.getMaxStackSize()));
-                spawnerManager.queueSpawnerForSaving(existingSpawner.getSpawnerId());
-                messageService.sendMessage(player, "spawner_stacked");
-            } else {
-                // Different type - just activate it
-                messageService.sendMessage(player, "spawner_activated");
-            }
             return;
         }
 
@@ -310,8 +294,8 @@ public class SpawnerPlaceListener implements Listener {
         spawnerManager.addSpawner(spawnerId, spawner);
         spawnerManager.queueSpawnerForSaving(spawnerId);
 
-        if (plugin.getConfig().getBoolean("particle.spawner_generate_loot", true)) {
-            showCreationParticles(block);
+        if (Config.get().isSpawnerActivateParticlesEnabled()) {
+            showActivationParticles(block);
         }
 
         messageService.sendMessage(player, "spawner_activated");
@@ -322,18 +306,6 @@ public class SpawnerPlaceListener implements Listener {
         SpawnerData existingSpawner = spawnerManager.getSpawnerByLocation(block.getLocation());
         if (existingSpawner != null) {
             plugin.debug("Item spawner already exists at " + block.getLocation() + " with ID " + existingSpawner.getSpawnerId());
-            // Update the existing spawner instead of creating a duplicate
-            existingSpawner.updateLastInteractedPlayer(player.getName());
-            if (existingSpawner.isItemSpawner() && existingSpawner.getSpawnedItemMaterial() == itemMaterial) {
-                // Same item type - add to stack
-                int newStackSize = existingSpawner.getStackSize() + stackSize;
-                existingSpawner.setStackSize(Math.min(newStackSize, existingSpawner.getMaxStackSize()));
-                spawnerManager.queueSpawnerForSaving(existingSpawner.getSpawnerId());
-                messageService.sendMessage(player, "spawner_stacked");
-            } else {
-                // Different type - just activate it
-                messageService.sendMessage(player, "spawner_activated");
-            }
             return;
         }
 
@@ -358,14 +330,14 @@ public class SpawnerPlaceListener implements Listener {
         spawnerManager.addSpawner(spawnerId, spawner);
         spawnerManager.queueSpawnerForSaving(spawnerId);
 
-        if (plugin.getConfig().getBoolean("particle.spawner_generate_loot", true)) {
-            showCreationParticles(block);
+        if (Config.get().isSpawnerActivateParticlesEnabled()) {
+            showActivationParticles(block);
         }
 
         messageService.sendMessage(player, "spawner_activated");
     }
 
-    private void showCreationParticles(Block block) {
+    private void showActivationParticles(Block block) {
         Scheduler.runLocationTask(block.getLocation(), () -> {
             Location particleLocation = block.getLocation().clone().add(
                     PARTICLE_OFFSET, PARTICLE_OFFSET, PARTICLE_OFFSET);
@@ -387,6 +359,11 @@ public class SpawnerPlaceListener implements Listener {
         if (blockBelow.getType() == Material.HOPPER) {
             currentHopperService.getTracker().tryAdd(blockBelow);
         }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        cleanupPlayer(event.getPlayer().getUniqueId());
     }
 
     public void cleanupPlayer(UUID playerId) {

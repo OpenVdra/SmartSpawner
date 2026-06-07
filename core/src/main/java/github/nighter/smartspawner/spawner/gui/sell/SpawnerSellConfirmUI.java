@@ -4,7 +4,7 @@ import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
@@ -64,7 +64,7 @@ public class SpawnerSellConfirmUI {
 
         // Check if there are items to sell before opening
         if (spawner.getVirtualInventory().getUsedSlots() == 0) {
-            plugin.getMessageService().sendMessage(player, "no_items");
+            plugin.getMessageService().sendMessage(player, "spawner_storage_empty");
             return;
         }
 
@@ -194,7 +194,7 @@ public class SpawnerSellConfirmUI {
         }
 
         if (spawnerItem.getType() == Material.SPAWNER) {
-            VersionInitializer.hideTooltip(spawnerItem);
+            ItemTooltipUtil.hideTooltip(spawnerItem);
         }
 
         return spawnerItem;

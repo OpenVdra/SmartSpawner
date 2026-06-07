@@ -82,19 +82,18 @@ public class SpawnerBreakListener implements Listener {
 
         final SpawnerData spawner = spawnerManager.getSpawnerByLocation(location);
 
+        if (!player.hasPermission("smartspawner.break")) {
+            event.setCancelled(true);
+            messageService.sendMessage(player, "break_no_permission");
+            return;
+        }
+
         if (!breakConfig.isNaturalBreakable()) {
             if (spawner == null) {
                 block.setType(Material.AIR);
                 event.setCancelled(true);
-                messageService.sendMessage(player, "natural_spawner_break_blocked");
                 return;
             }
-        }
-
-        if (!player.hasPermission("smartspawner.break")) {
-            event.setCancelled(true);
-            messageService.sendMessage(player, "spawner_break_no_permission");
-            return;
         }
 
         boolean breakHandled;
@@ -127,7 +126,7 @@ public class SpawnerBreakListener implements Listener {
         // This prevents simultaneous GUI destack + pickaxe break duplication exploits
         if (!locationLockManager.tryLock(location)) {
             // Another break operation is already in progress
-            messageService.sendMessage(player, "spawner_break_in_progress");
+            messageService.sendMessage(player, "action_in_progress");
             return false;
         }
 
@@ -141,14 +140,14 @@ public class SpawnerBreakListener implements Listener {
 
             // Block break while a sell is in progress
             if (currentSpawner.isSelling()) {
-                messageService.sendMessage(player, "spawner_selling");
+                messageService.sendMessage(player, "action_in_progress");
                 return false;
             }
 
             boolean wantsStackBreak = player.isSneaking() && currentSpawner.getStackSize() > 1;
             boolean bypassDropChance = hasDropChanceBypass(player);
             if (wantsStackBreak && breakConfig.isSneakBreakEnabled() && !bypassDropChance && hasSmartSpawnerDropChance(currentSpawner)) {
-                messageService.sendMessage(player, "spawner_sneak_break_drop_chance_blocked");
+                messageService.sendMessage(player, "sneak_break_blocked");
                 return false;
             }
 
@@ -223,7 +222,7 @@ public class SpawnerBreakListener implements Listener {
                         world.dropItemNaturally(findSafeDropLocation(block, player), spawnerItem);
                     }
                 } else {
-                    messageService.sendMessage(player, "spawner_drop_chance_failed");
+                    messageService.sendMessage(player, "drop_failed");
                 }
 
                 reduceDurability(tool, player, breakConfig.getDurabilityLoss());
@@ -242,18 +241,18 @@ public class SpawnerBreakListener implements Listener {
         }
 
         if (!player.hasPermission("smartspawner.break")) {
-            messageService.sendMessage(player, "spawner_break_no_permission");
+            messageService.sendMessage(player, "break_no_permission");
             return false;
         }
 
         if (!isValidTool(tool)) {
-            messageService.sendMessage(player, "spawner_break_required_tools");
+            messageService.sendMessage(player, "break_tool_required");
             return false;
         }
 
         if (breakConfig.isSilkTouchRequired()) {
             if (tool.getEnchantmentLevel(Enchantment.SILK_TOUCH) < breakConfig.getSilkTouchLevel()) {
-                messageService.sendMessage(player, "spawner_break_silk_touch_required");
+                messageService.sendMessage(player, "break_silk_touch");
                 return false;
             }
         }
@@ -321,7 +320,7 @@ public class SpawnerBreakListener implements Listener {
 
         if (breakConfig.isDirectToInventory()) {
             if (result.getDroppedAmount() <= 0) {
-                messageService.sendMessage(player, "spawner_drop_chance_failed");
+                messageService.sendMessage(player, "drop_failed");
                 return;
             }
             giveSpawnersToPlayer(player, result.getDroppedAmount(), result.getDropTemplate());
@@ -335,7 +334,7 @@ public class SpawnerBreakListener implements Listener {
         }
 
         if (result.getDroppedAmount() <= 0) {
-            messageService.sendMessage(player, "spawner_drop_chance_failed");
+            messageService.sendMessage(player, "drop_failed");
             return;
         }
 
@@ -520,7 +519,7 @@ public class SpawnerBreakListener implements Listener {
             for (ItemStack failedItem : failedItems.values()) {
                 player.getWorld().dropItemNaturally(player.getLocation().toCenterLocation(), failedItem);
             }
-            messageService.sendMessage(player, "inventory_full_items_dropped");
+            messageService.sendMessage(player, "inventory_full");
         }
 
         player.updateInventory();
@@ -567,25 +566,20 @@ public class SpawnerBreakListener implements Listener {
             return;
         }
 
-        SpawnerData spawner = spawnerManager.getSpawnerByLocation(block.getLocation());
-        if (spawner != null) {
-            messageService.sendMessage(player, "spawner_break_warning");
-        }
-
         if (isValidTool(tool)) {
             if (breakConfig.isSilkTouchRequired()) {
                 if (tool.getEnchantmentLevel(Enchantment.SILK_TOUCH) < breakConfig.getSilkTouchLevel()) {
-                    messageService.sendMessage(player, "spawner_break_silk_touch_required");
+                    messageService.sendMessage(player, "break_silk_touch");
                     return;
                 }
             }
 
             if (!player.hasPermission("smartspawner.break")) {
-                messageService.sendMessage(player, "spawner_break_no_permission");
+                messageService.sendMessage(player, "break_no_permission");
             }
 
         } else {
-            messageService.sendMessage(player, "spawner_break_required_tools");
+            messageService.sendMessage(player, "break_tool_required");
         }
     }
 
