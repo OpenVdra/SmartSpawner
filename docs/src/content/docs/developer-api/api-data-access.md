@@ -188,7 +188,8 @@ if (result == SpawnerRemovalResult.SELL_PENDING) {
 | Option | Description |
 |--------|-------------|
 | `reason` | Why the spawner is being removed (`API`, `EXPIRED`, `ADMIN`, `OTHER`) |
-| `sellAndClaimExp` | Sell stored items and claim XP before removal |
+| `sellAndClaimExp` | Sell stored items and claim XP before removal (requires `payoutPlayer`) |
+| `initiator` | Player who triggered the removal (admin, command, etc.) |
 | `payoutPlayer` | Player who receives sell payout / claimed XP |
 
 ### Reading and Modifying Base Values

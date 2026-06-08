@@ -202,6 +202,9 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
         if (location == null) {
             return SpawnerRemovalResult.NOT_FOUND;
         }
+        if (options == null) {
+            return SpawnerRemovalResult.FAILED;
+        }
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerByLocation(location);
         if (spawnerData == null) {
@@ -220,6 +223,9 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
     public SpawnerRemovalResult removeSpawner(String spawnerId, SpawnerRemovalOptions options) {
         if (spawnerId == null) {
             return SpawnerRemovalResult.NOT_FOUND;
+        }
+        if (options == null) {
+            return SpawnerRemovalResult.FAILED;
         }
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerById(spawnerId);

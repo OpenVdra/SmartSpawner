@@ -109,9 +109,6 @@ public class SpawnerBreakListener implements Listener {
         }
 
         event.setCancelled(true);
-        if (breakHandled) {
-            cleanupAssociatedHopper(block);
-        }
     }
 
     private boolean handleSmartSpawnerBreak(Block block, SpawnerData spawner, Player player) {
@@ -226,6 +223,7 @@ public class SpawnerBreakListener implements Listener {
                 }
 
                 reduceDurability(tool, player, breakConfig.getDurabilityLoss());
+                cleanupAssociatedHopper(block);
                 return true;
             }
 

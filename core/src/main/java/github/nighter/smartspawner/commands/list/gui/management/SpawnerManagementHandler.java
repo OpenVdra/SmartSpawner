@@ -1,6 +1,9 @@
 package github.nighter.smartspawner.commands.list.gui.management;
 
 import github.nighter.smartspawner.SmartSpawner;
+import github.nighter.smartspawner.api.data.SpawnerRemovalOptions;
+import github.nighter.smartspawner.api.data.SpawnerRemovalReason;
+import github.nighter.smartspawner.api.data.SpawnerRemovalResult;
 import github.nighter.smartspawner.commands.list.gui.adminstacker.AdminStackerUI;
 import github.nighter.smartspawner.commands.list.ListSubCommand;
 import github.nighter.smartspawner.commands.list.gui.list.enums.FilterOption;
@@ -118,8 +121,20 @@ public class SpawnerManagementHandler implements Listener {
     }
 
     private void handleRemoveSpawner(Player player, SpawnerData spawner, String worldName, int listPage) {
-        Location loc = spawner.getSpawnerLocation();
-        plugin.getSpawnerRemovalService().performCleanup(loc.getBlock(), spawner);
+        SpawnerRemovalOptions options = SpawnerRemovalOptions.builder()
+                .reason(SpawnerRemovalReason.ADMIN)
+                .initiator(player)
+                .build();
+        SpawnerRemovalResult result = plugin.getSpawnerRemovalService().removeSpawner(spawner, options);
+        if (result == SpawnerRemovalResult.LOCKED) {
+            messageService.sendMessage(player, "action_in_progress");
+            return;
+        }
+        if (result != SpawnerRemovalResult.SUCCESS && result != SpawnerRemovalResult.SELL_PENDING) {
+            messageService.sendMessage(player, "action_failed");
+            return;
+        }
+
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("id", spawner.getSpawnerId());
         messageService.sendMessage(player, "list.spawner_removed", placeholders);

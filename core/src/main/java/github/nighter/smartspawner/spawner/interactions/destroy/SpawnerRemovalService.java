@@ -42,8 +42,14 @@ public class SpawnerRemovalService {
     }
 
     public SpawnerRemovalResult removeSpawner(SpawnerData spawner, SpawnerRemovalOptions options) {
-        if (spawner == null || options == null) {
+        if (spawner == null) {
             return SpawnerRemovalResult.NOT_FOUND;
+        }
+        if (options == null) {
+            return SpawnerRemovalResult.FAILED;
+        }
+        if (options.isSellAndClaimExp() && options.getPayoutPlayer() == null) {
+            return SpawnerRemovalResult.FAILED;
         }
 
         Location location = spawner.getSpawnerLocation();
@@ -60,6 +66,14 @@ public class SpawnerRemovalService {
             return SpawnerRemovalResult.LOCKED;
         }
 
+        boolean lockReleased = false;
+        Runnable releaseLock = () -> {
+            if (!lockReleased) {
+                locationLockManager.unlock(location);
+                lockReleased = true;
+            }
+        };
+
         try {
             currentSpawner = spawnerManager.getSpawnerByLocation(location);
             if (currentSpawner == null) {
@@ -70,6 +84,7 @@ public class SpawnerRemovalService {
                 return SpawnerRemovalResult.LOCKED;
             }
 
+            Player initiator = options.getInitiator();
             Player payoutPlayer = options.getPayoutPlayer();
             if (shouldFireDestroyEvent()) {
                 SpawnerDestroyEvent event = new SpawnerDestroyEvent(
@@ -77,7 +92,7 @@ public class SpawnerRemovalService {
                         currentSpawner.getStackSize(),
                         options.getReason(),
                         currentSpawner.getEntityType(),
-                        payoutPlayer,
+                        initiator,
                         payoutPlayer
                 );
                 Bukkit.getPluginManager().callEvent(event);
@@ -88,26 +103,47 @@ public class SpawnerRemovalService {
 
             guiViewManager.closeAllViewersInventory(currentSpawner);
             Block block = location.getBlock();
-            Runnable cleanup = () -> performCleanup(block, currentSpawner);
+            final SpawnerData spawnerForCleanup = currentSpawner;
+            Runnable cleanup = () -> performCleanup(block, spawnerForCleanup);
+            Runnable cleanupAndReleaseLock = () -> {
+                try {
+                    cleanup.run();
+                } finally {
+                    releaseLock.run();
+                }
+            };
 
             if (options.isSellAndClaimExp() && payoutPlayer != null) {
-                boolean sellDeferred = maybeSellAndClaimExp(payoutPlayer, currentSpawner, cleanup);
+                boolean sellDeferred = maybeSellAndClaimExp(
+                        payoutPlayer,
+                        currentSpawner,
+                        cleanupAndReleaseLock,
+                        releaseLock
+                );
                 if (sellDeferred) {
+                    lockReleased = true;
                     return SpawnerRemovalResult.SELL_PENDING;
                 }
             }
 
-            cleanup.run();
+            cleanupAndReleaseLock.run();
+            lockReleased = true;
             return SpawnerRemovalResult.SUCCESS;
         } catch (Exception exception) {
             plugin.getLogger().warning("Failed to remove spawner " + spawner.getSpawnerId() + ": " + exception.getMessage());
             return SpawnerRemovalResult.FAILED;
         } finally {
-            locationLockManager.unlock(location);
+            if (!lockReleased) {
+                releaseLock.run();
+            }
         }
     }
 
-    public void performCleanup(Block block, SpawnerData spawner) {
+    /**
+     * Internal cleanup used by player break flow. Public API callers should use {@link #removeSpawner}.
+     */
+    void performCleanup(Block block, SpawnerData spawner) {
+        guiViewManager.closeAllViewersInventory(spawner);
         spawner.getSpawnerStop().set(true);
 
         if (block.getType() == Material.SPAWNER) {
@@ -124,7 +160,12 @@ public class SpawnerRemovalService {
         cleanupAssociatedHopper(block);
     }
 
-    private boolean maybeSellAndClaimExp(Player player, SpawnerData spawner, Runnable onComplete) {
+    private boolean maybeSellAndClaimExp(
+            Player player,
+            SpawnerData spawner,
+            Runnable onComplete,
+            Runnable onAbort
+    ) {
         if (menuAction != null && spawner.getSpawnerExp() > 0) {
             menuAction.collectExpForPlayer(player, spawner);
         }
@@ -139,6 +180,7 @@ public class SpawnerRemovalService {
 
         sellManager.sellAllItems(player, spawner, () -> {
             if (spawner.getVirtualInventory().getUsedSlots() > 0) {
+                onAbort.run();
                 return;
             }
             onComplete.run();
