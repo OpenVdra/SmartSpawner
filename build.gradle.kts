@@ -49,6 +49,9 @@ allprojects {
         maven {
             name = "nightexpress-releases"
             url = uri("https://repo.nightexpressdev.com/releases")
+            content {
+                includeGroupByRegex("su\\.nightexpress.*")
+            }
         }
         maven {
             name = "iridiumdevelopment"
@@ -65,6 +68,14 @@ allprojects {
         maven {
             name = "minecodes-repository-releases"
             url = uri("https://maven.minecodes.pl/releases")
+            content {
+                includeGroup("pl.minecodes.plots")
+            }
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+            isAllowInsecureProtocol = false
         }
         maven {
             name = "william278Releases"

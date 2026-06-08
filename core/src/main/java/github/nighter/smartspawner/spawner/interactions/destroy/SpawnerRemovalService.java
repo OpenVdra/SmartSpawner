@@ -18,6 +18,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Central service for programmatic SmartSpawner cage removal.
  */
@@ -66,11 +68,10 @@ public class SpawnerRemovalService {
             return SpawnerRemovalResult.LOCKED;
         }
 
-        boolean lockReleased = false;
+        AtomicBoolean lockReleased = new AtomicBoolean(false);
         Runnable releaseLock = () -> {
-            if (!lockReleased) {
+            if (lockReleased.compareAndSet(false, true)) {
                 locationLockManager.unlock(location);
-                lockReleased = true;
             }
         };
 
@@ -121,19 +122,19 @@ public class SpawnerRemovalService {
                         releaseLock
                 );
                 if (sellDeferred) {
-                    lockReleased = true;
+                    lockReleased.set(true);
                     return SpawnerRemovalResult.SELL_PENDING;
                 }
             }
 
             cleanupAndReleaseLock.run();
-            lockReleased = true;
+            lockReleased.set(true);
             return SpawnerRemovalResult.SUCCESS;
         } catch (Exception exception) {
             plugin.getLogger().warning("Failed to remove spawner " + spawner.getSpawnerId() + ": " + exception.getMessage());
             return SpawnerRemovalResult.FAILED;
         } finally {
-            if (!lockReleased) {
+            if (!lockReleased.get()) {
                 releaseLock.run();
             }
         }
