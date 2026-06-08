@@ -3,6 +3,8 @@ package github.nighter.smartspawner.api;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.api.data.SpawnerDataDTO;
 import github.nighter.smartspawner.api.data.SpawnerDataModifier;
+import github.nighter.smartspawner.api.data.SpawnerRemovalOptions;
+import github.nighter.smartspawner.api.data.SpawnerRemovalResult;
 import github.nighter.smartspawner.api.impl.SpawnerDataModifierImpl;
 import github.nighter.smartspawner.spawner.item.SpawnerItemFactory;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
@@ -188,6 +190,44 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
 
         SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerById(spawnerId);
         return spawnerData != null ? new SpawnerDataModifierImpl(spawnerData) : null;
+    }
+
+    @Override
+    public SpawnerRemovalResult removeSpawner(Location location) {
+        return removeSpawner(location, SpawnerRemovalOptions.defaults());
+    }
+
+    @Override
+    public SpawnerRemovalResult removeSpawner(Location location, SpawnerRemovalOptions options) {
+        if (location == null) {
+            return SpawnerRemovalResult.NOT_FOUND;
+        }
+
+        SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerByLocation(location);
+        if (spawnerData == null) {
+            return SpawnerRemovalResult.NOT_FOUND;
+        }
+
+        return plugin.getSpawnerRemovalService().removeSpawner(spawnerData, options);
+    }
+
+    @Override
+    public SpawnerRemovalResult removeSpawner(String spawnerId) {
+        return removeSpawner(spawnerId, SpawnerRemovalOptions.defaults());
+    }
+
+    @Override
+    public SpawnerRemovalResult removeSpawner(String spawnerId, SpawnerRemovalOptions options) {
+        if (spawnerId == null) {
+            return SpawnerRemovalResult.NOT_FOUND;
+        }
+
+        SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerById(spawnerId);
+        if (spawnerData == null) {
+            return SpawnerRemovalResult.NOT_FOUND;
+        }
+
+        return plugin.getSpawnerRemovalService().removeSpawner(spawnerData, options);
     }
 
     /**

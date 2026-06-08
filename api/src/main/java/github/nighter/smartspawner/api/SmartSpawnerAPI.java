@@ -2,6 +2,8 @@ package github.nighter.smartspawner.api;
 
 import github.nighter.smartspawner.api.data.SpawnerDataDTO;
 import github.nighter.smartspawner.api.data.SpawnerDataModifier;
+import github.nighter.smartspawner.api.data.SpawnerRemovalOptions;
+import github.nighter.smartspawner.api.data.SpawnerRemovalResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -141,4 +143,46 @@ public interface SmartSpawnerAPI {
      * @return a spawner data modifier, or null if spawner doesn't exist
      */
     SpawnerDataModifier getSpawnerModifier(String spawnerId);
+
+    /**
+     * Removes a SmartSpawner cage at the given block location.
+     * <p>
+     * Must be called on the correct region thread for the target location (Paper/Folia).
+     *
+     * @param location the block location of the spawner cage
+     * @return the removal result
+     */
+    SpawnerRemovalResult removeSpawner(Location location);
+
+    /**
+     * Removes a SmartSpawner cage at the given block location with custom options.
+     * <p>
+     * Must be called on the correct region thread for the target location (Paper/Folia).
+     *
+     * @param location the block location of the spawner cage
+     * @param options removal options such as sell/claim behavior
+     * @return the removal result
+     */
+    SpawnerRemovalResult removeSpawner(Location location, SpawnerRemovalOptions options);
+
+    /**
+     * Removes a SmartSpawner cage by its unique identifier.
+     * <p>
+     * Must be called on the correct region thread for the spawner's location (Paper/Folia).
+     *
+     * @param spawnerId the unique spawner identifier
+     * @return the removal result
+     */
+    SpawnerRemovalResult removeSpawner(String spawnerId);
+
+    /**
+     * Removes a SmartSpawner cage by its unique identifier with custom options.
+     * <p>
+     * Must be called on the correct region thread for the spawner's location (Paper/Folia).
+     *
+     * @param spawnerId the unique spawner identifier
+     * @param options removal options such as sell/claim behavior
+     * @return the removal result
+     */
+    SpawnerRemovalResult removeSpawner(String spawnerId, SpawnerRemovalOptions options);
 }

@@ -17,6 +17,7 @@ SmartSpawner provides various events to hook into spawner-related actions:
 | `SpawnerEggChangeEvent`   | Spawner type changed with egg                    |      ✅     |
 | `SpawnerExplodeEvent`     | Spawners destroyed by explosion                  |      ❌     |
 | `SpawnerRemoveEvent`      | Unstack spawners from the stacker GUI            |      ✅     |
+| `SpawnerDestroyEvent`     | Spawner removed programmatically through the API   |      ✅     |
 | `SpawnerOpenGUIEvent`     | GUI opened by player                             |      ✅     |
 | `SpawnerDropAllEvent`     | Dropping all item from a page of spawner storage |      ✅      |
 | `SpawnerTakeAllEvent`     | Taking all item from a page of spawner storage   |      ✅      |

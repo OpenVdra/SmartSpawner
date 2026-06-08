@@ -426,17 +426,7 @@ public class SpawnerBreakListener implements Listener {
     }
 
     private void cleanupSpawner(Block block, SpawnerData spawner) {
-        spawner.getSpawnerStop().set(true);
-        block.setType(Material.AIR);
-
-        String spawnerId = spawner.getSpawnerId();
-        plugin.getRangeChecker().deactivateSpawner(spawner);
-        spawnerManager.removeSpawner(spawnerId);
-        spawnerManager.markSpawnerDeleted(spawnerId);
-
-        // Remove location lock to prevent memory leak
-        Location location = block.getLocation();
-        locationLockManager.removeLock(location);
+        plugin.getSpawnerRemovalService().performCleanup(block, spawner);
     }
 
     /**
@@ -604,6 +594,7 @@ public class SpawnerBreakListener implements Listener {
         SpawnerMenuAction getSpawnerMenuAction();
         github.nighter.smartspawner.spawner.sell.SpawnerSellManager getSpawnerSellManager();
         github.nighter.smartspawner.spawner.lootgen.SpawnerRangeChecker getRangeChecker();
+        SpawnerRemovalService getSpawnerRemovalService();
     }
 
     private static final class SmartSpawnerBreakPluginContext implements BreakPluginContext {
@@ -624,5 +615,6 @@ public class SpawnerBreakListener implements Listener {
         @Override public SpawnerMenuAction getSpawnerMenuAction() { return plugin.getSpawnerMenuAction(); }
         @Override public github.nighter.smartspawner.spawner.sell.SpawnerSellManager getSpawnerSellManager() { return plugin.getSpawnerSellManager(); }
         @Override public github.nighter.smartspawner.spawner.lootgen.SpawnerRangeChecker getRangeChecker() { return plugin.getRangeChecker(); }
+        @Override public SpawnerRemovalService getSpawnerRemovalService() { return plugin.getSpawnerRemovalService(); }
     }
 }

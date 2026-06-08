@@ -118,18 +118,8 @@ public class SpawnerManagementHandler implements Listener {
     }
 
     private void handleRemoveSpawner(Player player, SpawnerData spawner, String worldName, int listPage) {
-        // Remove the spawner block and data
         Location loc = spawner.getSpawnerLocation();
-        plugin.getSpawnerGuiViewManager().closeAllViewersInventory(spawner);
-        String spawnerId = spawner.getSpawnerId();
-        spawner.getSpawnerStop().set(true);
-        if (loc.getBlock().getType() == Material.SPAWNER) {
-            loc.getBlock().setType(Material.AIR);
-        }
-
-        // Remove from manager and save
-        spawnerManager.removeSpawner(spawnerId);
-        spawnerStorage.markSpawnerDeleted(spawnerId);
+        plugin.getSpawnerRemovalService().performCleanup(loc.getBlock(), spawner);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("id", spawner.getSpawnerId());
         messageService.sendMessage(player, "list.spawner_removed", placeholders);

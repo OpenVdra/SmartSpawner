@@ -10,6 +10,10 @@ description: Methods for accessing and modifying spawner data and properties.
 | `getSpawnerById(String)` | Gets spawner data by unique ID | `SpawnerDataDTO` |
 | `getAllSpawners()` | Gets all registered spawners | `List<SpawnerDataDTO>` |
 | `getSpawnerModifier(String)` | Gets modifier to change spawner properties | `SpawnerDataModifier` |
+| `removeSpawner(Location)` | Removes a spawner cage at a block location | `SpawnerRemovalResult` |
+| `removeSpawner(Location, SpawnerRemovalOptions)` | Removes a spawner cage with custom options | `SpawnerRemovalResult` |
+| `removeSpawner(String)` | Removes a spawner cage by ID | `SpawnerRemovalResult` |
+| `removeSpawner(String, SpawnerRemovalOptions)` | Removes a spawner cage by ID with custom options | `SpawnerRemovalResult` |
 
 ### SpawnerDataDTO
 
@@ -152,6 +156,40 @@ if (modifier != null) {
     player.sendMessage("Note: Stack size cannot be modified (read-only)");
 }
 ```
+
+### `removeSpawner()`
+
+Programmatically removes a SmartSpawner cage and its persisted data. Must be called on the correct region thread for the spawner location (Paper/Folia).
+
+```java
+import github.nighter.smartspawner.api.data.SpawnerRemovalOptions;
+import github.nighter.smartspawner.api.data.SpawnerRemovalResult;
+
+SpawnerRemovalResult result = api.removeSpawner(location);
+
+if (result == SpawnerRemovalResult.SUCCESS) {
+    getLogger().info("Spawner removed successfully.");
+}
+```
+
+For expiry-style addons that should auto-sell stored items and claim XP for an online player:
+
+```java
+SpawnerRemovalOptions options = SpawnerRemovalOptions.expired(onlineOwner);
+SpawnerRemovalResult result = api.removeSpawner(spawnerId, options);
+
+if (result == SpawnerRemovalResult.SELL_PENDING) {
+    // Stored items are being sold asynchronously; cleanup runs after sell completes.
+}
+```
+
+`SpawnerRemovalOptions` supports:
+
+| Option | Description |
+|--------|-------------|
+| `reason` | Why the spawner is being removed (`API`, `EXPIRED`, `ADMIN`, `OTHER`) |
+| `sellAndClaimExp` | Sell stored items and claim XP before removal |
+| `payoutPlayer` | Player who receives sell payout / claimed XP |
 
 ### Reading and Modifying Base Values
 

@@ -43,6 +43,7 @@ import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmListener;
 import github.nighter.smartspawner.spawner.interactions.click.SpawnerClickManager;
 import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerBreakListener;
 import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerExplosionListener;
+import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerRemovalService;
 import github.nighter.smartspawner.spawner.interactions.place.SpawnerPlaceListener;
 import github.nighter.smartspawner.spawner.interactions.stack.SpawnerStackHandler;
 import github.nighter.smartspawner.spawner.interactions.type.SpawnEggHandler;
@@ -137,6 +138,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
     private SpawnerGuiViewManager spawnerGuiViewManager;
     private SpawnerExplosionListener spawnerExplosionListener;
     private SpawnerBreakListener spawnerBreakListener;
+    private SpawnerRemovalService spawnerRemovalService;
     private SpawnerPlaceListener spawnerPlaceListener;
     private WorldEventHandler worldEventHandler;
     private ItemPriceManager itemPriceManager;
@@ -216,6 +218,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         // Initialize hopper handler if enabled in config
         setUpHopperHandler();
         initializeListeners();
+        this.spawnerRemovalService = new SpawnerRemovalService(this);
         this.apiImpl = new SmartSpawnerAPIImpl(this);
         this.updateChecker = new UpdateChecker(this);
     }
