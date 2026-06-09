@@ -48,6 +48,7 @@ export default defineConfig({
 					label: 'Configuration',
 					items: [
 						{ label: 'config.yml', slug: 'configuration' },
+						{ label: 'GUI Layouts', slug: 'gui_layout' },
 						{ label: 'spawners_settings.yml', slug: 'spawners_settings' },
 						{ label: 'item_spawners_settings.yml', slug: 'item_spawners_settings' },
 					],

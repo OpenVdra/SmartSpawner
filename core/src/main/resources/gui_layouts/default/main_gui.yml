@@ -5,6 +5,7 @@
 # Format:
 #   slot_X:                    # X = slot number (1-27)
 #     material: MATERIAL_NAME  # Material to display (use PLAYER_HEAD for spawner mob head)
+#     custom_texture: "..."    # Optional: Custom texture hash for PLAYER_HEAD (similar to spawners_settings.yml)
 #     enabled: true/false      # Show/hide button
 #     info_button: true/false  # Optional: Mark as spawner info button for timer updates
 #     condition: "condition"   # Optional: show only if condition met

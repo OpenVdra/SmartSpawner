@@ -165,7 +165,7 @@ public class GuiUpdateService {
             return;
         }
 
-        ItemStack newChestItem = spawnerMenuUI.createLootStorageItem(spawner);
+        ItemStack newChestItem = spawnerMenuUI.createLootStorageItem(spawner, null);
 
         if (!areItemsEqual(currentChestItem, newChestItem)) {
             inventory.setItem(storageSlot, newChestItem);
@@ -185,7 +185,7 @@ public class GuiUpdateService {
             return;
         }
 
-        ItemStack newExpItem = spawnerMenuUI.createExpItem(spawner);
+        ItemStack newExpItem = spawnerMenuUI.createExpItem(spawner, null);
 
         if (!areItemsEqual(currentExpItem, newExpItem)) {
             inventory.setItem(expSlot, newExpItem);
@@ -205,7 +205,7 @@ public class GuiUpdateService {
             return;
         }
 
-        ItemStack newSpawnerItem = spawnerMenuUI.createSpawnerInfoItem(player, spawner);
+        ItemStack newSpawnerItem = spawnerMenuUI.createSpawnerInfoItem(player, spawner, null);
 
         if (!areItemsEqual(currentSpawnerItem, newSpawnerItem)) {
             preserveTimerInfo(currentSpawnerItem, newSpawnerItem);

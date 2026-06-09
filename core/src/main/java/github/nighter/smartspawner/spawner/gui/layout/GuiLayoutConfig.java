@@ -260,6 +260,7 @@ public class GuiLayoutConfig {
         String materialName = config.getString(buttonKey + ".material", "STONE");
         String condition = config.getString(buttonKey + ".condition", null);
         boolean infoButton = config.getBoolean(buttonKey + ".info_button", false);
+        String customTexture = config.getString(buttonKey + ".custom_texture", null);
 
         // Validate slot based on layout type
         if (!isValidSlot(slot, layoutType)) {
@@ -295,6 +296,12 @@ public class GuiLayoutConfig {
                             material = parseMaterial(conditionalMaterial, buttonKey);
                         }
 
+                        // Load custom texture override if present
+                        String conditionalCustomTexture = conditionActions.getString("custom_texture");
+                        if (conditionalCustomTexture != null) {
+                            customTexture = conditionalCustomTexture;
+                        }
+
                         // Load all click actions from this condition
                         String[] clickTypes = {"click", "left_click", "right_click", "shift_left_click", "shift_right_click"};
                         for (String clickType : clickTypes) {
@@ -318,7 +325,7 @@ public class GuiLayoutConfig {
             }
         }
 
-        GuiButton button = new GuiButton(buttonKey, actualSlot, material, true, condition, actions, infoButton);
+        GuiButton button = new GuiButton(buttonKey, actualSlot, material, true, condition, actions, infoButton, customTexture);
         layout.addButton(buttonKey, button);
         return true;
     }
