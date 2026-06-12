@@ -10,6 +10,8 @@ description: Methods for accessing and modifying spawner data and properties.
 | `getSpawnerById(String)` | Gets spawner data by unique ID | `SpawnerDataDTO` |
 | `getAllSpawners()` | Gets all registered spawners | `List<SpawnerDataDTO>` |
 | `getSpawnerModifier(String)` | Gets modifier to change spawner properties | `SpawnerDataModifier` |
+| `removeSpawner(String)` | Removes by unique ID and completes when block/data cleanup finishes | `CompletableFuture<Boolean>` |
+| `removeSpawner(Location)` | Removes by location and completes when block/data cleanup finishes | `CompletableFuture<Boolean>` |
 
 ### SpawnerDataDTO
 
@@ -151,6 +153,36 @@ if (modifier != null) {
     player.sendMessage("Spawner configuration updated!");
     player.sendMessage("Note: Stack size cannot be modified (read-only)");
 }
+```
+
+### `removeSpawner()`
+
+Removes a spawner completely from the server, including its block, data, hopper tracking, and open inventories. The method returns a `CompletableFuture<Boolean>` because the spawner chunk may need to be loaded asynchronously before SmartSpawner can safely set the block to air.
+
+The future completes with `true` after block and data cleanup finishes. It completes with `false` if the spawner does not exist, is already being removed, or is being modified by another protected operation.
+
+```java
+import org.bukkit.Location;
+
+// Option 1: Remove by Spawner ID
+String spawnerId = "spawner-uuid-here";
+api.removeSpawner(spawnerId).thenAccept(removed -> {
+    if (removed) {
+        player.sendMessage("Spawner fully removed by ID!");
+    } else {
+        player.sendMessage("Spawner not found, already being removed, or currently being modified!");
+    }
+});
+
+// Option 2: Remove by Location
+Location spawnerLocation = player.getTargetBlock(null, 5).getLocation();
+api.removeSpawner(spawnerLocation).thenAccept(removed -> {
+    if (removed) {
+        player.sendMessage("Spawner fully removed by location!");
+    } else {
+        player.sendMessage("No spawner found at that location, or it is already being modified!");
+    }
+});
 ```
 
 ### Reading and Modifying Base Values

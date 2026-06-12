@@ -26,7 +26,7 @@ Add SmartSpawner API via [JitPack](https://jitpack.io/#NighterDevelopment/SmartS
 ```
 
 **Gradle:**
-```gradle
+```groovy
 repositories {
     maven { url 'https://jitpack.io' }
 }

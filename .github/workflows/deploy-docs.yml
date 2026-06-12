@@ -21,6 +21,8 @@ jobs:
   build:
     if: github.repository == 'NighterDevelopment/SmartSpawner'
     runs-on: ubuntu-latest
+    env:
+      DOCS_NODE_VERSION: '22'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.DOCS_NODE_VERSION }}
           # 🟢 Cache npm dependencies
           cache: 'npm'
           cache-dependency-path: 'docs/package-lock.json'
@@ -41,9 +43,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: docs/node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ env.DOCS_NODE_VERSION }}-node-modules-${{ hashFiles('docs/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-modules-
+            ${{ runner.os }}-node-${{ env.DOCS_NODE_VERSION }}-node-modules-
 
       # 🟢 Cache Astro build output
       - name: Cache Astro build

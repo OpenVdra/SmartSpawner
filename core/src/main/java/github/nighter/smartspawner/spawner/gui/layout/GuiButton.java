@@ -14,8 +14,9 @@ public class GuiButton {
     private final String condition;
     private final Map<String, String> actions;
     private final boolean infoButton; // Marks this as spawner info button for timer updates
+    private final String customTexture; // Custom texture for PLAYER_HEAD material
 
-    public GuiButton(String buttonType, int slot, Material material, boolean enabled, String condition, Map<String, String> actions, boolean infoButton) {
+    public GuiButton(String buttonType, int slot, Material material, boolean enabled, String condition, Map<String, String> actions, boolean infoButton, String customTexture) {
         this.buttonType = buttonType;
         this.slot = slot;
         this.material = material;
@@ -23,6 +24,7 @@ public class GuiButton {
         this.condition = condition;
         this.actions = actions;
         this.infoButton = infoButton;
+        this.customTexture = customTexture;
     }
 
     public String getAction(String clickType) {

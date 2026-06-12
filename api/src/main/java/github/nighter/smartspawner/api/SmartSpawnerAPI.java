@@ -8,6 +8,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Main API interface for SmartSpawner plugin.
@@ -141,4 +142,24 @@ public interface SmartSpawnerAPI {
      * @return a spawner data modifier, or null if spawner doesn't exist
      */
     SpawnerDataModifier getSpawnerModifier(String spawnerId);
+
+    /**
+     * Removes a spawner from the server, including its block and data.
+     * The returned future completes after the block and stored data have been removed.
+     * If the spawner chunk is not loaded, it is loaded asynchronously before the block is changed.
+     *
+     * @param spawnerId the unique ID of the spawner to remove
+     * @return future containing true when removal completed, false if not found or already being modified
+     */
+    CompletableFuture<Boolean> removeSpawner(String spawnerId);
+
+    /**
+     * Removes a spawner from the server by its location, including its block and data.
+     * The returned future completes after the block and stored data have been removed.
+     * If the spawner chunk is not loaded, it is loaded asynchronously before the block is changed.
+     *
+     * @param location the location of the spawner block to remove
+     * @return future containing true when removal completed, false if not found or already being modified
+     */
+    CompletableFuture<Boolean> removeSpawner(Location location);
 }

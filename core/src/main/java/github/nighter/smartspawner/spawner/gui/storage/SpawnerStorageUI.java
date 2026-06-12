@@ -89,35 +89,31 @@ public class SpawnerStorageUI {
 
             switch (action) {
                 case "return_main":
-                    staticButtons.put("return", createButton(
-                            button.getMaterial(),
-                            languageManager.getGuiItemName("return_button.name"),
-                            languageManager.getGuiItemLoreAsList("return_button.lore")
-                    ));
+                    staticButtons.put("return", createButtonWithCustomTexture(button, meta -> {
+                        meta.setDisplayName(languageManager.getGuiItemName("return_button.name"));
+                        meta.setLore(languageManager.getGuiItemLoreAsList("return_button.lore"));
+                    }));
                     break;
                 case "take_all":
-                    staticButtons.put("takeAll", createButton(
-                            button.getMaterial(),
-                            languageManager.getGuiItemName("take_all_button.name"),
-                            languageManager.getGuiItemLoreAsList("take_all_button.lore")
-                    ));
+                    staticButtons.put("takeAll", createButtonWithCustomTexture(button, meta -> {
+                        meta.setDisplayName(languageManager.getGuiItemName("take_all_button.name"));
+                        meta.setLore(languageManager.getGuiItemLoreAsList("take_all_button.lore"));
+                    }));
                     break;
                 case "sort_items":
                     // Sort button is created dynamically (material stored for later)
                     break;
                 case "drop_page":
-                    staticButtons.put("dropPage", createButton(
-                            button.getMaterial(),
-                            languageManager.getGuiItemName("drop_page_button.name"),
-                            languageManager.getGuiItemLoreAsList("drop_page_button.lore")
-                    ));
+                    staticButtons.put("dropPage", createButtonWithCustomTexture(button, meta -> {
+                        meta.setDisplayName(languageManager.getGuiItemName("drop_page_button.name"));
+                        meta.setLore(languageManager.getGuiItemLoreAsList("drop_page_button.lore"));
+                    }));
                     break;
                 case "open_filter":
-                    staticButtons.put("itemFilter", createButton(
-                            button.getMaterial(),
-                            languageManager.getGuiItemName("item_filter_button.name"),
-                            languageManager.getGuiItemLoreAsList("item_filter_button.lore")
-                    ));
+                    staticButtons.put("itemFilter", createButtonWithCustomTexture(button, meta -> {
+                        meta.setDisplayName(languageManager.getGuiItemName("item_filter_button.name"));
+                        meta.setLore(languageManager.getGuiItemLoreAsList("item_filter_button.lore"));
+                    }));
                     break;
                 // Note: Sell buttons are created dynamically to show current total sell price
             }
@@ -334,7 +330,7 @@ public class SpawnerStorageUI {
 
             // Handle info_button (spawner mob head with loot info)
             if (button.isInfoButton()) {
-                updates.put(button.getSlot(), createStorageSpawnerInfoButton(spawner, button.getMaterial()));
+                updates.put(button.getSlot(), createStorageSpawnerInfoButton(spawner, button));
                 continue;
             }
 
@@ -346,23 +342,23 @@ public class SpawnerStorageUI {
             switch (action) {
                 case "previous_page":
                     if (page > 1) {
-                        String cacheKey = "prev-" + (page - 1);
+                        String cacheKey = "prev-" + (page - 1) + "-" + button.getCustomTexture();
                         item = navigationButtonCache.computeIfAbsent(
-                                cacheKey, k -> createNavigationButton("previous", page - 1, button.getMaterial()));
+                                cacheKey, k -> createNavigationButton("previous", page - 1, button));
                     }
                     break;
                 case "next_page":
                     if (page < totalPages) {
-                        String cacheKey = "next-" + (page + 1);
+                        String cacheKey = "next-" + (page + 1) + "-" + button.getCustomTexture();
                         item = navigationButtonCache.computeIfAbsent(
-                                cacheKey, k -> createNavigationButton("next", page + 1, button.getMaterial()));
+                                cacheKey, k -> createNavigationButton("next", page + 1, button));
                     }
                     break;
                 case "take_all":
                     item = staticButtons.get("takeAll");
                     break;
                 case "sort_items":
-                    item = createSortButton(spawner, button.getMaterial());
+                    item = createSortButton(spawner, button);
                     break;
                 case "drop_page":
                     item = staticButtons.get("dropPage");
@@ -374,13 +370,13 @@ public class SpawnerStorageUI {
                     item = staticButtons.get("return");
                     break;
                 case "sell_all":
-                    item = createSellButton(spawner, button.getMaterial());
+                    item = createSellButton(spawner, button);
                     break;
                 case "sell_and_exp":
-                    item = createSellAndExpButton(spawner, button.getMaterial());
+                    item = createSellAndExpButton(spawner, button);
                     break;
                 case "collect_exp":
-                    item = createCollectExpButton(spawner, button.getMaterial());
+                    item = createCollectExpButton(spawner, button);
                     break;
             }
 
@@ -416,95 +412,83 @@ public class SpawnerStorageUI {
         return Math.max(1, (int) Math.ceil((double) usedSlots / StoragePageHolder.MAX_ITEMS_PER_PAGE));
     }
 
-    private ItemStack createButton(Material material, String name, List<String> lore) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(name);
-            if (!lore.isEmpty()) {
-                meta.setLore(lore);
-            }
-            item.setItemMeta(meta);
+    private ItemStack createButtonWithCustomTexture(GuiButton button, Consumer<ItemMeta> metaModifier) {
+        ItemStack item;
+        if (button.getMaterial() == Material.PLAYER_HEAD && button.getCustomTexture() != null && !button.getCustomTexture().trim().isEmpty()) {
+            item = SpawnerMobHeadTexture.getCustomHeadFromTexture(button.getCustomTexture(), metaModifier);
+        } else {
+            item = new ItemStack(button.getMaterial());
+            item.editMeta(metaModifier);
         }
 
         // Hide tooltip for BUNDLE material (prevents showing bundle contents)
-        if (material == Material.BUNDLE) {
+        if (item.getType() == Material.BUNDLE) {
             ItemTooltipUtil.hideBundleTooltip(item);
         }
 
         return item;
     }
 
-    private ItemStack createNavigationButton(String type, int targetPage, Material material) {
+    private ItemStack createNavigationButton(String type, int targetPage, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("target_page", String.valueOf(targetPage));
 
-        String buttonName;
-        String buttonKey;
-
-        if (type.equals("previous")) {
-            buttonKey = "navigation_button_previous";
-        } else {
-            buttonKey = "navigation_button_next";
-        }
-
-        buttonName = languageManager.getGuiItemName(buttonKey + ".name", placeholders);
+        String buttonKey = type.equals("previous") ? "navigation_button_previous" : "navigation_button_next";
+        String buttonName = languageManager.getGuiItemName(buttonKey + ".name", placeholders);
         String[] buttonLore = languageManager.getGuiItemLore(buttonKey + ".lore", placeholders);
 
-        return createButton(material, buttonName, Arrays.asList(buttonLore));
+        return createButtonWithCustomTexture(button, meta -> {
+            meta.setDisplayName(buttonName);
+            if (buttonLore.length > 0) {
+                meta.setLore(Arrays.asList(buttonLore));
+            }
+        });
     }
 
-    private ItemStack createSellButton(SpawnerData spawner, Material material) {
-        // Create placeholders for total sell price
+    private ItemStack createSellButton(SpawnerData spawner, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
-        // Check if sell value needs recalculation before displaying
         if (spawner.isSellValueDirty()) {
             spawner.recalculateSellValue();
         }
-        double totalSellPrice = spawner.getAccumulatedSellValue();
-        placeholders.put("total_sell_price", languageManager.formatNumber(totalSellPrice));
+        placeholders.put("total_sell_price", languageManager.formatNumber(spawner.getAccumulatedSellValue()));
         
-        String name = languageManager.getGuiItemName("sell_button.name", placeholders);
-        List<String> lore = languageManager.getGuiItemLoreAsList("sell_button.lore");
-        return createButton(material, name, lore);
+        return createButtonWithCustomTexture(button, meta -> {
+            meta.setDisplayName(languageManager.getGuiItemName("sell_button.name", placeholders));
+            meta.setLore(languageManager.getGuiItemLoreAsList("sell_button.lore"));
+        });
     }
 
-    private ItemStack createSellAndExpButton(SpawnerData spawner, Material material) {
-        // Create placeholders for total sell price
+    private ItemStack createSellAndExpButton(SpawnerData spawner, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
-        // Check if sell value needs recalculation before displaying
         if (spawner.isSellValueDirty()) {
             spawner.recalculateSellValue();
         }
-        double totalSellPrice = spawner.getAccumulatedSellValue();
-        placeholders.put("total_sell_price", languageManager.formatNumber(totalSellPrice));
+        placeholders.put("total_sell_price", languageManager.formatNumber(spawner.getAccumulatedSellValue()));
 
-        String name = languageManager.getGuiItemName("sell_and_exp_button.name", placeholders);
-        List<String> lore = languageManager.getGuiItemLoreAsList("sell_and_exp_button.lore");
-        return createButton(material, name, lore);
+        return createButtonWithCustomTexture(button, meta -> {
+            meta.setDisplayName(languageManager.getGuiItemName("sell_and_exp_button.name", placeholders));
+            meta.setLore(languageManager.getGuiItemLoreAsList("sell_and_exp_button.lore"));
+        });
     }
 
-    private ItemStack createCollectExpButton(SpawnerData spawner, Material material) {
+    private ItemStack createCollectExpButton(SpawnerData spawner, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("current_exp", languageManager.formatNumber(spawner.getSpawnerExp()));
 
-        String name = languageManager.getGuiItemName("collect_exp_button.name", placeholders);
-        List<String> lore = languageManager.getGuiItemLoreAsList("collect_exp_button.lore");
-        return createButton(material, name, lore);
+        return createButtonWithCustomTexture(button, meta -> {
+            meta.setDisplayName(languageManager.getGuiItemName("collect_exp_button.name", placeholders));
+            meta.setLore(languageManager.getGuiItemLoreAsList("collect_exp_button.lore"));
+        });
     }
 
-    private ItemStack createSortButton(SpawnerData spawner, Material material) {
+    private ItemStack createSortButton(SpawnerData spawner, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
-
-        // Get current sort item
         Material currentSort = spawner.getPreferredSortItem();
 
-        // Get format strings from configuration
         String selectedItemFormat = languageManager.getGuiItemName("sort_items_button.selected_item");
         String unselectedItemFormat = languageManager.getGuiItemName("sort_items_button.unselected_item");
         String noneText = languageManager.getGuiItemName("sort_items_button.no_item");
 
-        // Get available items from spawner drops
         StringBuilder availableItems = new StringBuilder();
         if (spawner.getLootConfig() != null && spawner.getLootConfig().getAllItems() != null) {
             boolean first = true;
@@ -516,10 +500,7 @@ public class SpawnerStorageUI {
                 if (!first) availableItems.append("\n");
                 String itemName = languageManager.getVanillaItemName(lootItem.material());
                 String format = currentSort == lootItem.material() ? selectedItemFormat : unselectedItemFormat;
-                
-                // Replace {item_name} placeholder in format string
-                String formattedItem = format.replace("{item_name}", itemName);
-                availableItems.append(formattedItem);
+                availableItems.append(format.replace("{item_name}", itemName));
                 first = false;
             }
         }
@@ -530,12 +511,13 @@ public class SpawnerStorageUI {
 
         placeholders.put("available_items", availableItems.toString());
 
-        String name = languageManager.getGuiItemName("sort_items_button.name", placeholders);
-        List<String> lore = languageManager.getGuiItemLoreWithMultilinePlaceholders("sort_items_button.lore", placeholders);
-        return createButton(material, name, lore);
+        return createButtonWithCustomTexture(button, meta -> {
+            meta.setDisplayName(languageManager.getGuiItemName("sort_items_button.name", placeholders));
+            meta.setLore(languageManager.getGuiItemLoreWithMultilinePlaceholders("sort_items_button.lore", placeholders));
+        });
     }
 
-    private ItemStack createStorageSpawnerInfoButton(SpawnerData spawner, Material material) {
+    private ItemStack createStorageSpawnerInfoButton(SpawnerData spawner, GuiButton button) {
         Map<ItemSignature, Long> storedItems = spawner.getVirtualInventory().getConsolidatedItems();
         List<Component> lootComponents = buildStorageInfoLootComponents(spawner, storedItems);
 
@@ -576,8 +558,16 @@ public class SpawnerStorageUI {
         ItemStack item;
         if (spawner.isItemSpawner()) {
             item = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getSpawnedItemMaterial(), metaModifier);
+        } else if (button.getMaterial() == Material.PLAYER_HEAD) {
+            String customTexture = button.getCustomTexture();
+            if (customTexture != null && !customTexture.trim().isEmpty()) {
+                item = SpawnerMobHeadTexture.getCustomHeadFromTexture(customTexture, metaModifier);
+            } else {
+                item = SpawnerMobHeadTexture.getCustomHead(spawner.getEntityType(), metaModifier);
+            }
         } else {
-            item = SpawnerMobHeadTexture.getCustomHead(spawner.getEntityType(), metaModifier);
+            item = new ItemStack(button.getMaterial());
+            item.editMeta(metaModifier);
         }
 
         if (item.getType() == Material.SPAWNER) {

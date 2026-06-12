@@ -267,7 +267,11 @@ public class SpawnerGuiViewManager {
         if (!viewers.isEmpty()) {
             for (Player viewer : viewers) {
                 if (viewer != null && viewer.isOnline()) {
-                    viewer.closeInventory();
+                    Scheduler.runEntityTask(viewer, () -> {
+                        if (viewer.isOnline()) {
+                            viewer.closeInventory();
+                        }
+                    });
                 }
             }
         }
@@ -279,12 +283,18 @@ public class SpawnerGuiViewManager {
             for (UUID viewerId : filterViewersCopy) {
                 Player viewer = Bukkit.getPlayer(viewerId);
                 if (viewer != null && viewer.isOnline()) {
-                    Inventory openInventory = viewer.getOpenInventory().getTopInventory();
-                    if (openInventory != null && openInventory.getHolder(false) instanceof FilterConfigHolder filterHolder) {
-                        if (filterHolder.getSpawnerData().getSpawnerId().equals(spawnerId)) {
-                            viewer.closeInventory();
+                    Scheduler.runEntityTask(viewer, () -> {
+                        if (!viewer.isOnline()) {
+                            return;
                         }
-                    }
+
+                        Inventory openInventory = viewer.getOpenInventory().getTopInventory();
+                        if (openInventory != null && openInventory.getHolder(false) instanceof FilterConfigHolder filterHolder) {
+                            if (filterHolder.getSpawnerData().getSpawnerId().equals(spawnerId)) {
+                                viewer.closeInventory();
+                            }
+                        }
+                    });
                 }
             }
         }

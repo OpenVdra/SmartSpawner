@@ -21,12 +21,12 @@
 
 | Language           | Locale Code | Contributor                                     | Status |
 |--------------------|-------------|-------------------------------------------------|--------|
-| Chinese Simplified | `zh_CN`     | [SnowCutieOwO](https://github.com/SnowCutieOwO) | v1.2.3 |
-| German             | `de_DE`     | [jannispkz](https://github.com/jannispkz)       | v1.6.7 |
-| English            | `en_US`     | [Nighter](https://github.com/ptthanh02)                                   | Latest |
-| Italian            | `it_IT`     | [RV_SkeLe](https://github.com/RVSkeLe)          | v1.3.5 |
-| Turkish            | `tr_TR`     | berkkorkmaz                                     | v1.3.5 |
-| Vietnamese         | `vi_VN`     | [Nighter](https://github.com/ptthanh02)         | v1.6.7 |
+| Chinese Simplified | `zh_CN`     | [SnowCutieOwO](https://github.com/SnowCutieOwO) | v1.2.3 (Outdated) |
+| German             | `de_DE`     | [jannispkz](https://github.com/jannispkz)       | v1.6.7 (Outdated) |
+| English            | `en_US`     | [Nighter](https://github.com/ptthanh02)         | Latest |
+| Italian            | `it_IT`     | [RV_SkeLe](https://github.com/RVSkeLe)          | v1.3.5 (Outdated) |
+| Turkish            | `tr_TR`     | berkkorkmaz                                     | v1.3.5 (Outdated) |
+| Vietnamese         | `vi_VN`     | [Nighter](https://github.com/ptthanh02)         | v1.6.7 (Outdated) |
 
 ## API
 

@@ -29,7 +29,7 @@ dependencies {
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2026.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
-    compileOnly("su.nightexpress.nightcore:main:2.15.3")
+    compileOnly("su.nightexpress.nightcore:main:2.16.2")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.10.0")
     compileOnly("world.bentobox:bentobox:3.17.0")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.12")
@@ -39,8 +39,8 @@ dependencies {
 
     implementation("com.github.GriefPrevention:GriefPrevention:18.0.0")
     implementation("com.github.IncrediblePlugins:LandsAPI:7.25.4")
-    implementation("com.github.Xyness:SimpleClaimSystem-API:v2.5.0")
-    implementation("com.github.Xyness:SimpleClaimSystem:1.13.0.9")
+    implementation("com.github.Xyness:SimpleClaimSystem-API:v2.5.10")
+    implementation("com.github.Xyness:SimpleClaimSystem:1.13.1")
     implementation("com.github.Zrips:Residence:6.0.0.1") {
         exclude(group = "org.bukkit")
     }

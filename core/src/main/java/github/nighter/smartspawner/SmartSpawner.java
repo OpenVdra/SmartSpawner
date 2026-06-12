@@ -43,6 +43,7 @@ import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmListener;
 import github.nighter.smartspawner.spawner.interactions.click.SpawnerClickManager;
 import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerBreakListener;
 import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerExplosionListener;
+import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerRemovalService;
 import github.nighter.smartspawner.spawner.interactions.place.SpawnerPlaceListener;
 import github.nighter.smartspawner.spawner.interactions.stack.SpawnerStackHandler;
 import github.nighter.smartspawner.spawner.interactions.type.SpawnEggHandler;
@@ -129,6 +130,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
     private HopperService hopperService;
     private HopperConfig hopperConfig;
     private SpawnerLocationLockManager spawnerLocationLockManager;
+    private SpawnerRemovalService spawnerRemovalService;
 
     // Event handlers and utilities
     private NaturalSpawnerListener naturalSpawnerListener;
@@ -268,6 +270,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
 
         this.spawnerManager = new SpawnerManager(this);
         this.spawnerLocationLockManager = new SpawnerLocationLockManager(this);
+        this.spawnerRemovalService = new SpawnerRemovalService(this);
         this.spawnerManager.reloadAllHolograms();
         this.guiLayoutConfig = new GuiLayoutConfig(this);
         this.spawnerStorageUI = new SpawnerStorageUI(this);

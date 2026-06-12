@@ -64,6 +64,11 @@ public class SpawnerExplosionListener implements Listener {
             Material type = block.getType();
 
             if (type == Material.SPAWNER) {
+                if (plugin.getSpawnerRemovalService().isRemovalPending(block.getLocation())) {
+                    it.remove();
+                    continue;
+                }
+
                 SpawnerData spawnerData = spawnerManager.getSpawnerByLocation(block.getLocation());
 
                 if (spawnerData != null) {

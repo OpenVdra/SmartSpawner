@@ -70,6 +70,13 @@ public class SpawnerBreakListener implements Listener {
             return;
         }
 
+        SpawnerRemovalService removalService = plugin.getSpawnerRemovalService();
+        if (removalService != null && removalService.isRemovalPending(location)) {
+            event.setCancelled(true);
+            messageService.sendMessage(player, "action_in_progress");
+            return;
+        }
+
         if (!CheckBreakBlock.CanPlayerBreakBlock(player, location)) {
             event.setCancelled(true);
             return;
@@ -604,6 +611,7 @@ public class SpawnerBreakListener implements Listener {
         SpawnerMenuAction getSpawnerMenuAction();
         github.nighter.smartspawner.spawner.sell.SpawnerSellManager getSpawnerSellManager();
         github.nighter.smartspawner.spawner.lootgen.SpawnerRangeChecker getRangeChecker();
+        SpawnerRemovalService getSpawnerRemovalService();
     }
 
     private static final class SmartSpawnerBreakPluginContext implements BreakPluginContext {
@@ -624,5 +632,6 @@ public class SpawnerBreakListener implements Listener {
         @Override public SpawnerMenuAction getSpawnerMenuAction() { return plugin.getSpawnerMenuAction(); }
         @Override public github.nighter.smartspawner.spawner.sell.SpawnerSellManager getSpawnerSellManager() { return plugin.getSpawnerSellManager(); }
         @Override public github.nighter.smartspawner.spawner.lootgen.SpawnerRangeChecker getRangeChecker() { return plugin.getRangeChecker(); }
+        @Override public SpawnerRemovalService getSpawnerRemovalService() { return plugin.getSpawnerRemovalService(); }
     }
 }

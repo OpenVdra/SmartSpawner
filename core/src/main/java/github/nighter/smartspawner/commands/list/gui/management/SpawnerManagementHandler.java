@@ -1,6 +1,7 @@
 package github.nighter.smartspawner.commands.list.gui.management;
 
 import github.nighter.smartspawner.SmartSpawner;
+import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.commands.list.gui.adminstacker.AdminStackerUI;
 import github.nighter.smartspawner.commands.list.ListSubCommand;
 import github.nighter.smartspawner.commands.list.gui.list.enums.FilterOption;
@@ -9,9 +10,7 @@ import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuUI;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
-import github.nighter.smartspawner.spawner.data.storage.SpawnerStorage;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +25,6 @@ public class SpawnerManagementHandler implements Listener {
     private final SmartSpawner plugin;
     private final MessageService messageService;
     private final SpawnerManager spawnerManager;
-    private final SpawnerStorage spawnerStorage;
     private final ListSubCommand listSubCommand;
     private final SpawnerMenuUI spawnerMenuUI;
     private final AdminStackerUI adminStackerUI;
@@ -35,7 +33,6 @@ public class SpawnerManagementHandler implements Listener {
         this.plugin = plugin;
         this.messageService = plugin.getMessageService();
         this.spawnerManager = plugin.getSpawnerManager();
-        this.spawnerStorage = plugin.getSpawnerStorage();
         this.listSubCommand = listSubCommand;
         this.spawnerMenuUI = plugin.getSpawnerMenuUI();
         this.adminStackerUI = new AdminStackerUI(plugin);
@@ -64,6 +61,11 @@ public class SpawnerManagementHandler implements Listener {
         SpawnerData spawner = spawnerManager.getSpawnerById(spawnerId);
         if (spawner == null) {
             messageService.sendMessage(player, "list.teleport_failed");
+            return;
+        }
+
+        if (plugin.getSpawnerRemovalService().isRemovalPending(spawner)) {
+            messageService.sendMessage(player, "action_in_progress");
             return;
         }
 
@@ -118,25 +120,24 @@ public class SpawnerManagementHandler implements Listener {
     }
 
     private void handleRemoveSpawner(Player player, SpawnerData spawner, String worldName, int listPage) {
-        // Remove the spawner block and data
-        Location loc = spawner.getSpawnerLocation();
-        plugin.getSpawnerGuiViewManager().closeAllViewersInventory(spawner);
-        String spawnerId = spawner.getSpawnerId();
-        spawner.getSpawnerStop().set(true);
-        if (loc.getBlock().getType() == Material.SPAWNER) {
-            loc.getBlock().setType(Material.AIR);
-        }
+        plugin.getSpawnerRemovalService().removeSpawner(spawner).whenComplete((removed, error) ->
+                Scheduler.runEntityTask(player, () -> {
+                    if (!player.isOnline()) {
+                        return;
+                    }
 
-        // Remove from manager and save
-        spawnerManager.removeSpawner(spawnerId);
-        spawnerStorage.markSpawnerDeleted(spawnerId);
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("id", spawner.getSpawnerId());
-        messageService.sendMessage(player, "list.spawner_removed", placeholders);
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+                    if (error != null || !Boolean.TRUE.equals(removed)) {
+                        messageService.sendMessage(player, "action_in_progress");
+                        return;
+                    }
 
-        // Return to spawner list
-        handleBack(player, worldName, listPage);
+                    Map<String, String> placeholders = new HashMap<>();
+                    placeholders.put("id", spawner.getSpawnerId());
+                    messageService.sendMessage(player, "list.spawner_removed", placeholders);
+                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+                    handleBack(player, worldName, listPage);
+                })
+        );
     }
 
     private void handleBack(Player player, String worldName, int listPage) {
