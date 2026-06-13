@@ -1,47 +1,57 @@
 package github.nighter.smartspawner;
 
-import github.nighter.smartspawner.api.*;
+import github.nighter.smartspawner.api.SmartSpawnerAPI;
+import github.nighter.smartspawner.api.SmartSpawnerAPIImpl;
+import github.nighter.smartspawner.api.SmartSpawnerPlugin;
 import github.nighter.smartspawner.api.gui.ExternalGuiLayoutLoader;
 import github.nighter.smartspawner.api.gui.GuiLayoutRegistryImpl;
-import github.nighter.smartspawner.bstats.Metrics;
 import github.nighter.smartspawner.commands.BrigadierCommandManager;
 import github.nighter.smartspawner.commands.list.ListSubCommand;
+import github.nighter.smartspawner.commands.list.gui.adminstacker.AdminStackerHandler;
+import github.nighter.smartspawner.commands.list.gui.list.SpawnerListGUI;
+import github.nighter.smartspawner.commands.list.gui.list.UserPreferenceCache;
+import github.nighter.smartspawner.commands.list.gui.management.SpawnerManagementGUI;
+import github.nighter.smartspawner.commands.list.gui.management.SpawnerManagementHandler;
+import github.nighter.smartspawner.commands.list.gui.serverselection.ServerSelectionHandler;
 import github.nighter.smartspawner.commands.near.NearResultGUI;
 import github.nighter.smartspawner.commands.near.SpawnerHighlightManager;
-import github.nighter.smartspawner.commands.list.gui.list.UserPreferenceCache;
-import github.nighter.smartspawner.commands.list.gui.list.SpawnerListGUI;
-import github.nighter.smartspawner.commands.list.gui.management.SpawnerManagementHandler;
-import github.nighter.smartspawner.commands.list.gui.management.SpawnerManagementGUI;
-import github.nighter.smartspawner.commands.list.gui.adminstacker.AdminStackerHandler;
-import github.nighter.smartspawner.commands.list.gui.serverselection.ServerSelectionHandler;
 import github.nighter.smartspawner.commands.prices.PricesGUI;
 import github.nighter.smartspawner.config.Config;
 import github.nighter.smartspawner.extras.HopperConfig;
-import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig;
-import github.nighter.smartspawner.spawner.config.ItemSpawnerSettingsConfig;
+import github.nighter.smartspawner.extras.HopperService;
+import github.nighter.smartspawner.hooks.IntegrationManager;
+import github.nighter.smartspawner.hooks.economy.ItemPriceManager;
+import github.nighter.smartspawner.hooks.economy.shops.providers.shopguiplus.SpawnerProvider;
+import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.logging.LoggingConfig;
 import github.nighter.smartspawner.logging.SpawnerActionLogger;
 import github.nighter.smartspawner.logging.SpawnerAuditListener;
-import github.nighter.smartspawner.spawner.natural.NaturalSpawnerListener;
-import github.nighter.smartspawner.utils.TimeFormatter;
-import github.nighter.smartspawner.hooks.economy.ItemPriceManager;
-import github.nighter.smartspawner.hooks.economy.shops.providers.shopguiplus.SpawnerProvider;
-import github.nighter.smartspawner.extras.HopperService;
-import github.nighter.smartspawner.hooks.IntegrationManager;
-import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.migration.SpawnerDataMigration;
+import github.nighter.smartspawner.spawner.config.ItemSpawnerSettingsConfig;
+import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
+import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig;
+import github.nighter.smartspawner.spawner.data.SpawnerFileHandler;
+import github.nighter.smartspawner.spawner.data.SpawnerManager;
+import github.nighter.smartspawner.spawner.data.WorldEventHandler;
+import github.nighter.smartspawner.spawner.data.database.DatabaseManager;
+import github.nighter.smartspawner.spawner.data.database.SpawnerDatabaseHandler;
+import github.nighter.smartspawner.spawner.data.database.SqliteToMySqlMigration;
+import github.nighter.smartspawner.spawner.data.database.YamlToDatabaseMigration;
+import github.nighter.smartspawner.spawner.data.storage.SpawnerStorage;
+import github.nighter.smartspawner.spawner.data.storage.StorageMode;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayoutConfig;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuAction;
-import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuUI;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuFormUI;
+import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuUI;
+import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmListener;
+import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmUI;
 import github.nighter.smartspawner.spawner.gui.stacker.SpawnerStackerHandler;
+import github.nighter.smartspawner.spawner.gui.stacker.SpawnerStackerUI;
+import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageAction;
+import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
 import github.nighter.smartspawner.spawner.gui.storage.filter.FilterConfigUI;
 import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewManager;
-import github.nighter.smartspawner.spawner.gui.stacker.SpawnerStackerUI;
-import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
-import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageAction;
-import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmUI;
-import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmListener;
 import github.nighter.smartspawner.spawner.interactions.click.SpawnerClickManager;
 import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerBreakListener;
 import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerExplosionListener;
@@ -50,34 +60,29 @@ import github.nighter.smartspawner.spawner.interactions.place.SpawnerPlaceListen
 import github.nighter.smartspawner.spawner.interactions.stack.SpawnerStackHandler;
 import github.nighter.smartspawner.spawner.interactions.type.SpawnEggHandler;
 import github.nighter.smartspawner.spawner.item.SpawnerItemFactory;
-import github.nighter.smartspawner.spawner.lootgen.SpawnerRangeChecker;
-import github.nighter.smartspawner.spawner.data.SpawnerManager;
-import github.nighter.smartspawner.spawner.sell.SpawnerSellManager;
-import github.nighter.smartspawner.spawner.data.SpawnerFileHandler;
-import github.nighter.smartspawner.spawner.data.storage.SpawnerStorage;
-import github.nighter.smartspawner.spawner.data.storage.StorageMode;
-import github.nighter.smartspawner.spawner.data.database.DatabaseManager;
-import github.nighter.smartspawner.spawner.data.database.SpawnerDatabaseHandler;
-import github.nighter.smartspawner.spawner.data.database.SqliteToMySqlMigration;
-import github.nighter.smartspawner.spawner.data.database.YamlToDatabaseMigration;
-import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.lootgen.SpawnerLootGenerator;
-import github.nighter.smartspawner.spawner.data.WorldEventHandler;
-import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.updates.ConfigUpdater;
-import github.nighter.smartspawner.updates.LanguageUpdater;
-import github.nighter.smartspawner.updates.LanguageChangelogUpdater;
-import github.nighter.smartspawner.updates.UpdateChecker;
-import github.nighter.smartspawner.spawner.utils.SpawnerTypeChecker;
+import github.nighter.smartspawner.spawner.lootgen.SpawnerRangeChecker;
+import github.nighter.smartspawner.spawner.natural.NaturalSpawnerListener;
+import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.sell.SpawnerSellManager;
 import github.nighter.smartspawner.spawner.utils.SpawnerLocationLockManager;
-
+import github.nighter.smartspawner.spawner.utils.SpawnerTypeChecker;
+import github.nighter.smartspawner.updates.ConfigUpdater;
+import github.nighter.smartspawner.updates.LanguageChangelogUpdater;
+import github.nighter.smartspawner.updates.LanguageUpdater;
+import github.nighter.smartspawner.updates.UpdateChecker;
+import github.nighter.smartspawner.utils.TimeFormatter;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.SimplePie;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 @Getter
@@ -476,15 +481,112 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
 
     private void setupBtatsMetrics() {
         Metrics metrics = new Metrics(this, 24822);
-        metrics.addCustomChart(new Metrics.SimplePie("holograms", () ->
-                String.valueOf(getConfig().getBoolean("hologram.enabled", false)))
-        );
-        metrics.addCustomChart(new Metrics.SimplePie("hoppers", () ->
-                String.valueOf(getConfig().getBoolean("hopper.enabled", false)))
-        );
-        metrics.addCustomChart(new Metrics.SimplePie("spawners", () ->
-                String.valueOf(this.spawnerManager.getTotalSpawners() / 1000 * 1000))
-        );
+
+        // --- Feature toggles ---
+        metrics.addCustomChart(new SimplePie("holograms", () ->
+                String.valueOf(getConfig().getBoolean("hologram.enabled", false))));
+
+        metrics.addCustomChart(new SimplePie("hoppers", () ->
+                String.valueOf(getConfig().getBoolean("hopper.enabled", false))));
+
+        // Number of spawner *blocks* placed (each record = 1 block, regardless of stack size)
+        metrics.addCustomChart(new SimplePie("spawner_blocks", () ->
+                bucketSpawnerCount(spawnerManager.getTotalSpawners())));
+
+        // Total stacked spawners across all worlds (sum of every block's stack size)
+        metrics.addCustomChart(new SimplePie("stacked_spawners", () -> {
+            long totalStacked = spawnerManager.getAllSpawners().stream()
+                    .mapToLong(SpawnerData::getStackSize)
+                    .sum();
+            return bucketSpawnerCount(totalStacked);
+        }));
+
+        // --- Storage backend ---
+        metrics.addCustomChart(new SimplePie("storage_mode", () ->
+                getConfig().getString("database.mode", "YAML")));
+
+        // --- Language & GUI layout ---
+        metrics.addCustomChart(new SimplePie("language", () ->
+                getConfig().getString("language", "en_US")));
+
+        metrics.addCustomChart(new SimplePie("gui_layout", () ->
+                getConfig().getString("gui_layout", "default")));
+
+        // --- Economy & shop integration ---
+        metrics.addCustomChart(new SimplePie("sell_integration", () ->
+                String.valueOf(getConfig().getBoolean("sell_integration.enabled", true))));
+
+        metrics.addCustomChart(new SimplePie("currency_type", () -> {
+            if (!getConfig().getBoolean("sell_integration.enabled", true)) return "disabled";
+            return itemPriceManager.getCurrencyManager() != null
+                    ? itemPriceManager.getCurrencyManager().getConfiguredCurrencyType()
+                    : "none";
+        }));
+
+        metrics.addCustomChart(new SimplePie("shop_plugin", () -> {
+            if (!getConfig().getBoolean("sell_integration.enabled", true)) return "disabled";
+            return itemPriceManager.getShopIntegrationManager() != null
+                    ? itemPriceManager.getShopIntegrationManager().getActiveShopPlugin()
+                    : "none";
+        }));
+
+        metrics.addCustomChart(new SimplePie("price_source_mode", () ->
+                getConfig().getString("sell_integration.price_source_mode", "SHOP_PRIORITY")));
+
+        // --- Protection plugin integrations ---
+        metrics.addCustomChart(new AdvancedPie("protection_plugins", () -> {
+            Map<String, Integer> map = new HashMap<>();
+            if (integrationManager.isHasWorldGuard())        map.put("WorldGuard", 1);
+            if (integrationManager.isHasTowny())             map.put("Towny", 1);
+            if (integrationManager.isHasLands())             map.put("Lands", 1);
+            if (integrationManager.isHasGriefPrevention())   map.put("GriefPrevention", 1);
+            if (integrationManager.isHasSuperiorSkyblock2()) map.put("SuperiorSkyblock2", 1);
+            if (integrationManager.isHasBentoBox())          map.put("BentoBox", 1);
+            if (integrationManager.isHasIridiumSkyblock())   map.put("IridiumSkyblock", 1);
+            if (integrationManager.isHasPlotSquared())       map.put("PlotSquared", 1);
+            if (integrationManager.isHasResidence())         map.put("Residence", 1);
+            if (integrationManager.isHasHuskClaims())        map.put("HuskClaims", 1);
+            if (integrationManager.isHasMinePlots())         map.put("MinePlots", 1);
+            if (integrationManager.isHasSimpleClaimSystem()) map.put("SimpleClaimSystem", 1);
+            if (map.isEmpty()) map.put("None", 1);
+            return map;
+        }));
+
+        // --- Extra integrations ---
+        metrics.addCustomChart(new SimplePie("auraskills_integration", () ->
+                String.valueOf(integrationManager.isHasAuraSkills())));
+
+        metrics.addCustomChart(new SimplePie("mythicmobs_integration", () ->
+                String.valueOf(integrationManager.isHasMythicMobs())));
+
+        // --- Key feature flags ---
+        metrics.addCustomChart(new SimplePie("silk_touch_required", () ->
+                String.valueOf(getConfig().getBoolean("spawner_break.silk_touch.required", true))));
+
+        metrics.addCustomChart(new SimplePie("natural_spawner_breakable", () ->
+                String.valueOf(getConfig().getBoolean("natural_spawner.breakable", false))));
+
+        metrics.addCustomChart(new SimplePie("natural_spawner_convert", () ->
+                String.valueOf(getConfig().getBoolean("natural_spawner.convert_to_smart_spawner", false))));
+    }
+
+    /** Bucket a spawner/stack count into a human-readable range label (supports up to ~100M). */
+    private static String bucketSpawnerCount(long value) {
+        if (value == 0)               return "0";
+        if (value <= 100)             return "1-100";
+        if (value <= 500)             return "101-500";
+        if (value <= 1_000)           return "501-1K";
+        if (value <= 5_000)           return "1K-5K";
+        if (value <= 10_000)          return "5K-10K";
+        if (value <= 50_000)          return "10K-50K";
+        if (value <= 100_000)         return "50K-100K";
+        if (value <= 500_000)         return "100K-500K";
+        if (value <= 1_000_000)       return "500K-1M";
+        if (value <= 5_000_000)       return "1M-5M";
+        if (value <= 10_000_000)      return "5M-10M";
+        if (value <= 50_000_000)      return "10M-50M";
+        if (value <= 100_000_000)     return "50M-100M";
+        return "100M+";
     }
 
     public void reload() {

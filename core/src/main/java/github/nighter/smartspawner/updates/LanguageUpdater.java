@@ -1,6 +1,7 @@
 package github.nighter.smartspawner.updates;
 
 import github.nighter.smartspawner.SmartSpawner;
+import github.nighter.smartspawner.language.file.LanguageFiles;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +16,6 @@ import java.util.Set;
 
 public class LanguageUpdater {
     private static final String VERSION_KEY = "language_version";
-    private static final String[] SUPPORTED_LANGUAGES = {"en_US", "en_US_DonutSMP", "en_US_DonutSMP_v2", "tr_TR"};
 
     private final SmartSpawner plugin;
     private final Set<LanguageFileType> activeFileTypes = new HashSet<>();
@@ -49,7 +49,7 @@ public class LanguageUpdater {
      * the running plugin version. User-customised values are preserved during updates.
      */
     public void checkAndUpdateLanguageFiles() {
-        for (String language : SUPPORTED_LANGUAGES) {
+        for (String language : LanguageFiles.SUPPORTED_LANGUAGES) {
             File langDir = new File(plugin.getDataFolder(), "language/" + language);
             langDir.mkdirs();
 

@@ -54,8 +54,7 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:1.18.46")
     annotationProcessor("org.projectlombok:lombok:1.18.46")
-
-    implementation("org.bstats:bstats-bukkit:3.2.1")
+    shade("org.bstats:bstats-bukkit:3.2.1")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -79,16 +78,12 @@ tasks.jar {
 }
 
 tasks.shadowJar {
+
     archiveBaseName.set("SmartSpawner")
     archiveVersion.set(version.toString())
     archiveClassifier.set("")
-
     from(project(":api").sourceSets["main"].output)
-
     configurations = listOf(shade)
-
-    relocate("com.zaxxer.hikari", "github.nighter.smartspawner.libs.hikari")
-    relocate("org.mariadb.jdbc", "github.nighter.smartspawner.libs.mariadb")
 
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
     exclude("META-INF/maven/**")
@@ -97,6 +92,10 @@ tasks.shadowJar {
     exclude("META-INF/NOTICE*")
     from(sourceSets["main"].output)
     exclude("org/slf4j/**")
+
+    relocate("com.zaxxer.hikari", "github.nighter.smartspawner.libs.hikari")
+    relocate("org.mariadb.jdbc", "github.nighter.smartspawner.libs.mariadb")
+    relocate("org.bstats", project.group.toString())
     mergeServiceFiles()
 
     // destinationDirectory.set(file("C:\\Users\\Admin\\Desktop\\TestServer\\plugins"))

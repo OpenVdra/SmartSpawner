@@ -28,14 +28,11 @@ public final class LanguageFiles {
     }
 
     public void saveDefaultFiles() {
-        Map<String, Set<LanguageFileType>> localeFileMap = new HashMap<>();
-        localeFileMap.put("en_US_DonutSMP", EnumSet.allOf(LanguageFileType.class));
-        localeFileMap.put("en_US_DonutSMP_v2", EnumSet.allOf(LanguageFileType.class));
-        localeFileMap.put("tr_TR", EnumSet.allOf(LanguageFileType.class));
-
-        localeFileMap.forEach((locale, fileTypes) -> {
-            fileTypes.forEach(fileType -> saveResource(String.format("language/%s/%s", locale, fileType.getFileName())));
-        });
+        for (String locale : SUPPORTED_LANGUAGES) {
+            for (LanguageFileType fileType : LanguageFileType.values()) {
+                saveResource(String.format("language/%s/%s", locale, fileType.getFileName()));
+            }
+        }
     }
 
     public void loadLocale(String locale, Map<String, LocaleData> localeMap) {
