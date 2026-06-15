@@ -87,11 +87,15 @@ natural_spawner:
   # If false, natural spawners will drop vanilla spawner items
   convert_to_smart_spawner: false
 
-  # Optional spawner item drop chance by entity type when natural spawners are broken.
-  # If this section or an entity is omitted, the drop chance defaults to 100.0.
+  # Optional spawner item drop chance when natural spawners are broken.
   # Values must be percentages from 0.0 to 100.0.
+  #
+  # Use the "default" key to set the drop chance for ALL spawner types at once.
+  # Add specific entity types only when you want to override that default.
+  # If "default" is omitted, any unspecified entity falls back to 100.0.
   # drop_chance:
-  #   ZOMBIE: 75.0
+  #   default: 50.0   # applies to every spawner type
+  #   ZOMBIE: 75.0    # override for a specific type
   #   SKELETON: 50.0
   #   BLAZE: 25.0
 
