@@ -80,3 +80,4 @@ local.properties
 *.log
 javac.*.args
 *.backup
+.claude

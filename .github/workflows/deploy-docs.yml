@@ -1,4 +1,4 @@
-name: Deploy Starlight site to GitHub Pages
+name: Deploy VitePress docs to GitHub Pages
 
 on:
   push:
@@ -12,7 +12,6 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -21,72 +20,40 @@ jobs:
   build:
     if: github.repository == 'OpenVdra/SmartSpawner'
     runs-on: ubuntu-latest
-    env:
-      DOCS_NODE_VERSION: '22'
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.DOCS_NODE_VERSION }}
-          # 🟢 Cache npm dependencies
+          node-version: '22'
           cache: 'npm'
-          cache-dependency-path: 'docs/package-lock.json'
+          cache-dependency-path: docs/package-lock.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # 🟢 Cache node_modules (backup npm cache)
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
           path: docs/node_modules
-          key: ${{ runner.os }}-node-${{ env.DOCS_NODE_VERSION }}-node-modules-${{ hashFiles('docs/package-lock.json') }}
+          key: ${{ runner.os }}-node-22-modules-${{ hashFiles('docs/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ env.DOCS_NODE_VERSION }}-node-modules-
-
-      # 🟢 Cache Astro build output
-      - name: Cache Astro build
-        uses: actions/cache@v4
-        with:
-          path: docs/.astro
-          key: ${{ runner.os }}-astro-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-astro-build-
-
-      # 🟢 Cache contributors data
-      - name: Cache Contributors Data
-        uses: actions/cache@v4
-        with:
-          path: docs/cache
-          key: ${{ runner.os }}-contributors-${{ github.repository }}-${{ github.run_number }}
-          restore-keys: |
-            ${{ runner.os }}-contributors-${{ github.repository }}-
+            ${{ runner.os }}-node-22-modules-
 
       - name: Install dependencies
         working-directory: docs
-        run: |
-          if [ -d "node_modules" ]; then
-            echo "Using cached node_modules"
-            npm ci --prefer-offline --no-audit
-          else
-            echo "Installing fresh dependencies"
-            npm ci
-          fi
+        run: npm ci
 
-      - name: Build site
+      - name: Build
         working-directory: docs
-        env:
-          # 🟢 GitHub token (rate limit 1000/hour)
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run build
+        run: npm run docs:build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/dist
+          path: docs/.vitepress/dist
 
   deploy:
     if: github.repository == 'OpenVdra/SmartSpawner'

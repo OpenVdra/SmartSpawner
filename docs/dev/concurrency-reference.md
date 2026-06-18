@@ -9,16 +9,16 @@ This document provides a comprehensive reference of all synchronization primitiv
 1. [Concurrency Architecture Overview](#1-concurrency-architecture-overview)
 2. [Lock & Synchronization Inventory](#2-lock--synchronization-inventory)
 3. [Detailed Lock Usage](#3-detailed-lock-usage)
-   - 3.1 [Fine-Grained Per-Spawner Locks](#31-fine-grained-per-spawner-locks)
-   - 3.2 [Global Location-Based Locks](#32-global-location-based-locks)
-   - 3.3 [CAS Guards (`AtomicBoolean`)](#33-cas-guards-atomicboolean)
-   - 3.4 [`synchronized` Methods](#34-synchronized-methods)
-   - 3.5 [`volatile` Fields](#35-volatile-fields)
-   - 3.6 [Concurrent Collections](#36-concurrent-collections)
+    - 3.1 [Fine-Grained Per-Spawner Locks](#31-fine-grained-per-spawner-locks)
+    - 3.2 [Global Location-Based Locks](#32-global-location-based-locks)
+    - 3.3 [CAS Guards (`AtomicBoolean`)](#33-cas-guards-atomicboolean)
+    - 3.4 [`synchronized` Methods](#34-synchronized-methods)
+    - 3.5 [`volatile` Fields](#35-volatile-fields)
+    - 3.6 [Concurrent Collections](#36-concurrent-collections)
 4. [Asynchronous Execution](#4-asynchronous-execution)
-   - 4.1 [Scheduler Abstraction](#41-scheduler-abstraction)
-   - 4.2 [`CompletableFuture` Async API](#42-completablefuture-async-api)
-   - 4.3 [Detailed Async Flows](#43-detailed-async-flows)
+    - 4.1 [Scheduler Abstraction](#41-scheduler-abstraction)
+    - 4.2 [`CompletableFuture` Async API](#42-completablefuture-async-api)
+    - 4.3 [Detailed Async Flows](#43-detailed-async-flows)
 5. [File-by-File Summary](#5-file-by-file-summary)
 6. [Patterns & Best Practices](#6-patterns--best-practices)
 7. [Warnings & Caveats](#7-warnings--caveats)
@@ -106,14 +106,14 @@ Each `SpawnerData` instance owns three separate `ReentrantLock`s following the *
 ```java
 dataLock.lock();
 try {
-    inventoryLock.lock();
+        inventoryLock.lock();
     try {
-        updateStackSize(...);
+updateStackSize(...);
     } finally {
-        inventoryLock.unlock();
+            inventoryLock.unlock();
     }
-} finally {
-    dataLock.unlock();
+            } finally {
+            dataLock.unlock();
 }
 ```
 
