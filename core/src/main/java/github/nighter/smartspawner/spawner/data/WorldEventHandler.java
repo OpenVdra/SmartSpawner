@@ -4,10 +4,14 @@ import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.Scheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldSaveEvent;
@@ -65,6 +69,8 @@ public class WorldEventHandler implements Listener {
         // Try to load any pending spawners for this world
         loadPendingSpawnersForWorld(worldName);
 
+        ensureHologramsInLoadedChunks(world);
+
         // If this is during server startup, also attempt initial load
         if (!initialLoadAttempted) {
             // Delay slightly to ensure world is fully ready
@@ -103,6 +109,47 @@ public class WorldEventHandler implements Listener {
 
         // Unload spawners from this world
         unloadSpawnersFromWorld(worldName);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onChunkLoad(ChunkLoadEvent event) {
+        ensureHologramsInChunk(event.getChunk());
+    }
+
+    private void ensureHologramsInChunk(Chunk chunk) {
+        if (!plugin.getConfig().getBoolean("hologram.enabled", false)) {
+            return;
+        }
+
+        World world = chunk.getWorld();
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+
+        Scheduler.runChunkTask(world, chunkX, chunkZ, () -> {
+            if (!world.isChunkLoaded(chunkX, chunkZ)) {
+                return;
+            }
+
+            Chunk loadedChunk = world.getChunkAt(chunkX, chunkZ);
+            for (BlockState state : loadedChunk.getTileEntities(
+                    block -> block.getType() == Material.SPAWNER, false)) {
+                SpawnerData spawner = plugin.getSpawnerManager()
+                        .getSpawnerByLocation(state.getBlock().getLocation());
+                if (spawner != null) {
+                    spawner.ensureHologram();
+                }
+            }
+        });
+    }
+
+    private void ensureHologramsInLoadedChunks(World world) {
+        if (!plugin.getConfig().getBoolean("hologram.enabled", false)) {
+            return;
+        }
+
+        for (Chunk loadedChunk : world.getLoadedChunks()) {
+            ensureHologramsInChunk(loadedChunk);
+        }
     }
 
     /**

@@ -164,9 +164,20 @@ public class SpawnerHologram {
     // Public update API
     // -------------------------------------------------------------------------
 
+    public boolean isAlive() {
+        TextDisplay display = textDisplay.get();
+        return display != null && display.isValid();
+    }
+
     public void updateText() {
         TextDisplay display = textDisplay.get();
-        if (display == null || entityType == null) return;
+        if (entityType == null) return;
+        if (display == null) return;
+        if (!display.isValid()) {
+            textDisplay.set(null);
+            createHologram();
+            return;
+        }
 
         // Compute the text on the calling (region) thread – avoids doing string work
         // inside the entity-thread lambda and keeps the lambda allocation tiny.
@@ -182,8 +193,14 @@ public class SpawnerHologram {
     public void updateData(int stackSize, EntityType entityType, long currentExp, long maxExp, int currentItems, int maxSlots) {
         TextDisplay display = textDisplay.get();
 
-        // Skip entirely when nothing has changed and the hologram already exists.
+        if (display != null && !display.isValid()) {
+            textDisplay.set(null);
+            display = null;
+        }
+
+        // Skip entirely when nothing has changed and the hologram display is still alive.
         if (display != null
+                && display.isValid()
                 && this.stackSize == stackSize
                 && this.entityType == entityType
                 && this.currentExp == currentExp
@@ -205,13 +222,14 @@ public class SpawnerHologram {
         } else {
             // Pre-compute text here (region thread) so the entity-thread lambda
             // only needs to call display.setText() – no extra task dispatch.
+            final TextDisplay activeDisplay = display;
             final String finalText = computeText();
-            Scheduler.runEntityTask(display, () -> {
-                if (!display.isValid()) {
+            Scheduler.runEntityTask(activeDisplay, () -> {
+                if (!activeDisplay.isValid()) {
                     textDisplay.set(null);
                     createHologram();
                 } else {
-                    display.setText(finalText);
+                    activeDisplay.setText(finalText);
                 }
             });
         }

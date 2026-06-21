@@ -37,7 +37,9 @@ public class HologramClearSubCommand extends BaseSubCommand {
         try {
             // Execute the Minecraft command to kill all text_display entities
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:kill @e[type=text_display]");
-            
+
+            plugin.getSpawnerManager().reloadAllHolograms();
+
             // Send success message to player
             plugin.getMessageService().sendMessage(sender, "hologram.cleared");
 

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -392,20 +393,56 @@ public class SpawnerData {
     }
 
     public void reloadHologramData() {
+        if (!plugin.getConfig().getBoolean("hologram.enabled", false)) {
+            removeHologram();
+            return;
+        }
         if (hologram != null) {
             hologram.remove();
-            createHologram();
         }
+        if (!isSpawnerChunkLoaded()) {
+            return;
+        }
+        createHologram();
     }
 
     public void refreshHologram() {
         if (plugin.getConfig().getBoolean("hologram.enabled", false)) {
-            if (hologram == null) {
-                createHologram();
-            }
-        } else if (hologram != null) {
+            ensureHologram();
+        } else {
             removeHologram();
         }
+    }
+
+    /**
+     * Recreate hologram display if missing or dead. No-op when display is alive.
+     * Must be invoked on or scheduled to the spawner's region thread.
+     */
+    public void ensureHologram() {
+        if (!plugin.getConfig().getBoolean("hologram.enabled", false)) {
+            removeHologram();
+            return;
+        }
+        if (!isSpawnerChunkLoaded()) {
+            return;
+        }
+        if (hologram != null && hologram.isAlive()) {
+            return;
+        }
+        if (hologram != null) {
+            hologram.remove();
+        }
+        createHologram();
+    }
+
+    private boolean isSpawnerChunkLoaded() {
+        if (spawnerLocation == null || spawnerLocation.getWorld() == null) {
+            return false;
+        }
+        World world = spawnerLocation.getWorld();
+        int chunkX = spawnerLocation.getBlockX() >> 4;
+        int chunkZ = spawnerLocation.getBlockZ() >> 4;
+        return world.isChunkLoaded(chunkX, chunkZ);
     }
 
     public void removeHologram() {
