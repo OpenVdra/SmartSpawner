@@ -180,6 +180,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
     public void onEnable() {
         long startTime = System.currentTimeMillis();
         instance = this;
+        Scheduler.init(this);
         Config.load(this);
 
         // Initialize plugin integrations
