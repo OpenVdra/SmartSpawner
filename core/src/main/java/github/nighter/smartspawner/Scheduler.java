@@ -375,9 +375,6 @@ public final class Scheduler {
 
         @Override
         public Task runTaskLater(Runnable runnable, long delayTicks) {
-            if (delayTicks <= 0) {
-                return runTask(runnable);
-            }
             try {
                 return wrap(Bukkit.getGlobalRegionScheduler().runDelayed(plugin, scheduledTask -> runnable.run(),
                         foliaDelay(delayTicks)));
@@ -436,9 +433,6 @@ public final class Scheduler {
 
         @Override
         public Task runEntityTaskLater(Entity entity, Runnable runnable, long delayTicks) {
-            if (delayTicks <= 0) {
-                return runEntityTask(entity, runnable);
-            }
             try {
                 return wrap(entity.getScheduler().runDelayed(plugin, scheduledTask -> runnable.run(), null,
                         foliaDelay(delayTicks)));
@@ -474,9 +468,6 @@ public final class Scheduler {
 
         @Override
         public Task runLocationTaskLater(Location location, Runnable runnable, long delayTicks) {
-            if (delayTicks <= 0) {
-                return runLocationTask(location, runnable);
-            }
             try {
                 return wrap(Bukkit.getRegionScheduler().runDelayed(plugin, location, scheduledTask -> runnable.run(),
                         foliaDelay(delayTicks)));
