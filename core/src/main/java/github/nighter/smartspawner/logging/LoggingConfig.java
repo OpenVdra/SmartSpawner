@@ -97,7 +97,7 @@ public class LoggingConfig {
         return new HashSet<>(enabledEvents);
     }
 
-    public boolean isEventEnabled(SpawnerEventType eventType) {
-        return !enabled || !enabledEvents.contains(eventType);
+    public boolean shouldLogEvent(SpawnerEventType eventType) {
+        return enabled && enabledEvents.contains(eventType);
     }
 }

@@ -58,7 +58,7 @@ public class SpawnerActionLogger {
      * Logs a spawner action asynchronously.
      */
     public void log(SpawnerLogEntry entry) {
-        if (!config.isEnabled() || config.isEventEnabled(entry.getEventType())) {
+        if (!config.isEnabled() || !config.shouldLogEvent(entry.getEventType())) {
             return;
         }
         
@@ -79,7 +79,7 @@ public class SpawnerActionLogger {
      * Logs a spawner action using a builder pattern.
      */
     public void log(SpawnerEventType eventType, LogEntryConsumer consumer) {
-        if (!config.isEnabled() || config.isEventEnabled(eventType)) {
+        if (!config.isEnabled() || !config.shouldLogEvent(eventType)) {
             return;
         }
         
