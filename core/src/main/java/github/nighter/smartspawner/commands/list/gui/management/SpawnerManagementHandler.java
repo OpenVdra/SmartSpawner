@@ -90,8 +90,8 @@ public class SpawnerManagementHandler implements Listener {
             // Open storage GUI directly
             Inventory storageInventory = plugin.getSpawnerStorageUI()
                     .createStorageInventory(player, spawner, 1, -1);
-            player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1.0f, 1.0f);
             player.openInventory(storageInventory);
+            plugin.getGuiButtonInteractionService().playOpenSound(player);
             return;
         }
 

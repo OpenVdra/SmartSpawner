@@ -114,6 +114,16 @@ public class GuiButtonInteractionService implements Listener {
         invalidSoundWarnings.clear();
     }
 
+    /**
+     * Plays the configured open_sound from main_gui.yml, if set.
+     */
+    public void playOpenSound(Player player) {
+        String openSound = plugin.getGuiLayoutConfig().getOpenSound();
+        if (openSound != null) {
+            playSound(player, new GuiButtonSoundData(openSound, 1.0f, 1.0f));
+        }
+    }
+
     private String formatRemainingTime(long remainingNanos) {
         long tenths = Math.max(1L, (remainingNanos + 99_999_999L) / 100_000_000L);
         if (tenths % 10L == 0L) {

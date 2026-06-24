@@ -213,6 +213,7 @@ public class SpawnerClickManager implements Listener {
         Inventory storageInventory = plugin.getSpawnerStorageUI()
                 .createStorageInventory(player, spawner, 1, -1);
         player.openInventory(storageInventory);
+        plugin.getGuiButtonInteractionService().playOpenSound(player);
     }
 
     private boolean isSpawnEgg(Material material) {
