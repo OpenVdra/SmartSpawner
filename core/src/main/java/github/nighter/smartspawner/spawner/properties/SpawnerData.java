@@ -3,7 +3,6 @@ package github.nighter.smartspawner.spawner.properties;
 import com.google.common.util.concurrent.AtomicDouble;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.hologram.SpawnerHologram;
-import github.nighter.smartspawner.nms.VersionInitializer;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.sell.SellResult;
@@ -47,7 +46,7 @@ public class SpawnerData {
     private final AtomicBoolean storageDirty = new AtomicBoolean(false);
 
     // Base values from config (immutable after load)
-    @Getter @Setter
+    @Getter
     private long baseMaxStoredExp;
     @Getter @Setter
     private int baseMaxStoragePages;
@@ -739,13 +738,6 @@ public class SpawnerData {
             meta.getEnchants().entrySet().stream()
                     .sorted(java.util.Map.Entry.comparingByKey(java.util.Comparator.comparing(enchantment -> enchantment.getKey().toString())))
                     .forEach(entry -> key.append(entry.getKey().getKey()).append(":").append(entry.getValue()).append(","));
-        }
-
-        // Add custom model data if present
-        if (itemSignature.hasItemMeta()) {
-            if (VersionInitializer.hasCustomModelData(meta)) {
-                key.append("_cmd:").append(VersionInitializer.getCustomModelDataString(meta));
-            }
         }
 
         // Add display name if present

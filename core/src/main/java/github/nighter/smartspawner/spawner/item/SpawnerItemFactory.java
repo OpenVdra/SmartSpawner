@@ -2,9 +2,9 @@ package github.nighter.smartspawner.spawner.item;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.nms.VersionInitializer;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -98,6 +98,10 @@ public class SpawnerItemFactory {
             placeholders.put("exp", String.valueOf(lootConfig != null ? lootConfig.experience() : 0));
             List<LootItem> sortedLootItems = new ArrayList<>(lootItems);
             sortedLootItems.sort(Comparator.comparing(item -> item.material().name()));
+            String nameKey = itemKey("smart_spawner", entityType.name(), "name");
+            String lootItemsKey = itemKey("smart_spawner", entityType.name(), "loot_items");
+            String emptyLootKey = itemKey("smart_spawner", entityType.name(), "loot_items_empty");
+            String loreKey = itemKey("smart_spawner", entityType.name(), "lore");
             // Build translatable loot lines – each player sees item names in their own client language
             List<Component> lootComponents = new ArrayList<>(sortedLootItems.size());
             for (LootItem item : sortedLootItems) {
@@ -106,20 +110,19 @@ public class SpawnerItemFactory {
                         item.minAmount() + "-" + item.maxAmount();
                 String chance = String.format("%.1f", item.chance());
                 lootComponents.add(languageManager.buildTranslatableLootLine(
-                        "custom_item.spawner.loot_items", item.material(), amountRange, chance));
+                        lootItemsKey, item.material(), amountRange, chance));
             }
-            String displayName = languageManager.getItemName("custom_item.spawner.name", placeholders);
+            String displayName = languageManager.getItemName(nameKey, placeholders);
             meta.setDisplayName(displayName);
             List<Component> lore = languageManager.buildItemLoreAsComponents(
-                    "custom_item.spawner.lore", placeholders, lootComponents,
-                    "custom_item.spawner.loot_items_empty");
+                    loreKey, placeholders, lootComponents, emptyLootKey);
             if (!lore.isEmpty()) {
                 meta.lore(lore);
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
             spawner.setItemMeta(meta);
         }
-        VersionInitializer.hideTooltip(spawner);
+        ItemTooltipUtil.hideTooltip(spawner);
         if (amount == 1) {
             spawnerItemCache.put(entityType, spawner.clone());
             cacheTimestamps.put(entityType, System.currentTimeMillis());
@@ -160,15 +163,17 @@ public class SpawnerItemFactory {
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("entity", entityTypeName);
             placeholders.put("ᴇɴᴛɪᴛʏ", languageManager.getSmallCaps(entityTypeName));
-            String displayName = languageManager.getItemName("custom_item.vanilla_spawner.name", placeholders);
-            if (displayName != null && !displayName.isEmpty() && !displayName.equals("custom_item.vanilla_spawner.name")) {
+            String nameKey = itemKey("vanilla_spawner", entityType.name(), "name");
+            String loreKey = itemKey("vanilla_spawner", entityType.name(), "lore");
+            String displayName = languageManager.getItemName(nameKey, placeholders);
+            if (displayName != null && !displayName.isEmpty() && !displayName.equals(nameKey)) {
                 meta.setDisplayName(displayName);
             }
-            List<String> lore = languageManager.getItemLoreWithMultilinePlaceholders("custom_item.vanilla_spawner.lore", placeholders);
+            List<String> lore = languageManager.getItemLoreWithMultilinePlaceholders(loreKey, placeholders);
             if (lore != null && !lore.isEmpty()) {
                 meta.setLore(lore);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-                VersionInitializer.hideTooltip(spawner);
+                ItemTooltipUtil.hideTooltip(spawner);
             }
             meta.getPersistentDataContainer().set(
                     VANILLA_SPAWNER_KEY,
@@ -212,6 +217,10 @@ public class SpawnerItemFactory {
             // Build loot items list similar to regular spawners
             List<LootItem> sortedLootItems = new ArrayList<>(lootItems);
             sortedLootItems.sort(Comparator.comparing(item -> item.material().name()));
+            String nameKey = itemKey("item_spawner", itemMaterial.name(), "name");
+            String lootItemsKey = itemKey("item_spawner", itemMaterial.name(), "loot_items");
+            String emptyLootKey = itemKey("item_spawner", itemMaterial.name(), "loot_items_empty");
+            String loreKey = itemKey("item_spawner", itemMaterial.name(), "lore");
             // Build translatable loot lines – each player sees item names in their own client language
             List<Component> lootComponents = new ArrayList<>(sortedLootItems.size());
             for (LootItem item : sortedLootItems) {
@@ -220,19 +229,17 @@ public class SpawnerItemFactory {
                         item.minAmount() + "-" + item.maxAmount();
                 String chance = String.format("%.1f", item.chance());
                 lootComponents.add(languageManager.buildTranslatableLootLine(
-                        "custom_item.item_spawner.loot_items", item.material(), amountRange, chance));
+                        lootItemsKey, item.material(), amountRange, chance));
             }
 
-            String displayName = languageManager.getItemName("custom_item.item_spawner.name", placeholders);
-            if (displayName == null || displayName.isEmpty() || displayName.equals("custom_item.item_spawner.name")) {
-                // Fallback to a generic name if not configured
-                displayName = "§6" + itemName + " Spawner";
+            String displayName = languageManager.getItemName(nameKey, placeholders);
+            if (displayName == null || displayName.isEmpty() || displayName.equals(nameKey)) {
+                displayName = itemName;
             }
             meta.setDisplayName(displayName);
 
             List<Component> lore = languageManager.buildItemLoreAsComponents(
-                    "custom_item.item_spawner.lore", placeholders, lootComponents,
-                    "custom_item.item_spawner.loot_items_empty");
+                    loreKey, placeholders, lootComponents, emptyLootKey);
             if (!lore.isEmpty()) {
                 meta.lore(lore);
             }
@@ -248,7 +255,11 @@ public class SpawnerItemFactory {
             
             spawner.setItemMeta(meta);
         }
-        VersionInitializer.hideTooltip(spawner);
+        ItemTooltipUtil.hideTooltip(spawner);
         return spawner;
+    }
+
+    private String itemKey(String section, String variant, String field) {
+        return languageManager.getItemVariantKey(section, variant, field);
     }
 }

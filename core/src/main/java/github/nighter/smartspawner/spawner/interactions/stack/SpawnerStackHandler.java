@@ -2,6 +2,7 @@ package github.nighter.smartspawner.spawner.interactions.stack;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.api.events.SpawnerStackEvent;
+import github.nighter.smartspawner.config.Config;
 import github.nighter.smartspawner.hooks.protections.CheckStackBlock;
 import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
@@ -55,7 +56,7 @@ public class SpawnerStackHandler {
     public void handleSpawnerStacking(Player player, Block block, SpawnerData spawnerData, ItemStack itemInHand) {
         // Block stacking while a sell is in progress
         if (spawnerData.isSelling()) {
-            messageService.sendMessage(player, "spawner_selling");
+            messageService.sendMessage(player, "action_in_progress");
             return;
         }
 
@@ -107,7 +108,7 @@ public class SpawnerStackHandler {
 
         // Check if either the target or the item is a vanilla spawner
         if (SpawnerTypeChecker.isVanillaSpawner(itemInHand)) {
-            messageService.sendMessage(player, "spawner_invalid");
+            messageService.sendMessage(player, "spawner_different");
             return false;
         }
 
@@ -135,7 +136,7 @@ public class SpawnerStackHandler {
             // Always check the entity type directly without caching
             Optional<EntityType> handEntityTypeOpt = getEntityTypeFromItem(itemInHand);
             if (!handEntityTypeOpt.isPresent()) {
-                messageService.sendMessage(player, "spawner_invalid");
+                messageService.sendMessage(player, "spawner_different");
                 return false;
             }
 
@@ -245,7 +246,7 @@ public class SpawnerStackHandler {
     }
 
     private void showStackAnimation(SpawnerData spawner, int newStack, Player player) {
-        if (plugin.getConfig().getBoolean("particle.spawner_stack", true)) {
+        if (Config.get().isSpawnerStackParticlesEnabled()) {
             Location loc = spawner.getSpawnerLocation();
             World world = loc.getWorld();
 

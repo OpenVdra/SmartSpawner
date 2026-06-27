@@ -3,13 +3,11 @@ package github.nighter.smartspawner.commands.near;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,42 +25,34 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Manages per-player spawner highlight sessions.
- * Scans asynchronously and renders BlockDisplay entities (visible only to
- * the requesting player, with glow outline visible through walls).
+ * Scans asynchronously and renders BlockDisplay entities visible only to
+ * the requesting player, with a glow outline visible through walls.
  */
 public class SpawnerHighlightManager implements Listener {
 
     public static final int MAX_RADIUS = 10000;
-    // Hard cap on how many highlights can be shown to avoid client-side lag
     private static final int MAX_HIGHLIGHTS = 10000;
-    // How many ticks highlights stay visible (30 s)
-    private static final long HIGHLIGHT_DURATION_TICKS = 30 * 20L;
-    // How many ticks the "result" bossbar stays visible after the scan finishes (5 s)
-    private static final long BOSSBAR_RESULT_TICKS = 5 * 20L;
+    private static final long HIGHLIGHT_DURATION_TICKS = 30 * 20L; // 30 seconds
+    private static final long BOSSBAR_RESULT_TICKS = 5 * 20L; // 5 seconds
+    
+    private static final String BOSSBAR_ANALYZING_FALLBACK = "Scanning nearby spawners... {percent}%";
+    private static final String BOSSBAR_FOUND_FALLBACK = "Found {count} spawner(s) within {radius} blocks.";
+    private static final String BOSSBAR_NOT_FOUND_FALLBACK = "No spawners found within {radius} blocks.";
+    private static final String VIEW_GUI_BUTTON_FALLBACK = " [View in GUI]";
 
     private final SmartSpawner plugin;
-    /** One session per online player UUID. */
     private final Map<UUID, ScanSession> activeSessions = new ConcurrentHashMap<>();
 
     public SpawnerHighlightManager(SmartSpawner plugin) {
         this.plugin = plugin;
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Inner session record
-    // ──────────────────────────────────────────────────────────────────────────
-
     private static final class ScanSession {
         final UUID playerUUID;
         final BossBar bossBar;
-        /** Highlight entities spawned for this session. CopyOnWriteArrayList for thread safety
-         *  since location tasks (add) and cleanup (iterate/clear) run on different threads. */
         final CopyOnWriteArrayList<BlockDisplay> highlights = new CopyOnWriteArrayList<>();
-        /** Set to true to abort the async scan or skip finalisation. */
         final AtomicBoolean cancelled = new AtomicBoolean(false);
-        /** Task that removes highlights after the expiry delay. */
         volatile Scheduler.Task expiryTask;
-        /** Snapshot of SpawnerData found during the scan – used by the near-result GUI. */
         volatile List<SpawnerData> scannedSpawners = Collections.emptyList();
 
         ScanSession(UUID playerUUID, BossBar bossBar) {
@@ -70,10 +60,6 @@ public class SpawnerHighlightManager implements Listener {
             this.bossBar = bossBar;
         }
     }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Public API
-    // ──────────────────────────────────────────────────────────────────────────
 
     /**
      * Start a new scan for {@code player} in radius {@code radius}.
@@ -83,14 +69,12 @@ public class SpawnerHighlightManager implements Listener {
     public void startScan(Player player, int radius) {
         UUID uuid = player.getUniqueId();
 
-        // Cancel and clean up any existing session first
         ScanSession existing = activeSessions.remove(uuid);
         if (existing != null) {
             existing.cancelled.set(true);
             cleanupSession(existing, player);
         }
 
-        // Snapshot the player location synchronously – async access is unsafe
         final Location playerLoc = player.getLocation().clone();
         final String worldName = playerLoc.getWorld().getName();
         final double radiusSq = (double) radius * radius;
@@ -98,7 +82,7 @@ public class SpawnerHighlightManager implements Listener {
 
         BossBar bossBar = BossBar.bossBar(
                 Component.text(plugin.getLanguageManager().getCommandConfig(
-                        "near.bossbar.analyzing", "\uD83D\uDD0D \u1D00\u0274\u1D00\u029F\u028F\u1D22\u026A\u0274\u0262... {percent}%",
+                        "near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
                         Map.of("percent", "0")), NamedTextColor.AQUA),
                 0f,
                 BossBar.Color.BLUE,
@@ -108,12 +92,11 @@ public class SpawnerHighlightManager implements Listener {
         ScanSession session = new ScanSession(uuid, bossBar);
         activeSessions.put(uuid, session);
         player.showBossBar(bossBar);
-        player.updateCommands(); // reveal cancel/gui in tab-completion
+        player.updateCommands();
 
         plugin.getMessageService().sendMessage(player, "near.scan_start",
                 Map.of("radius", String.valueOf(radius)));
 
-        // ── Async scan ───────────────────────────────────────────────────────
         Scheduler.runTaskAsync(() -> {
             if (session.cancelled.get()) return;
 
@@ -127,7 +110,6 @@ public class SpawnerHighlightManager implements Listener {
                 return;
             }
 
-            // Snapshot to avoid ConcurrentModificationException
             List<SpawnerData> snapshot = new ArrayList<>(worldSpawners);
             int total = snapshot.size();
             List<SpawnerData> nearby = new ArrayList<>();
@@ -147,12 +129,11 @@ public class SpawnerHighlightManager implements Listener {
                     if (nearby.size() >= MAX_HIGHLIGHTS) break;
                 }
 
-                // Update bossbar every 50 spawners to minimise overhead
                 if (i % 50 == 0 || i == total - 1) {
                     float progress = (float) (i + 1) / total;
                     int pct = (int) (progress * 100);
                     bossBar.name(Component.text(plugin.getLanguageManager().getCommandConfig(
-                            "near.bossbar.analyzing", "\uD83D\uDD0D \u1D00\u0274\u1D00\u029F\u028F\u1D22\u026A\u0274\u0262... {percent}%",
+                            "near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
                             Map.of("percent", String.valueOf(pct))), NamedTextColor.AQUA));
                     bossBar.progress(progress);
                 }
@@ -180,17 +161,13 @@ public class SpawnerHighlightManager implements Listener {
         }
         session.cancelled.set(true);
         cleanupSession(session, player);
-        player.updateCommands(); // hide cancel/gui from tab-completion
+        player.updateCommands();
         plugin.getMessageService().sendMessage(player, "near.scan_cancelled");
     }
 
     public boolean hasActiveSession(UUID uuid) {
         return activeSessions.containsKey(uuid);
     }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Internal helpers – all called on main thread unless stated otherwise
-    // ──────────────────────────────────────────────────────────────────────────
 
     /**
      * Returns an unmodifiable snapshot of the spawners from the player's active session,
@@ -201,7 +178,6 @@ public class SpawnerHighlightManager implements Listener {
         return session != null ? Collections.unmodifiableList(session.scannedSpawners) : Collections.emptyList();
     }
 
-    /** Called on the main thread once the async scan completes. */
     private void finalizeScan(Player player, ScanSession session,
                                List<SpawnerData> spawners, int radius) {
         if (!player.isOnline()) {
@@ -210,35 +186,29 @@ public class SpawnerHighlightManager implements Listener {
         }
 
         int count = spawners.size();
-
-        // Store the result in the session so the GUI can access it later
         session.scannedSpawners = new ArrayList<>(spawners);
 
-        // Update bossbar to show the final result
         if (count == 0) {
             session.bossBar.name(Component.text(plugin.getLanguageManager().getCommandConfig(
-                    "near.bossbar.not_found", "\u2717 \u0274\u1D0F \u0280\u1D18\u1D00\u1D21\u0274\u1D07\u0280\u0280 \uA730\u1D0F\u1D1C\u0274\u1D05 \u1D21\u026A\u1D1B\u029C\u026A\u0274 {radius} \u0299\u029F\u1D0F\u1D04\u1D0B\u0280",
+                    "near.bossbar.not_found", BOSSBAR_NOT_FOUND_FALLBACK,
                     Map.of("radius", String.valueOf(radius))), NamedTextColor.RED));
             session.bossBar.color(BossBar.Color.RED);
         } else {
             session.bossBar.name(Component.text(plugin.getLanguageManager().getCommandConfig(
-                    "near.bossbar.found", "\u2713 \uA730\u1D0F\u1D1C\u0274\u1D05 {count} \u0280\u1D18\u1D00\u1D21\u0274\u1D07\u0280(\u0280) \u1D21\u026A\u1D1B\u029C\u026A\u0274 {radius} \u0299\u029F\u1D0F\u1D04\u1D0B\u0280",
+                    "near.bossbar.found", BOSSBAR_FOUND_FALLBACK,
                     Map.of("count", String.valueOf(count), "radius", String.valueOf(radius))), NamedTextColor.GREEN));
             session.bossBar.color(BossBar.Color.GREEN);
         }
         session.bossBar.progress(1f);
 
-        // Spawn highlight entities (main thread)
         for (SpawnerData spawner : spawners) {
             if (session.cancelled.get()) return;
             Location loc = spawner.getSpawnerLocation();
             if (loc != null) spawnHighlight(player, session, loc);
         }
 
-        // Chat result message – for the found case, append the view_gui button on the same line
         Map<String, String> resultPlaceholders = Map.of("count", String.valueOf(count), "radius", String.valueOf(radius));
         if (count > 0) {
-            // Deserialise scan_found to a Component so we can append inline
             String foundMsg = plugin.getLanguageManager().getMessage("near.scan_found", resultPlaceholders);
             Component textPart = (foundMsg != null && !foundMsg.startsWith("Missing"))
                     ? LegacyComponentSerializer.legacySection().deserialize(foundMsg)
@@ -246,7 +216,7 @@ public class SpawnerHighlightManager implements Listener {
 
             Component viewGuiHint = Component.text()
                     .append(Component.text(
-                            plugin.getLanguageManager().getCommandConfig("near.view_gui.button", "[\u1D20\u026A\u1D07\u1D21 \u026A\u0274 \u0262\u1D1C\u026A]"),
+                            plugin.getLanguageManager().getCommandConfig("near.view_gui.button", VIEW_GUI_BUTTON_FALLBACK),
                             NamedTextColor.GOLD)
                             .clickEvent(ClickEvent.callback(audience -> {
                                 if (audience instanceof Player clickPlayer) {
@@ -263,7 +233,6 @@ public class SpawnerHighlightManager implements Listener {
 
             player.sendMessage(Component.text().append(textPart).append(viewGuiHint).build());
 
-            // Play the scan_found sound (normally done by MessageService)
             String soundKey = plugin.getLanguageManager().getSound("near.scan_found");
             if (soundKey != null) {
                 try {
@@ -274,7 +243,6 @@ public class SpawnerHighlightManager implements Listener {
             plugin.getMessageService().sendMessage(player, "near.scan_none", resultPlaceholders);
         }
 
-        // Hide bossbar after a short delay – dispatched to player's entity region (Folia)
         Scheduler.runTaskLater(() -> {
             Player p = plugin.getServer().getPlayer(session.playerUUID);
             if (p != null && p.isOnline()) {
@@ -282,16 +250,15 @@ public class SpawnerHighlightManager implements Listener {
             }
         }, BOSSBAR_RESULT_TICKS);
 
-        // Auto-remove highlights after HIGHLIGHT_DURATION
         session.expiryTask = Scheduler.runTaskLater(() -> {
             ScanSession current = activeSessions.get(session.playerUUID);
-            if (current != session) return; // a newer session replaced this one
+            if (current != session) return;
             activeSessions.remove(session.playerUUID);
-            session.cancelled.set(true); // stop any in-flight location tasks from spawning
+            session.cancelled.set(true);
             Player p = plugin.getServer().getPlayer(session.playerUUID);
             cleanupSession(session, p);
             if (p != null && p.isOnline()) {
-                p.updateCommands(); // hide cancel/gui from tab-completion
+                p.updateCommands();
                 plugin.getMessageService().sendMessage(p, "near.highlights_expired");
             }
         }, HIGHLIGHT_DURATION_TICKS);
@@ -302,7 +269,6 @@ public class SpawnerHighlightManager implements Listener {
      * then shows it to the player on their entity region thread.
      */
     private void spawnHighlight(Player player, ScanSession session, Location loc) {
-        // world.spawn() must run on the region thread that owns this chunk in Folia
         Scheduler.runLocationTask(loc, () -> {
             if (session.cancelled.get() || !player.isOnline()) return;
             World world = loc.getWorld();
@@ -315,13 +281,10 @@ public class SpawnerHighlightManager implements Listener {
                 bd.setGlowing(true);
                 bd.setVisibleByDefault(false);
                 bd.setPersistent(false);
-                // bd.setBrightness(new Display.Brightness(15, 15));
-                bd.setGlowing(true);
             });
 
             session.highlights.add(display);
 
-            // player.showEntity() must run on the player's entity region in Folia
             Scheduler.runEntityTask(player, () -> {
                 if (player.isOnline()) player.showEntity(plugin, display);
             });
@@ -335,15 +298,12 @@ public class SpawnerHighlightManager implements Listener {
      */
     private void cleanupSession(ScanSession session, Player player) {
         if (player != null && player.isOnline()) {
-            // hideBossBar must run on the player's entity region in Folia
-            final Player p = player;
-            Scheduler.runEntityTask(player, () -> p.hideBossBar(session.bossBar));
+            Scheduler.runEntityTask(player, () -> player.hideBossBar(session.bossBar));
         }
         if (session.expiryTask != null) {
             session.expiryTask.cancel();
             session.expiryTask = null;
         }
-        // bd.remove() must run on each entity's region thread in Folia
         List<BlockDisplay> copy = new ArrayList<>(session.highlights);
         session.highlights.clear();
         for (BlockDisplay bd : copy) {
@@ -355,22 +315,13 @@ public class SpawnerHighlightManager implements Listener {
         }
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Event listener
-    // ──────────────────────────────────────────────────────────────────────────
-
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         ScanSession session = activeSessions.remove(event.getPlayer().getUniqueId());
         if (session == null) return;
         session.cancelled.set(true);
-        // Pass null – bossbar disappears automatically on disconnect
         cleanupSession(session, null);
     }
-
-    // ──────────────────────────────────────────────────────────────────────────
-    //  Plugin lifecycle
-    // ──────────────────────────────────────────────────────────────────────────
 
     /** Called when the plugin is disabled to tear down all active sessions. */
     public void cleanup() {

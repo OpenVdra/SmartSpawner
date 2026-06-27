@@ -4,7 +4,7 @@ import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
@@ -35,21 +35,13 @@ public class SpawnerSellConfirmUI {
     private final SmartSpawner plugin;
     private final LanguageManager languageManager;
 
-    // Cached layout - loaded once for performance
-    private GuiLayout cachedLayout;
-
     public SpawnerSellConfirmUI(SmartSpawner plugin) {
         this.plugin = plugin;
         this.languageManager = plugin.getLanguageManager();
-        loadLayout();
-    }
-
-    private void loadLayout() {
-        this.cachedLayout = plugin.getGuiLayoutConfig().getCurrentSellConfirmLayout();
     }
 
     public void reload() {
-        loadLayout();
+        // No-op: layout is resolved per-context via GuiLayoutConfig
     }
 
     public enum PreviousGui {
@@ -58,13 +50,28 @@ public class SpawnerSellConfirmUI {
     }
 
     public void openSellConfirmGui(Player player, SpawnerData spawner, PreviousGui previousGui, boolean collectExp) {
+        openSellConfirmGui(player, spawner, previousGui, collectExp, null, "click");
+    }
+
+    public void openSellConfirmGui(Player player, SpawnerData spawner, PreviousGui previousGui,
+                                   boolean collectExp, GuiButton sourceButton) {
+        openSellConfirmGui(player, spawner, previousGui, collectExp, sourceButton, "click");
+    }
+
+    public void openSellConfirmGui(Player player, SpawnerData spawner, PreviousGui previousGui,
+                                   boolean collectExp, GuiButton sourceButton,
+                                   String sourceClickType) {
         if (player == null || spawner == null) {
             return;
         }
 
         // Check if there are items to sell before opening
         if (spawner.getVirtualInventory().getUsedSlots() == 0) {
-            plugin.getMessageService().sendMessage(player, "no_items");
+            plugin.getMessageService().sendMessage(player, "spawner_storage_empty");
+            if (sourceButton != null) {
+                plugin.getGuiButtonInteractionService().playFailSound(
+                        player, sourceButton, sourceClickType);
+            }
             return;
         }
 
@@ -75,13 +82,27 @@ public class SpawnerSellConfirmUI {
                 return;
             }
 
-            // Collect exp if requested
+            // Collect exp silently so we can send a single combined sell+exp message
+            long expCollected = 0;
+            long expMending = 0;
             if (collectExp) {
-                plugin.getSpawnerMenuAction().handleExpBottleClick(player, spawner, true);
+                long[] expData = plugin.getSpawnerMenuAction().collectExpSilently(player, spawner);
+                expCollected = expData[0];
+                expMending = expData[1];
             }
 
             player.closeInventory();
-            plugin.getSpawnerSellManager().sellAllItems(player, spawner, null);
+            Runnable onComplete = sourceButton == null ? null : () -> {
+                if (spawner.getVirtualInventory().getUsedSlots() == 0) {
+                    plugin.getGuiButtonInteractionService().playSuccessSound(
+                            player, sourceButton, sourceClickType);
+                } else {
+                    plugin.getGuiButtonInteractionService().playFailSound(
+                            player, sourceButton, sourceClickType);
+                }
+            };
+            plugin.getSpawnerSellManager().sellAllItems(
+                    player, spawner, onComplete, expCollected, expMending);
             return;
         }
 
@@ -90,28 +111,38 @@ public class SpawnerSellConfirmUI {
             return;
         }
 
+        if (sourceButton != null) {
+            plugin.getGuiButtonInteractionService().playNavigateSound(
+                    player, sourceButton, sourceClickType);
+        }
+
         // Cache title - no placeholders needed
         String title = languageManager.getGuiTitle("gui_title_sell_confirm", null);
-        Inventory gui = Bukkit.createInventory(new SpawnerSellConfirmHolder(spawner, previousGui, collectExp), GUI_SIZE, title);
+        GuiLayout layout = plugin.getGuiLayoutConfig().getSellConfirmLayout(spawner, player);
+        Inventory gui = Bukkit.createInventory(
+                new SpawnerSellConfirmHolder(spawner, previousGui, collectExp, layout), GUI_SIZE, title);
 
-        populateSellConfirmGui(gui, player, spawner, collectExp);
+        populateSellConfirmGui(gui, player, spawner, collectExp, layout);
 
         player.openInventory(gui);
     }
 
-    private void populateSellConfirmGui(Inventory gui, Player player, SpawnerData spawner, boolean collectExp) {
+    private void populateSellConfirmGui(Inventory gui, Player player, SpawnerData spawner,
+                                        boolean collectExp, GuiLayout layout) {
         // OPTIMIZATION: Create placeholders once and reuse for all buttons
         Map<String, String> placeholders = createPlaceholders(spawner, collectExp);
 
-        // OPTIMIZATION: Use cached layout instead of querying every time
-        if (cachedLayout == null) {
+        if (layout == null) {
             plugin.getLogger().warning("Sell confirm layout not loaded, using empty GUI");
             return;
         }
 
         // Iterate through all buttons in the layout
-        for (GuiButton button : cachedLayout.getAllButtons().values()) {
+        for (GuiButton button : layout.getAllButtons().values()) {
             if (!button.isEnabled()) {
+                continue;
+            }
+            if (button.hasCondition() && !evaluateButtonCondition(button)) {
                 continue;
             }
 
@@ -146,6 +177,14 @@ public class SpawnerSellConfirmUI {
 
             gui.setItem(button.getSlot(), buttonItem);
         }
+    }
+
+    private boolean evaluateButtonCondition(GuiButton button) {
+        return switch (button.getCondition()) {
+            case "sell_integration", "shop_integration" -> plugin.hasSellIntegration();
+            case "no_sell_integration", "no_shop_integration" -> !plugin.hasSellIntegration();
+            default -> true;
+        };
     }
 
     private ItemStack createCancelButton(Material material, Map<String, String> placeholders) {
@@ -194,7 +233,7 @@ public class SpawnerSellConfirmUI {
         }
 
         if (spawnerItem.getType() == Material.SPAWNER) {
-            VersionInitializer.hideTooltip(spawnerItem);
+            ItemTooltipUtil.hideTooltip(spawnerItem);
         }
 
         return spawnerItem;

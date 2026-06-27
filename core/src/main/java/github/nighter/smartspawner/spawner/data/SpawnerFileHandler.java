@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -380,7 +381,7 @@ public class SpawnerFileHandler implements SpawnerStorage {
                         spawner.getSpawnerStop().set(Boolean.parseBoolean(settings[3]));
                         spawner.setSpawnDelay(parseClampedLong(settings[4], 1L, Long.MAX_VALUE));
                         spawner.setMaxSpawnerLootSlots(Integer.parseInt(settings[5]));
-                        spawner.setMaxStoredExp(Integer.parseInt(settings[6]));
+                        spawner.setMaxStoredExp(parseClampedLong(settings[6], 0L, Long.MAX_VALUE));
                         spawner.setMinMobs(Integer.parseInt(settings[7]));
                         spawner.setMaxMobs(Integer.parseInt(settings[8]));
                         // Load maxStackSize BEFORE stackSize so the saved limit is in place
@@ -398,7 +399,7 @@ public class SpawnerFileHandler implements SpawnerStorage {
                     spawner.getSpawnerStop().set(Boolean.parseBoolean(settings[3]));
                     spawner.setSpawnDelay(parseClampedLong(settings[4], 1L, Long.MAX_VALUE));
                     spawner.setMaxSpawnerLootSlots(Integer.parseInt(settings[5]));
-                    spawner.setMaxStoredExp(Integer.parseInt(settings[6]));
+                    spawner.setMaxStoredExp(parseClampedLong(settings[6], 0L, Long.MAX_VALUE));
                     spawner.setMinMobs(Integer.parseInt(settings[7]));
                     spawner.setMaxMobs(Integer.parseInt(settings[8]));
                     spawner.setStackSize(parseClampedInt(settings[9], 1, Integer.MAX_VALUE), restartHopper);
@@ -547,9 +548,9 @@ public class SpawnerFileHandler implements SpawnerStorage {
     }
 
     private long parseClampedLong(String raw, long min, long max) {
-        java.math.BigInteger value = new java.math.BigInteger(raw);
-        java.math.BigInteger minValue = java.math.BigInteger.valueOf(min);
-        java.math.BigInteger maxValue = java.math.BigInteger.valueOf(max);
+        BigInteger value = new BigInteger(raw);
+        BigInteger minValue = BigInteger.valueOf(min);
+        BigInteger maxValue = BigInteger.valueOf(max);
 
         if (value.compareTo(minValue) < 0) {
             return min;

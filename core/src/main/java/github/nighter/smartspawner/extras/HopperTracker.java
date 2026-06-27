@@ -37,6 +37,15 @@ public class HopperTracker implements Listener {
         registry.add(new BlockPos(hopper.getLocation()));
     }
 
+    public void removeBelowSpawner(Block spawner) {
+        if (!plugin.getHopperConfig().isHopperEnabled()) return;
+
+        Block hopper = spawner.getRelative(BlockFace.DOWN);
+        if (hopper.getType() == Material.HOPPER) {
+            registry.remove(new BlockPos(hopper.getLocation()));
+        }
+    }
+
     public void scanLoadedWorlds() {
         for (var world : plugin.getServer().getWorlds()) {
             scanLoadedChunksInWorld(world);

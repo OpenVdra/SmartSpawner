@@ -5,14 +5,19 @@
 # Format:
 #   slot_X:                    # X = slot number (1-9)
 #     material: MATERIAL_NAME  # Material to display (use PLAYER_HEAD for spawner mob head)
+#     custom_texture: "..."    # Optional: Custom texture hash for PLAYER_HEAD (similar to spawners_settings.yml)
 #     enabled: true/false      # Show/hide button
 #     info_button: true        # Optional: Mark as spawner mob-head info button (shows loot list)
-#     click: "action"          # Action for any click (left/right/shift)
-#     left_click: "action"     # Action for left click only (overrides click)
-#     right_click: "action"    # Action for right click only (overrides click)
+#     click:
+#       action: "action"
+#       sound: ui.button.click
+#       sound_success: entity.item.pickup
+#       sound_fail: block.note_block.pling
 #     if:                      # Optional: conditional actions
 #       condition_name:
-#         click: "action"      # Actions when condition is met
+#         click:
+#           action: "action"
+#     cooldown: "5s"           # Optional: Per-player cooldown; omitted by default
 #
 # Conditions:
 #   sell_integration: When sell/shop integration is enabled
@@ -36,19 +41,28 @@
 slot_1:
   material: SPECTRAL_ARROW
   enabled: true
-  click: "previous_page"
+  click:
+    action: "previous_page"
+    sound: ui.button.click
 
 # Item sort button
 slot_3:
   material: CAULDRON
   enabled: true
-  click: "sort_items"
+  click:
+    action: "sort_items"
+    sound_success:
+      name: ui.button.click
+      pitch: 1.2
+    sound_fail: block.note_block.pling
 
 # Item filter button
 slot_4:
   material: HOPPER
   enabled: true
-  click: "open_filter"
+  click:
+    action: "open_filter"
+    sound: ui.button.click
 
 # Multi-purpose button (sell with integration, return without)
 slot_5:
@@ -56,26 +70,42 @@ slot_5:
   enabled: true
   if:
     sell_integration:
-      click: "sell_all"
+      click:
+        action: "sell_all"
+        sound: ui.button.click
+        sound_success: block.note_block.bell
+        sound_fail: block.note_block.pling
     no_sell_integration:
       material: RED_STAINED_GLASS_PANE
-      click: "return_main"
+      click:
+        action: "return_main"
+        sound: ui.button.click
 
 # Take all items button
 slot_6:
   material: BUNDLE
   enabled: true
-  click: "take_all"
+  click:
+    action: "take_all"
+    sound_success: entity.item.pickup
+    sound_fail: block.note_block.pling
 
 # Drop page button
 slot_7:
   material: DROPPER
   enabled: true
-  click: "drop_page"
+  click:
+    action: "drop_page"
+    sound_success:
+      name: entity.item.pickup
+      volume: 0.8
+      pitch: 0.8
+    sound_fail: block.note_block.pling
 
 # Next page button
 slot_9:
   material: SPECTRAL_ARROW
   enabled: true
-  click: "next_page"
-
+  click:
+    action: "next_page"
+    sound: ui.button.click

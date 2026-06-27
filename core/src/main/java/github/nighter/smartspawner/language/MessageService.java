@@ -69,7 +69,7 @@ public class MessageService {
         // Validate the message key exists (using cache to avoid lookups)
         if (!checkKeyExists(key)) {
             plugin.getLogger().warning("Message key not found: " + key);
-            sender.sendMessage("§cMissing message key: " + key);
+            sendMissingMessageKeyNotice(sender, key);
             return;
         }
 
@@ -118,7 +118,6 @@ public class MessageService {
         // Validate the message key exists
         if (!languageManager.keyExists(key)) {
             plugin.getLogger().warning("Message key not found: " + key);
-            plugin.getLogger().warning("§cMissing message key: " + key);
             return;
         }
 
@@ -132,6 +131,13 @@ public class MessageService {
         } else {
             // Log a warning if we still couldn't get the message
             plugin.getLogger().warning("Failed to retrieve message for key: " + key);
+        }
+    }
+
+    private void sendMissingMessageKeyNotice(CommandSender sender, String missingKey) {
+        String message = languageManager.getMessage("missing_message_key", Map.of("key", missingKey));
+        if (message != null && !message.startsWith("Missing message:")) {
+            sender.sendMessage(message);
         }
     }
 

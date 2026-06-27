@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum FilterOption {
-    ALL("filter.all"),
-    ACTIVE("filter.active"),
-    INACTIVE("filter.inactive");
+    ALL("filter.option_name.all"),
+    ACTIVE("filter.option_name.active"),
+    INACTIVE("filter.option_name.inactive");
 
     private final String langPath;
 

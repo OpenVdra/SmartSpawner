@@ -2,6 +2,9 @@
 # Number formatting and mob display names used throughout the plugin.
 
 # ──────────────────────────────────────────────────────
+#                 Number Formatting
+# ──────────────────────────────────────────────────────
+# Controls how large numbers are displayed in-game
 format_number:
   thousand: "{s}K"    # Example: 5000 → 5K
   million: "{s}M"     # Example: 2000000 → 2M
@@ -13,10 +16,8 @@ format_number:
 #                 Mob Display Names
 # ──────────────────────────────────────────────────────
 # Defines how mob names appear in spawner GUIs, items, holograms and messages
-# ──────────────────────────────────────────────────────
 mob_names:
   # Passive Mobs
-  # ─────────────────────────
   ALLAY: "Allay"
   ARMADILLO: "Armadillo"
   AXOLOTL: "Axolotl"
@@ -60,7 +61,6 @@ mob_names:
   WOLF: "Wolf"
 
   # Hostile Mobs
-  # ─────────────────────────
   BLAZE: "Blaze"
   BOGGED: "Bogged"
   BREEZE: "Breeze"

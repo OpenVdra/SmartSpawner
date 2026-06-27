@@ -16,31 +16,31 @@ dependencies {
     @Suppress("GradleDependency")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
-    shade("com.zaxxer:HikariCP:7.0.2")
-    shade("org.mariadb.jdbc:mariadb-java-client:3.5.8")
-    compileOnly("org.xerial:sqlite-jdbc:3.53.1.0")
+    shade("com.zaxxer:HikariCP:7.1.0")
+    shade("org.mariadb.jdbc:mariadb-java-client:3.5.9")
+    compileOnly("org.xerial:sqlite-jdbc:3.53.2.0")
 
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.2.0") {
         exclude(group = "*")
     }
-    compileOnly("com.palmergames.bukkit.towny:towny:0.103.0.1")
+    compileOnly("com.palmergames.bukkit.towny:towny:0.103.0.4")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2026.1")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
-    compileOnly("su.nightexpress.nightcore:main:2.15.3")
-    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.10.0")
-    compileOnly("world.bentobox:bentobox:3.16.2")
+    compileOnly("su.nightexpress.nightcore:main:2.16.2")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.10.1")
+    compileOnly("world.bentobox:bentobox:3.17.0")
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.12")
     compileOnly("pl.minecodes.plots:plugin-api:4.6.2")
     compileOnly("fr.maxlego08.shop:zshop-api:3.3.4")
-    compileOnly("fr.maxlego08.menu:zmenu-api:1.1.1.4")
+    compileOnly("fr.maxlego08.menu:zmenu-api:1.1.1.5")
 
     implementation("com.github.GriefPrevention:GriefPrevention:18.0.0")
     implementation("com.github.IncrediblePlugins:LandsAPI:7.25.4")
-    implementation("com.github.Xyness:SimpleClaimSystem-API:v2.5.0")
-    implementation("com.github.Xyness:SimpleClaimSystem:1.13.0.8")
+    implementation("com.github.Xyness:SimpleClaimSystem-API:v2.5.10")
+    implementation("com.github.Xyness:SimpleClaimSystem:1.13.1")
     implementation("com.github.Zrips:Residence:6.0.0.1") {
         exclude(group = "org.bukkit")
     }
@@ -50,12 +50,10 @@ dependencies {
 
     implementation(platform("com.intellectualsites.bom:bom-newest:1.56"))
     compileOnly("com.intellectualsites.plotsquared:plotsquared-core")
-    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5.10")
 
     compileOnly("org.projectlombok:lombok:1.18.46")
     annotationProcessor("org.projectlombok:lombok:1.18.46")
-
-    implementation("org.bstats:bstats-bukkit:3.2.1")
+    shade("org.bstats:bstats-bukkit:3.2.1")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -79,16 +77,12 @@ tasks.jar {
 }
 
 tasks.shadowJar {
+
     archiveBaseName.set("SmartSpawner")
     archiveVersion.set(version.toString())
     archiveClassifier.set("")
-
     from(project(":api").sourceSets["main"].output)
-
     configurations = listOf(shade)
-
-    relocate("com.zaxxer.hikari", "github.nighter.smartspawner.libs.hikari")
-    relocate("org.mariadb.jdbc", "github.nighter.smartspawner.libs.mariadb")
 
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
     exclude("META-INF/maven/**")
@@ -97,6 +91,10 @@ tasks.shadowJar {
     exclude("META-INF/NOTICE*")
     from(sourceSets["main"].output)
     exclude("org/slf4j/**")
+
+    relocate("com.zaxxer.hikari", "github.nighter.smartspawner.libs.hikari")
+    relocate("org.mariadb.jdbc", "github.nighter.smartspawner.libs.mariadb")
+    relocate("org.bstats", project.group.toString())
     mergeServiceFiles()
 
     // destinationDirectory.set(file("C:\\Users\\Admin\\Desktop\\TestServer\\plugins"))
@@ -127,12 +125,12 @@ tasks.register("generateLanguageChangelog") {
     doLast {
         val currentVersion = project.version.toString()
         val locale    = "en_US"
-        val langFiles = listOf("messages.yml", "gui.yml", "items.yml", "formatting.yml", "command_messages.yml", "hologram.yml")
+        val langFiles = listOf("messages.yml", "gui.yml", "command_gui.yml", "items.yml", "formatting.yml", "command_messages.yml", "hologram.yml")
 
         // ── 1. Fetch latest GitHub release tag ───────────────────────────────
         val githubVersion: String = try {
             val conn = URI.create(
-                "https://api.github.com/repos/NighterDevelopment/SmartSpawner/releases/latest"
+                "https://api.github.com/repos/OpenVdra/SmartSpawner/releases/latest"
             ).toURL().openConnection() as java.net.HttpURLConnection
             conn.requestMethod = "GET"
             conn.setRequestProperty("Accept", "application/vnd.github.v3+json")
@@ -185,7 +183,7 @@ tasks.register("generateLanguageChangelog") {
             listOf(currentVersion, "v$currentVersion").firstOrNull { tag ->
                 try {
                     val tagConn = URI.create(
-                        "https://api.github.com/repos/NighterDevelopment/SmartSpawner/git/refs/tags/$tag"
+                        "https://api.github.com/repos/OpenVdra/SmartSpawner/git/refs/tags/$tag"
                     ).toURL().openConnection() as java.net.HttpURLConnection
                     tagConn.requestMethod = "GET"
                     tagConn.setRequestProperty("Accept", "application/vnd.github.v3+json")
@@ -261,7 +259,7 @@ tasks.register("generateLanguageChangelog") {
 
         // ── 5. Fetch the old language files from GitHub and diff ─────────────
         fun fetchRaw(tag: String, file: String): String? = try {
-            val url = "https://raw.githubusercontent.com/NighterDevelopment/" +
+            val url = "https://raw.githubusercontent.com/OpenVdra/" +
                       "SmartSpawner/$tag/core/src/main/resources/language/$locale/$file"
             val conn = URI.create(url).toURL().openConnection() as java.net.HttpURLConnection
             conn.requestMethod = "GET"
@@ -331,8 +329,8 @@ tasks.register("generateLanguageChangelog") {
         val newEntry  = buildString {
             appendLine("── v$currentVersion ($today) $separator")
             appendLine()
-            appendLine("  Summary: Version $currentVersion released – fill in details here.")
-            appendLine("           Compare: https://github.com/NighterDevelopment/SmartSpawner/compare/$githubVersion...$toRef")
+            appendLine("  Summary: Version $currentVersion released")
+            appendLine("           Compare: https://github.com/OpenVdra/SmartSpawner/compare/$githubVersion...$toRef")
             appendLine()
             appendLine(formatSection("ADDED",   addedPerFile))
             appendLine()

@@ -3,19 +3,27 @@ package github.nighter.smartspawner.api;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.api.data.SpawnerDataDTO;
 import github.nighter.smartspawner.api.data.SpawnerDataModifier;
+import github.nighter.smartspawner.api.gui.GuiLayoutRegistry;
+import github.nighter.smartspawner.api.gui.GuiLayoutRegistryImpl;
+import github.nighter.smartspawner.api.gui.SpawnerGuiLayoutProvider;
 import github.nighter.smartspawner.api.impl.SpawnerDataModifierImpl;
+import github.nighter.smartspawner.spawner.data.SpawnerManager;
+import github.nighter.smartspawner.spawner.interactions.destroy.SpawnerRemovalService;
 import github.nighter.smartspawner.spawner.item.SpawnerItemFactory;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -25,10 +33,17 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
 
     private final SmartSpawner plugin;
     private final SpawnerItemFactory itemFactory;
+    private final SpawnerManager spawnerManager;
+    private final SpawnerRemovalService spawnerRemovalService;
+    private final GuiLayoutRegistryImpl guiLayoutRegistry;
+    private volatile SpawnerGuiLayoutProvider spawnerGuiLayoutProvider;
 
     public SmartSpawnerAPIImpl(SmartSpawner plugin) {
         this.plugin = plugin;
         this.itemFactory = new SpawnerItemFactory(plugin);
+        this.spawnerManager = plugin.getSpawnerManager();
+        this.spawnerRemovalService = plugin.getSpawnerRemovalService();
+        this.guiLayoutRegistry = plugin.getGuiLayoutRegistry();
     }
 
     @Override
@@ -139,8 +154,7 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
         }
 
         String materialName = meta.getPersistentDataContainer().get(
-                new org.bukkit.NamespacedKey(plugin, "item_spawner_material"),
-                org.bukkit.persistence.PersistentDataType.STRING);
+                new NamespacedKey(plugin, "item_spawner_material"), PersistentDataType.STRING);
 
         if (materialName == null) {
             return null;
@@ -159,7 +173,7 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
             return null;
         }
 
-        SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerByLocation(location);
+        SpawnerData spawnerData = spawnerManager.getSpawnerByLocation(location);
         return spawnerData != null ? convertToDTO(spawnerData) : null;
     }
 
@@ -169,14 +183,14 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
             return null;
         }
 
-        SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerById(spawnerId);
+        SpawnerData spawnerData = spawnerManager.getSpawnerById(spawnerId);
         return spawnerData != null ? convertToDTO(spawnerData) : null;
     }
 
     @Override
     public List<SpawnerDataDTO> getAllSpawners() {
-        return plugin.getSpawnerManager().getAllSpawners().stream()
-                .map(this::convertToDTO)
+        return spawnerManager.getAllSpawners().stream()
+                .map(SmartSpawnerAPIImpl::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -186,8 +200,62 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
             return null;
         }
 
-        SpawnerData spawnerData = plugin.getSpawnerManager().getSpawnerById(spawnerId);
+        SpawnerData spawnerData = spawnerManager.getSpawnerById(spawnerId);
         return spawnerData != null ? new SpawnerDataModifierImpl(spawnerData) : null;
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removeSpawner(String spawnerId) {
+        if (spawnerId == null) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        SpawnerData spawnerData = spawnerManager.getSpawnerById(spawnerId);
+        if (spawnerData == null) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        return spawnerRemovalService.removeSpawner(spawnerData);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removeSpawner(Location location) {
+        if (location == null) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        SpawnerData spawnerData = spawnerManager.getSpawnerByLocation(location);
+        if (spawnerData == null) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        return spawnerRemovalService.removeSpawner(spawnerData);
+    }
+
+    @Override
+    public GuiLayoutRegistry getLayoutRegistry() {
+        return guiLayoutRegistry;
+    }
+
+    @Override
+    public void setSpawnerLayoutProvider(SpawnerGuiLayoutProvider provider) {
+        this.spawnerGuiLayoutProvider = provider;
+        plugin.getGuiLayoutConfig().setProvider(provider);
+    }
+
+    @Override
+    public void clearSpawnerLayoutProvider() {
+        this.spawnerGuiLayoutProvider = null;
+        plugin.getGuiLayoutConfig().setProvider(null);
+    }
+
+    /**
+     * Gets the currently active per-spawner layout provider.
+     *
+     * @return the provider, or null
+     */
+    public SpawnerGuiLayoutProvider getSpawnerLayoutProvider() {
+        return spawnerGuiLayoutProvider;
     }
 
     /**
@@ -196,7 +264,7 @@ public class SmartSpawnerAPIImpl implements SmartSpawnerAPI {
      * @param spawnerData the spawner data to convert
      * @return the DTO representation
      */
-    private SpawnerDataDTO convertToDTO(SpawnerData spawnerData) {
+    public static SpawnerDataDTO convertToDTO(SpawnerData spawnerData) {
         return new SpawnerDataDTO(
                 spawnerData.getSpawnerId(),
                 spawnerData.getSpawnerLocation(),

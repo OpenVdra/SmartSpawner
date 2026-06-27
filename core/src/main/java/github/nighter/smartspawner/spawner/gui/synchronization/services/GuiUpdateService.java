@@ -3,9 +3,9 @@ package github.nighter.smartspawner.spawner.gui.synchronization.services;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuHolder;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuUI;
-import github.nighter.smartspawner.spawner.gui.synchronization.managers.SlotCacheManager;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,17 +32,15 @@ public class GuiUpdateService {
     private final SmartSpawner plugin;
     private final LanguageManager languageManager;
     private final SpawnerMenuUI spawnerMenuUI;
-    private final SlotCacheManager slotCacheManager;
 
     // Batched update tracking
     private final Set<UUID> pendingUpdates = ConcurrentHashMap.newKeySet();
     private final Map<UUID, Integer> updateFlags = new ConcurrentHashMap<>();
 
-    public GuiUpdateService(SmartSpawner plugin, SlotCacheManager slotCacheManager) {
+    public GuiUpdateService(SmartSpawner plugin) {
         this.plugin = plugin;
         this.languageManager = plugin.getLanguageManager();
         this.spawnerMenuUI = plugin.getSpawnerMenuUI();
-        this.slotCacheManager = slotCacheManager;
     }
 
     /**
@@ -92,28 +90,26 @@ public class GuiUpdateService {
             updateFlags.remove(playerId);
 
             Location loc = player.getLocation();
-            if (loc != null) {
-                final int finalFlags = flags;
-                
-                // Extract spawner data from viewer info using reflection-like approach
-                SpawnerData spawner = extractSpawnerData(info);
-                if (spawner == null) {
-                    continue;
+            final int finalFlags = flags;
+
+            // Extract spawner data from viewer info using reflection-like approach
+            SpawnerData spawner = extractSpawnerData(info);
+            if (spawner == null) {
+                continue;
+            }
+
+            Scheduler.runLocationTask(loc, () -> {
+                if (!player.isOnline()) {
+                    return;
                 }
 
-                Scheduler.runLocationTask(loc, () -> {
-                    if (!player.isOnline()) {
-                        return;
-                    }
+                Inventory openInv = player.getOpenInventory().getTopInventory();
+                if (!(openInv.getHolder(false) instanceof SpawnerMenuHolder)) {
+                    return;
+                }
 
-                    Inventory openInv = player.getOpenInventory().getTopInventory();
-                    if (openInv == null || !(openInv.getHolder(false) instanceof SpawnerMenuHolder)) {
-                        return;
-                    }
-
-                    processInventoryUpdate(player, openInv, spawner, finalFlags);
-                });
-            }
+                processInventoryUpdate(player, openInv, spawner, finalFlags);
+            });
         }
     }
 
@@ -123,27 +119,26 @@ public class GuiUpdateService {
     private void processInventoryUpdate(Player player, Inventory inventory, SpawnerData spawner, int flags) {
         boolean needsUpdate = false;
 
+        SpawnerMenuHolder holder = (SpawnerMenuHolder) inventory.getHolder(false);
+
         if ((flags & UPDATE_CHEST) != 0) {
-            int storageSlot = slotCacheManager.getStorageSlot();
-            if (storageSlot >= 0) {
-                updateChestItem(inventory, spawner, storageSlot);
-                needsUpdate = true;
+            GuiButton storageButton = holder.getStorageButton();
+            if (storageButton != null) {
+                needsUpdate |= updateChestItem(inventory, spawner, storageButton);
             }
         }
 
         if ((flags & UPDATE_INFO) != 0) {
-            int spawnerInfoSlot = slotCacheManager.getSpawnerInfoSlot();
-            if (spawnerInfoSlot >= 0) {
-                updateSpawnerInfoItem(inventory, spawner, player, spawnerInfoSlot);
-                needsUpdate = true;
+            GuiButton infoButton = holder.getInfoButton();
+            if (infoButton != null) {
+                needsUpdate |= updateSpawnerInfoItem(inventory, spawner, player, infoButton);
             }
         }
 
         if ((flags & UPDATE_EXP) != 0) {
-            int expSlot = slotCacheManager.getExpSlot();
-            if (expSlot >= 0) {
-                updateExpItem(inventory, spawner, expSlot);
-                needsUpdate = true;
+            GuiButton expButton = holder.getExpButton();
+            if (expButton != null) {
+                needsUpdate |= updateExpItem(inventory, spawner, expButton);
             }
         }
 
@@ -155,68 +150,69 @@ public class GuiUpdateService {
     /**
      * Updates the chest/storage item in inventory.
      */
-    private void updateChestItem(Inventory inventory, SpawnerData spawner, int storageSlot) {
+    private boolean updateChestItem(Inventory inventory, SpawnerData spawner, GuiButton button) {
+        int storageSlot = button.getSlot();
         if (storageSlot < 0) {
-            return;
+            return false;
         }
 
         ItemStack currentChestItem = inventory.getItem(storageSlot);
-        if (currentChestItem == null || !currentChestItem.hasItemMeta()) {
-            return;
-        }
+        ItemStack newChestItem = spawnerMenuUI.createLootStorageItem(spawner, button);
 
-        ItemStack newChestItem = spawnerMenuUI.createLootStorageItem(spawner);
-
-        if (!areItemsEqual(currentChestItem, newChestItem)) {
-            inventory.setItem(storageSlot, newChestItem);
+        if (areItemsEqual(currentChestItem, newChestItem)) {
+            return false;
         }
+        inventory.setItem(storageSlot, newChestItem);
+        return true;
     }
 
     /**
      * Updates the exp item in inventory.
      */
-    private void updateExpItem(Inventory inventory, SpawnerData spawner, int expSlot) {
+    private boolean updateExpItem(Inventory inventory, SpawnerData spawner, GuiButton button) {
+        int expSlot = button.getSlot();
         if (expSlot < 0) {
-            return;
+            return false;
         }
 
         ItemStack currentExpItem = inventory.getItem(expSlot);
-        if (currentExpItem == null || !currentExpItem.hasItemMeta()) {
-            return;
-        }
+        ItemStack newExpItem = spawnerMenuUI.createExpItem(spawner, button);
 
-        ItemStack newExpItem = spawnerMenuUI.createExpItem(spawner);
-
-        if (!areItemsEqual(currentExpItem, newExpItem)) {
-            inventory.setItem(expSlot, newExpItem);
+        if (areItemsEqual(currentExpItem, newExpItem)) {
+            return false;
         }
+        inventory.setItem(expSlot, newExpItem);
+        return true;
     }
 
     /**
      * Updates the spawner info item in inventory.
      */
-    private void updateSpawnerInfoItem(Inventory inventory, SpawnerData spawner, Player player, int spawnerInfoSlot) {
+    private boolean updateSpawnerInfoItem(Inventory inventory, SpawnerData spawner,
+                                          Player player, GuiButton button) {
+        int spawnerInfoSlot = button.getSlot();
         if (spawnerInfoSlot < 0) {
-            return;
+            return false;
         }
 
         ItemStack currentSpawnerItem = inventory.getItem(spawnerInfoSlot);
-        if (currentSpawnerItem == null || !currentSpawnerItem.hasItemMeta()) {
-            return;
-        }
+        ItemStack newSpawnerItem = spawnerMenuUI.createSpawnerInfoItem(player, spawner, button);
 
-        ItemStack newSpawnerItem = spawnerMenuUI.createSpawnerInfoItem(player, spawner);
-
-        if (!areItemsEqual(currentSpawnerItem, newSpawnerItem)) {
-            preserveTimerInfo(currentSpawnerItem, newSpawnerItem);
-            inventory.setItem(spawnerInfoSlot, newSpawnerItem);
+        if (areItemsEqual(currentSpawnerItem, newSpawnerItem)) {
+            return false;
         }
+        preserveTimerInfo(currentSpawnerItem, newSpawnerItem);
+        inventory.setItem(spawnerInfoSlot, newSpawnerItem);
+        return true;
     }
 
     /**
      * Preserves timer information when updating spawner info item.
      */
     private void preserveTimerInfo(ItemStack currentItem, ItemStack newItem) {
+        if (currentItem == null || newItem == null) {
+            return;
+        }
         ItemMeta currentMeta = currentItem.getItemMeta();
         ItemMeta newMeta = newItem.getItemMeta();
 
@@ -268,59 +264,20 @@ public class GuiUpdateService {
     }
 
     /**
-     * Compares two ItemStacks for equality, focusing on display name and lore.
-     * This helps avoid unnecessary item updates in the GUI.
+     * Compares two ItemStacks, including amount and all item metadata.
      *
      * @param item1 First ItemStack to compare
      * @param item2 Second ItemStack to compare
-     * @return true if items have the same material, display name and lore
+     * @return true if the items are equivalent
      */
     public static boolean areItemsEqual(ItemStack item1, ItemStack item2) {
-        if (item1 == item2) return true;  // Same instance
-        if (item1 == null || item2 == null) return false;
-
-        // Check material first (fast check)
-        if (item1.getType() != item2.getType()) return false;
-
-        // Get item metas
-        ItemMeta meta1 = item1.getItemMeta();
-        ItemMeta meta2 = item2.getItemMeta();
-
-        // If both have no meta, they're equal
-        if (meta1 == null && meta2 == null) return true;
-        // If only one has meta, they're not equal
-        if (meta1 == null || meta2 == null) return false;
-
-        // Check display name
-        if (meta1.hasDisplayName() != meta2.hasDisplayName()) return false;
-        if (meta1.hasDisplayName() && !meta1.getDisplayName().equals(meta2.getDisplayName())) return false;
-
-        // Check lore
-        return areLoreListsEqual(meta1.getLore(), meta2.getLore());
-    }
-
-    /**
-     * Compares two lore lists for equality.
-     * This method is optimized for performance with early returns.
-     */
-    private static boolean areLoreListsEqual(List<String> lore1, List<String> lore2) {
-        if (lore1 == lore2) return true;  // Same instance
-        if (lore1 == null || lore2 == null) return false;
-
-        int size = lore1.size();
-        if (size != lore2.size()) {
+        if (item1 == item2) {
+            return true;
+        }
+        if (item1 == null || item2 == null) {
             return false;
         }
-
-        for (int i = 0; i < size; i++) {
-            String s1 = lore1.get(i);
-            String s2 = lore2.get(i);
-            if (s1 == s2) continue;  // Same instance
-            if (s1 == null || s2 == null) return false;
-            if (!s1.equals(s2)) return false;
-        }
-
-        return true;
+        return item1.getAmount() == item2.getAmount() && item1.isSimilar(item2);
     }
 
     /**

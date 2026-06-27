@@ -45,7 +45,8 @@ public class ConfigUpdater {
                 Map.entry("custom_economy.shop_integration.enabled", "sell_integration.shop_integration.enabled"),
                 Map.entry("custom_economy.shop_integration.preferred_plugin", "sell_integration.shop_integration.preferred_plugin"),
                 Map.entry("custom_economy.custom_prices.enabled", "sell_integration.custom_prices.enabled"),
-                Map.entry("custom_economy.custom_prices.default_price", "sell_integration.custom_prices.default_price")
+                Map.entry("custom_economy.custom_prices.default_price", "sell_integration.custom_prices.default_price"),
+                Map.entry("spawner_break.auto_sell_and_claim_exp_on_break", "spawner_break.sell_and_xp_break")
         );
 
         for (Map.Entry<String, String> rename : renames) {

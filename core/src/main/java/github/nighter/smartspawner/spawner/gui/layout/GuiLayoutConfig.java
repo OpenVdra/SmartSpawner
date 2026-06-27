@@ -1,17 +1,23 @@
 package github.nighter.smartspawner.spawner.gui.layout;
 
 import github.nighter.smartspawner.SmartSpawner;
+import github.nighter.smartspawner.api.SmartSpawnerAPIImpl;
+import github.nighter.smartspawner.api.data.SpawnerDataDTO;
+import github.nighter.smartspawner.api.gui.ExternalGuiLayoutLoader;
+import github.nighter.smartspawner.api.gui.GuiLayoutAdapter;
+import github.nighter.smartspawner.api.gui.GuiLayoutData;
+import github.nighter.smartspawner.api.gui.GuiLayoutRegistryImpl;
+import github.nighter.smartspawner.api.gui.GuiLayoutType;
+import github.nighter.smartspawner.api.gui.SpawnerGuiLayoutProvider;
+import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.updates.GuiLayoutUpdater;
 import lombok.Getter;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
+import lombok.Setter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 public class GuiLayoutConfig {
@@ -20,16 +26,18 @@ public class GuiLayoutConfig {
     private static final String MAIN_GUI_FILE = "main_gui.yml";
     private static final String SELL_CONFIRM_GUI_FILE = "sell_confirm_gui.yml";
     private static final String DEFAULT_LAYOUT = "default";
-    private static final int MIN_SLOT = 1;
-    private static final int MAX_SLOT = 9;
-    private static final int SLOT_OFFSET = 44;
-    private static final int MAIN_GUI_SIZE = 27;
-    private static final int SELL_CONFIRM_GUI_SIZE = 27;
 
     private final SmartSpawner plugin;
     private final File layoutsDir;
     private final GuiLayoutUpdater layoutUpdater;
+    private final ExternalGuiLayoutLoader loader;
+    private final GuiLayoutRegistryImpl registry;
+
+    @Setter
+    private volatile SpawnerGuiLayoutProvider provider;
+
     private String currentLayout;
+
     @Getter
     private GuiLayout currentStorageLayout;
     @Getter
@@ -40,19 +48,23 @@ public class GuiLayoutConfig {
     private boolean skipMainGui;
     @Getter
     private boolean skipSellConfirmation;
+    @Getter
+    private String openSound;
 
-    public GuiLayoutConfig(SmartSpawner plugin) {
+    public GuiLayoutConfig(SmartSpawner plugin, ExternalGuiLayoutLoader loader,
+                           GuiLayoutRegistryImpl registry) {
         this.plugin = plugin;
         this.layoutsDir = new File(plugin.getDataFolder(), GUI_LAYOUTS_DIR);
         this.layoutUpdater = new GuiLayoutUpdater(plugin);
+        this.loader = loader;
+        this.registry = registry;
         loadLayout();
     }
 
     public void loadLayout() {
         this.currentLayout = plugin.getConfig().getString("gui_layout", DEFAULT_LAYOUT);
-        initializeLayoutsDirectory();
-        
-        // Check and update layout files before loading
+
+        // Creates missing layout files with a version header and updates existing ones.
         layoutUpdater.checkAndUpdateLayouts();
 
         this.currentStorageLayout = loadCurrentStorageLayout();
@@ -63,78 +75,25 @@ public class GuiLayoutConfig {
         loadLayoutSettings();
     }
 
-    private void initializeLayoutsDirectory() {
-        if (!layoutsDir.exists()) {
-            layoutsDir.mkdirs();
-        }
-        autoSaveLayoutFiles();
-    }
-
-    private void autoSaveLayoutFiles() {
-        try {
-            String[] layoutNames = new String[]{DEFAULT_LAYOUT, "DonutSMP", "DonutSMP_v2"};
-
-            for (String layoutName : layoutNames) {
-                File layoutDir = new File(layoutsDir, layoutName);
-                if (!layoutDir.exists()) {
-                    layoutDir.mkdirs();
-                }
-
-                // Save storage GUI layout
-                File storageFile = new File(layoutDir, STORAGE_GUI_FILE);
-                String storageResourcePath = GUI_LAYOUTS_DIR + "/" + layoutName + "/" + STORAGE_GUI_FILE;
-
-                if (!storageFile.exists()) {
-                    try {
-                        plugin.saveResource(storageResourcePath, false);
-                    } catch (Exception e) {
-                        plugin.getLogger().log(Level.WARNING,
-                                "Failed to auto-save storage layout resource for " + layoutName + ": " + e.getMessage(), e);
-                    }
-                }
-
-                // Save main GUI layout
-                File mainFile = new File(layoutDir, MAIN_GUI_FILE);
-                String mainResourcePath = GUI_LAYOUTS_DIR + "/" + layoutName + "/" + MAIN_GUI_FILE;
-
-                if (!mainFile.exists()) {
-                    try {
-                        plugin.saveResource(mainResourcePath, false);
-                    } catch (Exception e) {
-                        plugin.getLogger().log(Level.WARNING,
-                                "Failed to auto-save main layout resource for " + layoutName + ": " + e.getMessage(), e);
-                    }
-                }
-
-                // Save sell confirm GUI layout
-                File sellConfirmFile = new File(layoutDir, SELL_CONFIRM_GUI_FILE);
-                String sellConfirmResourcePath = GUI_LAYOUTS_DIR + "/" + layoutName + "/" + SELL_CONFIRM_GUI_FILE;
-
-                if (!sellConfirmFile.exists()) {
-                    try {
-                        plugin.saveResource(sellConfirmResourcePath, false);
-                    } catch (Exception e) {
-                        plugin.getLogger().log(Level.WARNING,
-                                "Failed to auto-save sell confirm layout resource for " + layoutName + ": " + e.getMessage(), e);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to auto-save layout files", e);
-        }
-    }
-
     private void loadLayoutSettings() {
-        // Read skip_main_gui from the current layout's main_gui.yml
+        // Read skip_main_gui and open_sound from the current layout's main_gui.yml
         File mainFile = resolveLayoutFile(MAIN_GUI_FILE);
         this.skipMainGui = false;
+        this.openSound = null;
         if (mainFile != null) {
             try {
                 FileConfiguration config = YamlConfiguration.loadConfiguration(mainFile);
                 this.skipMainGui = config.getBoolean("skip_main_gui", false);
+                
+                // Read open_sound (uses Minecraft namespaced key format, e.g., "block.ender_chest.open")
+                // Volume and pitch are hardcoded to 1.0f for performance and simplicity
+                String soundName = config.getString("open_sound");
+                if (soundName != null && !soundName.trim().isEmpty() && !soundName.equalsIgnoreCase("none")) {
+                    this.openSound = soundName.trim();
+                }
             } catch (Exception e) {
                 plugin.getLogger().log(Level.WARNING,
-                        "Failed to read skip_main_gui from main_gui.yml, using default (false): " + e.getMessage(), e);
+                        "Failed to read settings from main_gui.yml, using defaults: " + e.getMessage(), e);
             }
         }
 
@@ -186,7 +145,7 @@ public class GuiLayoutConfig {
         File layoutFile = new File(layoutDir, fileName);
 
         if (layoutFile.exists()) {
-            GuiLayout layout = loadLayout(layoutFile, layoutType);
+            GuiLayout layout = loader.loadLayout(layoutFile, layoutType);
             if (layout != null) {
                 return layout;
             }
@@ -198,7 +157,7 @@ public class GuiLayoutConfig {
             File defaultLayoutFile = new File(defaultLayoutDir, fileName);
 
             if (defaultLayoutFile.exists()) {
-                GuiLayout defaultLayout = loadLayout(defaultLayoutFile, layoutType);
+                GuiLayout defaultLayout = loader.loadLayout(defaultLayoutFile, layoutType);
                 if (defaultLayout != null) {
                     plugin.getLogger().info("Loaded default " + layoutType + " layout as fallback");
                     return defaultLayout;
@@ -210,193 +169,91 @@ public class GuiLayoutConfig {
         return new GuiLayout();
     }
 
-    private GuiLayout loadLayout(File file, String layoutType) {
+    /**
+     * Returns the main GUI layout for the given spawner and player.
+     * Resolution priority:
+     * 1. Per-spawner provider (if registered and applicable)
+     * 2. Global registered layout (if currentLayout matches a registered name)
+     * 3. File-based layout (existing behavior - fallback)
+     *
+     * @param spawner the spawner data
+     * @param player the player opening the GUI
+     * @return the resolved main GUI layout
+     */
+    public GuiLayout getMainLayout(SpawnerData spawner, Player player) {
+        GuiLayout providerLayout = getProviderLayout(spawner, player, GuiLayoutType.MAIN_GUI);
+        if (providerLayout != null) return providerLayout;
+
+        // 2. Global registry
+        GuiLayoutRegistryImpl currentRegistry = this.registry;
+        if (currentRegistry != null) {
+            GuiLayout regLayout = currentRegistry.getRegisteredMainGui(currentLayout);
+            if (regLayout != null) {
+                return regLayout;
+            }
+        }
+        // 3. Fallback to file
+        return getCurrentMainLayout();
+    }
+
+    /**
+     * Returns the storage GUI layout for the given spawner and player.
+     */
+    public GuiLayout getStorageLayout(SpawnerData spawner, Player player) {
+        GuiLayout providerLayout = getProviderLayout(spawner, player, GuiLayoutType.STORAGE_GUI);
+        if (providerLayout != null) return providerLayout;
+
+        GuiLayoutRegistryImpl currentRegistry = this.registry;
+        if (currentRegistry != null) {
+            GuiLayout regLayout = currentRegistry.getRegisteredStorageGui(currentLayout);
+            if (regLayout != null) {
+                return regLayout;
+            }
+        }
+        return getCurrentStorageLayout();
+    }
+
+    /**
+     * Returns the sell confirm GUI layout for the given spawner and player.
+     */
+    public GuiLayout getSellConfirmLayout(SpawnerData spawner, Player player) {
+        GuiLayout providerLayout = getProviderLayout(spawner, player, GuiLayoutType.SELL_CONFIRM_GUI);
+        if (providerLayout != null) return providerLayout;
+
+        GuiLayoutRegistryImpl currentRegistry = this.registry;
+        if (currentRegistry != null) {
+            GuiLayout regLayout = currentRegistry.getRegisteredSellConfirmGui(currentLayout);
+            if (regLayout != null) {
+                return regLayout;
+            }
+        }
+        return getCurrentSellConfirmLayout();
+    }
+
+    private GuiLayout getProviderLayout(SpawnerData spawner, Player player, GuiLayoutType type) {
+        SpawnerGuiLayoutProvider currentProvider = this.provider;
+        if (currentProvider == null) {
+            return null;
+        }
+
         try {
-            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-            GuiLayout layout = new GuiLayout();
-
-            // OPTIMIZATION: Read buttons directly from root (no "buttons:" wrapper)
-            // Support both old format (buttons.xxx) and new format (slot_X)
-            Set<String> buttonKeys = config.getKeys(false);
-
-            if (buttonKeys.isEmpty()) {
-                plugin.getLogger().warning("No buttons found in GUI layout: " + file.getName());
-                return layout;
-            }
-
-            for (String buttonKey : buttonKeys) {
-                // Skip non-button keys (like comments)
-                if (!buttonKey.startsWith("slot_")) {
-                    continue;
-                }
-
-                if (!loadButton(config, layout, buttonKey, layoutType)) {
-                    plugin.getLogger().warning("Failed to load button: " + buttonKey);
-                }
-            }
-
-
-            return layout;
+            SpawnerDataDTO dto = SmartSpawnerAPIImpl.convertToDTO(spawner);
+            GuiLayoutData data = currentProvider.getLayout(dto, player, type);
+            return GuiLayoutAdapter.toCoreLayout(data, type);
         } catch (Exception e) {
             plugin.getLogger().log(Level.WARNING,
-                    "Failed to load " + layoutType + " layout from " + file.getName() + ": " + e.getMessage(), e);
+                    "SpawnerGuiLayoutProvider '" + getProviderName(currentProvider)
+                            + "' failed to provide " + type, e);
             return null;
         }
     }
 
-    private boolean loadButton(FileConfiguration config, GuiLayout layout, String buttonKey, String layoutType) {
-        // OPTIMIZATION: Parse slot from button key (slot_11, slot_14, etc.)
-        int slot = parseSlotFromKey(buttonKey);
-        if (slot == -1) {
-            plugin.getLogger().warning("Invalid button key format: " + buttonKey + ". Expected format: slot_X or slot_X_name");
-            return false;
-        }
-
-        // Read button config directly from root (no "buttons." prefix)
-        if (!config.getBoolean(buttonKey + ".enabled", true)) {
-            return false;
-        }
-
-        String materialName = config.getString(buttonKey + ".material", "STONE");
-        String condition = config.getString(buttonKey + ".condition", null);
-        boolean infoButton = config.getBoolean(buttonKey + ".info_button", false);
-
-        // Validate slot based on layout type
-        if (!isValidSlot(slot, layoutType)) {
-            plugin.getLogger().warning(String.format(
-                    "Invalid slot %d for button %s in %s layout. Must be between %d and %d.",
-                    slot, buttonKey, layoutType, getMinSlot(layoutType), getMaxSlot(layoutType)));
-            return false;
-        }
-
-        // Check condition if present (OLD format)
-        if (condition != null && !evaluateCondition(condition)) {
-            return false;
-        }
-
-        Material material = parseMaterial(materialName, buttonKey);
-        int actualSlot = calculateActualSlot(slot, layoutType);
-
-        // OPTIMIZATION: Load actions with support for conditional "if" blocks
-        Map<String, String> actions = new HashMap<>();
-
-        // Check for NEW "if" conditional format first
-        ConfigurationSection ifSection = config.getConfigurationSection(buttonKey + ".if");
-        if (ifSection != null) {
-            // NEW format: if: { sell_integration: { click: "action" }, no_sell_integration: { click: "action2" } }
-            for (String conditionKey : ifSection.getKeys(false)) {
-                if (evaluateCondition(conditionKey)) {
-                    // This condition matches, load its actions
-                    ConfigurationSection conditionActions = ifSection.getConfigurationSection(conditionKey);
-                    if (conditionActions != null) {
-                        // Load material override if present
-                        String conditionalMaterial = conditionActions.getString("material");
-                        if (conditionalMaterial != null) {
-                            material = parseMaterial(conditionalMaterial, buttonKey);
-                        }
-
-                        // Load all click actions from this condition
-                        String[] clickTypes = {"click", "left_click", "right_click", "shift_left_click", "shift_right_click"};
-                        for (String clickType : clickTypes) {
-                            String action = conditionActions.getString(clickType);
-                            if (action != null && !action.isEmpty()) {
-                                actions.put(clickType, action);
-                            }
-                        }
-                    }
-                    break; // Only use first matching condition
-                }
-            }
-        } else {
-            // OLD format: Direct click actions at button level
-            String[] clickTypes = {"click", "left_click", "right_click", "shift_left_click", "shift_right_click"};
-            for (String clickType : clickTypes) {
-                String action = config.getString(buttonKey + "." + clickType);
-                if (action != null && !action.isEmpty()) {
-                    actions.put(clickType, action);
-                }
-            }
-        }
-
-        GuiButton button = new GuiButton(buttonKey, actualSlot, material, true, condition, actions, infoButton);
-        layout.addButton(buttonKey, button);
-        return true;
-    }
-
-    /**
-     * Parse slot number from button key
-     * OPTIMIZATION: Extract slot from key like "slot_11" -> 11 or "slot_14_shop" -> 14
-     * @param buttonKey The button key (e.g., "slot_11", "slot_14_shop")
-     * @return Slot number or -1 if invalid
-     */
-    private int parseSlotFromKey(String buttonKey) {
-        if (!buttonKey.startsWith("slot_")) {
-            return -1;
-        }
-
+    private String getProviderName(SpawnerGuiLayoutProvider currentProvider) {
         try {
-            // Remove "slot_" prefix
-            String slotPart = buttonKey.substring(5);
-
-            // Handle keys like "slot_14_shop" - extract just the number part
-            int underscoreIndex = slotPart.indexOf('_');
-            if (underscoreIndex > 0) {
-                slotPart = slotPart.substring(0, underscoreIndex);
-            }
-
-            return Integer.parseInt(slotPart);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
-    private boolean isValidSlot(int slot, String layoutType) {
-        return slot >= getMinSlot(layoutType) && slot <= getMaxSlot(layoutType);
-    }
-
-    private int getMinSlot(String layoutType) {
-        return "storage".equals(layoutType) ? MIN_SLOT : 1;
-    }
-
-    private int getMaxSlot(String layoutType) {
-        if ("storage".equals(layoutType)) {
-            return MAX_SLOT;
-        } else if ("sell_confirm".equals(layoutType)) {
-            return SELL_CONFIRM_GUI_SIZE;
-        } else {
-            return MAIN_GUI_SIZE;
-        }
-    }
-
-    private int calculateActualSlot(int slot, String layoutType) {
-        if ("storage".equals(layoutType)) {
-            return SLOT_OFFSET + slot;
-        } else {
-            // Both main and sell_confirm use 1-based to 0-based conversion
-            return slot - 1;
-        }
-    }
-
-    private boolean evaluateCondition(String condition) {
-        switch (condition) {
-            case "sell_integration":
-                return plugin.hasSellIntegration();
-            case "no_sell_integration":
-                return !plugin.hasSellIntegration();
-            default:
-                plugin.getLogger().warning("Unknown condition: " + condition);
-                return true;
-        }
-    }
-
-    private Material parseMaterial(String materialName, String buttonKey) {
-        try {
-            return Material.valueOf(materialName.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning(String.format(
-                    "Invalid material %s for button %s. Using STONE instead.",
-                    materialName, buttonKey));
-            return Material.STONE;
+            String name = currentProvider.getProviderName();
+            return name != null && !name.isBlank() ? name : currentProvider.getClass().getName();
+        } catch (Exception ignored) {
+            return currentProvider.getClass().getName();
         }
     }
 

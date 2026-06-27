@@ -1,6 +1,6 @@
 # Important: Each time a spawner is triggered, it will generate between min_mobs and max_mobs (default: 1 to 4) times the drops specified below.
 # For detailed configuration guide and examples, please visit:
-# https://nighterdevelopment.github.io/SmartSpawner/item_spawners_settings/
+# https://openvdra.github.io/SmartSpawner/item_spawners_settings/
 
 # Default head material for unknown items
 default_material: "SPAWNER"
@@ -41,16 +41,16 @@ COAL:
     material: "COAL"
     custom_texture: null
 
-# Gold Ingot spawner
-GOLD_INGOT:
-  material: "GOLD_INGOT"
+# Amethyst Shard spawner
+AMETHYST_SHARD:
+  material: "AMETHYST_SHARD"
   experience: 1
   loot:
-    GOLD_INGOT:
+    AMETHYST_SHARD:
       amount: 1-1
       chance: 100.0
   head_texture:
-    material: "GOLD_INGOT"
+    material: "AMETHYST_SHARD"
     custom_texture: null
 
 # Emerald spawner

@@ -9,7 +9,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -47,7 +46,6 @@ public class ClearGhostSpawnersSubCommand extends BaseSubCommand {
         
         // Track how many spawners are being checked using thread-safe counter
         final AtomicInteger removedCount = new AtomicInteger(0);
-        final int totalSpawners = allSpawners.size();
         
         // Check each spawner on its location thread for Folia compatibility
         for (SpawnerData spawner : allSpawners) {

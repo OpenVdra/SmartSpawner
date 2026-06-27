@@ -7,7 +7,7 @@ on:
 
 jobs:
   sync-to-github:
-    if: github.repository == 'NighterDevelopment/SmartSpawner'
+    if: github.repository == 'OpenVdra/SmartSpawner'
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -1,5 +1,5 @@
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("org.projectlombok:lombok:1.18.46")
     annotationProcessor("org.projectlombok:lombok:1.18.46")
 }
@@ -14,7 +14,7 @@ publishing {
             pom {
                 name.set("SmartSpawner API")
                 description.set("API for SmartSpawner plugin - allows other plugins to create and manage spawners")
-                url.set("https://github.com/NighterDevelopment/SmartSpawner")
+                url.set("https://github.com/OpenVdra/SmartSpawner")
                 licenses {
                     license {
                         name.set("MIT License")
@@ -32,4 +32,3 @@ publishing {
         }
     }
 }
-

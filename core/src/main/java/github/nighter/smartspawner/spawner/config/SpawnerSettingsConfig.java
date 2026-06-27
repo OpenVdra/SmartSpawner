@@ -37,6 +37,9 @@ public class SpawnerSettingsConfig {
     // Loot data
     private final Map<String, EntityLootConfig> entityLootConfigs = new ConcurrentHashMap<>();
     private final Set<Material> loadedMaterials = new HashSet<>();
+
+    // Spawner item drop chance when the spawner block is broken
+    private final Map<EntityType, Double> spawnerDropChances = new EnumMap<>(EntityType.class);
     
     public SpawnerSettingsConfig(SmartSpawner plugin) {
         this.plugin = plugin;
@@ -212,10 +215,21 @@ public class SpawnerSettingsConfig {
 
             if (newConfig.contains(path)) {
                 newConfig.set(path, value);
+            } else if (isOptionalDropChancePath(path, newConfig)) {
+                newConfig.set(path, value);
             } else {
                 plugin.getLogger().warning("Config path '" + path + "' from old config no longer exists in new config");
             }
         }
+    }
+
+    private boolean isOptionalDropChancePath(String path, FileConfiguration newConfig) {
+        if (!path.endsWith(".drop_chance")) {
+            return false;
+        }
+
+        String entityName = path.substring(0, path.length() - ".drop_chance".length());
+        return newConfig.isConfigurationSection(entityName);
     }
 
     /**
@@ -235,6 +249,7 @@ public class SpawnerSettingsConfig {
         mobHeadMap.clear();
         entityLootConfigs.clear();
         loadedMaterials.clear();
+        spawnerDropChances.clear();
         
         // Get default material
         String defaultMaterialName = config.getString("default_material", "SPAWNER");
@@ -269,7 +284,24 @@ public class SpawnerSettingsConfig {
             
             // Parse loot data
             parseLootData(entityName, entitySection);
+
+            parseSpawnerDropChance(entityType, entitySection);
         }
+    }
+
+    private void parseSpawnerDropChance(EntityType entityType, ConfigurationSection entitySection) {
+        if (!entitySection.contains("drop_chance")) {
+            return;
+        }
+
+        double dropChance = entitySection.getDouble("drop_chance", 100.0);
+        if (dropChance < 0.0 || dropChance > 100.0) {
+            plugin.getLogger().warning("Invalid drop_chance for " + entityType.name() +
+                    " in spawners_settings.yml. Value must be between 0.0 and 100.0; using 100.0");
+            dropChance = 100.0;
+        }
+
+        spawnerDropChances.put(entityType, dropChance);
     }
     
     /**
@@ -414,6 +446,23 @@ public class SpawnerSettingsConfig {
             return null;
         }
         return entityLootConfigs.get(entityType.name().toLowerCase());
+    }
+
+    /**
+     * Get the spawner item drop chance for a broken Smart Spawner.
+     */
+    public double getSpawnerDropChance(EntityType entityType) {
+        if (entityType == null || entityType == EntityType.UNKNOWN) {
+            return 100.0;
+        }
+        return spawnerDropChances.getOrDefault(entityType, 100.0);
+    }
+
+    /**
+     * Check whether an entity has an explicit spawner item drop chance configured.
+     */
+    public boolean hasSpawnerDropChance(EntityType entityType) {
+        return entityType != null && entityType != EntityType.UNKNOWN && spawnerDropChances.containsKey(entityType);
     }
     
     /**

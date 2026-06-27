@@ -1,0 +1,203 @@
+# Spawner – command_messages.yml
+# Eklenti komutlarıyla ilgili mesajlar, kullanım talimatları ve hatalar.
+
+# ──────────────────────────────────────────────────────
+#                        Genel
+# ──────────────────────────────────────────────────────
+player_only:
+  message: "&#FF4444Bu komutu sadece oyuncular kullanabilir."
+  sound: block.note_block.bass
+
+no_permission:
+  message: "&#FF4444Bunu yapmak için yetkin yok."
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                     /ss list
+# ──────────────────────────────────────────────────────
+list:
+  no_spawners_found:
+    message: '&#FF4444Hiç spawner bulunamadı.'
+    sound: block.note_block.pling
+  teleported_to_spawner:
+    message: 'Spawner konumuna ışınlandın.'
+    sound: entity.enderman.teleport
+  teleport_failed:
+    message: '&#FF4444Spawner konumuna ışınlanılamadı.'
+    sound: entity.enderman.teleport
+  spawner_removed:
+    message: '&fSpawner başarıyla &#FF4444kaldırıldı&f.'
+    sound: entity.item.break
+
+# ──────────────────────────────────────────────────────
+#                        /ss set
+# ──────────────────────────────────────────────────────
+set:
+  usage:
+    message: "Kullanım: &#3498db/ss set <stack_size|range|delay> <değer> [dünya x y z]"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444Geçersiz değer veya Spawner konumu."
+    sound: block.note_block.pling
+  stack_size_exceeds_max:
+    message: "&#FF4444Stack boyutu &f{value}&#FF4444, bu spawner'ın maksimum sınırını aşıyor: &f{max}"
+    sound: block.note_block.pling
+  location_required:
+    message: "&#F0C857Konsol üzerinden kullanımda konum belirtilmelidir: &#3498db/ss set <stack_size|range|delay> <değer> <dünya> <x> <y> <z>"
+    sound: block.note_block.pling
+  success:
+    message: "&#3498db{world} {x} {y} {z} &fkonumundaki &a{property} &fdeğeri &e{old_value} &fyerine &a{new_value} &folarak ayarlandı."
+    sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#                        /ss near
+# ──────────────────────────────────────────────────────
+near:
+  bossbar:
+    analyzing: "Yakındaki spawnerlar taranıyor... %{percent}"
+    found: "{radius} blok içinde {count} spawner bulundu."
+    not_found: "{radius} blok içinde hiç spawner bulunamadı."
+  view_gui:
+    button: " [Menüde Gör]"
+    hover: "Yakında bulunan {count} spawnerı incelemek için tıkla."
+  scan_start:
+    message: "&e{radius} &fblok içindeki spawnerlar taranıyor..."
+    sound: block.note_block.hat
+  scan_found:
+    message: "&e{radius} &fblok içinde &a{count} &fspawner bulundu. Vurgular &e30sn &fsürer."
+    sound: entity.experience_orb.pickup
+  scan_none:
+    message: "&f{radius} &#FF4444blok içinde hiç spawner bulunamadı."
+    sound: block.note_block.pling
+  scan_cancelled:
+    message: "&#F0C857Tarama iptal edildi ve vurgular kaldırıldı."
+    sound: block.note_block.bass
+  no_active_scan:
+    message: "&#FF4444İptal edilecek aktif bir taraman yok."
+    sound: block.note_block.bass
+  highlights_expired:
+    message: "&#888888Spawner vurgularının süresi doldu."
+
+# ──────────────────────────────────────────────────────
+#                        /ss give
+# ──────────────────────────────────────────────────────
+give:
+  player_not_found:
+    message: "&#FF4444Oyuncu bulunamadı."
+    sound: block.note_block.pling
+  invalid_mob_type:
+    message: "&#FF4444Geçersiz yaratık türü."
+    sound: block.note_block.pling
+  invalid_item_type:
+    message: "&#FF4444Geçersiz eşya türü."
+    sound: block.note_block.pling
+  invalid_item_spawner:
+    message: "&#FF4444Geçersiz eşya spawner türü."
+    sound: block.note_block.pling
+  inventory_full:
+    message: "&#FF4444Envanter dolu olduğu için bazı spawnerlar yere düştü."
+    sound: block.note_block.pling
+  spawner_received:
+    message: "&a{amount} &fadet &a{entity} &fspawnerı aldın."
+    sound: entity.experience_orb.pickup
+  spawner_given:
+    message: "&#3498db{player} &fadlı oyuncuya &a{amount} &fadet &a{entity} &fspawnerı verildi."
+    sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#                      /ss hologram
+# ──────────────────────────────────────────────────────
+hologram:
+  enabled:
+    message: "Tüm spawnerlar için hologramlar &aaktif &fedildi."
+    sound: entity.experience_orb.pickup
+  disabled:
+    message: "Tüm spawnerlar için hologramlar &#FF4444kapatıldı&f."
+    sound: block.note_block.bass
+  cleared:
+    message: "&aTüm hologramlar &fbaşarıyla temizlendi."
+    sound: entity.experience_orb.pickup
+  clear_error:
+    message: "&#FF4444Hologramlar temizlenirken bir hata oluştu."
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                       /ss clear
+# ──────────────────────────────────────────────────────
+clear:
+  usage:
+    message: "Kullanım: &#3498db/ss clear <holograms|ghost_spawners>"
+    sound: block.note_block.hat
+  ghost_check_start:
+    message: "Hatalı (Ghost) spawnerlar kontrol ediliyor..."
+    sound: block.note_block.hat
+  ghost_cleared:
+    message: "&a{count} &fadet hatalı spawner başarıyla temizlendi."
+    sound: entity.experience_orb.pickup
+  ghost_none_found:
+    message: "&#FF4444Hatalı (Ghost) spawner bulunamadı."
+    sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#                       /ss prices
+# ──────────────────────────────────────────────────────
+prices:
+  not_available:
+    message: "&#FF4444Satış entegrasyonu aktif değil. Lütfen ekonomi ayarlarını yapılandırın."
+    sound: block.note_block.pling
+  no_priceable_items:
+    message: "&#FF4444Fiyatı olan hiçbir eşya bulunamadı."
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                      /ss reload
+# ──────────────────────────────────────────────────────
+reload:
+  start:
+    message: "&#F0C857Eklenti yenileniyor... Lütfen bekleyin."
+  success:
+    message: "&#3498dbSmartSpawner &fbaşarıyla yenilendi."
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444SmartSpawner yenilenirken hata oluştu. Detaylar için konsola bakın."
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                      /ss language
+# ──────────────────────────────────────────────────────
+language:
+  current:
+    message: "Mevcut dil: &a{current} &#888888| &fKullanılabilir: {available}"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444Bilinmeyen dil: &f{value}&#FF4444. Şunları dene: &f{available}"
+    sound: block.note_block.pling
+  already_set:
+    message: "&#F0C857Dil zaten &f{value} &#F0C857olarak ayarlı."
+    sound: block.note_block.hat
+  success:
+    message: "Dil &e{old_value} &fyerine &a{new_value} &folarak değiştirildi."
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444Dil değiştirilemedi. Lütfen konsolu kontrol edin."
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                     /ss gui_layout
+# ──────────────────────────────────────────────────────
+gui_layout:
+  current:
+    message: "Mevcut düzen: &a{current} &#888888| &fKullanılabilir: {available}"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444Bilinmeyen menü düzeni: &f{value}&#FF4444. Şunları dene: &f{available}"
+    sound: block.note_block.pling
+  already_set:
+    message: "&#F0C857Menü düzeni zaten &f{value} &#F0C857olarak ayarlı."
+    sound: block.note_block.hat
+  success:
+    message: "Menü düzeni &e{old_value} &fyerine &a{new_value} &folarak değiştirildi."
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444Menü düzeni değiştirilemedi. Lütfen konsolu kontrol edin."
+    sound: block.note_block.pling

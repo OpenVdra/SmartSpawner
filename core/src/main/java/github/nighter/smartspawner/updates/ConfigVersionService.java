@@ -187,10 +187,17 @@ public final class ConfigVersionService {
             if (path.equals(versionKey)) continue;
             if (newConfig.contains(path)) {
                 newConfig.set(path, entry.getValue());
+            } else if (isOptionalDropChancePath(path, newConfig)) {
+                newConfig.set(path, entry.getValue());
             } else {
                 plugin.debug("Path '" + path + "' no longer exists in new defaults – skipping");
             }
         }
+    }
+
+    private static boolean isOptionalDropChancePath(String path, FileConfiguration newConfig) {
+        return path.startsWith("natural_spawner.drop_chance.")
+                && newConfig.isConfigurationSection("natural_spawner");
     }
 
     /**
@@ -246,4 +253,3 @@ public final class ConfigVersionService {
         void migrate(Map<String, Object> userValues);
     }
 }
-

@@ -8,6 +8,7 @@ import github.nighter.smartspawner.utils.ChunkUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.HandlerList;
 
 public class HopperService {
 
@@ -59,6 +60,10 @@ public class HopperService {
                 task.cancel();
             } catch (Exception ignored) {
             }
+        }
+
+        if (tracker != null) {
+            HandlerList.unregisterAll(tracker);
         }
     }
 

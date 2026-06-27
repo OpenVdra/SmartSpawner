@@ -5,11 +5,15 @@
 # Format:
 #   slot_X:                    # X = slot number (1-27)
 #     material: MATERIAL_NAME  # Material to display (use PLAYER_HEAD for spawner mob head)
+#     custom_texture: "..."    # Optional: Custom texture hash for PLAYER_HEAD (similar to spawners_settings.yml)
 #     enabled: true/false      # Show/hide button
 #     info_button: true/false  # Optional: Mark as spawner info button for timer updates
-#     click: "action"          # Action for any click (left/right/shift)
-#     left_click: "action"     # Action for left click only (overrides click)
-#     right_click: "action"    # Action for right click only (overrides click)
+#     click:                   # Also supports left_click, right_click, and shift variants
+#       action: "action"
+#       sound: ui.button.click
+#       sound_success: entity.experience_orb.pickup
+#       sound_fail: block.note_block.pling
+#     cooldown: "5s"           # Optional: Per-player cooldown; omitted by default
 #
 # Conditions:
 #   sell_integration: Show only when sell/shop integration is enabled
@@ -27,12 +31,18 @@
 # When disabled: Right-clicking a spawner opens the main GUI first (default behavior)
 skip_main_gui: true
 
+# Sound played when opening the main GUI (volume and pitch default to 1.0)
+# Set to "none" or leave empty to disable
+open_sound: "none"
+
 
 # Storage button
 slot_12:
   material: CHEST
   enabled: true
-  click: "open_storage"
+  click:
+    action: "open_storage"
+    sound: block.chest.open
 
 # Spawner info button (conditional actions)
 slot_14:
@@ -41,13 +51,20 @@ slot_14:
   info_button: true
   if:
     sell_integration:
-      click: "sell_and_exp"
+      click:
+        action: "sell_and_exp"
+        sound: ui.button.click
+        sound_success: block.note_block.bell
+        sound_fail: block.note_block.pling
     no_sell_integration:
-      click: "none"
+      click:
+        action: "none"
 
 # Experience bottle
 slot_16:
   material: EXPERIENCE_BOTTLE
   enabled: true
-  click: "collect_exp"
-
+  click:
+    action: "collect_exp"
+    sound_success: entity.experience_orb.pickup
+    sound_fail: block.note_block.pling

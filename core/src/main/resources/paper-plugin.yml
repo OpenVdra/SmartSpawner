@@ -3,8 +3,8 @@ version: '${version}'
 main: github.nighter.smartspawner.SmartSpawner
 api-version: '1.21'
 description: "A GUI-based spawner plugin that generates items and experience without spawning mobs"
-authors: [ https://github.com/NighterDevelopment/SmartSpawner ]
-website: "https://nighterdevelopment.github.io/SmartSpawner/"
+authors: [ https://github.com/OpenVdra/SmartSpawner ]
+website: "https://openvdra.github.io/SmartSpawner/"
 folia-supported: true
 
 # Load order - POSTWORLD means after all worlds are loaded
@@ -82,11 +82,6 @@ dependencies:
       load: BEFORE
       required: false
       join-classpath: true
-    HuskClaims:
-      load: BEFORE
-      required: false
-      join-classpath: true
-
     # World Management Plugins
     Multiverse-Core:
       load: BEFORE
@@ -155,7 +150,7 @@ permissions:
 
   smartspawner.command.prices:
     description: "Allow viewing sell prices of spawner items"
-    default: true
+    default: op
 
   smartspawner.command.clear:
     description: "Allow clearing holograms and ghost spawners"
@@ -167,6 +162,14 @@ permissions:
 
   smartspawner.command.set:
     description: "Allow setting SmartSpawner stack size, range, and delay"
+    default: op
+
+  smartspawner.command.language:
+    description: "Allow changing the active SmartSpawner language"
+    default: op
+
+  smartspawner.command.gui_layout:
+    description: "Allow changing the active SmartSpawner GUI layout"
     default: op
 
   # Feature permissions
@@ -181,6 +184,10 @@ permissions:
   smartspawner.break:
     description: "Allow breaking spawners"
     default: true
+
+  smartspawner.break.bypassdropchance:
+    description: "Bypass spawner drop chance and always receive spawner drops"
+    default: op
 
   smartspawner.sellall:
     description: "Allow selling items in spawner storage GUI"

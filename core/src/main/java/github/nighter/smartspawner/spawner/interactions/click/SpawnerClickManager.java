@@ -20,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
@@ -160,7 +161,7 @@ public class SpawnerClickManager implements Listener {
 
         // Block interaction while a sell is in progress
         if (spawner.isSelling()) {
-            messageService.sendMessage(player, "spawner_selling");
+            messageService.sendMessage(player, "action_in_progress");
             return;
         }
 
@@ -209,10 +210,10 @@ public class SpawnerClickManager implements Listener {
     }
 
     private void openStorageGui(Player player, SpawnerData spawner) {
-        org.bukkit.inventory.Inventory storageInventory = plugin.getSpawnerStorageUI()
-                .createStorageInventory(spawner, 1, -1);
-        player.playSound(player.getLocation(), org.bukkit.Sound.BLOCK_CHEST_OPEN, 1.0f, 1.0f);
+        Inventory storageInventory = plugin.getSpawnerStorageUI()
+                .createStorageInventory(player, spawner, 1, -1);
         player.openInventory(storageInventory);
+        plugin.getGuiButtonInteractionService().playOpenSound(player);
     }
 
     private boolean isSpawnEgg(Material material) {

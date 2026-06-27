@@ -2,7 +2,6 @@ package github.nighter.smartspawner.commands.list;
 
 import com.mojang.brigadier.context.CommandContext;
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.nms.VersionInitializer;
 import github.nighter.smartspawner.commands.BaseSubCommand;
 import github.nighter.smartspawner.commands.list.gui.CrossServerSpawnerData;
 import github.nighter.smartspawner.commands.list.gui.list.enums.FilterOption;
@@ -19,6 +18,7 @@ import github.nighter.smartspawner.spawner.data.storage.StorageMode;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -27,6 +27,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,7 +38,9 @@ public class ListSubCommand extends BaseSubCommand {
     private final MessageService messageService;
     private final UserPreferenceCache userPreferenceCache;
     private final SpawnerManagementGUI spawnerManagementGUI;
+    private final NamespacedKey worldNameKey;
     private static final int SPAWNERS_PER_PAGE = 45;
+    private static final String EMPTY_REMOTE_LORE_MARKER = "__SMARTSPAWNER_EMPTY_REMOTE_LORE__";
 
     public ListSubCommand(SmartSpawner plugin) {
         super(plugin);
@@ -46,6 +49,7 @@ public class ListSubCommand extends BaseSubCommand {
         this.messageService = plugin.getMessageService();
         this.userPreferenceCache = plugin.getUserPreferenceCache();
         this.spawnerManagementGUI = new SpawnerManagementGUI(plugin);
+        this.worldNameKey = new NamespacedKey(plugin, "world_name");
     }
 
     @Override
@@ -114,68 +118,59 @@ public class ListSubCommand extends BaseSubCommand {
             return;
         }
 
+        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+
         SpawnerDatabaseHandler dbHandler = getDbHandler();
-        if (dbHandler == null) {
-            // Fallback to local world selection
+        if (!isCrossServerEnabled() || dbHandler == null) {
             openWorldSelectionGUI(player);
             return;
         }
 
-        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
-
         // Async query for server names
-        dbHandler.getDistinctServerNamesAsync(servers -> {
-            if (servers.isEmpty()) {
-                messageService.sendMessage(player, "no_spawners_found");
-                return;
-            }
+        dbHandler.getDistinctServerNamesAsync(servers -> openServerSelectionGUI(player, servers));
+    }
 
-            // Calculate inventory size
-            int size = Math.max(9, (int) Math.ceil(servers.size() / 7.0) * 9);
-            size = Math.min(54, size); // Max 54 slots
+    private void openServerSelectionGUI(Player player, Collection<String> servers) {
+        Set<String> availableServers = new LinkedHashSet<>();
+        availableServers.add(getCurrentServerName());
+        availableServers.addAll(servers);
 
-            String title = languageManager.getGuiTitle("gui_title_server_selection");
-            if (title == null || title.isEmpty()) {
-                title = ChatColor.DARK_GRAY + "Select Server";
-            }
+        int contentRows = (int) Math.ceil(availableServers.size() / 7.0);
+        int size = Math.max(27, (contentRows + 1) * 9);
+        size = Math.min(54, size);
 
-            Inventory inv = Bukkit.createInventory(new ServerSelectionHolder(), size, title);
+        String title = languageManager.commandGui().title("gui_title_server_selection");
+        Inventory inv = Bukkit.createInventory(new ServerSelectionHolder(), size, title);
 
-            String currentServer = getCurrentServerName();
-            int slot = 0;
+        String currentServer = getCurrentServerName();
+        int slot = 10;
 
-            for (String serverName : servers) {
-                if (slot >= size) break;
+        for (String serverName : availableServers) {
+            if (slot >= size) break;
 
-                // Skip border slots for nicer layout
-                while (slot < size && (slot % 9 == 0 || slot % 9 == 8)) {
-                    slot++;
-                }
-                if (slot >= size) break;
-
-                Material material = serverName.equals(currentServer) ? Material.EMERALD_BLOCK : Material.IRON_BLOCK;
-                ItemStack serverItem = createServerButton(serverName, material, serverName.equals(currentServer));
-                inv.setItem(slot, serverItem);
+            // Skip border slots for nicer layout
+            while (slot < size && (slot % 9 == 0 || slot % 9 == 8)) {
                 slot++;
             }
+            if (slot >= size) break;
 
-            player.openInventory(inv);
-        });
+            Material material = serverName.equals(currentServer) ? Material.EMERALD_BLOCK : Material.IRON_BLOCK;
+            ItemStack serverItem = createServerButton(serverName, material, serverName.equals(currentServer));
+            inv.setItem(slot, serverItem);
+            slot++;
+        }
+
+        player.openInventory(inv);
     }
 
     private ItemStack createServerButton(String serverName, Material material, boolean isCurrentServer) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            String displayName = (isCurrentServer ? ChatColor.GREEN : ChatColor.GOLD) + serverName;
-            meta.setDisplayName(displayName);
-
-            List<String> lore = new ArrayList<>();
-            if (isCurrentServer) {
-                lore.add(ChatColor.GRAY + "Current Server");
-            }
-            lore.add(ChatColor.YELLOW + "Click to view spawners");
-            meta.setLore(lore);
+            Map<String, String> placeholders = Map.of("server", serverName);
+            String key = isCurrentServer ? "server_selection.current_server" : "server_selection.remote_server";
+            meta.setDisplayName(languageManager.commandGui().name(key + ".name", placeholders));
+            meta.setLore(languageManager.commandGui().loreList(key + ".lore", placeholders));
 
             item.setItemMeta(meta);
         }
@@ -210,7 +205,7 @@ public class ListSubCommand extends BaseSubCommand {
 
         dbHandler.getWorldsForServerAsync(targetServer, worldCounts -> {
             if (worldCounts.isEmpty()) {
-                messageService.sendMessage(player, "no_spawners_found");
+                messageService.sendMessage(player, "list.no_spawners_found");
                 return;
             }
 
@@ -219,10 +214,7 @@ public class ListSubCommand extends BaseSubCommand {
 
             Map<String, String> titlePlaceholders = new HashMap<>();
             titlePlaceholders.put("server", targetServer);
-            String title = languageManager.getGuiTitle("gui_title_world_selection_server", titlePlaceholders);
-            if (title == null || title.isEmpty()) {
-                title = ChatColor.DARK_GRAY + "Worlds - " + targetServer;
-            }
+            String title = languageManager.commandGui().title("gui_title_world_selection_server", titlePlaceholders);
 
             Inventory inv = Bukkit.createInventory(
                     new WorldSelectionHolder(targetServer),
@@ -230,7 +222,7 @@ public class ListSubCommand extends BaseSubCommand {
             );
 
             int slot = 10;
-            for (Map.Entry<String, Integer> entry : worldCounts.entrySet()) {
+            for (Map.Entry<String, SpawnerDatabaseHandler.WorldSpawnerStats> entry : worldCounts.entrySet()) {
                 if (slot >= size - 9) break;
 
                 // Skip border slots
@@ -240,47 +232,40 @@ public class ListSubCommand extends BaseSubCommand {
                 }
 
                 String worldName = entry.getKey();
-                int count = entry.getValue();
-
-                Material material = getMaterialForWorldName(worldName);
-                ItemStack worldItem = createRemoteWorldButton(worldName, material, count, targetServer);
+                SpawnerDatabaseHandler.WorldSpawnerStats stats = entry.getValue();
+                World.Environment environment = getEnvironmentForWorldName(worldName);
+                ItemStack worldItem = createWorldButton(
+                        worldName,
+                        environment,
+                        stats.total(),
+                        stats.totalStacked(),
+                        targetServer
+                );
                 inv.setItem(slot, worldItem);
                 slot++;
             }
 
             // Back button
-            ItemStack backButton = createNavigationButton(Material.RED_STAINED_GLASS_PANE, "navigation.back");
-            inv.setItem(size - 5, backButton);
+            ItemStack backButton = createNavigationButton(
+                    Material.RED_STAINED_GLASS_PANE,
+                    "general_navigation.back",
+                    previousMenuPlaceholder("server_selection", "Server Selection")
+            );
+            inv.setItem(26, backButton);
 
             player.openInventory(inv);
         });
     }
 
-    private ItemStack createRemoteWorldButton(String worldName, Material material, int spawnerCount, String serverName) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(ChatColor.GREEN + formatWorldName(worldName));
-
-            List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + "Server: " + ChatColor.WHITE + serverName);
-            lore.add(ChatColor.GRAY + "Spawners: " + ChatColor.WHITE + spawnerCount);
-            lore.add("");
-            lore.add(ChatColor.YELLOW + "Click to view spawners");
-            meta.setLore(lore);
-
-            item.setItemMeta(meta);
+    private World.Environment getEnvironmentForWorldName(String worldName) {
+        String normalizedName = worldName.toLowerCase(Locale.ROOT);
+        if (normalizedName.equals("world_nether") || normalizedName.endsWith("_nether")) {
+            return World.Environment.NETHER;
         }
-        return item;
-    }
-
-    private Material getMaterialForWorldName(String worldName) {
-        if (worldName.contains("nether")) {
-            return Material.NETHERRACK;
-        } else if (worldName.contains("end")) {
-            return Material.END_STONE;
+        if (normalizedName.equals("world_the_end") || normalizedName.endsWith("_the_end")) {
+            return World.Environment.THE_END;
         }
-        return Material.GRASS_BLOCK;
+        return World.Environment.NORMAL;
     }
 
     private SpawnerDatabaseHandler getDbHandler() {
@@ -292,6 +277,10 @@ public class ListSubCommand extends BaseSubCommand {
 
     // World selection GUI logic (unchanged)
     public void openWorldSelectionGUI(Player player) {
+        openWorldSelectionGUI(player, null);
+    }
+
+    private void openWorldSelectionGUI(Player player, String targetServer) {
         if (!player.hasPermission("smartspawner.command.list")) {
             messageService.sendMessage(player, "no_permission");
             return;
@@ -313,20 +302,15 @@ public class ListSubCommand extends BaseSubCommand {
         // Calculate inventory size - use original 27 size if only default worlds, otherwise adapt
         int size = hasCustomWorlds ? Math.max(27, (int) Math.ceil((worlds.size() + 2) / 7.0) * 9) : 27;
 
-        Inventory inv = Bukkit.createInventory(new WorldSelectionHolder(),
-                size, languageManager.getGuiTitle("gui_title_world_selection"));
+        Inventory inv = Bukkit.createInventory(new WorldSelectionHolder(targetServer),
+                size, languageManager.commandGui().title("gui_title_world_selection"));
 
         // If we only have default worlds, use the original layout
         if (!hasCustomWorlds) {
             // Create buttons for default worlds
-            ItemStack overworldButton = createWorldButtonIfWorldExists("world", Material.GRASS_BLOCK,
-                    languageManager.getGuiTitle("world_buttons.overworld.name"));
-
-            ItemStack netherButton = createWorldButtonIfWorldExists("world_nether", Material.NETHERRACK,
-                    languageManager.getGuiTitle("world_buttons.nether.name"));
-
-            ItemStack endButton = createWorldButtonIfWorldExists("world_the_end", Material.END_STONE,
-                    languageManager.getGuiTitle("world_buttons.end.name"));
+            ItemStack overworldButton = createWorldButtonIfWorldExists("world", targetServer);
+            ItemStack netherButton = createWorldButtonIfWorldExists("world_nether", targetServer);
+            ItemStack endButton = createWorldButtonIfWorldExists("world_the_end", targetServer);
 
             // Set buttons in the original layout
             if (overworldButton != null) inv.setItem(11, overworldButton);
@@ -339,18 +323,15 @@ public class ListSubCommand extends BaseSubCommand {
             int row = 1;
 
             // Add default worlds first (if they exist)
-            if (addWorldButtonIfExists(inv, "world", Material.GRASS_BLOCK,
-                    languageManager.getGuiTitle("world_buttons.overworld.name"), slot)) {
+            if (addWorldButtonIfExists(inv, "world", slot, targetServer)) {
                 slot++;
             }
 
-            if (addWorldButtonIfExists(inv, "world_nether", Material.NETHERRACK,
-                    languageManager.getGuiTitle("world_buttons.nether.name"), slot)) {
+            if (addWorldButtonIfExists(inv, "world_nether", slot, targetServer)) {
                 slot++;
             }
 
-            if (addWorldButtonIfExists(inv, "world_the_end", Material.END_STONE,
-                    languageManager.getGuiTitle("world_buttons.end.name"), slot)) {
+            if (addWorldButtonIfExists(inv, "world_the_end", slot, targetServer)) {
                 slot++;
             }
 
@@ -368,15 +349,18 @@ public class ListSubCommand extends BaseSubCommand {
                 }
 
                 // Add the world button
-                Material material = getMaterialForWorldType(world.getEnvironment());
-                addWorldButton(inv, world.getName(), material, formatWorldName(world.getName()), slot++);
+                addWorldButton(inv, world, slot++, targetServer);
             }
         }
 
         // Add back button if cross-server mode is enabled
-        if (isCrossServerEnabled()) {
-            ItemStack backButton = createNavigationButton(Material.RED_STAINED_GLASS_PANE, "navigation.back");
-            inv.setItem(size - 5, backButton); // Bottom center
+        if (isCrossServerEnabled() || targetServer != null) {
+            ItemStack backButton = createNavigationButton(
+                    Material.RED_STAINED_GLASS_PANE,
+                    "general_navigation.back",
+                    previousMenuPlaceholder("server_selection", "Server Selection")
+            );
+            inv.setItem(26, backButton);
         }
 
         player.openInventory(inv);
@@ -386,44 +370,30 @@ public class ListSubCommand extends BaseSubCommand {
         return worldName.equals("world") || worldName.equals("world_nether") || worldName.equals("world_the_end");
     }
 
-    private ItemStack createWorldButtonIfWorldExists(String worldName, Material material, String displayName) {
+    private ItemStack createWorldButtonIfWorldExists(String worldName, String serverName) {
         World world = Bukkit.getWorld(worldName);
         if (world != null && spawnerManager.countSpawnersInWorld(worldName) > 0) {
-            return createWorldButton(material, displayName, getWorldDescription(worldName));
+            return createWorldButton(world, serverName);
         }
         return null;
     }
 
-    private boolean addWorldButtonIfExists(Inventory inv, String worldName, Material material, String displayName, int slot) {
+    private boolean addWorldButtonIfExists(
+            Inventory inv,
+            String worldName,
+            int slot,
+            String serverName
+    ) {
         World world = Bukkit.getWorld(worldName);
         if (world != null && spawnerManager.countSpawnersInWorld(worldName) > 0) {
-            addWorldButton(inv, worldName, material, displayName, slot);
+            addWorldButton(inv, world, slot, serverName);
             return true;
         }
         return false;
     }
 
-    private void addWorldButton(Inventory inv, String worldName, Material material, String displayName, int slot) {
-        // For custom worlds, get formatted name with color based on environment
-        if (!isDefaultWorld(worldName)) {
-            World world = Bukkit.getWorld(worldName);
-            if (world != null) {
-                World.Environment environment = world.getEnvironment();
-                String namePath;
-                switch (environment) {
-                    case NORMAL -> namePath = "world_buttons.custom_overworld.name";
-                    case NETHER -> namePath = "world_buttons.custom_nether.name";
-                    case THE_END -> namePath = "world_buttons.custom_end.name";
-                    default -> namePath = "world_buttons.custom_default.name";
-                }
-                Map<String, String> placeholders = new HashMap<>();
-                placeholders.put("world_name", displayName);
-                displayName = languageManager.getGuiTitle(namePath, placeholders);
-            }
-        }
-
-        ItemStack button = createWorldButton(material, displayName, getWorldDescription(worldName));
-        inv.setItem(slot, button);
+    private void addWorldButton(Inventory inv, World world, int slot, String serverName) {
+        inv.setItem(slot, createWorldButton(world, serverName));
     }
 
     private Material getMaterialForWorldType(World.Environment environment) {
@@ -431,59 +401,89 @@ public class ListSubCommand extends BaseSubCommand {
             case NORMAL -> Material.GRASS_BLOCK;
             case NETHER -> Material.NETHERRACK;
             case THE_END -> Material.END_STONE;
-            default -> Material.ENDER_PEARL; // For custom environments
+            case CUSTOM -> Material.ENDER_PEARL;
         };
     }
 
     private String formatWorldName(String worldName) {
         // Convert something like "my_custom_world" to "My Custom World"
         return Arrays.stream(worldName.replace('_', ' ').split(" "))
+                .filter(word -> !word.isEmpty())
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
                 .collect(Collectors.joining(" "));
     }
 
-    private List<String> getWorldDescription(String worldName) {
-        List<String> description = new ArrayList<>();
-        int physicalSpawners = spawnerManager.countSpawnersInWorld(worldName);
-        int totalWithStacks = spawnerManager.countTotalSpawnersWithStacks(worldName);
-
-        // Use path for default worlds if available, otherwise use custom world description based on environment
-        String path;
-        if (worldName.equals("world")) {
-            path = "world_buttons.overworld.lore";
-        } else if (worldName.equals("world_nether")) {
-            path = "world_buttons.nether.lore";
-        } else if (worldName.equals("world_the_end")) {
-            path = "world_buttons.end.lore";
-        } else {
-            // Get environment for custom world
-            World world = Bukkit.getWorld(worldName);
-            World.Environment environment = world != null ? world.getEnvironment() : World.Environment.NORMAL;
-
-            // Select appropriate lore based on environment
-            switch (environment) {
-                case NORMAL -> path = "world_buttons.overworld.lore";
-                case NETHER -> path = "world_buttons.nether.lore";
-                case THE_END -> path = "world_buttons.end.lore";
-                default -> path = "world_buttons.custom_default.lore";
+    private String getWorldDisplayName(String worldName) {
+        String configKey;
+        String defaultValue;
+        switch (worldName) {
+            case "world" -> {
+                configKey = "world_display_names.overworld";
+                defaultValue = "Overworld";
+            }
+            case "world_nether" -> {
+                configKey = "world_display_names.nether";
+                defaultValue = "Nether";
+            }
+            case "world_the_end" -> {
+                configKey = "world_display_names.the_end";
+                defaultValue = "The End";
+            }
+            default -> {
+                String customFormat = languageManager.commandGui().configString(
+                        "world_display_names.custom",
+                        "World {world_name}"
+                );
+                return languageManager.applyOnlyPlaceholders(
+                        customFormat,
+                        Map.of("world_name", formatWorldName(worldName))
+                );
             }
         }
-
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("total", String.valueOf(physicalSpawners));
-        placeholders.put("total_stacked", languageManager.formatNumber(totalWithStacks));
-
-        // Get the lore as string array and convert to List
-        String[] loreArray = languageManager.getGuiItemLore(path, placeholders);
-        return Arrays.asList(loreArray);
+        return languageManager.commandGui().configString(configKey, defaultValue);
     }
 
-    private ItemStack createWorldButton(Material material, String name, List<String> lore) {
-        ItemStack button = new ItemStack(material);
+    private ItemStack createWorldButton(World world, String serverName) {
+        String worldName = world.getName();
+        int physicalSpawners = spawnerManager.countSpawnersInWorld(worldName);
+        int totalWithStacks = spawnerManager.countTotalSpawnersWithStacks(worldName);
+        return createWorldButton(worldName, world.getEnvironment(), physicalSpawners, totalWithStacks, serverName);
+    }
+
+    private ItemStack createWorldButton(
+            String worldName,
+            World.Environment environment,
+            int physicalSpawners,
+            int totalWithStacks,
+            String serverName
+    ) {
+        String path = "world_buttons." + environment.name();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("world_name", getWorldDisplayName(worldName));
+        placeholders.put("total", languageManager.formatNumber(physicalSpawners));
+        placeholders.put("total_stacked", languageManager.formatNumber(totalWithStacks));
+        if (serverName != null) {
+            placeholders.put("server", serverName);
+            placeholders.put(
+                    "remote_world_lore",
+                    String.join("\n", languageManager.commandGui().loreList("remote_world_lore", placeholders))
+            );
+        } else {
+            placeholders.put("remote_world_lore", EMPTY_REMOTE_LORE_MARKER);
+        }
+
+        ItemStack button = new ItemStack(getMaterialForWorldType(environment));
         ItemMeta meta = button.getItemMeta();
-        meta.setDisplayName(name);
-        meta.setLore(lore);
-        button.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(languageManager.commandGui().name(path + ".name", placeholders));
+            List<String> lore = new ArrayList<>(
+                    languageManager.commandGui().loreWithMultilinePlaceholders(path + ".lore", placeholders)
+            );
+            lore.removeIf(EMPTY_REMOTE_LORE_MARKER::equals);
+            meta.setLore(lore);
+            meta.getPersistentDataContainer().set(worldNameKey, PersistentDataType.STRING, worldName);
+            button.setItemMeta(meta);
+        }
         return button;
     }
 
@@ -507,6 +507,17 @@ public class ListSubCommand extends BaseSubCommand {
 
     // Main spawner list GUI method with filter and sort options
     public void openSpawnerListGUI(Player player, String worldName, int page, FilterOption filter, SortOption sortType) {
+        openSpawnerListGUI(player, worldName, page, filter, sortType, null);
+    }
+
+    private void openSpawnerListGUI(
+            Player player,
+            String worldName,
+            int page,
+            FilterOption filter,
+            SortOption sortType,
+            String targetServer
+    ) {
         if (!player.hasPermission("smartspawner.command.list")) {
             messageService.sendMessage(player, "no_permission");
             return;
@@ -539,26 +550,21 @@ public class ListSubCommand extends BaseSubCommand {
         int totalPages = (int) Math.ceil((double) worldSpawners.size() / SPAWNERS_PER_PAGE);
         page = Math.max(1, Math.min(page, totalPages));
 
-        String worldTitle;
-        switch (worldName) {
-            case "world" -> worldTitle = languageManager.getGuiTitle("world_buttons.overworld.name");
-            case "world_nether" -> worldTitle = languageManager.getGuiTitle("world_buttons.nether.name");
-            case "world_the_end" -> worldTitle = languageManager.getGuiTitle("world_buttons.end.name");
-            default -> {
-                // For custom worlds, format the name nicely
-                worldTitle = formatWorldName(worldName);
-            }
-        }
-
         Map<String, String> titlePlaceholders = new HashMap<>();
-        worldTitle = ChatColor.stripColor(worldTitle);
-        titlePlaceholders.put("world", worldTitle);
+        titlePlaceholders.put("world", getWorldDisplayName(worldName));
         titlePlaceholders.put("current", String.valueOf(page));
         titlePlaceholders.put("total", String.valueOf(totalPages));
 
-        String title = languageManager.getGuiTitle("gui_title_spawner_list", titlePlaceholders);
+        String titleKey = targetServer == null
+                ? "gui_title_spawner_list"
+                : "gui_title_spawner_list_remote";
+        if (targetServer != null) {
+            titlePlaceholders.put("server", targetServer);
+        }
+        String title = languageManager.commandGui().title(titleKey, titlePlaceholders);
 
-        Inventory inv = Bukkit.createInventory(new SpawnerListHolder(page, totalPages, worldName, filter, sortType),
+        Inventory inv = Bukkit.createInventory(
+                new SpawnerListHolder(page, totalPages, worldName, filter, sortType, targetServer),
                 54, title);
 
         // Calculate start and end indices for current page
@@ -568,7 +574,7 @@ public class ListSubCommand extends BaseSubCommand {
         // Populate inventory with spawners
         for (int i = startIndex; i < endIndex; i++) {
             SpawnerData spawner = worldSpawners.get(i);
-            inv.addItem(createSpawnerInfoItem(spawner));
+            inv.addItem(createSpawnerInfoItem(spawner, targetServer != null));
         }
 
         // Add filter and sort controls
@@ -576,14 +582,24 @@ public class ListSubCommand extends BaseSubCommand {
 
         // Add navigation buttons
         if (page > 1) {
-            inv.setItem(45, createNavigationButton(Material.SPECTRAL_ARROW, "navigation.previous_page"));
+            inv.setItem(45, createNavigationButton(
+                    Material.SPECTRAL_ARROW,
+                    "general_navigation.previous_page",
+                    Map.of("target_page", String.valueOf(page - 1))));
         }
 
         // Back button
-        inv.setItem(49, createNavigationButton(Material.RED_STAINED_GLASS_PANE, "navigation.back"));
+        inv.setItem(49, createNavigationButton(
+                Material.RED_STAINED_GLASS_PANE,
+                "general_navigation.back",
+                previousMenuPlaceholder("world_selection", "World Selection")
+        ));
 
         if (page < totalPages) {
-            inv.setItem(53, createNavigationButton(Material.SPECTRAL_ARROW, "navigation.next_page"));
+            inv.setItem(53, createNavigationButton(
+                    Material.SPECTRAL_ARROW,
+                    "general_navigation.next_page",
+                    Map.of("target_page", String.valueOf(page + 1))));
         }
 
         player.openInventory(inv);
@@ -618,8 +634,8 @@ public class ListSubCommand extends BaseSubCommand {
         Map<String, String> placeholders = new HashMap<>();
 
         // Get format strings from configuration
-        String selectedFormat = languageManager.getGuiItemName(controlType + ".selected_option");
-        String unselectedFormat = languageManager.getGuiItemName(controlType + ".unselected_option");
+        String selectedFormat = languageManager.commandGui().name("general.selected_option");
+        String unselectedFormat = languageManager.commandGui().name("general.unselected_option");
 
         // Build available options list
         StringBuilder availableOptions = new StringBuilder();
@@ -630,35 +646,35 @@ public class ListSubCommand extends BaseSubCommand {
 
             for (FilterOption option : FilterOption.values()) {
                 if (!first) availableOptions.append("\n");
-                String optionName = languageManager.getGuiItemName("filter." + option.getName());
+                String optionName = languageManager.commandGui().name("filter.option_name." + option.getName());
                 String format = option == currentFilter ? selectedFormat : unselectedFormat;
                 String formattedOption = format.replace("{option_name}", optionName);
                 availableOptions.append(formattedOption);
                 first = false;
             }
 
-            meta.setDisplayName(languageManager.getGuiItemName("filter.button.name"));
+            meta.setDisplayName(languageManager.commandGui().name("filter.button.name"));
 
         } else if (controlType.equals("sort")) {
             SortOption currentSort = (SortOption) currentOption;
 
             for (SortOption option : SortOption.values()) {
                 if (!first) availableOptions.append("\n");
-                String optionName = languageManager.getGuiItemName("sort." + option.getName());
+                String optionName = languageManager.commandGui().name("sort.option_name." + option.getName());
                 String format = option == currentSort ? selectedFormat : unselectedFormat;
                 String formattedOption = format.replace("{option_name}", optionName);
                 availableOptions.append(formattedOption);
                 first = false;
             }
 
-            meta.setDisplayName(languageManager.getGuiItemName("sort.button.name"));
+            meta.setDisplayName(languageManager.commandGui().name("sort.button.name"));
         }
 
         placeholders.put("available_options", availableOptions.toString());
 
         // Set the lore using the appropriate button lore path and the placeholders
         String lorePath = controlType + ".button.lore";
-        List<String> lore = languageManager.getGuiItemLoreWithMultilinePlaceholders(lorePath, placeholders);
+        List<String> lore = languageManager.commandGui().loreWithMultilinePlaceholders(lorePath, placeholders);
         meta.setLore(lore);
 
         button.setItemMeta(meta);
@@ -666,15 +682,37 @@ public class ListSubCommand extends BaseSubCommand {
     }
 
     private ItemStack createNavigationButton(Material material, String namePath) {
+        return createNavigationButton(material, namePath, Collections.emptyMap());
+    }
+
+    private ItemStack createNavigationButton(Material material, String namePath, Map<String, String> placeholders) {
         ItemStack button = new ItemStack(material);
         ItemMeta meta = button.getItemMeta();
-        meta.setDisplayName(languageManager.getGuiItemName(namePath));
-        button.setItemMeta(meta);
+        if (meta != null) {
+            String displayName = languageManager.commandGui().name(namePath + ".name", placeholders);
+            if (displayName.startsWith("Missing item name: ")) {
+                displayName = languageManager.commandGui().name(namePath, placeholders);
+            }
+            meta.setDisplayName(displayName);
+            List<String> lore = languageManager.commandGui().loreList(namePath + ".lore", placeholders);
+            if (!lore.isEmpty()) {
+                meta.setLore(lore);
+            }
+            button.setItemMeta(meta);
+        }
         return button;
     }
 
+    private Map<String, String> previousMenuPlaceholder(String menuKey, String defaultName) {
+        String menuName = languageManager.commandGui().configString(
+                "general_navigation.menu_names." + menuKey,
+                defaultName
+        );
+        return Map.of("previous_menu", menuName);
+    }
 
-    private ItemStack createSpawnerInfoItem(SpawnerData spawner) {
+
+    private ItemStack createSpawnerInfoItem(SpawnerData spawner, boolean remote) {
         EntityType entityType = spawner.getEntityType();
         Location loc = spawner.getSpawnerLocation();
 
@@ -684,47 +722,44 @@ public class ListSubCommand extends BaseSubCommand {
         placeholders.put("entity", languageManager.getFormattedMobName(entityType));
         placeholders.put("size", String.valueOf(spawner.getStackSize()));
         if (spawner.getSpawnerStop().get()) {
-            placeholders.put("status_color", "&#ff6b6b");
-            placeholders.put("status_text", "Inactive");
+            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.inactive"));
         } else {
-            placeholders.put("status_color", "&#00E689");
-            placeholders.put("status_text", "Active");
+            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.active"));
         }
         placeholders.put("x", String.valueOf(loc.getBlockX()));
         placeholders.put("y", String.valueOf(loc.getBlockY()));
         placeholders.put("z", String.valueOf(loc.getBlockZ()));
         String lastPlayer = spawner.getLastInteractedPlayer();
-        placeholders.put("last_player", lastPlayer != null ? lastPlayer : "None");
+        placeholders.put("last_player", lastPlayer != null
+                ? lastPlayer
+                : languageManager.commandGui().name("spawner_item_list.last_player_none"));
 
         ItemStack spawnerItem;
+        String loreKey = remote ? "spawner_item_list.remote_lore" : "spawner_item_list.lore";
 
         if (entityType == null) {
             spawnerItem = new ItemStack(Material.SPAWNER);
             spawnerItem.editMeta(meta -> {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-                meta.setDisplayName(languageManager.getGuiItemName("spawner_item_list.name", placeholders));
-                List<String> lore = Arrays.asList(languageManager.getGuiItemLore("spawner_item_list.lore", placeholders));
+                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
+                List<String> lore = Arrays.asList(languageManager.commandGui().lore(loreKey, placeholders));
                 meta.setLore(lore);
             });
         } else {
             // Use optimized method with consumer to avoid extra getItemMeta/setItemMeta
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, meta -> {
-                meta.setDisplayName(languageManager.getGuiItemName("spawner_item_list.name", placeholders));
-                List<String> lore = Arrays.asList(languageManager.getGuiItemLore("spawner_item_list.lore", placeholders));
+                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
+                List<String> lore = Arrays.asList(languageManager.commandGui().lore(loreKey, placeholders));
                 meta.setLore(lore);
             });
         }
 
-        VersionInitializer.hideTooltip(spawnerItem);
+        ItemTooltipUtil.hideTooltip(spawnerItem);
         return spawnerItem;
     }
 
     public void openSpawnerManagementGUI(Player player, String spawnerId, String worldName, int listPage) {
         spawnerManagementGUI.openManagementMenu(player, spawnerId, worldName, listPage);
-    }
-
-    public void openSpawnerManagementGUI(Player player, String spawnerId, String worldName, int listPage, String targetServer) {
-        spawnerManagementGUI.openManagementMenu(player, spawnerId, worldName, listPage, targetServer);
     }
 
     /**
@@ -749,7 +784,7 @@ public class ListSubCommand extends BaseSubCommand {
 
         // If it's the current server, use local data
         if (targetServer.equals(currentServer)) {
-            openSpawnerListGUI(player, worldName, page, filter, sort);
+            openSpawnerListGUI(player, worldName, page, filter, sort, targetServer);
             return;
         }
 
@@ -767,21 +802,25 @@ public class ListSubCommand extends BaseSubCommand {
         final SortOption finalSort = sort;
         dbHandler.getCrossServerSpawnersAsync(targetServer, worldName, filter.name(), sort.name(), spawners -> {
             if (spawners.isEmpty()) {
-                messageService.sendMessage(player, "no_spawners_found");
+                messageService.sendMessage(player, "list.no_spawners_found");
                 return;
             }
 
             int totalPages = (int) Math.ceil((double) spawners.size() / SPAWNERS_PER_PAGE);
             int currentPage = Math.max(1, Math.min(requestedPage, totalPages));
 
-            String worldTitle = formatWorldName(worldName);
+            String worldTitle = getWorldDisplayName(worldName);
 
             Map<String, String> titlePlaceholders = new HashMap<>();
             titlePlaceholders.put("world", worldTitle);
             titlePlaceholders.put("current", String.valueOf(currentPage));
             titlePlaceholders.put("total", String.valueOf(totalPages));
+            titlePlaceholders.put("server", targetServer);
 
-            String title = languageManager.getGuiTitle("gui_title_spawner_list", titlePlaceholders);
+            String title = languageManager.commandGui().title(
+                    "gui_title_spawner_list_remote",
+                    titlePlaceholders
+            );
 
             Inventory inv = Bukkit.createInventory(
                 new SpawnerListHolder(currentPage, totalPages, worldName, finalFilter, finalSort, targetServer),
@@ -795,31 +834,41 @@ public class ListSubCommand extends BaseSubCommand {
             // Populate inventory with spawners
             for (int i = startIndex; i < endIndex; i++) {
                 CrossServerSpawnerData spawner = spawners.get(i);
-                inv.addItem(createCrossServerSpawnerItem(spawner, targetServer));
+                inv.addItem(createCrossServerSpawnerItem(spawner));
             }
 
             // Add navigation buttons
             // Previous page
             if (currentPage > 1) {
-                inv.setItem(45, createNavigationButton(Material.SPECTRAL_ARROW, "navigation.previous_page"));
+                inv.setItem(45, createNavigationButton(
+                        Material.SPECTRAL_ARROW,
+                        "general_navigation.previous_page",
+                        Map.of("target_page", String.valueOf(currentPage - 1))));
             }
 
             // Filter button (slot 48)
             addControlButtons(inv, finalFilter, finalSort);
 
             // Back button
-            inv.setItem(49, createNavigationButton(Material.RED_STAINED_GLASS_PANE, "navigation.back"));
+            inv.setItem(49, createNavigationButton(
+                    Material.RED_STAINED_GLASS_PANE,
+                    "general_navigation.back",
+                    previousMenuPlaceholder("world_selection", "World Selection")
+            ));
 
             // Next page
             if (currentPage < totalPages) {
-                inv.setItem(53, createNavigationButton(Material.SPECTRAL_ARROW, "navigation.next_page"));
+                inv.setItem(53, createNavigationButton(
+                        Material.SPECTRAL_ARROW,
+                        "general_navigation.next_page",
+                        Map.of("target_page", String.valueOf(currentPage + 1))));
             }
 
             player.openInventory(inv);
         });
     }
 
-    private ItemStack createCrossServerSpawnerItem(CrossServerSpawnerData spawner, String serverName) {
+    private ItemStack createCrossServerSpawnerItem(CrossServerSpawnerData spawner) {
         EntityType entityType = spawner.getEntityType();
 
         // Prepare all placeholders
@@ -828,17 +877,17 @@ public class ListSubCommand extends BaseSubCommand {
         placeholders.put("entity", languageManager.getFormattedMobName(entityType));
         placeholders.put("size", String.valueOf(spawner.getStackSize()));
         if (!spawner.isActive()) {
-            placeholders.put("status_color", "&#ff6b6b");
-            placeholders.put("status_text", "Inactive");
+            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.inactive"));
         } else {
-            placeholders.put("status_color", "&#00E689");
-            placeholders.put("status_text", "Active");
+            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.active"));
         }
         placeholders.put("x", String.valueOf(spawner.getLocX()));
         placeholders.put("y", String.valueOf(spawner.getLocY()));
         placeholders.put("z", String.valueOf(spawner.getLocZ()));
         String lastPlayer = spawner.getLastInteractedPlayer();
-        placeholders.put("last_player", lastPlayer != null ? lastPlayer : "None");
+        placeholders.put("last_player", lastPlayer != null
+                ? lastPlayer
+                : languageManager.commandGui().name("spawner_item_list.last_player_none"));
 
         ItemStack spawnerItem;
 
@@ -846,23 +895,23 @@ public class ListSubCommand extends BaseSubCommand {
             spawnerItem = new ItemStack(Material.SPAWNER);
             spawnerItem.editMeta(meta -> {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-                meta.setDisplayName(languageManager.getGuiItemName("spawner_item_list.name", placeholders));
-                List<String> lore = new ArrayList<>(Arrays.asList(languageManager.getGuiItemLore("spawner_item_list.lore", placeholders)));
-                lore.add("");
-                lore.add(ChatColor.DARK_GRAY + "Server: " + ChatColor.WHITE + serverName);
-                meta.setLore(lore);
+                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
+                meta.setLore(Arrays.asList(languageManager.commandGui().lore(
+                        "spawner_item_list.remote_lore",
+                        placeholders
+                )));
             });
         } else {
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, meta -> {
-                meta.setDisplayName(languageManager.getGuiItemName("spawner_item_list.name", placeholders));
-                List<String> lore = new ArrayList<>(Arrays.asList(languageManager.getGuiItemLore("spawner_item_list.lore", placeholders)));
-                lore.add("");
-                lore.add(ChatColor.DARK_GRAY + "Server: " + ChatColor.WHITE + serverName);
-                meta.setLore(lore);
+                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
+                meta.setLore(Arrays.asList(languageManager.commandGui().lore(
+                        "spawner_item_list.remote_lore",
+                        placeholders
+                )));
             });
         }
 
-        VersionInitializer.hideTooltip(spawnerItem);
+        ItemTooltipUtil.hideTooltip(spawnerItem);
         return spawnerItem;
     }
     public FilterOption getUserFilter(Player player, String worldName) {

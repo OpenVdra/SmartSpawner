@@ -15,6 +15,6 @@
 #   {percent_exp_rounded}     – XP % rounded (e.g. "50")
 
 hologram_text:
-  - '[&#e6e6fa{stack_size}] &#3498db{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
-  - '&#5dade2• &#e6e6faxᴘ: &#37eb9a{current_exp}&#e6e6fa/&#37eb9a{max_exp}'
-  - '&#5dade2• &#e6e6faɪᴛᴇᴍꜱ: &#37eb9a{used_slots}&#e6e6fa/&#37eb9a{max_slots}'
+  - '&8[&f{stack_size}&8] &#5DB5F1Spawner {entity}'
+  - '&#5DB5F1• &fExp: &a{current_exp}&f/&a{max_exp}'
+  - '&#5DB5F1• &fVật phẩm: &e{used_slots}&f/&e{max_slots}'

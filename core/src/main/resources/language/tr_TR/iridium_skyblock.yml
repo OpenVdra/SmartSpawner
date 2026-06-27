@@ -1,0 +1,21 @@
+# SmartSpawner - iridium_skyblock.yml
+# Bu dosya sadece IridiumSkyblock entegrasyonu aktif olduğunda güncellenir.
+
+iridium_skyblock:
+  permissions:
+    open_menu:
+      name: '&#5DB5F1Spawner Menü Yetkisi'
+      lore:
+        - '&7Ada üyelerinin spawner menüsünü'
+        - '&7açabilmesi için gereken izin.'
+        - ''
+        - '&#5DB5F1&lYetki'
+        - '%permission%'
+    stack:
+      name: '&#37eb9aSpawner Menü Yetkisi'
+      lore:
+        - '&7Ada üyelerinin spawnerları'
+        - '&7stackleyebilmesi için gereken izin.'
+        - ''
+        - '&#37eb9a&lYetki'
+        - '%permission%'

@@ -28,6 +28,6 @@ public class CheckOpenMenu {
         if (integrationManager.isHasIridiumSkyblock() && !IridiumSkyblock.canPlayerOpenMenu(player, location)) return false;
         if (integrationManager.isHasPlotSquared() && !PlotSquared.canInteract(player, location)) return false;
         if (integrationManager.isHasResidence() && !Residence.canInteract(player, location)) return false;
-        return !integrationManager.isHasHuskClaims() || HuskClaims.canPlayerOpenMenu(player, location);
+        return true;
     }
 }

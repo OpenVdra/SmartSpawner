@@ -12,7 +12,7 @@
 #---------------------------------------------------
 #               Language Settings
 #---------------------------------------------------
-# Language setting (available: en_US, vi_VN, de_DE, en_US_DonutSMP, en_US_DonutSMP_v2)
+# Language setting (available: en_US, en_US_DonutSMP, en_US_DonutSMP_v2, tr_TR, vi_VN)
 language: en_US
 
 # Spawner GUI layout configuration (available: default, DonutSMP, DonutSMP_v2)
@@ -62,9 +62,13 @@ spawner_break:
   # Durability impact on tools when breaking a spawner
   durability_loss: 1    # Number of durability points deducted
 
+  # Allow sneaking while breaking a Smart Spawner stack to remove up to 64 spawners at once.
+  # If disabled, sneaking breaks only one spawner, the same as a normal break.
+  sneak_break: true
+
   # Automatically sell storage items and claim remaining XP only when a Smart Spawner is fully removed
   # Requires sell integration + smartspawner.sellall (true by default)
-  auto_sell_and_claim_exp_on_break: true
+  sell_and_xp_break: true
 
   # Enchantment Requirements for successful spawner collection
   silk_touch:
@@ -82,6 +86,18 @@ natural_spawner:
   # Convert natural spawners to smart spawners when broken
   # If false, natural spawners will drop vanilla spawner items
   convert_to_smart_spawner: false
+
+  # Optional spawner item drop chance when natural spawners are broken.
+  # Values must be percentages from 0.0 to 100.0.
+  #
+  # Use the "default" key to set the drop chance for ALL spawner types at once.
+  # Add specific entity types only when you want to override that default.
+  # If "default" is omitted, any unspecified entity falls back to 100.0.
+  # drop_chance:
+  #   default: 80.0   # applies to every spawner type
+  #   ZOMBIE: 75.0    # override for a specific type
+  #   SKELETON: 50.0
+  #   BLAZE: 25.0
 
   # Whether natural spawners will spawn mobs
   spawn_mobs: true

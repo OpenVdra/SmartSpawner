@@ -3,9 +3,9 @@ package github.nighter.smartspawner.commands.near;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.list.gui.management.SpawnerManagementGUI;
 import github.nighter.smartspawner.language.LanguageManager;
-import github.nighter.smartspawner.nms.VersionInitializer;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -80,7 +80,7 @@ public class NearResultGUI implements Listener {
         titlePlaceholders.put("world", "Near (" + total + ")");
         titlePlaceholders.put("current", String.valueOf(page));
         titlePlaceholders.put("total", String.valueOf(totalPages));
-        String title = languageManager.getGuiTitle("gui_title_spawner_list", titlePlaceholders);
+        String title = languageManager.commandGui().title("gui_title_spawner_list", titlePlaceholders);
 
         Inventory inv = Bukkit.createInventory(
                 new NearResultHolder(player.getUniqueId(), page, totalPages),
@@ -93,12 +93,18 @@ public class NearResultGUI implements Listener {
         }
 
         if (page > 1) {
-            inv.setItem(45, createNavigationButton(Material.SPECTRAL_ARROW, "navigation.previous_page"));
+            inv.setItem(45, createNavigationButton(
+                    Material.SPECTRAL_ARROW,
+                    "general_navigation.previous_page",
+                    Map.of("target_page", String.valueOf(page - 1))));
         }
         // Close button at center-bottom
-        inv.setItem(49, createNavigationButton(Material.RED_STAINED_GLASS_PANE, "navigation.back"));
+        inv.setItem(49, createNavigationButton(Material.RED_STAINED_GLASS_PANE, "general_navigation.close"));
         if (page < totalPages) {
-            inv.setItem(53, createNavigationButton(Material.SPECTRAL_ARROW, "navigation.next_page"));
+            inv.setItem(53, createNavigationButton(
+                    Material.SPECTRAL_ARROW,
+                    "general_navigation.next_page",
+                    Map.of("target_page", String.valueOf(page + 1))));
         }
 
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
@@ -124,6 +130,7 @@ public class NearResultGUI implements Listener {
         // Close button
         if (slot == 49) {
             player.closeInventory();
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
             return;
         }
 
@@ -160,7 +167,7 @@ public class NearResultGUI implements Listener {
         String spawnerId = matcher.group(1);
         SpawnerData spawner = plugin.getSpawnerManager().getSpawnerById(spawnerId);
         if (spawner == null) {
-            plugin.getMessageService().sendMessage(player, "spawner_not_found");
+            plugin.getMessageService().sendMessage(player, "list.teleport_failed");
             return;
         }
 
@@ -188,42 +195,50 @@ public class NearResultGUI implements Listener {
         placeholders.put("entity", languageManager.getFormattedMobName(entityType));
         placeholders.put("size", String.valueOf(spawner.getStackSize()));
         if (spawner.getSpawnerStop().get()) {
-            placeholders.put("status_color", "&#ff6b6b");
-            placeholders.put("status_text", "Inactive");
+            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.inactive"));
         } else {
-            placeholders.put("status_color", "&#00E689");
-            placeholders.put("status_text", "Active");
+            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.active"));
         }
         placeholders.put("x", String.valueOf(loc.getBlockX()));
         placeholders.put("y", String.valueOf(loc.getBlockY()));
         placeholders.put("z", String.valueOf(loc.getBlockZ()));
         String lastPlayer = spawner.getLastInteractedPlayer();
-        placeholders.put("last_player", lastPlayer != null ? lastPlayer : "None");
+        placeholders.put("last_player", lastPlayer != null
+                ? lastPlayer
+                : languageManager.commandGui().name("spawner_item_list.last_player_none"));
 
         ItemStack spawnerItem;
         if (entityType == null) {
             spawnerItem = new ItemStack(Material.SPAWNER);
             spawnerItem.editMeta(meta -> {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-                meta.setDisplayName(languageManager.getGuiItemName("spawner_item_list.name", placeholders));
-                meta.setLore(Arrays.asList(languageManager.getGuiItemLore("spawner_item_list.lore", placeholders)));
+                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
+                meta.setLore(Arrays.asList(languageManager.commandGui().lore("spawner_item_list.lore", placeholders)));
             });
         } else {
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, meta -> {
-                meta.setDisplayName(languageManager.getGuiItemName("spawner_item_list.name", placeholders));
-                meta.setLore(Arrays.asList(languageManager.getGuiItemLore("spawner_item_list.lore", placeholders)));
+                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
+                meta.setLore(Arrays.asList(languageManager.commandGui().lore("spawner_item_list.lore", placeholders)));
             });
         }
 
-        VersionInitializer.hideTooltip(spawnerItem);
+        ItemTooltipUtil.hideTooltip(spawnerItem);
         return spawnerItem;
     }
 
     private ItemStack createNavigationButton(Material material, String namePath) {
+        return createNavigationButton(material, namePath, Collections.emptyMap());
+    }
+
+    private ItemStack createNavigationButton(Material material, String namePath, Map<String, String> placeholders) {
         ItemStack button = new ItemStack(material);
         ItemMeta meta = button.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(languageManager.getGuiItemName(namePath));
+            meta.setDisplayName(languageManager.commandGui().name(namePath + ".name", placeholders));
+            List<String> lore = languageManager.commandGui().loreList(namePath + ".lore", placeholders);
+            if (!lore.isEmpty()) {
+                meta.setLore(lore);
+            }
             button.setItemMeta(meta);
         }
         return button;

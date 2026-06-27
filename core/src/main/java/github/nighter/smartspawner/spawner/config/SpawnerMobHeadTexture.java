@@ -22,6 +22,7 @@ public class SpawnerMobHeadTexture {
     private static final Map<EntityType, ItemStack> HEAD_CACHE = new EnumMap<>(EntityType.class);
     private static final Map<EntityType, SkullMeta> BASE_META_CACHE = new EnumMap<>(EntityType.class);
     private static final Map<Material, ItemStack> ITEM_HEAD_CACHE = new EnumMap<>(Material.class);
+    private static final Map<String, SkullMeta> CUSTOM_TEXTURE_META_CACHE = new java.util.concurrent.ConcurrentHashMap<>();
     private static final ItemStack DEFAULT_SPAWNER_BLOCK = new ItemStack(Material.SPAWNER);
 
     private static boolean isBedrockPlayer(Player player) {
@@ -242,10 +243,67 @@ public class SpawnerMobHeadTexture {
         return item;
     }
 
+    /**
+     * Get a custom head with a specific texture string.
+     * Optimized with caching to avoid repeated PlayerProfile and URL creation.
+     * 
+     * @param texture The custom texture string (without URL prefix)
+     * @param metaModifier Consumer to modify the ItemMeta (can be null)
+     * @return The configured ItemStack
+     */
+    public static ItemStack getCustomHeadFromTexture(String texture, Consumer<ItemMeta> metaModifier) {
+        if (texture == null || texture.trim().isEmpty()) {
+            ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+            if (metaModifier != null) {
+                item.editMeta(metaModifier);
+            }
+            return item;
+        }
+        
+        String trimmedTexture = texture.trim();
+        SkullMeta baseMeta = CUSTOM_TEXTURE_META_CACHE.get(trimmedTexture);
+        
+        if (baseMeta == null) {
+            try {
+                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+                PlayerTextures textures = profile.getTextures();
+                URL url = new URL("http://textures.minecraft.net/texture/" + trimmedTexture);
+                textures.setSkin(url);
+                profile.setTextures(textures);
+
+                ItemStack tempHead = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta tempMeta = (SkullMeta) tempHead.getItemMeta();
+                tempMeta.setOwnerProfile(profile);
+                
+                // Cache the base meta (clone to ensure immutability)
+                baseMeta = (SkullMeta) tempMeta.clone();
+                CUSTOM_TEXTURE_META_CACHE.put(trimmedTexture, baseMeta);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+                if (metaModifier != null) {
+                    item.editMeta(metaModifier);
+                }
+                return item;
+            }
+        }
+
+        // Create head using cached base meta
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) baseMeta.clone();
+        
+        if (metaModifier != null) {
+            metaModifier.accept(meta);
+        }
+        head.setItemMeta(meta);
+        return head;
+    }
+
     public static void clearCache() {
         HEAD_CACHE.clear();
         BASE_META_CACHE.clear();
         ITEM_HEAD_CACHE.clear();
+        CUSTOM_TEXTURE_META_CACHE.clear();
     }
 
     /**

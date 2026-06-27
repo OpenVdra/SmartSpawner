@@ -1,38 +1,92 @@
 # SmartSpawner – items.yml
 # Spawner item display names and drop item names.
 
-custom_item:
-  # Appearance of smart spawner items in inventory and tooltips
-  spawner:
-    name: "&#3498db{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ"
-    loot_items: "  &#ecf0f1•  {amount} {item_name} &#3498db({chance}%)"
-    loot_items_empty: "  &#ecf0f1•  ɴᴏɴᴇ"
+# Appearance of smart spawner items in inventory and tooltips
+# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+smart_spawner:
+  default:
+    name: '&#5DB5F1{entity} Spawner'
+    loot_items: '  &#ecf0f1 • {amount} {item_name} &#3498db({chance}%)'
+    loot_items_empty: '  &#ecf0f1 •  None'
     lore:
-      - ""
-      - "&#3498db◈ &#3498dbᴅᴇᴛᴀɪʟꜱ:"
-      - "  &#ecf0f1•  ᴇxᴘᴇʀɪᴇɴᴄᴇ ɢɪᴠᴇ: &#3498db{exp}"
-      - ""
-      - "&#3498db◈ &#3498dbᴅʀᴏᴘꜱ:"
-      - "{loot_items}"
-      - ""
-  
-  # Appearance of item spawner items in inventory and tooltips
-  item_spawner:
-    name: "&#3498db{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ"
-    loot_items: "  &#ecf0f1•  {amount} {item_name} &#3498db({chance}%)"
-    loot_items_empty: "  &#ecf0f1•  ɴᴏɴᴇ"
+      - ''
+      - ' &#5DB5F1 ᴅᴇᴛᴀɪʟ:'
+      - '  &#ecf0f1 • &fEXP give: &a{exp}'
+      - ''
+      - ' &#5DB5F1 ᴅʀᴏᴘꜱ:'
+      - '{loot_items}'
+      - ''
+  # Entity-specific sections override default per key. Unspecified keys use default.
+  PIG:
+    name: '&#FF77B7{entity} Spawner'
+    loot_items: '  &#FFF0F7 • {amount} {item_name} &#FF8FC7({chance}%)'
+    loot_items_empty: '  &#FFF0F7 •  None'
     lore:
-      - ""
-      - "&#3498db◈ &#3498dbᴅᴇᴛᴀɪʟꜱ:"
-      - "  &#ecf0f1•  ᴇxᴘᴇʀɪᴇɴᴄᴇ ɢɪᴠᴇ: &#3498db{exp}"
-      - ""
-      - "&#3498db◈ &#3498dbᴅʀᴏᴘꜱ:"
-      - "{loot_items}"
-      - ""
-  
-  # Appearance of vanilla spawner items in inventory and tooltips
-  # Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}
-  # Delete this section if you don't want to use custom vanilla spawners name and lore
-  vanilla_spawner:
+      - ''
+      - ' &#FF77B7 ᴅᴇᴛᴀɪʟ:'
+      - '  &#FFF0F7 • &fEXP give: &#FF8FC7{exp}'
+      - ''
+      - ' &#FF77B7 ᴅʀᴏᴘꜱ:'
+      - '{loot_items}'
+      - ''
+  BLAZE:
+    name: '&#FFB300{entity} Spawner'
+    loot_items: '  &#FFF4CC • {amount} {item_name} &#FFC107({chance}%)'
+    loot_items_empty: '  &#FFF4CC •  None'
+    lore:
+      - ''
+      - ' &#FFB300 ᴅᴇᴛᴀɪʟ:'
+      - '  &#FFF4CC • &fEXP give: &#FFD54F{exp}'
+      - ''
+      - ' &#FFB300 ᴅʀᴏᴘꜱ:'
+      - '{loot_items}'
+      - ''
+
+# Appearance of item spawner items in inventory and tooltips
+# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+item_spawner:
+  default:
+    name: '&#5DB5F1{entity} Spawner'
+    loot_items: '  &#ecf0f1 • {amount} {item_name} &#3498db({chance}%)'
+    loot_items_empty: '  &#ecf0f1 •  None'
+    lore:
+      - ''
+      - ' &#5DB5F1 ᴅᴇᴛᴀɪʟ:'
+      - '  &#ecf0f1 • &fEXP give: &a{exp}'
+      - ''
+      - ' &#5DB5F1 ᴅʀᴏᴘꜱ:'
+      - '{loot_items}'
+      - ''
+  # Material-specific sections override default per key. Unspecified keys use default.
+  DIAMOND:
+    name: '&#00E5FF{entity} Spawner'
+    loot_items: '  &#EAFDFF • {amount} {item_name} &#00B8D4({chance}%)'
+    loot_items_empty: '  &#EAFDFF •  None'
+    lore:
+      - ''
+      - ' &#00E5FF ᴅᴇᴛᴀɪʟ:'
+      - '  &#EAFDFF • &fEXP give: &#00B8D4{exp}'
+      - ''
+      - ' &#00E5FF ᴅʀᴏᴘꜱ:'
+      - '{loot_items}'
+      - ''
+  AMETHYST_SHARD:
+    name: '&#B66CFF{entity} Spawner'
+    loot_items: '  &#F5ECFF • {amount} {item_name} &#D6A5FF({chance}%)'
+    loot_items_empty: '  &#F5ECFF •  None'
+    lore:
+      - ''
+      - ' &#B66CFF ᴅᴇᴛᴀɪʟ:'
+      - '  &#F5ECFF • &fEXP give: &#D6A5FF{exp}'
+      - ''
+      - ' &#B66CFF ᴅʀᴏᴘꜱ:'
+      - '{loot_items}'
+      - ''
+
+# Appearance of vanilla spawner items in inventory and tooltips
+# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}
+# Delete this section if you don't want to use custom vanilla spawners name and lore
+vanilla_spawner:
+  default:
     name: "{entity} Spawner"
     lore:

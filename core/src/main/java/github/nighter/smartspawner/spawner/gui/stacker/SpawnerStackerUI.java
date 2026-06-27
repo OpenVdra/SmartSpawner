@@ -1,9 +1,11 @@
 package github.nighter.smartspawner.spawner.gui.stacker;
 
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
+import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.language.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.Arrays;
 
 public class SpawnerStackerUI {
+    private static final String DROP_CHANCE_BYPASS_PERMISSION = "smartspawner.break.bypassdropchance";
     private static final int GUI_SIZE = 27;
     private static final int[] DECREASE_SLOTS = {9, 10, 11};
     private static final int[] INCREASE_SLOTS = {17, 16, 15};
@@ -27,16 +30,23 @@ public class SpawnerStackerUI {
 
     private final SmartSpawner plugin;
     private final LanguageManager languageManager;
+    private final MessageService messageService;
 
     public SpawnerStackerUI(SmartSpawner plugin) {
         this.plugin = plugin;
         this.languageManager = plugin.getLanguageManager();
+        this.messageService = plugin.getMessageService();
     }
 
     public void openStackerGui(Player player, SpawnerData spawner) {
         if (player == null || spawner == null) {
             return;
         }
+        if (hasSpawnerDropChance(spawner) && !player.hasPermission(DROP_CHANCE_BYPASS_PERMISSION)) {
+            messageService.sendMessage(player, "stacker_drop_blocked");
+            return;
+        }
+
         String title = languageManager.getGuiTitle("gui_title_stacker");
         Inventory gui = Bukkit.createInventory(new SpawnerStackerHolder(spawner), GUI_SIZE, title);
         populateStackerGui(gui, spawner);
@@ -50,6 +60,11 @@ public class SpawnerStackerUI {
             );
         }
         player.openInventory(gui);
+    }
+
+    private boolean hasSpawnerDropChance(SpawnerData spawner) {
+        SpawnerSettingsConfig settingsConfig = plugin.getSpawnerSettingsConfig();
+        return settingsConfig != null && settingsConfig.hasSpawnerDropChance(spawner.getEntityType());
     }
 
     private void populateStackerGui(Inventory gui, SpawnerData spawner) {
@@ -112,7 +127,7 @@ public class SpawnerStackerUI {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
             button.setItemMeta(meta);
         }
-        VersionInitializer.hideTooltip(button);
+        ItemTooltipUtil.hideTooltip(button);
         return button;
     }
 }

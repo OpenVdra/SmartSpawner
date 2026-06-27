@@ -374,7 +374,7 @@ public class SpawnerLootGenerator {
         spawnerGuiViewManager.updateSpawnerMenuViewers(spawner);
 
         // Show particles if needed
-        if (plugin.getConfig().getBoolean("particle.spawner_generate_loot", true)) {
+        if (Config.get().isSpawnerGenerateLootParticlesEnabled()) {
             Location loc = spawner.getSpawnerLocation();
             World world = loc.getWorld();
             if (world != null) {

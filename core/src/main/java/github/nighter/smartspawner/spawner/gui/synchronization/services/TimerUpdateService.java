@@ -4,7 +4,6 @@ import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuHolder;
-import github.nighter.smartspawner.spawner.gui.synchronization.managers.SlotCacheManager;
 import github.nighter.smartspawner.spawner.gui.synchronization.managers.ViewerTrackingManager;
 import github.nighter.smartspawner.spawner.gui.synchronization.utils.LootPreGenerationHelper;
 import github.nighter.smartspawner.spawner.gui.synchronization.utils.TimerFormatter;
@@ -36,7 +35,6 @@ public class TimerUpdateService {
     private final LanguageManager languageManager;
     private final LootPreGenerationHelper lootHelper;
     private final ViewerTrackingManager viewerTrackingManager;
-    private final SlotCacheManager slotCacheManager;
 
     // Cached status text messages for timer display
     private String cachedInactiveText;
@@ -53,13 +51,11 @@ public class TimerUpdateService {
     // Cache the lore line index where timer is located per spawner
     private final Map<String, Integer> timerLineIndexCache = new ConcurrentHashMap<>();
 
-    public TimerUpdateService(SmartSpawner plugin, ViewerTrackingManager viewerTrackingManager,
-                              SlotCacheManager slotCacheManager) {
+    public TimerUpdateService(SmartSpawner plugin, ViewerTrackingManager viewerTrackingManager) {
         this.plugin = plugin;
         this.languageManager = plugin.getLanguageManager();
         this.lootHelper = new LootPreGenerationHelper(plugin);
         this.viewerTrackingManager = viewerTrackingManager;
-        this.slotCacheManager = slotCacheManager;
         initializeCachedStrings();
     }
 
@@ -277,7 +273,7 @@ public class TimerUpdateService {
                             return;
                         }
 
-                        int spawnerInfoSlot = slotCacheManager.getSpawnerInfoSlot();
+                        int spawnerInfoSlot = getSpawnerInfoSlot(currentInv);
                         if (spawnerInfoSlot >= 0) {
                             updateSpawnerInfoItemTimer(currentInv, spawner, finalTimerValue, spawnerInfoSlot);
                             context.player.updateInventory();
@@ -347,7 +343,7 @@ public class TimerUpdateService {
                 return;
             }
 
-            int spawnerInfoSlot = slotCacheManager.getSpawnerInfoSlot();
+            int spawnerInfoSlot = getSpawnerInfoSlot(openInventory);
             if (spawnerInfoSlot >= 0) {
                 String timerValue = cachedInactiveText;
                 updateSpawnerInfoItemTimer(openInventory, spawner, timerValue, spawnerInfoSlot);
@@ -412,11 +408,20 @@ public class TimerUpdateService {
                         return;
                     }
 
-                    updateSpawnerInfoItemTimer(openInv, spawner, finalTimerValue, slotCacheManager.getSpawnerInfoSlot());
+                    updateSpawnerInfoItemTimer(
+                            openInv, spawner, finalTimerValue, getSpawnerInfoSlot(openInv));
                     viewer.updateInventory();
                 });
             }
         }
+    }
+
+    private int getSpawnerInfoSlot(Inventory inventory) {
+        if (!(inventory.getHolder(false) instanceof SpawnerMenuHolder holder)
+                || holder.getInfoButton() == null) {
+            return -1;
+        }
+        return holder.getInfoButton().getSlot();
     }
 
     /**

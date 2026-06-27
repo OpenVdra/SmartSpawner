@@ -5,12 +5,10 @@ import github.nighter.smartspawner.api.events.SpawnerExplodeEvent;
 import github.nighter.smartspawner.extras.HopperService;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
-import github.nighter.smartspawner.utils.BlockPos;
 import org.bukkit.Bukkit;
 import org.bukkit.ExplosionResult;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -22,7 +20,6 @@ import java.util.List;
 public class SpawnerExplosionListener implements Listener {
     private final SmartSpawner plugin;
     private final SpawnerManager spawnerManager;
-    private final HopperService hopperService;
 
     // Cached config values — refreshed via loadConfig() on reload
     private boolean protectSpawners;
@@ -31,7 +28,6 @@ public class SpawnerExplosionListener implements Listener {
     public SpawnerExplosionListener(SmartSpawner plugin) {
         this.plugin = plugin;
         this.spawnerManager = plugin.getSpawnerManager();
-        this.hopperService = plugin.getHopperService();
         loadConfig();
     }
 
@@ -68,6 +64,11 @@ public class SpawnerExplosionListener implements Listener {
             Material type = block.getType();
 
             if (type == Material.SPAWNER) {
+                if (plugin.getSpawnerRemovalService().isRemovalPending(block.getLocation())) {
+                    it.remove();
+                    continue;
+                }
+
                 SpawnerData spawnerData = spawnerManager.getSpawnerByLocation(block.getLocation());
 
                 if (spawnerData != null) {
@@ -119,11 +120,12 @@ public class SpawnerExplosionListener implements Listener {
         return false;
     }
 
-    // TODO: deduplicate
     public void cleanupAssociatedHopper(Block block) {
-        Block blockBelow = block.getRelative(BlockFace.DOWN);
-        if (plugin.getHopperConfig().isHopperEnabled() && blockBelow.getType() == Material.HOPPER) {
-            hopperService.getRegistry().remove(new BlockPos(blockBelow.getLocation()));
+        HopperService currentHopperService = plugin.getHopperService();
+        if (currentHopperService == null) {
+            return;
         }
+
+        currentHopperService.getTracker().removeBelowSpawner(block);
     }
 }

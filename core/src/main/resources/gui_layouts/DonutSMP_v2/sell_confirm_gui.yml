@@ -7,9 +7,12 @@
 #     material: MATERIAL_NAME  # Material to display
 #     enabled: true/false      # Show/hide button
 #     info_button: true/false  # Optional: Mark as spawner info button (display only)
-#     click: "action"          # Action for any click (left/right/shift)
-#     left_click: "action"     # Action for left click only (overrides click)
-#     right_click: "action"    # Action for right click only (overrides click)
+#     click:
+#       action: "action"
+#       sound: ui.button.click
+#       sound_success: block.note_block.bell
+#       sound_fail: block.note_block.pling
+#     cooldown: "5s"           # Optional: Per-player cooldown; omitted by default
 #
 # Actions:
 #   cancel: Close confirmation and return to previous GUI
@@ -26,7 +29,9 @@ skip_sell_confirmation: false
 slot_11:
   material: RED_STAINED_GLASS_PANE
   enabled: true
-  click: "cancel"
+  click:
+    action: "cancel"
+    sound: ui.button.click
 
 # Spawner info display (not clickable)
 slot_14:
@@ -39,4 +44,7 @@ slot_14:
 slot_17:
   material: LIME_STAINED_GLASS_PANE
   enabled: true
-  click: "confirm"
+  click:
+    action: "confirm"
+    sound_success: block.note_block.bell
+    sound_fail: block.note_block.pling

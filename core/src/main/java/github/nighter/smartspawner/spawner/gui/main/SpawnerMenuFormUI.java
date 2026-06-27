@@ -32,31 +32,37 @@ public class SpawnerMenuFormUI {
     static {
         ACTION_BUTTON_CONFIG.put("open_storage", new ActionButtonInfo(
                 "bedrock.main_gui.button_names.storage",
+                "bedrock.main_gui.button_images.storage",
                 "https://i.pinimg.com/736x/7a/28/50/7a28504d8446ab0ad670757cfa32fe59.jpg"
         ));
 
         ACTION_BUTTON_CONFIG.put("open_stacker", new ActionButtonInfo(
                 "bedrock.main_gui.button_names.stacker",
+                "bedrock.main_gui.button_images.stacker",
                 "https://cdn.modrinth.com/data/9tQwxSFr/f0f1cc267f587a39acd2c820cfe6b29d0f2ccae3.png"
         ));
 
         ACTION_BUTTON_CONFIG.put("sell_and_exp", new ActionButtonInfo(
                 "bedrock.main_gui.button_names.sell_and_exp",
+                "bedrock.main_gui.button_images.sell_and_exp",
                 "https://static.wikia.nocookie.net/minecraft_gamepedia/images/8/8a/Gold_Ingot_JE4_BE2.png/revision/latest?cb=20200224211607"
         ));
 
         ACTION_BUTTON_CONFIG.put("sell_all", new ActionButtonInfo(
                 "bedrock.main_gui.button_names.sell_all",
+                "bedrock.main_gui.button_images.sell_all",
                 "https://static.wikia.nocookie.net/minecraft_gamepedia/images/8/8a/Gold_Ingot_JE4_BE2.png/revision/latest?cb=20200224211607"
         ));
 
         ACTION_BUTTON_CONFIG.put("collect_exp", new ActionButtonInfo(
                 "bedrock.main_gui.button_names.exp",
+                "bedrock.main_gui.button_images.exp",
                 "https://minecraft.wiki/images/Bottle_o%27_Enchanting.gif"
         ));
 
         ACTION_BUTTON_CONFIG.put("view_info", new ActionButtonInfo(
                 "bedrock.main_gui.button_names.view_info",
+                "bedrock.main_gui.button_images.view_info",
                 "https://static.wikia.nocookie.net/minecraft_gamepedia/images/9/9f/Information_sign.png/revision/latest/scale-to-width-down/268?cb=20200105100749"
         ));
     }
@@ -85,7 +91,7 @@ public class SpawnerMenuFormUI {
             title = languageManager.getGuiTitle("bedrock.main_gui.title_single_spawner", placeholders);
         }
 
-        GuiLayout layout = plugin.getGuiLayoutConfig().getCurrentMainLayout();
+        GuiLayout layout = plugin.getGuiLayoutConfig().getMainLayout(spawner, player);
         List<ButtonInfo> availableButtons = collectAvailableButtons(layout, player, placeholders);
 
         if (availableButtons.isEmpty()) {
@@ -187,7 +193,7 @@ public class SpawnerMenuFormUI {
                 ActionButtonInfo actionConfig = ACTION_BUTTON_CONFIG.get(action);
                 if (actionConfig != null) {
                     String text = languageManager.getGuiItemName(actionConfig.langKey, placeholders);
-                    buttons.add(new ButtonInfo(action, text, actionConfig.imageUrl));
+                    buttons.add(new ButtonInfo(action, text, getButtonImageUrl(actionConfig)));
                     addedActions.add(action);
                 }
             }
@@ -198,11 +204,15 @@ public class SpawnerMenuFormUI {
             ActionButtonInfo viewInfoConfig = ACTION_BUTTON_CONFIG.get("view_info");
             if (viewInfoConfig != null) {
                 String text = languageManager.getGuiItemName(viewInfoConfig.langKey, placeholders);
-                buttons.add(new ButtonInfo("view_info", text, viewInfoConfig.imageUrl));
+                buttons.add(new ButtonInfo("view_info", text, getButtonImageUrl(viewInfoConfig)));
             }
         }
 
         return buttons;
+    }
+
+    private String getButtonImageUrl(ActionButtonInfo actionConfig) {
+        return languageManager.getGuiConfigString(actionConfig.imageKey, actionConfig.defaultImageUrl);
     }
 
     private boolean evaluateCondition(String condition) {
@@ -268,7 +278,7 @@ public class SpawnerMenuFormUI {
 
         // Check if there are items to sell
         if (spawner.getVirtualInventory().getUsedSlots() == 0) {
-            messageService.sendMessage(player, "no_items");
+            messageService.sendMessage(player, "spawner_storage_empty");
             return;
         }
 
@@ -492,11 +502,13 @@ public class SpawnerMenuFormUI {
 
     private static class ActionButtonInfo {
         final String langKey;
-        final String imageUrl;
+        final String imageKey;
+        final String defaultImageUrl;
 
-        ActionButtonInfo(String langKey, String imageUrl) {
+        ActionButtonInfo(String langKey, String imageKey, String defaultImageUrl) {
             this.langKey = langKey;
-            this.imageUrl = imageUrl;
+            this.imageKey = imageKey;
+            this.defaultImageUrl = defaultImageUrl;
         }
     }
 

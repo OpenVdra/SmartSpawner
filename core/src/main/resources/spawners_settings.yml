@@ -1,6 +1,6 @@
 # Important: Each time a spawner is triggered, it will generate between min_mobs and max_mobs (default: 1 to 4) times the drops specified below.
 # For detailed configuration guide and examples, please visit:
-# https://nighterdevelopment.github.io/SmartSpawner/spawners_settings/
+# https://openvdra.github.io/SmartSpawner/spawners_settings/
 
 # Default head material for unknown mobs
 default_material: "SPAWNER"
@@ -8,6 +8,10 @@ default_material: "SPAWNER"
 # Reference: https://minecraft.wiki/w/Allay#Drops
 ALLAY:
   experience: 0
+  # Optional spawner item drop chance when this Smart Spawner is broken.
+  # If this key is omitted, the spawner item drop chance defaults to 100.0.
+  # Values must be percentages from 0.0 to 100.0.
+  # drop_chance: 100.0
   head_texture:
     material: "PLAYER_HEAD"
     custom_texture: "df5de940bfe499c59ee8dac9f9c3919e7535eff3a9acb16f4842bf290f4c679f"

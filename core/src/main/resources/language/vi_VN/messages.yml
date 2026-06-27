@@ -16,190 +16,146 @@
 #   - All components are optional - you can use any combination as needed
 #   - The "message" field is not required and can be omitted if you only want other components
 
-prefix: "&8[&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ&8] &r"
+prefix: '&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ &8⏩ &r'
+
+missing_message_key:
+  message: '&#FF4444Thiếu khóa thông báo: &f{key}'
 
 # ──────────────────────────────────────────────────────
-#             Spawner - Player Interaction
+#              Player Interaction (General)
 # ──────────────────────────────────────────────────────
 spawner_activated:
-  message: "&#e6e6faꜱᴘᴀᴡɴᴇʀ &#3498dbđã ᴋíᴄʜ ʜᴏạᴛ&#e6e6fa! ᴛʜᴜ ᴛʜậᴘ ᴠậᴛ ᴘʜẩᴍ ᴠà ᴋɪɴʜ ɴɢʜɪệᴍ ǫᴜᴀ ɢɪᴀᴏ ᴅɪệɴ."
+  message: 'Spawner đã được&a kích hoạt. &rBây giờ bạn có thể nhận vật phẩm và Exp.'
   sound: block.beacon.activate
 
 spawner_protected:
-  action_bar: "&#ff5252⚠ ꜱᴘᴀᴡɴᴇʀ đᴀɴɢ đượᴄ ʙảᴏ ᴠệ ⚠"
+  message: '&#FF4444Spawner này đang được bảo vệ'
+  action_bar: '&#FF4444Spawner này đang được bảo vệ'
   sound: block.note_block.pling
+
+inventory_full:
+  message: '&#FF4444Túi đồ của bạn đã đầy.'
+
+spawner_storage_empty:
+  message: '&#FF4444Kho của spawner đang trống.'
+
+action_in_progress:
+  message: '&#F0C857Đã có một thao tác đang diễn ra. Vui lòng chờ.'
+  action_bar: '&#F0C857Đang thực hiện thao tác. Vui lòng chờ.'
+
+action_failed:
+  message: '&#FF4444Thao tác thất bại. Vui lòng thử lại.'
+  action_bar: '&#FF4444Thao tác thất bại. Vui lòng thử lại.'
+
+action_not_ready:
+  message: '&#F0C857Thao tác này chưa sẵn sàng. Vui lòng thử lại sau &f{time}&#F0C857.'
+  sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Main GUI Interactions
 # ──────────────────────────────────────────────────────
 no_exp:
-  action_bar: "&#ff5252ᴋʜôɴɢ ᴄó ᴋɪɴʜ ɴɢʜɪệᴍ"
-  sound: block.note_block.pling
+  message: '&#FF4444Không có Exp để nhận'
 
 exp_collected:
-  action_bar: "&#37eb9a+{exp} ᴇxᴘ đã ᴛʜᴜ ᴛʜậᴘ"
-  sound: entity.experience_orb.pickup
+  message: 'Bạn đã nhận &a{exp} &fđiểm kinh nghiệm.'
+  action_bar: '&a+{exp} Exp'
 
 exp_collected_with_mending:
-  action_bar: "&#37eb9a+{exp} ᴇxᴘ đã ᴛʜᴜ ᴛʜậᴘ &#f8f8ff| &#ff5252-{exp_mending} ᴇxᴘ để sửᴀ ᴄʜữᴀ ᴠậᴛ ᴘʜẩᴍ"
-  sound: entity.experience_orb.pickup
+  message: 'Bạn đã nhận &a{exp} &fđiểm kinh nghiệm. &c{exp_mending} &fđã được dùng để sửa đồ bằng Mending.'
+  action_bar: '&a+{exp} Exp &f| &c-{exp_mending} đã dùng cho Mending'
 
 # ──────────────────────────────────────────────────────
 #            Spawner - Storage GUI Interactions
 # ──────────────────────────────────────────────────────
 click_too_fast:
-  message: "&#ff5252ʙạɴ đᴀɴɢ ɴʜấᴘ ǫᴜá ɴʜᴀɴʜ! ᴠᴜɪ ʟòɴɢ ᴄʜậᴍ ʟạɪ."
+  message: '&#FF4444Bạn đang nhấp quá nhanh.'
   sound: block.note_block.bass
-
-inventory_full:
-  message: "&#ff5252ᴛúɪ đồ đầʏ!"
-  sound: block.note_block.pling
-
-no_items_to_take:
-  message: "&#ff5252ᴋʜôɴɢ ᴄó ᴠậᴛ ᴘʜẩᴍ để ʟấʏ"
-  sound: block.note_block.pling
-
-take_all_items:
-  action_bar: "&#37eb9ađã ʟấʏ &#f8f8ff{amount} &#37eb9aᴠậᴛ ᴘʜẩᴍ ᴛừ ꜱᴘᴀᴡɴᴇʀ"
-  sound: entity.item.pickup
-
-no_items_to_drop:
-  message: "&#ff5252ᴋʜôɴɢ ᴄó ᴠậᴛ ᴘʜẩᴍ để ᴛʜả"
-  sound: block.note_block.pling
-
-items_not_available:
-  message: "&#ff5252ᴠậᴛ ᴘʜẩᴍ ᴋʜôɴɢ ᴄó ꜱẵɴ"
-  sound: block.note_block.pling
-
-drop_failed:
-  message: "&#ff5252ᴛʜả ᴠậᴛ ᴘʜẩᴍ ᴛʜấᴛ ʙạɪ"
-  sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #         Spawner - Stacker GUI Interaction
 # ──────────────────────────────────────────────────────
 spawner_stacker_minimum_reached:
-  message: "&#ff5252ᴄʜỉ ᴄó ᴛʜể ɢộᴘ &#f8f8ff+{amount} &#ff5252ꜱᴘᴀᴡɴᴇʀ ᴅᴏ đã đếɴ ɢɪớɪ ʜạɴ."
+  message: '&#FF4444Đã đạt giới hạn tối thiểu. &f{amount} &csẽ vẫn được stack.'
   sound: block.note_block.pling
 
 spawner_cannot_remove_last:
-  action_bar: "&#ff5252ᴋʜôɴɢ ᴛʜể ᴛáᴄʜ ꜱᴘᴀᴡɴᴇʀ ᴄᴜốɪ ᴄùɴɢ"
+  action_bar: '&#FF4444Bạn không thể gỡ spawner cuối cùng.'
   sound: block.note_block.pling
 
 spawner_insufficient_quantity:
-  action_bar: "&#ff5252ᴋʜôɴɢ đủ ꜱᴘᴀᴡɴᴇʀ: &#f8f8ff{amountAvailable}&#ff5252/&#f8f8ff{amountChange}"
+  action_bar: '&#FF4444Không đủ spawner: &f{amountAvailable}&c/&f{amountChange}'
   sound: block.note_block.pling
 
-inventory_full_items_dropped:
-  message: "&#f0c857ᴛúɪ đồ đầʏ! &#e6e6faᴍộᴛ ᴠàɪ ᴠậᴛ ᴘʜẩᴍ sẽ ʙị ʀơɪ ʀᴀ ɴɢᴏàɪ."
+stacker_drop_blocked:
+  message: '&#FF4444Menu stack bị tắt khi spawner này có tỉ lệ rơi.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Stack Interaction
 # ──────────────────────────────────────────────────────
-spawner_invalid:
-  action_bar: "&#ff5252ꜱᴘᴀᴡɴᴇʀ ᴋʜôɴɢ ʜợᴘ ʟệ"
-  sound: block.note_block.pling
-
 spawner_different:
-  action_bar: "&#ff5252ꜱᴘᴀᴡɴᴇʀ ᴘʜảɪ ᴄùɴɢ ʟᴏạɪ"
+  message: '&#FF4444Các spawner phải cùng loại để stack.'
+  action_bar: '&#FF4444Các spawner phải cùng loại.'
   sound: block.note_block.pling
 
 spawner_stack_full:
-  action_bar: "&#ff5252ɢɪớɪ ʜạɴ ɢộᴘ: &#f8f8ff{max}"
+  action_bar: '&#FF4444Giới hạn stack tối đa: &f{max}'
   sound: block.note_block.pling
 
 spawner_stack_success:
-  action_bar: '[&#37eb9a&l✓&f] ɢộᴘ ᴛʜàɴʜ ᴄôɴɢ &#37eb9a{amount} &fꜱᴘᴀᴡɴᴇʀ'
+  action_bar: '&aBạn đã stack thành công &f{amount} &aspawner.'
   sound: entity.player.levelup
-
-spawner_stack_placed:
-  message: '[&#37eb9a&l✓&f] ᴅặᴛ ᴛʜàɴʜ ᴄôɴɢ &#37eb9a{amount} &fꜱᴘᴀᴡɴᴇʀ'
-  sound: entity.player.levelup
-
-# ──────────────────────────────────────────────────────
-#             Spawner - List GUI Interaction
-# ──────────────────────────────────────────────────────
-teleported_to_spawner:
-  message: "&#37eb9ađã ᴅịᴄʜ ᴄʜᴜʏểɴ ᴛʜàɴʜ ᴄôɴɢ đếɴ ᴠị ᴛʀí ꜱᴘᴀᴡɴᴇʀ"
-  sound: entity.enderman.teleport
-
-spawner_not_found:
-  message: "&#ff5252ᴋʜôɴɢ ᴛìᴍ ᴛʜấʏ ꜱᴘᴀᴡɴᴇʀ"
-  sound: entity.enderman.teleport
-
-management:
-  removed:
-    message: "&#e6e6faLồɴɢ sᴘᴀᴡɴ #&#ab7afd{id} &#ff5252đã xóᴀ &#e6e6faᴛʜàɴʜ ᴄôɴɢ!"
-    sound: entity.item.break
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Egg Interaction
 # ──────────────────────────────────────────────────────
-invalid_egg:
-  action_bar: "&#ff5252ᴛʀứɴɢ ᴋʜôɴɢ ʜợᴘ ʟệ"
-  sound: entity.enderman.teleport
-
 entity_changed:
-  action_bar: "&#37eb9aᴛʜàɴʜ ᴄôɴɢ đổɪ sᴀɴɢ &#f8f8ff{ᴇɴᴛɪᴛʏ} &#37eb9aꜱᴘᴀᴡɴᴇʀ"
+  message: 'Spawner đã đổi thành &e{entity}&f.'
+  action_bar: '&fSpawner đã đổi thành &e{entity}&f.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Break Interaction
 # ──────────────────────────────────────────────────────
-spawner_break_no_permission:
-  action_bar: "&#ff5252ᴋʜôɴɢ ᴄó ǫᴜʏềɴ ᴘʜá ꜱᴘᴀᴡɴᴇʀ"
+break_no_permission:
+  message: '&#FF4444Bạn không có quyền phá spawner này.'
   sound: entity.villager.no
 
-spawner_break_silk_touch_required:
-  action_bar: "&#ff5252ᴄầɴ ᴘʜù ᴘʜéᴘ sɪʟᴋ ᴛᴏᴜᴄʜ để đậᴘ"
+break_silk_touch:
+  message: '&#FF4444Bạn cần Silk Touch để phá spawner này.'
+  action_bar: '&#FF4444Bạn cần Silk Touch.'
   sound: item.shield.block
 
-spawner_break_required_tools:
-  action_bar: "&#ff5252ᴋʜôɴɢ ᴛʜể ᴘʜá ꜱᴘᴀᴡɴᴇʀ ʙằɴɢ ᴄôɴɢ ᴄụ ɴàʏ!!"
+break_tool_required:
+  message: '&#FF4444Bạn không thể phá spawner bằng công cụ này.'
+  action_bar: '&#FF4444Không thể phá spawner bằng công cụ này.'
   sound: item.shield.block
 
-spawner_break_warning:
-  enabled: false
-  title: "&#f0c857ᴄảɴʜ ʙáᴏ"
-  subtitle: "&#e6e6faᴛấᴛ ᴄả ᴠậᴛ ᴘʜẩᴍ ᴛʀᴏɴɢ ꜱᴘᴀᴡɴᴇʀ sẽ ʙị ᴍấᴛ!"
-  sound: block.note_block.bass
+drop_failed:
+  message: '&#FF4444Lần này không may, spawner không rơi ra.'
+  action_bar: '&#FF4444Spawner không rơi ra.'
+  sound: block.note_block.pling
 
-natural_spawner_break_blocked:
-  action_bar: "&#ff5252ꜱᴘᴀᴡɴᴇʀ ᴛự ɴʜɪêɴ ᴋʜôɴɢ ᴛʜể ʙị ᴘʜá và sử ᴅụɴɢ"
+sneak_break_blocked:
+  message: '&#FF4444Bạn không thể phá cả stack khi spawner này có tỉ lệ rơi.'
+  action_bar: '&#FF4444Không thể phá cả stack.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #              Sell Integration Messages
 # ──────────────────────────────────────────────────────
-sell_failed:
-  message: "&#ff5252ᴋʜôɴɢ ᴛʜể ʙáɴ ᴠậᴛ ᴘʜẩᴍ! Vᴜɪ ʟòɴɢ ᴛʜử ʟạɪ."
-  sound: block.note_block.pling
-
-no_items:
-  message: "&#ff5252ᴋʜôɴɢ ᴄó ᴠậᴛ ᴘʜẩᴍ để ʙáɴ"
-  sound: block.note_block.pling
-
 no_sellable_items:
-  message: "&#ff5252ᴋʜôɴɢ ᴛìᴍ ᴛʜấʏ ᴠậᴛ ᴘʜẩᴍ ɴàᴏ ᴄó ᴛʜể ʙáɴ"
-  sound: block.note_block.pling
+  message: '&#FF4444Không tìm thấy vật phẩm có thể bán.'
 
 sell_success:
-  message: "&#e6e6fađã ʙáɴ  &#e67e22{amount} ᴠậᴛ ᴘʜẩᴍ&#e6e6fa ᴠớɪ ɢɪá &a+${price}"
-  sound: block.note_block.bell
+  message: 'Bạn đã bán &e{amount} &fvật phẩm với giá &a${price}&f.'
+  action_bar: '&a+${price}'
 
-action_in_progress:
-  message: "&#f0c857ᴍộᴛ ʜᴏạᴛ độɴɢ ᴋʜáᴄ đᴀɴɢ đɪềɴ ʀᴀ. Vᴜɪ ʟòɴɢ ᴛʜử ʟạɪ ꜱᴀᴜ ɢɪâʏ ʟáᴛ."
-  sound: block.note_block.pling
+sell_and_exp_success:
+  message: 'Bạn đã bán &e{amount} &fvật phẩm với giá &a${price}&f và nhận &a{exp} &fExp.'
+  action_bar: '&a+${price} &f| &a+{exp} Exp'
 
-spawner_selling:
-  message: "&#f0c857ꜱᴘᴀᴡɴᴇʀ đᴀɴɢ ʙáɴ ᴠậᴛ ᴘʜẩᴍ, ᴠᴜɪ ʟòɴɢ đợɪ."
-  sound: block.note_block.pling
-
-action_failed:
-  action_bar: "&#ff5252ʜᴀɴʜ độɴɢ ᴛʜấᴛ ʙạɪ. Vᴜɪ ʟòɴɢ ᴛʜử ʟạɪ."
-  sound: block.note_block.pling
-
-please_wait:
-  action_bar: "&#3498dbđᴀɴɢ xử ʟý... Vᴜɪ ʟòɴɢ đợɪ."
-  sound: block.note_block.harp
+sell_and_exp_success_with_mending:
+  message: 'Bạn đã bán &e{amount} &fvật phẩm với giá &a${price}&f, nhận &a{exp} &fExp &f(&c{exp_mending} &fđã dùng cho Mending).'
+  action_bar: '&a+${price} &f| &a+{exp} Exp &f(&c-{exp_mending} Mending)'

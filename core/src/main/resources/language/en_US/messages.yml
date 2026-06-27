@@ -16,187 +16,146 @@
 #   - All components are optional - you can use any combination as needed
 #   - The "message" field is not required and can be omitted if you only want other components
 
-prefix: "&8[&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ&8] &r"
+prefix: '&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ &8⏩ &r'
+
+missing_message_key:
+  message: '&#FF4444Missing message key: &f{key}'
 
 # ──────────────────────────────────────────────────────
-#             Spawner - Player Interaction
+#              Player Interaction (General)
 # ──────────────────────────────────────────────────────
 spawner_activated:
-  message: "&#e6e6faꜱᴘᴀᴡɴᴇʀ &#3498dbᴀᴄᴛɪᴠᴀᴛᴇᴅ&#e6e6fa! ᴄᴏʟʟᴇᴄᴛ ʟᴏᴏᴛ & xᴘ ᴛʜʀᴏᴜɢʜ ꜱᴘᴀᴡɴᴇʀ ɢᴜɪ."
+  message: 'The spawner has been&a activated. &rYou can now collect drops and EXP.'
   sound: block.beacon.activate
 
 spawner_protected:
-  action_bar: "&#ff5252⚠ ᴛʜɪꜱ ꜱᴘᴀᴡɴᴇʀ ɪꜱ ᴘʀᴏᴛᴇᴄᴛᴇᴅ ⚠"
+  message: '&#FF4444This spawner is protected'
+  action_bar: '&#FF4444This spawner is protected'
   sound: block.note_block.pling
+
+inventory_full:
+  message: '&#FF4444Your inventory is full.'
+
+spawner_storage_empty:
+  message: '&#FF4444Spawner storage is empty.'
+
+action_in_progress:
+  message: '&#F0C857There is already an action in progress. Please wait.'
+  action_bar: '&#F0C857Action in progress. Please wait.'
+
+action_failed:
+  message: '&#FF4444The action failed. Please try again.'
+  action_bar: '&#FF4444The action failed. Please try again.'
+
+action_not_ready:
+  message: '&#F0C857This action is not ready yet. Try again in &f{time}&#F0C857.'
+  sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Main GUI Interactions
 # ──────────────────────────────────────────────────────
 no_exp:
-  action_bar: "&#ff5252ɴᴏ ᴇxᴘᴇʀɪᴇɴᴄᴇ ᴀᴠᴀɪʟᴀʙʟᴇ"
-  sound: block.note_block.pling
+  message: '&#FF4444There is no EXP available'
 
 exp_collected:
-  message: "&#2ecc71+{exp} ᴇxᴘ ᴄᴏʟʟᴇᴄᴛᴇᴅ"
-  action_bar: "&#2ecc71+{exp} ᴇxᴘ ᴄᴏʟʟᴇᴄᴛᴇᴅ"
-  sound: entity.experience_orb.pickup
+  message: 'You collected &a{exp} &fexperience.'
+  action_bar: '&a+{exp} EXP'
 
 exp_collected_with_mending:
-  action_bar: "&#37eb9a+{exp} ᴇxᴘ ᴄᴏʟʟᴇᴄᴛᴇᴅ &#f8f8ff| &#ff5252-{exp_mending} ᴇxᴘ ᴍᴇɴᴅɪɴɢ ᴜꜱᴇᴅ"
-  sound: entity.experience_orb.pickup
+  message: 'You collected &a{exp} &fexperience. &c{exp_mending} &fwas used on Mending.'
+  action_bar: '&a+{exp} EXP &f| &c-{exp_mending} used on Mending'
 
 # ──────────────────────────────────────────────────────
 #            Spawner - Storage GUI Interactions
 # ──────────────────────────────────────────────────────
 click_too_fast:
-  message: "&#ff5252ʏᴏᴜ ᴀʀᴇ ᴄʟɪᴄᴋɪɴɢ ᴛᴏᴏ ꜰᴀꜱᴛ! ᴘʟᴇᴀꜱᴇ ꜱʟᴏᴡ ᴅᴏᴡɴ."
+  message: '&#FF4444You are clicking too fast.'
   sound: block.note_block.bass
-
-inventory_full:
-  message: "&#ff5252ɪɴᴠᴇɴᴛᴏʀʏ ꜰᴜʟʟ!"
-  sound: block.note_block.pling
-
-no_items_to_take:
-  message: "&#ff5252ɴᴏ ɪᴛᴇᴍꜱ ᴛᴏ ᴛᴀᴋᴇ"
-  sound: block.note_block.pling
-
-take_all_items:
-  action_bar: "&#37eb9aᴛᴏᴏᴋ &#f8f8ff{amount} &#37eb9aɪᴛᴇᴍꜱ ꜰʀᴏᴍ ꜱᴘᴀᴡɴᴇʀ"
-  sound: entity.item.pickup
-
-no_items_to_drop:
-  message: "&#ff5252ɴᴏ ɪᴛᴇᴍꜱ ᴛᴏ ᴅʀᴏᴘ"
-  sound: block.note_block.pling
-
-items_not_available:
-  message: "&#ff5252ɪᴛᴇᴍꜱ ɴᴏᴛ ᴀᴠᴀɪʟᴀʙʟᴇ"
-  sound: block.note_block.pling
-
-drop_failed:
-  message: "&#ff5252ᴅʀᴏᴘ ᴏᴘᴇʀᴀᴛɪᴏɴ ꜰᴀɪʟᴇᴅ"
-  sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #         Spawner - Stacker GUI Interaction
 # ──────────────────────────────────────────────────────
 spawner_stacker_minimum_reached:
-  message: "&#ff5252ꜱᴛᴀᴄᴋ ʟɪᴍɪᴛ ʀᴇᴀᴄʜᴇᴅ &#f8f8ff+{amount} &#ff5252ᴡɪʟʟ ʙᴇ ꜱᴛᴀᴄᴋᴇᴅ."
+  message: '&#FF4444Minimum limit reached. &f{amount} &cwill remain stacked.'
   sound: block.note_block.pling
 
 spawner_cannot_remove_last:
-  action_bar: "&#ff5252ᴄᴀɴɴᴏᴛ ʀᴇᴍᴏᴠᴇ ʟᴀꜱᴛ ꜱᴘᴀᴡɴᴇʀ"
+  action_bar: '&#FF4444You cannot remove the last spawner.'
   sound: block.note_block.pling
 
 spawner_insufficient_quantity:
-  action_bar: "&#ff5252ɪɴꜱᴜꜰꜰɪᴄɪᴇɴᴛ ꜱᴘᴀᴡɴᴇʀꜱ: &#f8f8ff{amountAvailable}&#ff5252/&#f8f8ff{amountChange}"
+  action_bar: '&#FF4444Not enough spawners: &f{amountAvailable}&c/&f{amountChange}'
   sound: block.note_block.pling
 
-inventory_full_items_dropped:
-  message: "&#f0c857ɪɴᴠᴇɴᴛᴏʀʏ ꜰᴜʟʟ! &#e6e6faꜱᴏᴍᴇ ɪᴛᴇᴍꜱ ᴡᴇʀᴇ ᴅʀᴏᴘᴘᴇᴅ ᴏɴ ᴛʜᴇ ɢʀᴏᴜɴᴅ."
+stacker_drop_blocked:
+  message: '&#FF4444Stacker GUI is disabled when this spawner has drop chance.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Stack Interaction
 # ──────────────────────────────────────────────────────
-spawner_invalid:
-  action_bar: "&#ff5252ɪɴᴠᴀʟɪᴅ ꜱᴘᴀᴡɴᴇʀ ᴛʏᴘᴇ"
-  sound: block.note_block.pling
-
 spawner_different:
-  action_bar: "&#ff5252ꜱᴘᴀᴡɴᴇʀꜱ ᴍᴜꜱᴛ ʙᴇ ꜱᴀᴍᴇ ᴛʏᴘᴇ"
+  message: '&#FF4444Spawners must be the same type to stack.'
+  action_bar: '&#FF4444Spawners must be the same type.'
   sound: block.note_block.pling
 
 spawner_stack_full:
-  action_bar: "&#ff5252ᴍᴀx ꜱᴛᴀᴄᴋ ʟɪᴍɪᴛ: &#f8f8ff{max}"
+  action_bar: '&#FF4444Maximum stack limit: &f{max}'
   sound: block.note_block.pling
 
 spawner_stack_success:
-  action_bar: "[&#37eb9a&l✓&f] ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ꜱᴛᴀᴄᴋᴇᴅ &#37eb9a{amount} &fꜱᴘᴀᴡɴᴇʀꜱ"
+  action_bar: '&aYou successfully stacked &f{amount} &aspawner(s).'
   sound: entity.player.levelup
-
-# ──────────────────────────────────────────────────────
-#             Spawner - List GUI Interaction
-# ──────────────────────────────────────────────────────
-teleported_to_spawner:
-  message: "&#37eb9aꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴛᴇʟᴇᴘᴏʀᴛᴇᴅ ᴛᴏ ꜱᴘᴀᴡɴᴇʀ ʟᴏᴄᴀᴛɪᴏɴ"
-  sound: entity.enderman.teleport
-
-spawner_not_found:
-  message: "&#ff5252ꜱᴘᴀᴡɴᴇʀ ɴᴏᴛ ꜰᴏᴜɴᴅ"
-  sound: entity.enderman.teleport
-
-management:
-  removed:
-    message: "&#e6e6faꜱᴘᴀᴡɴᴇʀ &#ff5252ʀᴇᴍᴏᴠᴇᴅ &#e6e6faꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ!"
-    sound: entity.item.break
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Egg Interaction
 # ──────────────────────────────────────────────────────
-invalid_egg:
-  action_bar: "&#ff5252ɪɴᴠᴀʟɪᴅ ꜱᴘᴀᴡɴ ᴇɢɢ"
-  sound: entity.enderman.teleport
-
 entity_changed:
-  action_bar: "&#37eb9aꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴄʜᴀɴɢᴇᴅ ᴛᴏ &#f8f8ff{ᴇɴᴛɪᴛʏ} &#37eb9aꜱᴘᴀᴡɴᴇʀ"
+  message: 'The spawner changed to &e{entity}&f.'
+  action_bar: '&fThe spawner changed to &e{entity}&f.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Break Interaction
 # ──────────────────────────────────────────────────────
-spawner_break_no_permission:
-  action_bar: "&#ff5252ɴᴏ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ʙʀᴇᴀᴋ ꜱᴘᴀᴡɴᴇʀꜱ"
+break_no_permission:
+  message: '&#FF4444You do not have permission to break this spawner.'
   sound: entity.villager.no
 
-spawner_break_silk_touch_required:
-  action_bar: "&#ff5252ꜱɪʟᴋ ᴛᴏᴜᴄʜ ʀᴇǫᴜɪʀᴇᴅ"
+break_silk_touch:
+  message: '&#FF4444You need Silk Touch to break this spawner.'
+  action_bar: '&#FF4444You need Silk Touch.'
   sound: item.shield.block
 
-spawner_break_required_tools:
-  action_bar: "&#ff5252ᴄᴀɴ'ᴛ ʙʀᴇᴀᴋ ꜱᴘᴀᴡɴᴇʀ ᴡɪᴛʜ ᴛʜɪꜱ ᴛᴏᴏʟ!"
+break_tool_required:
+  message: '&#FF4444You cannot break spawner with this tool.'
+  action_bar: '&#FF4444Cannot break spawner with this tool.'
   sound: item.shield.block
 
-spawner_break_warning:
-  enabled: false
-  title: "&#f0c857ᴡᴀʀɴɪɴɢ"
-  subtitle: "&#e6e6faɪᴛᴇᴍꜱ ɪɴ ꜱᴘᴀᴡɴᴇʀ ᴡɪʟʟ ʙᴇ ʟᴏꜱᴛ!"
-  sound: block.note_block.bass
+drop_failed:
+  message: '&#FF4444No luck this time - the spawner did not drop.'
+  action_bar: '&#FF4444The spawner did not drop.'
+  sound: block.note_block.pling
 
-natural_spawner_break_blocked:
-  action_bar: "&#ff5252ɴᴀᴛᴜʀᴀʟ ꜱᴘᴀᴡɴᴇʀꜱ ᴄᴀɴɴᴏᴛ ʙᴇ ʙʀᴏᴋᴇɴ ᴀɴᴅ ᴜꜱᴇᴅ"
+sneak_break_blocked:
+  message: '&#FF4444You cannot break the whole stack when this spawner has drop chance.'
+  action_bar: '&#FF4444Cannot break whole stack.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #              Sell Integration Messages
 # ──────────────────────────────────────────────────────
-sell_failed:
-  message: "&#ff5252ꜰᴀɪʟᴇᴅ ᴛᴏ ꜱᴇʟʟ ɪᴛᴇᴍꜱ! ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ."
-  sound: block.note_block.pling
-
-no_items:
-  message: "&#ff5252ɴᴏ ɪᴛᴇᴍꜱ ᴛᴏ ꜱᴇʟʟ"
-  sound: block.note_block.pling
-
 no_sellable_items:
-  message: "&#ff5252ɴᴏ ꜱᴇʟʟᴀʙʟᴇ ɪᴛᴇᴍꜱ ꜰᴏᴜɴᴅ"
-  sound: block.note_block.pling
+  message: '&#FF4444No sellable items were found.'
 
 sell_success:
-  message: "&#e6e6faꜱᴏʟᴅ &#e67e22{amount} ɪᴛᴇᴍꜱ&#e6e6fa ꜰᴏʀ &a+${price}"
-  sound: block.note_block.bell
+  message: 'You sold &e{amount} &fitem(s) for &a${price}&f.'
+  action_bar: '&a+${price}'
 
-action_in_progress:
-  message: "&#f0c857ᴀɴᴏᴛʜᴇʀ ᴏᴘᴇʀᴀᴛɪᴏɴ ɪꜱ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ. ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ ɪɴ ᴀ ᴍᴏᴍᴇɴᴛ."
-  sound: block.note_block.pling
+sell_and_exp_success:
+  message: 'You sold &e{amount} &fitem(s) for &a${price}&f and collected &a{exp} &fEXP.'
+  action_bar: '&a+${price} &f| &a+{exp} EXP'
 
-spawner_selling:
-  message: "&#f0c857ꜱᴘᴀᴡɴᴇʀ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ ꜱᴇʟʟɪɴɢ ɪᴛᴇᴍꜱ, ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ."
-  sound: block.note_block.pling
-
-action_failed:
-  action_bar: "&#ff5252ᴀᴄᴛɪᴏɴ ꜰᴀɪʟᴇᴅ. ᴘʟᴇᴀꜱᴇ ᴛʀʏ ᴀɢᴀɪɴ."
-  sound: block.note_block.pling
-
-please_wait:
-  action_bar: "&#3498dbᴘʀᴏᴄᴇꜱꜱɪɴɢ... ᴘʟᴇᴀꜱᴇ ᴡᴀɪᴛ."
-  sound: block.note_block.harp
+sell_and_exp_success_with_mending:
+  message: 'You sold &e{amount} &fitem(s) for &a${price}&f, collected &a{exp} &fEXP &f(&c{exp_mending} &fused on Mending).'
+  action_bar: '&a+${price} &f| &a+{exp} EXP &f(&c-{exp_mending} Mending)'

@@ -4,6 +4,7 @@
 # ──────────────────────────────────────────────────────
 #                 Number Formatting
 # ──────────────────────────────────────────────────────
+# Controls how large numbers are displayed in-game
 format_number:
   thousand: "{s}K"    # Example: 5000 → 5K
   million: "{s}M"     # Example: 2000000 → 2M

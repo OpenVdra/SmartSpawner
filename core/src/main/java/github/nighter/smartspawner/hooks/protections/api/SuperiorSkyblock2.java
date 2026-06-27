@@ -32,22 +32,18 @@ public class SuperiorSkyblock2 implements Listener {
         if (registered)
             return;
 
-        try {
-            SPAWNER_STACK = IslandPrivilege.getByName(SPAWNER_STACK_PERM);
-            SPAWNER_OPEN_MENU = IslandPrivilege.getByName(SPAWNER_OPEN_MENU_PERM);
-        } catch(NullPointerException e) {
-            IslandPrivilege.register(SPAWNER_STACK_PERM);
-            IslandPrivilege.register(SPAWNER_OPEN_MENU_PERM);
-            try {
-                SPAWNER_STACK = IslandPrivilege.getByName(SPAWNER_STACK_PERM);
-                SPAWNER_OPEN_MENU = IslandPrivilege.getByName(SPAWNER_OPEN_MENU_PERM);
-            } catch(Exception ex) {
-                SmartSpawner.getInstance().getLogger().severe("Failed to register SuperiorSkyblock Hook - please open a issue on Github or on Discord");
-                e.printStackTrace();
-                return;
-            }
-        }
+        SPAWNER_STACK = getOrRegisterPrivilege(SPAWNER_STACK_PERM);
+        SPAWNER_OPEN_MENU = getOrRegisterPrivilege(SPAWNER_OPEN_MENU_PERM);
         registered = true;
+    }
+
+    private static IslandPrivilege getOrRegisterPrivilege(String name) {
+        try {
+            return IslandPrivilege.getByName(name);
+        } catch (NullPointerException ignored) {
+            IslandPrivilege.register(name);
+            return IslandPrivilege.getByName(name);
+        }
     }
 
     public static boolean canPlayerStackBlock(@NotNull Player player, @NotNull Location location) {

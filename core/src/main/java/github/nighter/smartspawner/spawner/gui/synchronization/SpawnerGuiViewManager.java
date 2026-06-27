@@ -6,7 +6,6 @@ import github.nighter.smartspawner.spawner.gui.storage.StoragePageHolder;
 import github.nighter.smartspawner.spawner.gui.storage.filter.FilterConfigHolder;
 import github.nighter.smartspawner.spawner.gui.synchronization.listeners.InventoryEventListener;
 import github.nighter.smartspawner.spawner.gui.synchronization.listeners.PlayerEventListener;
-import github.nighter.smartspawner.spawner.gui.synchronization.managers.SlotCacheManager;
 import github.nighter.smartspawner.spawner.gui.synchronization.managers.UpdateTaskManager;
 import github.nighter.smartspawner.spawner.gui.synchronization.managers.ViewerTrackingManager;
 import github.nighter.smartspawner.spawner.gui.synchronization.services.GuiUpdateService;
@@ -32,7 +31,6 @@ public class SpawnerGuiViewManager {
     
     // Managers
     private final ViewerTrackingManager viewerTrackingManager;
-    private final SlotCacheManager slotCacheManager;
     private final UpdateTaskManager updateTaskManager;
     
     // Services
@@ -49,12 +47,11 @@ public class SpawnerGuiViewManager {
         
         // Initialize managers
         this.viewerTrackingManager = new ViewerTrackingManager();
-        this.slotCacheManager = new SlotCacheManager(plugin);
         this.updateTaskManager = new UpdateTaskManager();
         
         // Initialize services
-        this.timerUpdateService = new TimerUpdateService(plugin, viewerTrackingManager, slotCacheManager);
-        this.guiUpdateService = new GuiUpdateService(plugin, slotCacheManager);
+        this.timerUpdateService = new TimerUpdateService(plugin, viewerTrackingManager);
+        this.guiUpdateService = new GuiUpdateService(plugin);
         this.storageUpdateService = new StorageUpdateService(plugin);
         
         // Initialize listeners
@@ -136,14 +133,6 @@ public class SpawnerGuiViewManager {
      */
     public void recheckTimerPlaceholders() {
         timerUpdateService.recheckTimerPlaceholders();
-    }
-
-    /**
-     * Clears all cached slot positions and re-initializes them.
-     * Called when GUI layout configuration is reloaded.
-     */
-    public void clearSlotCache() {
-        slotCacheManager.clearAndReinitialize();
     }
 
     /**
@@ -267,7 +256,11 @@ public class SpawnerGuiViewManager {
         if (!viewers.isEmpty()) {
             for (Player viewer : viewers) {
                 if (viewer != null && viewer.isOnline()) {
-                    viewer.closeInventory();
+                    Scheduler.runEntityTask(viewer, () -> {
+                        if (viewer.isOnline()) {
+                            viewer.closeInventory();
+                        }
+                    });
                 }
             }
         }
@@ -279,12 +272,18 @@ public class SpawnerGuiViewManager {
             for (UUID viewerId : filterViewersCopy) {
                 Player viewer = Bukkit.getPlayer(viewerId);
                 if (viewer != null && viewer.isOnline()) {
-                    Inventory openInventory = viewer.getOpenInventory().getTopInventory();
-                    if (openInventory != null && openInventory.getHolder(false) instanceof FilterConfigHolder filterHolder) {
-                        if (filterHolder.getSpawnerData().getSpawnerId().equals(spawnerId)) {
-                            viewer.closeInventory();
+                    Scheduler.runEntityTask(viewer, () -> {
+                        if (!viewer.isOnline()) {
+                            return;
                         }
-                    }
+
+                        Inventory openInventory = viewer.getOpenInventory().getTopInventory();
+                        if (openInventory != null && openInventory.getHolder(false) instanceof FilterConfigHolder filterHolder) {
+                            if (filterHolder.getSpawnerData().getSpawnerId().equals(spawnerId)) {
+                                viewer.closeInventory();
+                            }
+                        }
+                    });
                 }
             }
         }

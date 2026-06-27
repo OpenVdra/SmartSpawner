@@ -2,6 +2,7 @@ package github.nighter.smartspawner.spawner.gui.sell;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
+import github.nighter.smartspawner.api.gui.GuiLayoutType;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
@@ -41,7 +43,8 @@ import java.util.Optional;
  *           e. Location/main thread: applySellResult() – deposit money, remove items,
  *              update hologram, notify player.
  *           f. onComplete.run():
- *                • Scheduler.runTask → reopenPreviousGui() for the selling player only.
+ *                • Scheduler.runEntityTask(player) → reopenPreviousGui() for the selling player
+ *                  only (player's own region thread — required for openInventory/initMenu).
  *           g. spawner.stopSelling() released in finally.
  *
  *  3. Player clicks CANCEL  →  handleCancel():
@@ -109,9 +112,13 @@ public class SpawnerSellConfirmListener implements Listener {
         }
 
         int slot = event.getRawSlot();
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null || clickedItem.getType().isAir()) {
+            return;
+        }
 
         // OPTIMIZATION: Get layout once and check action based on clicked slot
-        GuiLayout layout = plugin.getGuiLayoutConfig().getCurrentSellConfirmLayout();
+        GuiLayout layout = confirmHolder.getLayout();
         if (layout == null) {
             player.closeInventory();
             return;
@@ -123,18 +130,29 @@ public class SpawnerSellConfirmListener implements Listener {
         }
 
         GuiButton button = buttonOpt.get();
-        String action = button.getDefaultAction();
+        String clickType = getClickTypeString(event.getClick());
+        String action = button.getActionWithFallback(clickType);
 
         if (action == null) {
+            return;
+        }
+        if ("none".equals(action)) {
+            return;
+        }
+        if (!plugin.getGuiButtonInteractionService().tryUse(
+                player, GuiLayoutType.SELL_CONFIRM_GUI, button)) {
             return;
         }
 
         switch (action) {
             case "cancel":
+                plugin.getGuiButtonInteractionService().playNavigateSound(
+                        player, button, clickType);
                 handleCancel(player, spawner, confirmHolder.getPreviousGui());
                 break;
             case "confirm":
-                handleConfirm(player, spawner, confirmHolder.getPreviousGui(), confirmHolder.isCollectExp());
+                handleConfirm(player, spawner, confirmHolder.getPreviousGui(),
+                        confirmHolder.isCollectExp(), button, clickType);
                 break;
             default:
                 // Info button or unknown action - do nothing
@@ -143,37 +161,66 @@ public class SpawnerSellConfirmListener implements Listener {
     }
 
     private void handleCancel(Player player, SpawnerData spawner, SpawnerSellConfirmUI.PreviousGui previousGui) {
-        // Play sound instead of sending message
-        player.playSound(player.getLocation(), org.bukkit.Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
-
         // Reopen previous GUI
         reopenPreviousGui(player, spawner, previousGui);
     }
 
-    private void handleConfirm(Player player, SpawnerData spawner, SpawnerSellConfirmUI.PreviousGui previousGui, boolean collectExp) {
+    private void handleConfirm(Player player, SpawnerData spawner,
+                               SpawnerSellConfirmUI.PreviousGui previousGui, boolean collectExp,
+                               GuiButton button, String clickType) {
         // Drop duplicate confirm-click packets (e.g. from a cheat client replaying within the
         // same tick). startSelling() is called synchronously inside sellAllItems() before any
         // async work, so isSelling() is already true when the second click is processed.
         // Returning here — before creating an onComplete lambda — ensures sellAllItems() is
         // never called with a callback that would reopen the GUI mid-sell on CAS rejection.
         if (spawner.isSelling()) {
+            plugin.getGuiButtonInteractionService().playFailSound(
+                    player, button, clickType);
             return;
         }
 
-        // Collect exp if requested (sync, safe on this thread)
+        // Collect exp silently so we can send a single combined sell+exp message
+        long expCollected = 0;
+        long expMending = 0;
         if (collectExp) {
-            plugin.getSpawnerMenuAction().handleExpBottleClick(player, spawner, true);
+            long[] expData = plugin.getSpawnerMenuAction().collectExpSilently(player, spawner);
+            expCollected = expData[0];
+            expMending = expData[1];
         }
 
         // Callback runs on the spawner's region/main thread after the sell fully completes.
         // Defers the GUI reopen until the inventory is actually emptied, closing the race
         // window where a storage GUI could be reopened with stale (pre-removal) items.
-        Runnable onComplete = () ->
-            // player.openInventory must run on the global/main thread; schedule with runTask
-            // so it is always dispatched correctly on both Paper and Folia.
-            Scheduler.runTask(() -> reopenPreviousGui(player, spawner, previousGui));
+        final long finalExpCollected = expCollected;
+        final long finalExpMending = expMending;
+        Runnable onComplete = () -> {
+            if (spawner.getVirtualInventory().getUsedSlots() == 0) {
+                plugin.getGuiButtonInteractionService().playSuccessSound(
+                        player, button, clickType);
+            } else {
+                plugin.getGuiButtonInteractionService().playFailSound(
+                        player, button, clickType);
+            }
+            // player.openInventory() -> ServerPlayer.initMenu() must run on the PLAYER's own
+            // region thread on Folia/Canvas, NOT the global region thread (the sell completes on
+            // the spawner location's thread, which may be a different region). Dispatch via the
+            // player's entity scheduler; on Paper this falls back to the main thread. If the
+            // player logged off mid-sell, the entity task simply never runs.
+            Scheduler.runEntityTask(player, () -> reopenPreviousGui(player, spawner, previousGui));
+        };
 
-        plugin.getSpawnerSellManager().sellAllItems(player, spawner, onComplete);
+        plugin.getSpawnerSellManager().sellAllItems(
+                player, spawner, onComplete, finalExpCollected, finalExpMending);
+    }
+
+    private String getClickTypeString(org.bukkit.event.inventory.ClickType clickType) {
+        return switch (clickType) {
+            case LEFT -> "left_click";
+            case RIGHT -> "right_click";
+            case SHIFT_LEFT -> "shift_left_click";
+            case SHIFT_RIGHT -> "shift_right_click";
+            default -> "click";
+        };
     }
 
     private void reopenPreviousGui(Player player, SpawnerData spawner, SpawnerSellConfirmUI.PreviousGui previousGui) {
@@ -193,7 +240,7 @@ public class SpawnerSellConfirmListener implements Listener {
             case STORAGE:
                 // Storage GUI works the same for both Java and Bedrock
                 org.bukkit.inventory.Inventory storageInventory = plugin.getSpawnerStorageUI()
-                        .createStorageInventory(spawner, 1, -1);
+                        .createStorageInventory(player, spawner, 1, -1);
                 player.openInventory(storageInventory);
                 break;
         }

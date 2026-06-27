@@ -1,0 +1,92 @@
+# SmartSpawner – items.yml
+# Spawner eşyalarının görüntülenme isimleri ve düşen eşya isimleri.
+
+# Smart spawner eşyalarının envanterde ve araç ipuçlarındaki görünümü
+# Kullanılabilir değişkenler: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+smart_spawner:
+  default:
+    name: '&#5DB5F1{entity} Spawner'
+    loot_items: '  &#ecf0f1 • {amount}x {item_name} &#3498db(%{chance})'
+    loot_items_empty: '  &#ecf0f1 •  Yok'
+    lore:
+      - ''
+      - ' &#5DB5F1 Detay:'
+      - '  &#ecf0f1 • &fVerilen XP: &a{exp}'
+      - ''
+      - ' &#5DB5F1 Düşenler:'
+      - '{loot_items}'
+      - ''
+  # Yaratığa özel bölümler, belirtilen anahtar için varsayılanı ezer. Belirtilmeyen anahtarlar varsayılanı kullanır.
+  PIG:
+    name: '&#FF77B7{entity} Spawner'
+    loot_items: '  &#FFF0F7 • {amount}x {item_name} &#FF8FC7(%{chance})'
+    loot_items_empty: '  &#FFF0F7 •  Yok'
+    lore:
+      - ''
+      - ' &#FF77B7 Detay:'
+      - '  &#FFF0F7 • &fVerilen XP: &#FF8FC7{exp}'
+      - ''
+      - ' &#FF77B7 Düşenler:'
+      - '{loot_items}'
+      - ''
+  BLAZE:
+    name: '&#FFB300{entity} Spawner'
+    loot_items: '  &#FFF4CC • {amount}x {item_name} &#FFC107(%{chance})'
+    loot_items_empty: '  &#FFF4CC •  Yok'
+    lore:
+      - ''
+      - ' &#FFB300 Detay:'
+      - '  &#FFF4CC • &fVerilen XP: &#FFD54F{exp}'
+      - ''
+      - ' &#FFB300 Düşenler:'
+      - '{loot_items}'
+      - ''
+
+# Eşya spawnerı (item spawner) eşyalarının envanterde ve araç ipuçlarındaki görünümü
+# Kullanılabilir değişkenler: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+item_spawner:
+  default:
+    name: '&#5DB5F1{entity} Spawner'
+    loot_items: '  &#ecf0f1 • {amount}x {item_name} &#3498db(%{chance})'
+    loot_items_empty: '  &#ecf0f1 •  Yok'
+    lore:
+      - ''
+      - ' &#5DB5F1 Detay:'
+      - '  &#ecf0f1 • &fVerilen XP: &a{exp}'
+      - ''
+      - ' &#5DB5F1 Düşenler:'
+      - '{loot_items}'
+      - ''
+  # Materyale özel bölümler, belirtilen anahtar için varsayılanı ezer. Belirtilmeyen anahtarlar varsayılanı kullanır.
+  DIAMOND:
+    name: '&#00E5FF{entity} Spawner'
+    loot_items: '  &#EAFDFF • {amount}x {item_name} &#00B8D4(%{chance})'
+    loot_items_empty: '  &#EAFDFF •  Yok'
+    lore:
+      - ''
+      - ' &#00E5FF Detay:'
+      - '  &#EAFDFF • &fVerilen XP: &#00B8D4{exp}'
+      - ''
+      - ' &#00E5FF Düşenler:'
+      - '{loot_items}'
+      - ''
+  AMETHYST_SHARD:
+    name: '&#B66CFF{entity} Spawner'
+    loot_items: '  &#F5ECFF • {amount}x {item_name} &#D6A5FF(%{chance})'
+    loot_items_empty: '  &#F5ECFF •  Yok'
+    lore:
+      - ''
+      - ' &#B66CFF Detay:'
+      - '  &#F5ECFF • &fVerilen XP: &#D6A5FF{exp}'
+      - ''
+      - ' &#B66CFF Düşenler:'
+      - '{loot_items}'
+      - ''
+
+# Vanilla spawner eşyalarının envanterde ve araç ipuçlarındaki görünümü
+# Kullanılabilir değişkenler: {entity}, {ᴇɴᴛɪᴛʏ}
+# Özel vanilla spawner ismi ve lore'u kullanmak istemiyorsanız bu bölümü silebilirsiniz
+vanilla_spawner:
+  default:
+    name: "{entity} Spawner"
+    lore:

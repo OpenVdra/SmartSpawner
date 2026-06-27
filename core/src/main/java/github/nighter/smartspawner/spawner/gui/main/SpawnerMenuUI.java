@@ -3,7 +3,7 @@ package github.nighter.smartspawner.spawner.gui.main;
 import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.nms.VersionInitializer;
+import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
@@ -115,8 +115,8 @@ public class SpawnerMenuUI {
             }
         }
 
-        Inventory menu = createMenu(spawner);
-        GuiLayout layout = plugin.getGuiLayoutConfig().getCurrentMainLayout();
+        GuiLayout layout = plugin.getGuiLayoutConfig().getMainLayout(spawner, player);
+        Inventory menu = createMenu(spawner, layout);
 
         // OPTIMIZATION: Populate menu items based on layout configuration
         // Iterate through ALL buttons in layout and create items based on their actions
@@ -142,16 +142,16 @@ public class SpawnerMenuUI {
             ItemStack item = null;
             switch (action) {
                 case "open_storage":
-                    item = createLootStorageItem(spawner);
+                    item = createLootStorageItem(spawner, button);
                     break;
                 case "open_stacker":
                 case "sell_and_exp":
                 case "none":
-                    // Spawner info button
-                    item = createSpawnerInfoItem(player, spawner);
+                    // Spawner info button or custom action
+                    item = createSpawnerInfoItem(player, spawner, button);
                     break;
                 case "collect_exp":
-                    item = createExpItem(spawner);
+                    item = createExpItem(spawner, button);
                     break;
                 default:
                     plugin.getLogger().warning("Unknown action in main GUI: " + action);
@@ -174,7 +174,7 @@ public class SpawnerMenuUI {
         player.openInventory(menu);
 
         if (!refresh) {
-            player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 1.0f, 1.0f);
+            plugin.getGuiButtonInteractionService().playOpenSound(player);
         }
 
         // Force timer update inactive for GUI if applicable
@@ -183,7 +183,7 @@ public class SpawnerMenuUI {
         }
     }
 
-    private Inventory createMenu(SpawnerData spawner) {
+    private Inventory createMenu(SpawnerData spawner, GuiLayout layout) {
         // Get entity name with caching - for item spawners, use item name
         String entityName;
         if (spawner.isItemSpawner()) {
@@ -206,26 +206,22 @@ public class SpawnerMenuUI {
             title = languageManager.getGuiTitle("gui_title_main.single_spawner", placeholders);
         }
 
-        return Bukkit.createInventory(new SpawnerMenuHolder(spawner), INVENTORY_SIZE, title);
+        return Bukkit.createInventory(new SpawnerMenuHolder(spawner, layout), INVENTORY_SIZE, title);
     }
 
-    public ItemStack createLootStorageItem(SpawnerData spawner) {
-        // Generate cache key based on spawner state
+    public ItemStack createLootStorageItem(SpawnerData spawner, GuiButton button) {
+        // Generate cache key based on spawner state and button config
         VirtualInventory virtualInventory = spawner.getVirtualInventory();
         int currentItems = virtualInventory.getUsedSlots();
         int maxSlots = spawner.getMaxSpawnerLootSlots();
-        String cacheKey = spawner.getSpawnerId() + "|storage|" + currentItems + "|" + maxSlots + "|" + virtualInventory.hashCode();
+        String buttonConfig = (button != null) ? (button.getMaterial().name() + "_" + button.getCustomTexture()) : "default";
+        String cacheKey = spawner.getSpawnerId() + "|storage|" + currentItems + "|" + maxSlots + "|" + virtualInventory.hashCode() + "|" + buttonConfig;
         
         // Check cache first
         ItemStack cachedItem = itemCache.get(cacheKey);
         if (cachedItem != null && !isCacheEntryExpired(cacheKey)) {
             return cachedItem.clone();
         }
-
-        // Use cached material for performance (no layout lookup needed)
-        ItemStack chestItem = new ItemStack(cachedStorageMaterial);
-        ItemMeta chestMeta = chestItem.getItemMeta();
-        if (chestMeta == null) return chestItem;
 
         // Smart placeholder detection: First, get the raw name and lore templates
         String nameTemplate = languageManager.getGuiItemName("spawner_storage_item.name", EMPTY_PLACEHOLDERS);
@@ -254,26 +250,31 @@ public class SpawnerMenuUI {
             int percentStorage = calculatePercentage(currentItems, maxSlots);
             placeholders.put("percent_storage_rounded", String.valueOf(percentStorage));
         }
-        List<Component> lootComponents = Collections.emptyList();
-        if (usedPlaceholders.contains("loot_items")) {
-            Map<ItemSignature, Long> storedItems = virtualInventory.getConsolidatedItems();
-            lootComponents = buildLootItemComponents(spawner.getEntityType(), storedItems);
-        }
+        final List<Component> finalLootComponents = usedPlaceholders.contains("loot_items") 
+                ? buildLootItemComponents(spawner.getEntityType(), virtualInventory.getConsolidatedItems()) 
+                : Collections.emptyList();
 
-        // Set display name
-        chestMeta.setDisplayName(languageManager.getGuiItemName("spawner_storage_item.name", placeholders));
+        Consumer<ItemMeta> metaModifier = meta -> {
+            meta.setDisplayName(languageManager.getGuiItemName("spawner_storage_item.name", placeholders));
+            List<Component> lore = languageManager.buildGuiLoreAsComponents(
+                    "spawner_storage_item.lore", placeholders, finalLootComponents, EMPTY_LOOT_MESSAGE_KEY);
+            if (!lore.isEmpty()) {
+                meta.lore(lore);
+            }
+        };
 
-        // Build lore as Adventure Components (italic=false, item names use client-side translation)
-        List<Component> lore = languageManager.buildGuiLoreAsComponents(
-                "spawner_storage_item.lore", placeholders, lootComponents, EMPTY_LOOT_MESSAGE_KEY);
-        if (!lore.isEmpty()) {
-            chestMeta.lore(lore);
+        ItemStack chestItem;
+        if (button != null && button.getMaterial() == Material.PLAYER_HEAD && button.getCustomTexture() != null && !button.getCustomTexture().trim().isEmpty()) {
+            chestItem = SpawnerMobHeadTexture.getCustomHeadFromTexture(button.getCustomTexture(), metaModifier);
+        } else {
+            Material mat = (button != null) ? button.getMaterial() : cachedStorageMaterial;
+            chestItem = new ItemStack(mat);
+            chestItem.editMeta(metaModifier);
         }
-        chestItem.setItemMeta(chestMeta);
 
         // Hide tooltip for BUNDLE material (prevents showing bundle contents)
-        if (cachedStorageMaterial == Material.BUNDLE) {
-            VersionInitializer.hideTooltip(chestItem);
+        if (chestItem.getType() == Material.BUNDLE) {
+            ItemTooltipUtil.hideTooltip(chestItem);
         }
 
         // Cache the result
@@ -359,30 +360,7 @@ public class SpawnerMenuUI {
         return builder.toString();
     }
 
-    public ItemStack createSpawnerInfoItem(Player player, SpawnerData spawner) {
-        // Get layout configuration first
-        GuiLayout layout = plugin.getGuiLayoutConfig().getCurrentMainLayout();
-
-        // OPTIMIZATION: Find spawner info button by info_button flag first
-        GuiButton spawnerInfoButton = null;
-        for (GuiButton button : layout.getAllButtons().values()) {
-            // Check info_button flag first (most reliable)
-            if (button.isInfoButton()) {
-                spawnerInfoButton = button;
-                break;
-            }
-
-            // Fallback: check by action for backward compatibility
-            String action = getAnyActionFromButton(button);
-            if (action != null && (action.equals("open_stacker") || action.equals("sell_and_exp") || action.equals("none"))) {
-                // Check if button condition matches current state
-                if (!button.hasCondition() || evaluateButtonCondition(button, player)) {
-                    spawnerInfoButton = button;
-                    break;
-                }
-            }
-        }
-
+    public ItemStack createSpawnerInfoItem(Player player, SpawnerData spawner, GuiButton button) {
         // Get important data upfront
         EntityType entityType = spawner.getEntityType();
         int stackSize = spawner.getStackSize();
@@ -392,10 +370,16 @@ public class SpawnerMenuUI {
         long currentExp = spawner.getSpawnerExp();
         long maxExp = spawner.getMaxStoredExp();
 
-        // Create cache key including all relevant state
+        // Create cache key including all relevant state and button config
         boolean hasShopPermission = plugin.hasSellIntegration() && player.hasPermission("smartspawner.sellall");
+        String buttonConfig = (button != null) ? (button.getMaterial().name() + "_" + button.getCustomTexture()) : "default";
+        String cacheKey = spawner.getSpawnerId() + "|info|" + currentItems + "|" + maxSlots + "|" + currentExp + "|" + maxExp + "|" + hasShopPermission + "|" + buttonConfig;
 
-        // Not in cache, create the ItemStack
+        // Check cache first
+        ItemStack cachedItem = itemCache.get(cacheKey);
+        if (cachedItem != null && !isCacheEntryExpired(cacheKey)) {
+            return cachedItem.clone();
+        }
 
         // Smart placeholder detection: First, get the raw name and lore templates
         String nameTemplate = languageManager.getGuiItemName("spawner_info_item.name", EMPTY_PLACEHOLDERS);
@@ -515,8 +499,6 @@ public class SpawnerMenuUI {
             placeholders.put("time", timerValue);
         }
 
-        ItemStack spawnerItem;
-
         // Prepare the meta modifier consumer
         Consumer<ItemMeta> metaModifier = meta -> {
             // Set display name with the specified placeholders
@@ -527,45 +509,51 @@ public class SpawnerMenuUI {
             meta.setLore(lore);
         };
 
+        ItemStack spawnerItem;
+
         // Check if this is an item spawner and use appropriate head
         if (spawner.isItemSpawner()) {
             // For item spawners, use the item material as the head
             spawnerItem = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getSpawnedItemMaterial(), player, metaModifier);
-        } else if (spawnerInfoButton != null && spawnerInfoButton.getMaterial() == Material.PLAYER_HEAD) {
-            // Use custom head texture for MOB_HEAD material
+        } else if (button != null && button.getMaterial() == Material.PLAYER_HEAD && button.getCustomTexture() != null && !button.getCustomTexture().trim().isEmpty()) {
+            // Use custom texture from GUI layout if provided
+            spawnerItem = SpawnerMobHeadTexture.getCustomHeadFromTexture(button.getCustomTexture(), metaModifier);
+        } else if (button != null && button.getMaterial() == Material.PLAYER_HEAD) {
+            // Fallback to entity-based custom head (from spawners_settings.yml)
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, player, metaModifier);
-        } else if (spawnerInfoButton != null) {
+        } else if (button != null) {
             // Use the configured material
-            spawnerItem = new ItemStack(spawnerInfoButton.getMaterial());
+            spawnerItem = new ItemStack(button.getMaterial());
             spawnerItem.editMeta(metaModifier);
         } else {
             // Fallback to default behavior
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, player, metaModifier);
         }
 
-        if (spawnerItem.getType() == Material.SPAWNER) VersionInitializer.hideTooltip(spawnerItem);
+        if (spawnerItem.getType() == Material.SPAWNER) ItemTooltipUtil.hideTooltip(spawnerItem);
+        
+        // Cache the result
+        itemCache.put(cacheKey, spawnerItem.clone());
+        cacheTimestamps.put(cacheKey, System.currentTimeMillis());
+        
         return spawnerItem;
     }
 
-    public ItemStack createExpItem(SpawnerData spawner) {
+    public ItemStack createExpItem(SpawnerData spawner, GuiButton button) {
         // Get important data upfront
         long currentExp = spawner.getSpawnerExp();
         long maxExp = spawner.getMaxStoredExp();
         int percentExp = calculatePercentage(currentExp, maxExp);
 
-        // Create cache key for this specific spawner's exp state
-        String cacheKey = spawner.getSpawnerId() + "|exp|" + currentExp + "|" + maxExp;
+        // Create cache key including button config
+        String buttonConfig = (button != null) ? (button.getMaterial().name() + "_" + button.getCustomTexture()) : "default";
+        String cacheKey = spawner.getSpawnerId() + "|exp|" + currentExp + "|" + maxExp + "|" + buttonConfig;
 
         // Check cache first
         ItemStack cachedItem = itemCache.get(cacheKey);
         if (cachedItem != null && !isCacheEntryExpired(cacheKey)) {
             return cachedItem.clone();
         }
-
-        // Use cached material for performance (no layout lookup needed)
-        ItemStack expItem = new ItemStack(cachedExpMaterial);
-        ItemMeta expMeta = expItem.getItemMeta();
-        if (expMeta == null) return expItem;
 
         // Format numbers once for display
         String formattedExp = languageManager.formatNumber(currentExp);
@@ -579,16 +567,24 @@ public class SpawnerMenuUI {
         placeholders.put("percent_exp_rounded", String.valueOf(percentExp));
         placeholders.put("u_max_exp", String.valueOf(maxExp));
 
-        // Set name and lore
-        expMeta.setDisplayName(languageManager.getGuiItemName("exp_info_item.name", placeholders));
-        List<String> loreExp = languageManager.getGuiItemLoreAsList("exp_info_item.lore", placeholders);
-        expMeta.setLore(loreExp);
+        Consumer<ItemMeta> metaModifier = meta -> {
+            meta.setDisplayName(languageManager.getGuiItemName("exp_info_item.name", placeholders));
+            List<String> loreExp = languageManager.getGuiItemLoreAsList("exp_info_item.lore", placeholders);
+            meta.setLore(loreExp);
+        };
 
-        expItem.setItemMeta(expMeta);
+        ItemStack expItem;
+        if (button != null && button.getMaterial() == Material.PLAYER_HEAD && button.getCustomTexture() != null && !button.getCustomTexture().trim().isEmpty()) {
+            expItem = SpawnerMobHeadTexture.getCustomHeadFromTexture(button.getCustomTexture(), metaModifier);
+        } else {
+            Material mat = (button != null) ? button.getMaterial() : cachedExpMaterial;
+            expItem = new ItemStack(mat);
+            expItem.editMeta(metaModifier);
+        }
 
         // Hide tooltip for BUNDLE material (prevents showing bundle contents)
-        if (cachedExpMaterial == Material.BUNDLE) {
-            VersionInitializer.hideTooltip(expItem);
+        if (expItem.getType() == Material.BUNDLE) {
+            ItemTooltipUtil.hideTooltip(expItem);
         }
 
         // Cache the result

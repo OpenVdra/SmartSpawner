@@ -1,0 +1,20 @@
+# SmartSpawner – hologram.yml
+# Her spawner'ın üzerinde gösterilecek metin satırları. &#RRGGBB hex ve &x renk kodlarını destekler.
+#
+# Yer Tutucular (Placeholders):
+#   {entity}                  – Yaratık (Mob) adı
+#   {ᴇɴᴛɪᴛʏ}                  – Küçük büyük harf (small-caps) unicode formatında yaratık adı
+#   {stack_size}              – Stack (yığın) sayısı
+#   {current_exp}             – Depolanan XP (Deneyim Puanı)
+#   {max_exp}                 – Maksimum XP kapasitesi
+#   {used_slots}              – Kullanılan eşya slotları
+#   {max_slots}               – Toplam eşya slotları
+#   {percent_storage_decimal} – Depolama % oranı (1 ondalıklı, örn. "75.5")
+#   {percent_storage_rounded} – Yuvarlanmış depolama % oranı (örn. "76")
+#   {percent_exp_decimal}     – XP % oranı (1 ondalıklı, örn. "50.0")
+#   {percent_exp_rounded}     – Yuvarlanmış XP % oranı (örn. "50")
+
+hologram_text:
+  - '[&#e6e6fa{stack_size}] &#3498db{entity} Spawner'
+  - '&#5dade2• &#e6e6faXP: &#37eb9a{current_exp}&#e6e6fa/&#37eb9a{max_exp}'
+  - '&#5dade2• &#e6e6faEşyalar: &#37eb9a{used_slots}&#e6e6fa/&#37eb9a{max_slots}'

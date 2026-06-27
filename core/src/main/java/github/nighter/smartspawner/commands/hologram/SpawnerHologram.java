@@ -2,7 +2,7 @@ package github.nighter.smartspawner.commands.hologram;
 
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.language.ColorUtil;
+import github.nighter.smartspawner.language.format.ColorUtil;
 import github.nighter.smartspawner.language.LanguageManager;
 
 import org.bukkit.Color;

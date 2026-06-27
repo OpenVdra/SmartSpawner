@@ -2,7 +2,7 @@ name: SmartSpawner
 version: '${version}'
 main: github.nighter.smartspawner.SmartSpawner
 api-version: '1.21'
-authors: [ https://github.com/NighterDevelopment/SmartSpawner ]
+authors: [ https://github.com/OpenVdra/SmartSpawner ]
 folia-supported: true
 softdepend:
   # Bedrock Support Plugins
@@ -28,7 +28,6 @@ softdepend:
   - minePlots
   - PlotSquared
   - Residence
-  - HuskClaims
 
   # World Management Plugins
   - Multiverse-Core
@@ -47,7 +46,7 @@ softdepend:
 commands:
   smartspawner:
     description: Main command for SmartSpawner plugin
-    usage: /smartspawner [reload|give|list|hologram|prices|clear|near|set] [args...]
+    usage: /smartspawner [reload|give|list|hologram|prices|clear|near|set|language|gui_layout] [args...]
     aliases: [ ss, spawner ]
     permission: smartspawner.command.use
     permission-message: "You don't have permission to use SmartSpawner commands!"
@@ -77,7 +76,7 @@ permissions:
 
   smartspawner.command.prices:
     description: Allow viewing sell prices of spawner items
-    default: true
+    default: op
 
   smartspawner.command.clear:
     description: Allow clearing holograms and ghost spawners
@@ -89,6 +88,14 @@ permissions:
 
   smartspawner.command.set:
     description: Allow setting SmartSpawner stack size, range, and delay
+    default: op
+
+  smartspawner.command.language:
+    description: Allow changing the active SmartSpawner language
+    default: op
+
+  smartspawner.command.gui_layout:
+    description: Allow changing the active SmartSpawner GUI layout
     default: op
 
   # Feature permissions
@@ -103,6 +110,10 @@ permissions:
   smartspawner.break:
     description: Allow breaking spawners
     default: true
+
+  smartspawner.break.bypassdropchance:
+    description: Bypass spawner drop chance and always receive spawner drops
+    default: op
 
   smartspawner.sellall:
     description: Allow selling items in spawner storage GUI
