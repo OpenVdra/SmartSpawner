@@ -125,7 +125,7 @@ public class SpawnerLootGenerator {
                         }
 
                         if (!loot.items().isEmpty()) {
-                            Map<ItemSignature, Integer> lootToAdd = loot.items();
+                            Map<ItemSignature, Long> lootToAdd = loot.items();
                             int maxSlots = spawner.getMaxSpawnerLootSlots();
 
                             int totalRequiredSlots = calculateRequiredSlots(lootToAdd, spawner.getVirtualInventory());
@@ -185,14 +185,14 @@ public class SpawnerLootGenerator {
         }
 
         // Use a Map to consolidate identical drops instead of List
-        Map<ItemSignature, Integer> consolidatedLoot = new HashMap<>();
+        Map<ItemSignature, Long> consolidatedLoot = new HashMap<>();
 
         boolean shouldApproximateLoot = Config.get().isApproximateLoot();
         int approximationThreshold = Config.get().getApproximationThreshold();
 
         // Process mobs in batch rather than individually
         for (LootItem lootItem : validItems) {
-            int totalAmount;
+            long totalAmount;
 
             if (shouldApproximateLoot && shouldApproximate(lootItem.chance(), mobCount, approximationThreshold)) {
                 totalAmount = generateApproximatedLoot(lootItem, mobCount);
@@ -210,7 +210,7 @@ public class SpawnerLootGenerator {
             }
 
             ItemSignature signature = VirtualInventory.getSignature(prototype);
-            consolidatedLoot.merge(signature, totalAmount, Integer::sum);
+            consolidatedLoot.merge(signature, totalAmount, Long::sum);
         }
 
         return new LootResult(consolidatedLoot, totalExperience);
@@ -251,7 +251,7 @@ public class SpawnerLootGenerator {
         return (int) Math.round(expectedDrops * avgAmount * jitter);
     }
 
-    private Map<ItemSignature, Integer> limitLootToAvailableSlots(Map<ItemSignature, Integer> loot, SpawnerData spawner) {
+    private Map<ItemSignature, Long> limitLootToAvailableSlots(Map<ItemSignature, Long> loot, SpawnerData spawner) {
         VirtualInventory inventory = spawner.getVirtualInventory();
 
         int maxSlots = spawner.getMaxSpawnerLootSlots();
@@ -261,18 +261,18 @@ public class SpawnerLootGenerator {
         }
 
         Map<ItemSignature, Long> simulatedInventory = new HashMap<>(inventory.getConsolidatedItems());
-        Map<ItemSignature, Integer> acceptedLoot = new HashMap<>(loot.size());
+        Map<ItemSignature, Long> acceptedLoot = new HashMap<>(loot.size());
 
         int usedSlots = calculateSlots(simulatedInventory);
 
-        List<Map.Entry<ItemSignature, Integer>> entries = new ArrayList<>(loot.entrySet());
+        List<Map.Entry<ItemSignature, Long>> entries = new ArrayList<>(loot.entrySet());
 
         entries.sort(Comparator.comparing(entry -> entry.getKey().getMaterial().name()));
 
-        for (Map.Entry<ItemSignature, Integer> entry : entries) {
+        for (Map.Entry<ItemSignature, Long> entry : entries) {
             ItemSignature signature = entry.getKey();
 
-            int amount = entry.getValue();
+            long amount = entry.getValue();
 
             int maxStackSize = signature.getMaxStackSize();
 
@@ -300,7 +300,7 @@ public class SpawnerLootGenerator {
                 continue;
             }
 
-            int acceptedAmount = (int) Math.min(maxAddAmount, amount);
+            long acceptedAmount = (int) Math.min(maxAddAmount, amount);
 
             if (acceptedAmount > 0) {
                 acceptedLoot.put(signature, acceptedAmount);
@@ -312,10 +312,10 @@ public class SpawnerLootGenerator {
         return acceptedLoot;
     }
 
-    private int calculateRequiredSlots(Map<ItemSignature, Integer> loot, VirtualInventory inventory) {
+    private int calculateRequiredSlots(Map<ItemSignature, Long> loot, VirtualInventory inventory) {
         Map<ItemSignature, Long> simulatedItems = new HashMap<>(inventory.getConsolidatedItems());
 
-        for (Map.Entry<ItemSignature, Integer> entry : loot.entrySet()) {
+        for (Map.Entry<ItemSignature, Long> entry : loot.entrySet()) {
             simulatedItems.merge(entry.getKey(), (long) entry.getValue(), Long::sum);
         }
 
@@ -340,19 +340,19 @@ public class SpawnerLootGenerator {
         return (int) ((amount + maxStackSize - 1) / maxStackSize);
     }
 
-    private Map<ItemSignature, Integer> copyLoot(Map<ItemSignature, Integer> loot) {
+    private Map<ItemSignature, Long> copyLoot(Map<ItemSignature, Long> loot) {
         if (loot == null || loot.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        Map<ItemSignature, Integer> copy = new HashMap<>(loot.size());
-        for (Map.Entry<ItemSignature, Integer> entry : loot.entrySet()) {
+        Map<ItemSignature, Long> copy = new HashMap<>(loot.size());
+        for (Map.Entry<ItemSignature, Long> entry : loot.entrySet()) {
             ItemSignature signature = entry.getKey();
-            Integer amount = entry.getValue();
-            if (signature == null || amount == null || amount <= 0) {
+            Long amount = entry.getValue();
+            if (amount <= 0) {
                 continue;
             }
-            copy.merge(signature, amount, Integer::sum);
+            copy.merge(signature, amount, Long::sum);
         }
 
         return copy;
@@ -471,7 +471,7 @@ public class SpawnerLootGenerator {
      * @param items Pre-generated items map
      * @param experience Pre-generated experience amount
      */
-    public void addPreGeneratedLoot(SpawnerData spawner, Map<ItemSignature, Integer> items, long experience) {
+    public void addPreGeneratedLoot(SpawnerData spawner, Map<ItemSignature, Long> items, long experience) {
         addPreGeneratedLoot(spawner, items, experience, System.currentTimeMillis());
     }
 
@@ -484,7 +484,7 @@ public class SpawnerLootGenerator {
      * @param experience Pre-generated experience amount
      * @param spawnTime The spawn time to set (for timer accuracy)
      */
-    public void addPreGeneratedLoot(SpawnerData spawner, Map<ItemSignature, Integer> items, long experience, long spawnTime) {
+    public void addPreGeneratedLoot(SpawnerData spawner, Map<ItemSignature, Long> items, long experience, long spawnTime) {
         if ((items == null || items.isEmpty()) && experience == 0) {
             return;
         }
@@ -537,7 +537,7 @@ public class SpawnerLootGenerator {
                     }
 
                     if (items != null && !items.isEmpty()) {
-                        Map<ItemSignature, Integer> lootToAdd = copyLoot(items);
+                        Map<ItemSignature, Long> lootToAdd = copyLoot(items);
 
                         if (!lootToAdd.isEmpty()) {
                             int maxSlots = spawner.getMaxSpawnerLootSlots();
@@ -588,6 +588,6 @@ public class SpawnerLootGenerator {
          * @param items Generated items map (never null, may be empty)
          * @param experience Generated experience amount
          */
-        void onLootGenerated(Map<ItemSignature, Integer> items, long experience);
+        void onLootGenerated(Map<ItemSignature, Long> items, long experience);
     }
 }

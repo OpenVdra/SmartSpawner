@@ -116,7 +116,7 @@ public final class LootPreGenerationHelper {
                                 }
 
                                 if (spawner.hasPreGeneratedLoot()) {
-                                    Map<ItemSignature, Integer> items = spawner.getAndClearPreGeneratedItems();
+                                    Map<ItemSignature, Long> items = spawner.getAndClearPreGeneratedItems();
                                     long exp = spawner.getAndClearPreGeneratedExperience();
 
                                     // Add the loot with scheduled spawn time for accurate timer reset

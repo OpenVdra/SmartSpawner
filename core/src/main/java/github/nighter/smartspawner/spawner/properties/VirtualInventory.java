@@ -51,27 +51,22 @@ public class VirtualInventory {
     /*
      * Bulk insert for already-consolidated storage data.
      */
-    public void addItems(Map<ItemSignature, ? extends Number> items) {
+    public void addItems(Map<ItemSignature, Long> items) {
         if (items == null || items.isEmpty()) {
             return;
         }
 
         boolean changed = false;
 
-        for (Map.Entry<ItemSignature, ? extends Number> entry : items.entrySet()) {
+        for (Map.Entry<ItemSignature, Long> entry : items.entrySet()) {
             ItemSignature signature = entry.getKey();
-            Number amountValue = entry.getValue();
+            Long amountValue = entry.getValue();
 
-            if (signature == null || amountValue == null) {
+            if (amountValue <= 0) {
                 continue;
             }
 
-            long amount = amountValue.longValue();
-            if (amount <= 0) {
-                continue;
-            }
-
-            consolidatedItems.merge(signature, amount, Long::sum);
+            consolidatedItems.merge(signature, amountValue, Long::sum);
             changed = true;
         }
 
@@ -80,14 +75,14 @@ public class VirtualInventory {
         }
     }
 
-    public boolean removeItems(Map<ItemSignature, ? extends Number> items) {
+    public boolean removeItems(Map<ItemSignature, Long> items) {
         if (items == null || items.isEmpty()) {
             return true;
         }
 
         Map<ItemSignature, Long> toRemove = new HashMap<>(items.size());
 
-        for (Map.Entry<ItemSignature, ? extends Number> entry : items.entrySet()) {
+        for (Map.Entry<ItemSignature, Long> entry : items.entrySet()) {
             ItemSignature signature = entry.getKey();
             Number amountValue = entry.getValue();
 
@@ -249,9 +244,8 @@ public class VirtualInventory {
             long remainingAmount = totalAmount - ((long) stacksToSkip * maxStackSize);
             currentGlobalSlot += stacksToSkip;
 
-            ItemStack templateItem = sig.getTemplateRef();
             while (remainingAmount > 0 && relativeSlot < sectionLimit && currentGlobalSlot < maxSlots) {
-                ItemStack displayItem = templateItem.clone();
+                ItemStack displayItem = sig.getTemplate();
                 displayItem.setAmount((int) Math.min(remainingAmount, maxStackSize));
                 section.put(relativeSlot++, displayItem);
 

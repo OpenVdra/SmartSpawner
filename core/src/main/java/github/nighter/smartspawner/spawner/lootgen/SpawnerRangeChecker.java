@@ -207,7 +207,7 @@ public class SpawnerRangeChecker {
 
                                     // Spawn loot (pre-generated if available, otherwise generate new)
                                     if (spawner.hasPreGeneratedLoot()) {
-                                        Map<ItemSignature, Integer> items = spawner.getAndClearPreGeneratedItems();
+                                        Map<ItemSignature, Long> items = spawner.getAndClearPreGeneratedItems();
                                         long exp = spawner.getAndClearPreGeneratedExperience();
                                         plugin.getSpawnerLootGenerator().addPreGeneratedLoot(spawner, items, exp);
                                     } else {

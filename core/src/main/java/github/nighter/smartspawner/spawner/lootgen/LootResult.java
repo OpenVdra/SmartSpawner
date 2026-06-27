@@ -4,4 +4,4 @@ import github.nighter.smartspawner.spawner.properties.ItemSignature;
 
 import java.util.Map;
 
-public record LootResult(Map<ItemSignature, Integer> items, long experience) {}
+public record LootResult(Map<ItemSignature, Long> items, long experience) {}

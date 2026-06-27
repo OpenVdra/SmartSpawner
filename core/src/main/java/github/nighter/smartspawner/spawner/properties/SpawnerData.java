@@ -125,7 +125,7 @@ public class SpawnerData {
     private Material preferredSortItem;
 
     // CRITICAL: Pre-generated loot storage for better UX - access must be synchronized via lootGenerationLock
-    private volatile Map<ItemSignature, Integer> preGeneratedItems;
+    private volatile Map<ItemSignature, Long> preGeneratedItems;
     private volatile long preGeneratedExperience;
     private volatile boolean isPreGenerating;
 
@@ -565,16 +565,16 @@ public class SpawnerData {
      * @param itemsAdded Map of item signatures to quantities added
      * @param priceCache Price cache from loot config
      */
-    public void incrementSellValue(Map<ItemSignature, ? extends Number> itemsAdded, Map<String, Double> priceCache) {
+    public void incrementSellValue(Map<ItemSignature, Long> itemsAdded, Map<String, Double> priceCache) {
         if (itemsAdded == null || itemsAdded.isEmpty()) {
             return;
         }
 
         double addedValue = 0.0;
-        for (Map.Entry<ItemSignature, ? extends Number> entry : itemsAdded.entrySet()) {
+        for (Map.Entry<ItemSignature, Long> entry : itemsAdded.entrySet()) {
             double itemPrice = findItemPrice(entry.getKey(), priceCache);
             if (itemPrice > 0.0) {
-                addedValue += itemPrice * entry.getValue().longValue();
+                addedValue += itemPrice * entry.getValue();
             }
         }
 
@@ -609,13 +609,13 @@ public class SpawnerData {
      * @param itemsRemoved Map of item signatures to quantities removed
      * @param priceCache Price cache from loot config
      */
-    public void decrementSellValue(Map<ItemSignature, ? extends Number> itemsRemoved, Map<String, Double> priceCache) {
+    public void decrementSellValue(Map<ItemSignature, Long> itemsRemoved, Map<String, Double> priceCache) {
         if (itemsRemoved == null || itemsRemoved.isEmpty()) {
             return;
         }
 
         double removedValue = 0.0;
-        for (Map.Entry<ItemSignature, ? extends Number> entry : itemsRemoved.entrySet()) {
+        for (Map.Entry<ItemSignature, Long> entry : itemsRemoved.entrySet()) {
             if (entry.getKey() == null || entry.getValue() == null) {
                 continue;
             }
@@ -761,7 +761,7 @@ public class SpawnerData {
      * THREAD-SAFE: Uses inventoryLock to ensure atomicity.
      * @param items Items to add, keyed by the same signature used by VirtualInventory
      */
-    public void addItemsAndUpdateSellValue(Map<ItemSignature, ? extends Number> items) {
+    public void addItemsAndUpdateSellValue(Map<ItemSignature, Long> items) {
         if (items == null || items.isEmpty()) {
             return;
         }
@@ -808,7 +808,7 @@ public class SpawnerData {
      * @param items Items to remove, keyed by the same signature used by VirtualInventory
      * @return true if items were removed successfully
      */
-    public boolean removeItemsAndUpdateSellValue(Map<ItemSignature, ? extends Number> items) {
+    public boolean removeItemsAndUpdateSellValue(Map<ItemSignature, Long> items) {
         if (items == null || items.isEmpty()) {
             return true;
         }
@@ -830,13 +830,13 @@ public class SpawnerData {
         }
     }
 
-    public synchronized void storePreGeneratedLoot(Map<ItemSignature, Integer> items, long experience) {
+    public synchronized void storePreGeneratedLoot(Map<ItemSignature, Long> items, long experience) {
         this.preGeneratedItems = items;
         this.preGeneratedExperience = experience;
     }
 
-    public synchronized Map<ItemSignature, Integer> getAndClearPreGeneratedItems() {
-        Map<ItemSignature, Integer> items = preGeneratedItems;
+    public synchronized Map<ItemSignature, Long> getAndClearPreGeneratedItems() {
+        Map<ItemSignature, Long> items = preGeneratedItems;
         preGeneratedItems = null;
         return items;
     }
