@@ -1,5 +1,7 @@
 package github.nighter.smartspawner.language.cache;
 
+import github.nighter.smartspawner.utils.LRUCache;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 

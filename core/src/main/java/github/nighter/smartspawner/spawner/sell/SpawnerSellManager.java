@@ -99,40 +99,36 @@ public class SpawnerSellManager {
         final double accumulatedValue = spawner.getAccumulatedSellValue();
         final Location spawnerLocation = spawner.getSpawnerLocation();
 
-        // Async: pure CPU computation, no Bukkit API
-        Scheduler.runTaskAsync(() -> {
-            SellResult result;
-            try {
-                result = calculateSellValue(itemSnapshot, accumulatedValue);
-            } catch (Exception e) {
-                plugin.getLogger().warning("Sell calculation error for " + player.getName() + ": " + e.getMessage());
-                Scheduler.runLocationTask(spawnerLocation, () -> {
-                    try {
-                        if (onComplete != null) onComplete.run();
-                    } finally {
-                        spawner.stopSelling();
-                    }
-                    messageService.sendMessage(player, "action_failed");
-                });
-                return;
-            }
-
-            // Apply on the location's region thread (Folia) or the main thread (Paper)
+        SellResult result;
+        try {
+            result = calculateSellValue(itemSnapshot, accumulatedValue);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Sell calculation error for " + player.getName() + ": " + e.getMessage());
             Scheduler.runLocationTask(spawnerLocation, () -> {
                 try {
-                    applySellResult(player, spawner, result, expCollected, expMending);
+                    if (onComplete != null) onComplete.run();
                 } finally {
-                    // onComplete MUST run in finally so activeSells is always cleared,
-                    // even when applySellResult throws (e.g. economy plugin error).
-                    try {
-                        if (onComplete != null) onComplete.run();
-                    } finally {
-                        spawner.stopSelling();
-                    }
+                    spawner.stopSelling();
                 }
+                messageService.sendMessage(player, "action_failed");
             });
+            return;
+        }
+
+        // Apply on the location's region thread (Folia) or the main thread (Paper)
+        Scheduler.runLocationTask(spawnerLocation, () -> {
+            try {
+                applySellResult(player, spawner, result, expCollected, expMending);
+            } finally {
+                // onComplete MUST run in finally so activeSells is always cleared,
+                // even when applySellResult throws (e.g. economy plugin error).
+                try {
+                    if (onComplete != null) onComplete.run();
+                } finally {
+                    spawner.stopSelling();
+                }
+            }
         });
-        // stopSelling() ownership is transferred to the async chain above
     }
 
     /**
@@ -154,7 +150,11 @@ public class SpawnerSellManager {
         // Fire the cancellable API event
         if (SpawnerSellEvent.getHandlerList().getRegisteredListeners().length != 0) {
             SpawnerSellEvent event = new SpawnerSellEvent(
-                    player, spawner.getSpawnerLocation(), sellResult.getItemsToRemove(), amount, spawner.getEntityType());
+                    player,
+                    spawner.getSpawnerLocation(),
+                    toApiItemStacks(sellResult.getItemsToRemove()),
+                    amount,
+                    spawner.getEntityType());
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
             if (event.getMoneyAmount() >= 0) amount = event.getMoneyAmount();
@@ -203,33 +203,35 @@ public class SpawnerSellManager {
     }
 
     /**
-     * Calculates the total sell value and constructs the list of {@link ItemStack}s to remove.
+     * Calculates the total sell value and records the consolidated item signatures to remove.
      * Pure computation – no Bukkit API calls, safe to run on an async thread.
      */
-    private SellResult calculateSellValue(Map<ItemSignature, Long> consolidatedItems,
-                                          double totalValue) {
+    private SellResult calculateSellValue(Map<ItemSignature, Long> consolidatedItems, double totalValue) {
         long totalItemsSold = 0;
-        ArrayList<ItemStack> itemsToRemove = new ArrayList<>();
 
         for (Map.Entry<ItemSignature, Long> entry : consolidatedItems.entrySet()) {
-            ItemSignature signature = entry.getKey();
-            long amount = entry.getValue();
-            int maxStackSize = signature.getMaxStackSize();
-
-            totalItemsSold += amount;
-
-            int stacksNeeded = (int) Math.ceil((double) amount / maxStackSize);
-            itemsToRemove.ensureCapacity(itemsToRemove.size() + stacksNeeded);
-
-            long remaining = amount;
-            while (remaining > 0) {
-                ItemStack stack = signature.getTemplate();
-                stack.setAmount((int) Math.min(remaining, maxStackSize));
-                itemsToRemove.add(stack);
-                remaining -= stack.getAmount();
-            }
+            totalItemsSold += entry.getValue();
         }
 
-        return new SellResult(totalValue, totalItemsSold, itemsToRemove);
+        return new SellResult(totalValue, totalItemsSold, consolidatedItems);
+    }
+
+    private List<ItemStack> toApiItemStacks(Map<ItemSignature, Long> items) {
+        if (items == null || items.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ItemStack> apiItems = new ArrayList<>(items.size());
+
+        for (Map.Entry<ItemSignature, Long> entry : items.entrySet()) {
+            ItemSignature signature = entry.getKey();
+            Long amount = entry.getValue();
+
+            ItemStack stack = signature.getTemplate();
+            stack.setAmount((int) Math.min(amount, Integer.MAX_VALUE));
+            apiItems.add(stack);
+        }
+
+        return apiItems;
     }
 }

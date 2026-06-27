@@ -28,7 +28,6 @@ public class ItemSignature {
         this.hashCode = calculateHashCode(meta);
     }
 
-    // Replace the current calculateHashCode() method with:
     private int calculateHashCode(ItemMeta meta) {
         // Use a faster hash algorithm and cache more item properties
         int result = 31 * this.material.ordinal(); // Using ordinal() instead of name() hashing

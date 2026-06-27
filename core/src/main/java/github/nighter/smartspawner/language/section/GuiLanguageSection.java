@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.language.section;
 
-import github.nighter.smartspawner.language.cache.LRUCache;
+import github.nighter.smartspawner.utils.LRUCache;
 import github.nighter.smartspawner.language.format.ColorUtil;
 import github.nighter.smartspawner.language.format.LanguageComponentFormatter;
 

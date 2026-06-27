@@ -680,13 +680,7 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
                 int amount = entry.getValue();
 
                 if (item != null && amount > 0) {
-                    while (amount > 0) {
-                        int batchSize = Math.min(amount, item.getMaxStackSize());
-                        ItemStack batch = item.clone();
-                        batch.setAmount(batchSize);
-                        virtualInv.addItems(Collections.singletonList(batch));
-                        amount -= batchSize;
-                    }
+                    virtualInv.addItem(item, amount);
                 }
             }
         } catch (Exception e) {

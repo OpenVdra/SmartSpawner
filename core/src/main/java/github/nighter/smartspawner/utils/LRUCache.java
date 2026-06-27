@@ -1,7 +1,10 @@
-package github.nighter.smartspawner.language.cache;
+package github.nighter.smartspawner.utils;
+
+import com.google.common.base.Preconditions;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * A simple LRU (Least Recently Used) cache implementation
@@ -50,6 +53,25 @@ public class LRUCache<K, V> {
      */
     public synchronized V put(K key, V value) {
         return cache.put(key, value);
+    }
+
+    /**
+     * Returns the value associated with the specified key, computing and
+     * caching it with the supplied mapping function when no mapping exists.
+     *
+     * <p>Accessing an existing entry updates its recency, and adding a new
+     * entry may evict the least recently used entry if the cache exceeds its
+     * configured capacity.</p>
+     *
+     * @param key The key whose associated value is to be returned or computed
+     * @param mappingFunction The function used to create a value when the key is absent
+     * @return The existing or newly computed value associated with the key
+     * @throws NullPointerException if {@code key} is null
+     */
+    public synchronized V get(K key, Function<K, V> mappingFunction) {
+        Preconditions.checkNotNull(key);
+
+        return cache.computeIfAbsent(key, mappingFunction);
     }
 
     /**

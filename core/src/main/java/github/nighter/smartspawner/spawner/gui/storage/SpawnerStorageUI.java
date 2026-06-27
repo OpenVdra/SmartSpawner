@@ -14,6 +14,7 @@ import github.nighter.smartspawner.spawner.properties.VirtualInventory;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.Scheduler.Task;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
@@ -283,30 +284,20 @@ public class SpawnerStorageUI {
         }
     }
 
-    private void addPageItems(Map<Integer, ItemStack> updates, Set<Integer> slotsToEmpty,
-                              SpawnerData spawner, int page) {
+    private void addPageItems(Map<Integer, ItemStack> updates, Set<Integer> slotsToEmpty, SpawnerData spawner, int page) {
         try {
-            // Get display items directly from VirtualInventory (source of truth)
+            // Read only the requested page instead of materializing the full logical inventory.
             VirtualInventory virtualInv = spawner.getVirtualInventory();
-            Map<Integer, ItemStack> displayItems = virtualInv.getDisplayInventory();
+            Int2ObjectMap<ItemStack> displayItems = virtualInv.getDisplayPage(page, StoragePageHolder.MAX_ITEMS_PER_PAGE);
 
             if (displayItems.isEmpty()) {
                 return;
             }
 
-            // Calculate start index for current page
-            int startIndex = (page - 1) * StoragePageHolder.MAX_ITEMS_PER_PAGE;
-
-            // Add items for this page
-            for (Map.Entry<Integer, ItemStack> entry : displayItems.entrySet()) {
-                int globalIndex = entry.getKey();
-
-                // Check if item belongs on this page
-                if (globalIndex >= startIndex && globalIndex < startIndex + StoragePageHolder.MAX_ITEMS_PER_PAGE) {
-                    int displaySlot = globalIndex - startIndex;
-                    updates.put(displaySlot, entry.getValue());
-                    slotsToEmpty.remove(displaySlot);
-                }
+            for (Int2ObjectMap.Entry<ItemStack> entry : displayItems.int2ObjectEntrySet()) {
+                int displaySlot = entry.getIntKey();
+                updates.put(displaySlot, entry.getValue());
+                slotsToEmpty.remove(displaySlot);
             }
         } finally {
             spawner.getInventoryLock().unlock();

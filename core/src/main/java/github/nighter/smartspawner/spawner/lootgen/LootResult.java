@@ -1,8 +1,7 @@
 package github.nighter.smartspawner.spawner.lootgen;
 
-import org.bukkit.inventory.ItemStack;
+import github.nighter.smartspawner.spawner.properties.ItemSignature;
 
-import java.util.List;
+import java.util.Map;
 
-public record LootResult(List<ItemStack> items, long experience) {
-}
+public record LootResult(Map<ItemSignature, Long> items, long experience) {}

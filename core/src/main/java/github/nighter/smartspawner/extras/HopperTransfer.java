@@ -6,6 +6,7 @@ import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewMan
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.spawner.properties.VirtualInventory;
 import github.nighter.smartspawner.utils.BlockPos;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -64,36 +65,47 @@ public class HopperTransfer {
             var state = hopperLoc.getBlock().getState(false);
             if (!(state instanceof Hopper hopper)) return;
 
-            Map<Integer, ItemStack> displayItems = virtualInv.getDisplayInventory();
-            if (displayItems == null || displayItems.isEmpty()) return;
-
             Inventory hopperInv = hopper.getInventory();
 
             int transferred = 0;
-
+            int rangeStart = 0;
+            int rangeSize = Math.max(plugin.getHopperConfig().getStackPerTransfer(), 9);
             List<ItemStack> removed = new ArrayList<>();
 
-            for (ItemStack item : displayItems.values()) {
-                if (transferred >= plugin.getHopperConfig().getStackPerTransfer()) break;
-                if (item == null || item.getType() == Material.AIR) continue;
-
-                ItemStack clone = item.clone();
-                int originalAmount = clone.getAmount();
-
-                HashMap<Integer, ItemStack> leftovers = hopperInv.addItem(clone);
-
-                int insertedAmount = originalAmount;
-
-                if (!leftovers.isEmpty()) {
-                    insertedAmount -= leftovers.values().iterator().next().getAmount();
+            while (transferred < plugin.getHopperConfig().getStackPerTransfer()) {
+                Int2ObjectMap<ItemStack> displayItems = virtualInv.getDisplayRange(rangeStart, rangeSize);
+                if (displayItems.isEmpty()) {
+                    break;
                 }
 
-                if (insertedAmount > 0) {
-                    ItemStack toRemove = item.clone();
-                    toRemove.setAmount(insertedAmount);
-                    removed.add(toRemove);
-                    transferred++;
+                for (ItemStack item : displayItems.values()) {
+                    if (transferred >= plugin.getHopperConfig().getStackPerTransfer()) {
+                        break;
+                    }
+                    if (item == null || item.getType() == Material.AIR) {
+                        continue;
+                    }
+
+                    ItemStack clone = item.clone();
+                    int originalAmount = clone.getAmount();
+
+                    HashMap<Integer, ItemStack> leftovers = hopperInv.addItem(clone);
+
+                    int insertedAmount = originalAmount;
+
+                    if (!leftovers.isEmpty()) {
+                        insertedAmount -= leftovers.values().iterator().next().getAmount();
+                    }
+
+                    if (insertedAmount > 0) {
+                        ItemStack toRemove = item.clone();
+                        toRemove.setAmount(insertedAmount);
+                        removed.add(toRemove);
+                        transferred++;
+                    }
                 }
+
+                rangeStart += rangeSize;
             }
 
             if (!removed.isEmpty()) {

@@ -2,13 +2,13 @@ package github.nighter.smartspawner.spawner.lootgen;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
+import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -207,7 +207,7 @@ public class SpawnerRangeChecker {
 
                                     // Spawn loot (pre-generated if available, otherwise generate new)
                                     if (spawner.hasPreGeneratedLoot()) {
-                                        List<ItemStack> items = spawner.getAndClearPreGeneratedItems();
+                                        Map<ItemSignature, Long> items = spawner.getAndClearPreGeneratedItems();
                                         long exp = spawner.getAndClearPreGeneratedExperience();
                                         plugin.getSpawnerLootGenerator().addPreGeneratedLoot(spawner, items, exp);
                                     } else {
@@ -245,4 +245,3 @@ public class SpawnerRangeChecker {
         }
     }
 }
-

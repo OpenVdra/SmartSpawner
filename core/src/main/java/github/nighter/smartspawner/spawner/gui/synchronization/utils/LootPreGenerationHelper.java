@@ -2,11 +2,11 @@ package github.nighter.smartspawner.spawner.gui.synchronization.utils;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
+import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -116,7 +116,7 @@ public final class LootPreGenerationHelper {
                                 }
 
                                 if (spawner.hasPreGeneratedLoot()) {
-                                    List<ItemStack> items = spawner.getAndClearPreGeneratedItems();
+                                    Map<ItemSignature, Long> items = spawner.getAndClearPreGeneratedItems();
                                     long exp = spawner.getAndClearPreGeneratedExperience();
 
                                     // Add the loot with scheduled spawn time for accurate timer reset
