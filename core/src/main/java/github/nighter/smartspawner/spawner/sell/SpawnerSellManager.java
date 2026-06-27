@@ -99,40 +99,36 @@ public class SpawnerSellManager {
         final double accumulatedValue = spawner.getAccumulatedSellValue();
         final Location spawnerLocation = spawner.getSpawnerLocation();
 
-        // Async: pure CPU computation, no Bukkit API
-        Scheduler.runTaskAsync(() -> {
-            SellResult result;
-            try {
-                result = calculateSellValue(itemSnapshot, accumulatedValue);
-            } catch (Exception e) {
-                plugin.getLogger().warning("Sell calculation error for " + player.getName() + ": " + e.getMessage());
-                Scheduler.runLocationTask(spawnerLocation, () -> {
-                    try {
-                        if (onComplete != null) onComplete.run();
-                    } finally {
-                        spawner.stopSelling();
-                    }
-                    messageService.sendMessage(player, "action_failed");
-                });
-                return;
-            }
-
-            // Apply on the location's region thread (Folia) or the main thread (Paper)
+        SellResult result;
+        try {
+            result = calculateSellValue(itemSnapshot, accumulatedValue);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Sell calculation error for " + player.getName() + ": " + e.getMessage());
             Scheduler.runLocationTask(spawnerLocation, () -> {
                 try {
-                    applySellResult(player, spawner, result, expCollected, expMending);
+                    if (onComplete != null) onComplete.run();
                 } finally {
-                    // onComplete MUST run in finally so activeSells is always cleared,
-                    // even when applySellResult throws (e.g. economy plugin error).
-                    try {
-                        if (onComplete != null) onComplete.run();
-                    } finally {
-                        spawner.stopSelling();
-                    }
+                    spawner.stopSelling();
                 }
+                messageService.sendMessage(player, "action_failed");
             });
+            return;
+        }
+
+        // Apply on the location's region thread (Folia) or the main thread (Paper)
+        Scheduler.runLocationTask(spawnerLocation, () -> {
+            try {
+                applySellResult(player, spawner, result, expCollected, expMending);
+            } finally {
+                // onComplete MUST run in finally so activeSells is always cleared,
+                // even when applySellResult throws (e.g. economy plugin error).
+                try {
+                    if (onComplete != null) onComplete.run();
+                } finally {
+                    spawner.stopSelling();
+                }
+            }
         });
-        // stopSelling() ownership is transferred to the async chain above
     }
 
     /**
