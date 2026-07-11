@@ -32,12 +32,6 @@ dependencies {
     compileOnly("su.nightexpress.nightcore:main:2.16.2")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.10.1")
     compileOnly("world.bentobox:bentobox:3.17.0")
-    compileOnly("io.github.fabiozumbi12.RedProtect:RedProtect-Core:8.1.2") {
-        exclude(group = "*")
-    }
-    compileOnly("io.github.fabiozumbi12.RedProtect:RedProtect-Spigot:8.1.2") {
-        exclude(group = "*")
-    }
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.12")
     compileOnly("pl.minecodes.plots:plugin-api:4.6.2")
     compileOnly("fr.maxlego08.shop:zshop-api:3.3.4")
@@ -103,7 +97,7 @@ tasks.shadowJar {
     relocate("org.bstats", project.group.toString())
     mergeServiceFiles()
 
-    //  destinationDirectory.set(file("C:\\Users\\Admin\\Desktop\\TestServer\\plugins"))
+    // destinationDirectory.set(file("C:\\Users\\Admin\\Desktop\\TestServer\\plugins"))
 }
 
 tasks.build {
