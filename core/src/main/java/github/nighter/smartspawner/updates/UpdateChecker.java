@@ -9,9 +9,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,7 +23,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -32,36 +30,31 @@ import java.util.stream.Collectors;
 public class UpdateChecker implements Listener {
     private final JavaPlugin plugin;
     private final String projectId = "9tQwxSFr";
-    // Only keep supported major.minor branches here. Patch versions are accepted automatically.
-    private static final Set<String> SUPPORTED_MAJOR_VERSIONS = Set.of("1.21", "26.1");
+    // SmartSpawner 2.0.0+ is a separate product (SmartSpawner2); 1.x users are never notified about it.
+    private static final int MAX_NOTIFIABLE_MAJOR_VERSION = 1;
     private boolean updateAvailable = false;
     private final String currentVersion;
     private String latestVersion = "";
     private String downloadUrl = "";
-    private boolean serverVersionSupported = true;
 
     // ANSI codes for console output
-    private static final String RESET  = "\u001B[0m";
-    private static final String BOLD   = "\u001B[1m";
-    private static final String DIM    = "\u001B[2m";
-    private static final String GREEN  = "\u001B[92m";
-    private static final String YELLOW = "\u001B[33m";
-    private static final String CYAN   = "\u001B[96m";
-    private static final String RED    = "\u001B[91m";
+    private static final String RESET  = "[0m";
+    private static final String BOLD   = "[1m";
+    private static final String DIM    = "[2m";
+    private static final String GREEN  = "[92m";
+    private static final String YELLOW = "[33m";
+    private static final String CYAN   = "[96m";
 
     private final Map<UUID, LocalDate> notifiedPlayers = new HashMap<>();
 
     public UpdateChecker(JavaPlugin plugin) {
         this.plugin = plugin;
         this.currentVersion = plugin.getPluginMeta().getVersion();
-        this.serverVersionSupported = isServerVersionSupported();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         checkForUpdates().thenAccept(hasUpdate -> {
-            if (hasUpdate && serverVersionSupported) {
+            if (hasUpdate) {
                 displayConsoleUpdateMessage();
-            } else if (!serverVersionSupported) {
-                displayUnsupportedVersionMessage();
             }
         }).exceptionally(ex -> {
             plugin.getLogger().warning("Failed to check for updates: " + ex.getMessage());
@@ -81,66 +74,12 @@ public class UpdateChecker implements Listener {
         plugin.getLogger().info(line);
     }
 
-    private void displayUnsupportedVersionMessage() {
-        String serverVersion = Bukkit.getVersion();
-        String line = DIM + "-----------------------------------------------------" + RESET;
-        plugin.getLogger().warning(line);
-        plugin.getLogger().warning(BOLD + RED + "  SmartSpawner - Server Version Not Supported" + RESET);
-        plugin.getLogger().warning(line);
-        plugin.getLogger().warning("  Server version   :  " + YELLOW + serverVersion + RESET);
-        plugin.getLogger().warning("  Latest plugin    :  " + GREEN  + latestVersion  + RESET);
-        plugin.getLogger().warning("  Supported MC     :  " + CYAN   + getSupportedVersionsString() + RESET);
-        plugin.getLogger().warning("");
-        plugin.getLogger().warning("  This server version is no longer supported.");
-        plugin.getLogger().warning("  Update notifications have been disabled.");
-        plugin.getLogger().warning(line);
-    }
-
-    private String getSupportedVersionsString() {
-        if (SUPPORTED_MAJOR_VERSIONS.isEmpty()) {
-            return "N/A";
-        }
-        return SUPPORTED_MAJOR_VERSIONS.stream()
-                .sorted()
-                .map(major -> major + ".x")
-                .collect(Collectors.joining(", "));
-    }
-
-    private boolean isServerVersionSupported() {
-        try {
-            String cleanServerVersion = extractMinecraftVersion(Bukkit.getVersion());
-            String majorVersion = extractMajorVersion(cleanServerVersion);
-            return majorVersion != null && SUPPORTED_MAJOR_VERSIONS.contains(majorVersion);
-        } catch (Exception e) {
-            plugin.getLogger().warning("Error checking server version compatibility: " + e.getMessage());
-            return true;
-        }
-    }
-
-    private String extractMinecraftVersion(String serverVersion) {
-        if (serverVersion.contains("MC: ")) {
-            String mcPart = serverVersion.substring(serverVersion.indexOf("MC: ") + 4);
-            if (mcPart.contains(")")) {
-                mcPart = mcPart.substring(0, mcPart.indexOf(")"));
-            }
-            return mcPart.trim();
-        }
-        if (serverVersion.matches(".*\\d+\\.\\d+(\\.\\d+)?.*")) {
-            for (String part : serverVersion.split("\\s+")) {
-                if (part.matches("\\d+\\.\\d+(\\.\\d+)?")) {
-                    return part;
-                }
-            }
-        }
-        return serverVersion;
-    }
-
-    private String extractMajorVersion(String minecraftVersion) {
-        String[] parts = minecraftVersion.split("\\.");
-        if (parts.length < 2) {
-            return null;
-        }
-        return parts[0] + "." + parts[1];
+    /**
+     * SmartSpawner 2.0.0+ is a different product (SmartSpawner2), so releases with a major
+     * version above MAX_NOTIFIABLE_MAJOR_VERSION must never surface as an "update" here.
+     */
+    private boolean isNotifiableRelease(String versionNumber) {
+        return new Version(versionNumber).getMajor() <= MAX_NOTIFIABLE_MAJOR_VERSION;
     }
 
     public CompletableFuture<Boolean> checkForUpdates() {
@@ -174,6 +113,9 @@ public class UpdateChecker implements Listener {
                     if (!"release".equals(version.get("version_type").getAsString())) {
                         continue;
                     }
+                    if (!isNotifiableRelease(version.get("version_number").getAsString())) {
+                        continue;
+                    }
                     if (latestVersionObj == null) {
                         latestVersionObj = version;
                     } else {
@@ -192,8 +134,6 @@ public class UpdateChecker implements Listener {
                 latestVersion = latestVersionObj.get("version_number").getAsString();
                 downloadUrl   = "https://modrinth.com/plugin/" + projectId + "/version/" + latestVersion;
 
-                serverVersionSupported = isServerVersionSupported();
-
                 updateAvailable = new Version(latestVersion).compareTo(new Version(currentVersion)) > 0;
                 return updateAvailable;
 
@@ -205,7 +145,7 @@ public class UpdateChecker implements Listener {
     }
 
     private void sendUpdateNotification(Player player) {
-        if (!updateAvailable || !serverVersionSupported || !player.hasPermission("smartspawner.admin")) {
+        if (!updateAvailable || !player.hasPermission("smartspawner.admin")) {
             return;
         }
 
@@ -258,14 +198,14 @@ public class UpdateChecker implements Listener {
             return;
         }
 
-        if (updateAvailable && serverVersionSupported) {
+        if (updateAvailable) {
             Scheduler.runTaskLater(() -> {
                 sendUpdateNotification(player);
                 notifiedPlayers.put(playerId, today);
             }, 40L);
-        } else if (serverVersionSupported) {
+        } else {
             checkForUpdates().thenAccept(hasUpdate -> {
-                if (hasUpdate && serverVersionSupported) {
+                if (hasUpdate) {
                     Scheduler.runTask(() -> {
                         sendUpdateNotification(player);
                         notifiedPlayers.put(playerId, today);
@@ -273,6 +213,5 @@ public class UpdateChecker implements Listener {
                 }
             });
         }
-        // !serverVersionSupported: skip notifications entirely
     }
 }

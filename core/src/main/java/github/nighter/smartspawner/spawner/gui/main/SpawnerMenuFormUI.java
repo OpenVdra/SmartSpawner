@@ -124,7 +124,7 @@ public class SpawnerMenuFormUI {
                     int buttonId = response.clickedButtonId();
                     if (buttonId < availableButtons.size()) {
                         ButtonInfo buttonInfo = availableButtons.get(buttonId);
-                        Scheduler.runTask(() -> {
+                        Scheduler.runEntityTask(player, () -> {
                             switch (buttonInfo.action) {
                                 case "open_storage":
                                     plugin.getSpawnerMenuAction().handleStorageClick(player, spawner);
@@ -310,7 +310,7 @@ public class SpawnerMenuFormUI {
                 })
                 .validResultHandler(response -> {
                     // Back button was clicked, reopen main spawner form
-                    Scheduler.runTask(() -> {
+                    Scheduler.runEntityTask(player, () -> {
                         openSpawnerForm(player, spawner);
                     });
                 })

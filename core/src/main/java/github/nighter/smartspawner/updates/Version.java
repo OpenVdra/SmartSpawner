@@ -29,6 +29,10 @@ public class Version implements Comparable<Version> {
     }
 
 
+    public int getMajor() {
+        return parts[0];
+    }
+
     @Override
     public int compareTo(@NotNull Version other) {
         // Compare all 4 parts

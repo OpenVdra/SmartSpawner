@@ -25,6 +25,7 @@ softdepend:
   - Lands
   - Towny
   - SimpleClaimSystem
+  - RedProtect
   - minePlots
   - PlotSquared
   - Residence

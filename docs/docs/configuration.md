@@ -150,6 +150,18 @@ Allows naturally generated vanilla spawners to be broken and collected.
 If <code>true</code>, breaking a natural spawner converts it into a Smart Spawner. If <code>false</code>, it drops a vanilla spawner item.
 </ConfigProperty>
 
+<ConfigProperty name="drop_chance" value="(commented out)" type="string">
+Optional chance, as a percentage from <code>0.0</code> to <code>100.0</code>, that breaking a natural spawner actually drops the spawner item. Use the <code>default</code> key to set the chance for every mob type at once, then add specific entity types (for example <code>ZOMBIE: 75.0</code>) to override it for just that type. If this section is left commented out, or an entity type isn't listed and no <code>default</code> is set, the drop chance is 100.0. This also applies to spawners with no mob type assigned yet (uses the <code>default</code> chance).
+
+```yaml
+drop_chance:
+  default: 80.0   # applies to every spawner type
+  ZOMBIE: 75.0    # override for a specific type
+  SKELETON: 50.0
+  BLAZE: 25.0
+```
+</ConfigProperty>
+
 <ConfigProperty name="spawn_mobs" value="true" type="boolean">
 Allows natural spawners to spawn mobs normally.
 </ConfigProperty>

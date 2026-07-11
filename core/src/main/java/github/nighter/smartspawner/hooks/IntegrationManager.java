@@ -33,6 +33,7 @@ public class IntegrationManager {
     private boolean hasBentoBox = false;
     private boolean hasSimpleClaimSystem = false;
     private boolean hasSimpleClaimSystem2 = false;
+    private boolean hasRedProtect = false;
     private boolean hasMinePlots = false;
     private boolean hasMythicMobs = false;
     private boolean hasIridiumSkyblock = false;
@@ -123,6 +124,11 @@ public class IntegrationManager {
                 return api != null;
             }
             return false;
+        }, true);
+
+        hasRedProtect = checkPlugin("RedProtect", () -> {
+            Plugin pRP = Bukkit.getPluginManager().getPlugin("RedProtect");
+            return pRP != null && pRP.isEnabled();
         }, true);
 
         hasMinePlots = checkPlugin("minePlots", () -> {

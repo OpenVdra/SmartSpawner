@@ -153,6 +153,7 @@ Prices can also be defined manually in `item_prices.yml`.
 - Lands
 - Towny Advanced
 - SimpleClaimSystem
+- RedProtect
 - MinePlots
 
 </FeatureCard>

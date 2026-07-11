@@ -107,6 +107,9 @@ public class Config {
     }
 
     public double getNaturalSpawnerDropChance(EntityType entityType) {
+        if (entityType == null) {
+            return naturalSpawnerDefaultDropChance;
+        }
         return naturalSpawnerDropChances.getOrDefault(entityType, naturalSpawnerDefaultDropChance);
     }
 
