@@ -47,7 +47,7 @@ dependencies {
     implementation("com.github.IncrediblePlugins:LandsAPI:7.25.4")
     implementation("com.github.Xyness:SimpleClaimSystem-API:v2.5.10")
     implementation("com.github.Xyness:SimpleClaimSystem:1.13.1")
-    implementation("com.github.Zrips:Residence:6.0.0.1") {
+    implementation("com.github.Zrips:Residence:6.0.2.3") {
         exclude(group = "org.bukkit")
     }
 
