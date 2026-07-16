@@ -1,7 +1,6 @@
 package github.nighter.smartspawner.spawner.gui.storage;
 
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.api.events.SpawnerDropAllEvent;
 import github.nighter.smartspawner.api.events.SpawnerTakeAllEvent;
 import github.nighter.smartspawner.api.gui.GuiLayoutType;
@@ -895,19 +894,19 @@ public class SpawnerStorageAction implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (!(event.getPlayer() instanceof Player player)) {
-            return;
-        }
-
         Inventory inventory = event.getInventory();
-        Scheduler.runEntityTask(player, () -> handleInventoryClose(inventory));
-    }
-
-    private void handleInventoryClose(Inventory inventory) {
         if (!(inventory.getHolder(false) instanceof StoragePageHolder holder)) {
             return;
         }
 
+        // Inventory close events already execute on the owning player's region thread.
+        // Do not defer this work to the player's scheduler: after closing, a block-backed
+        // inventory could belong to a different region and resolving its holder there
+        // violates Folia's thread ownership rules.
+        handleInventoryClose(holder);
+    }
+
+    private void handleInventoryClose(StoragePageHolder holder) {
         SpawnerData spawner = holder.getSpawnerData();
         if (spawner.isStorageDirty()){
             plugin.getSpawnerManager().markSpawnerModified(spawner.getSpawnerId());
