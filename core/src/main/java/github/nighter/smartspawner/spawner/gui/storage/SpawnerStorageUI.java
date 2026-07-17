@@ -38,6 +38,7 @@ public class SpawnerStorageUI {
 
     // Precomputed buttons to avoid repeated creation
     private final Map<String, ItemStack> staticButtons;
+    private final Map<Inventory, StoragePageHolder> storageInventories;
 
     // Lightweight caches with better eviction strategies
     private final Map<String, ItemStack> navigationButtonCache;
@@ -59,6 +60,7 @@ public class SpawnerStorageUI {
 
         // Initialize caches with appropriate initial capacity
         this.staticButtons = new ConcurrentHashMap<>(16);
+        this.storageInventories = Collections.synchronizedMap(new IdentityHashMap<>());
         this.navigationButtonCache = new ConcurrentHashMap<>(16);
         this.pageIndicatorCache = new ConcurrentHashMap<>(16);
 
@@ -209,15 +211,36 @@ public class SpawnerStorageUI {
         GuiLayout layout = layoutConfig.getStorageLayout(spawner, player);
 
         // Create inventory with title including page info using placeholder-based format
+        StoragePageHolder holder = new StoragePageHolder(spawner, page, totalPages, layout);
         Inventory pageInv = Bukkit.createInventory(
-                new StoragePageHolder(spawner, page, totalPages, layout),
+                holder,
                 INVENTORY_SIZE,
                 getStorageTitle(spawner, page, totalPages)
         );
+        storageInventories.put(pageInv, holder);
 
-        // Populate the inventory
-        updateDisplay(pageInv, spawner, page, totalPages);
+        // Populate the inventory. If construction fails, do not retain a
+        // registry entry for an inventory that will never be opened.
+        try {
+            updateDisplay(pageInv, spawner, page, totalPages);
+        } catch (RuntimeException | Error failure) {
+            storageInventories.remove(pageInv);
+            throw failure;
+        }
         return pageInv;
+    }
+
+    /**
+     * Resolves holders only for virtual storage inventories created by this UI.
+     * This deliberately avoids Inventory#getHolder(), which may access a block
+     * inventory in a region not owned by the current Folia thread.
+     */
+    public StoragePageHolder getStorageHolder(Inventory inventory) {
+        return storageInventories.get(inventory);
+    }
+
+    public StoragePageHolder unregisterStorageInventory(Inventory inventory) {
+        return storageInventories.remove(inventory);
     }
 
     public void updateDisplay(Inventory inventory, SpawnerData spawner, int page, int totalPages) {
@@ -242,8 +265,11 @@ public class SpawnerStorageUI {
         }
 
         // Also mark all button slots for potential clearing (fixes visual bug where buttons remain when they shouldn't)
-        StoragePageHolder holder = (StoragePageHolder) inventory.getHolder(false);
-        assert holder != null;
+        StoragePageHolder holder = getStorageHolder(inventory);
+        if (holder == null) {
+            spawner.getInventoryLock().unlock();
+            return;
+        }
         GuiLayout layout = holder.getLayout();
         if (layout != null) {
             slotsToEmpty.addAll(layout.getUsedSlots());

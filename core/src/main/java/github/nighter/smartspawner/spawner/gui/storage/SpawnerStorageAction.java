@@ -43,6 +43,7 @@ public class SpawnerStorageAction implements Listener {
     private final MessageService messageService;
     private final FilterConfigUI filterConfigUI;
     private final SpawnerManager spawnerManager;
+    private final SpawnerStorageUI spawnerStorageUI;
 
     private static final int INVENTORY_SIZE = 54;
     private static final int STORAGE_SLOTS = 45;
@@ -59,6 +60,7 @@ public class SpawnerStorageAction implements Listener {
         this.messageService = plugin.getMessageService();
         this.filterConfigUI = plugin.getFilterConfigUI();
         this.spawnerManager = plugin.getSpawnerManager();
+        this.spawnerStorageUI = plugin.getSpawnerStorageUI();
         loadConfig();
     }
 
@@ -69,8 +71,12 @@ public class SpawnerStorageAction implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player) ||
-                !(event.getInventory().getHolder(false) instanceof StoragePageHolder holder)) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+
+        StoragePageHolder holder = spawnerStorageUI.getStorageHolder(event.getInventory());
+        if (holder == null) {
             return;
         }
 
@@ -252,7 +258,7 @@ public class SpawnerStorageAction implements Listener {
         boolean collected = plugin.getSpawnerMenuAction().tryCollectExpForPlayer(player, spawner);
         if (collected) {
             // Refresh button display so the XP counter updates to 0
-            StoragePageHolder holder = (StoragePageHolder) inventory.getHolder(false);
+            StoragePageHolder holder = spawnerStorageUI.getStorageHolder(inventory);
             if (holder != null) {
                 plugin.getSpawnerStorageUI().updateDisplay(inventory, spawner, holder.getCurrentPage(), holder.getTotalPages());
             }
@@ -434,7 +440,7 @@ public class SpawnerStorageAction implements Listener {
     }
 
     private boolean handleDropPageItems(Player player, SpawnerData spawner, Inventory inventory) {
-        StoragePageHolder holder = (StoragePageHolder) inventory.getHolder(false);
+        StoragePageHolder holder = spawnerStorageUI.getStorageHolder(inventory);
         if (holder == null) {
             return false;
         }
@@ -546,11 +552,13 @@ public class SpawnerStorageAction implements Listener {
 
     private void updatePageContent(Player player, SpawnerData spawner, int newPage, Inventory inventory) {
         SpawnerStorageUI spawnerStorageUI = plugin.getSpawnerStorageUI();
-        StoragePageHolder holder = (StoragePageHolder) inventory.getHolder(false);
+        StoragePageHolder holder = spawnerStorageUI.getStorageHolder(inventory);
+        if (holder == null) {
+            return;
+        }
 
         int totalPages = calculateTotalPages(spawner);
 
-        assert holder != null;
         holder.setTotalPages(totalPages);
         holder.setCurrentPage(newPage);
         holder.updateOldUsedSlots();
@@ -680,7 +688,7 @@ public class SpawnerStorageAction implements Listener {
         spawner.getVirtualInventory().sortItems(nextSort);
 
         // Update GUI display to reflect VirtualInventory state
-        StoragePageHolder holder = (StoragePageHolder) inventory.getHolder(false);
+        StoragePageHolder holder = spawnerStorageUI.getStorageHolder(inventory);
         if (holder != null) {
             updatePageContent(player, spawner, holder.getCurrentPage(), inventory);
         }
@@ -719,7 +727,10 @@ public class SpawnerStorageAction implements Listener {
     }
 
     public boolean handleTakeAllItems(Player player, Inventory sourceInventory) {
-        StoragePageHolder holder = (StoragePageHolder) sourceInventory.getHolder(false);
+        StoragePageHolder holder = spawnerStorageUI.getStorageHolder(sourceInventory);
+        if (holder == null) {
+            return false;
+        }
         SpawnerData spawner = holder.getSpawnerData();
         VirtualInventory virtualInv = spawner.getVirtualInventory();
 
@@ -745,7 +756,7 @@ public class SpawnerStorageAction implements Listener {
         }
 
         // Transfer items and update VirtualInventory
-        TransferResult result = transferItems(player, sourceInventory, sourceItems, virtualInv);
+        TransferResult result = transferItems(player, sourceInventory, sourceItems, virtualInv, holder);
         sendTransferMessage(player, result);
         player.updateInventory();
 
@@ -803,7 +814,8 @@ public class SpawnerStorageAction implements Listener {
     }
 
     private TransferResult transferItems(Player player, Inventory sourceInventory,
-                                         Map<Integer, ItemStack> sourceItems, VirtualInventory virtualInv) {
+                                         Map<Integer, ItemStack> sourceItems, VirtualInventory virtualInv,
+                                         StoragePageHolder holder) {
         boolean anyItemMoved = false;
         boolean inventoryFull = false;
         PlayerInventory playerInv = player.getInventory();
@@ -864,7 +876,6 @@ public class SpawnerStorageAction implements Listener {
 
         // Update VirtualInventory
         if (!itemsToRemove.isEmpty()) {
-            StoragePageHolder holder = (StoragePageHolder) sourceInventory.getHolder(false);
             SpawnerData spawnerData = holder.getSpawnerData();
 
             spawnerData.removeItemsAndUpdateSellValue(itemsToRemove);
@@ -886,7 +897,7 @@ public class SpawnerStorageAction implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (!(event.getInventory().getHolder(false) instanceof StoragePageHolder)) {
+        if (spawnerStorageUI.getStorageHolder(event.getInventory()) == null) {
             return;
         }
         event.setCancelled(true);
@@ -895,14 +906,11 @@ public class SpawnerStorageAction implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
-        if (!(inventory.getHolder(false) instanceof StoragePageHolder holder)) {
+        StoragePageHolder holder = spawnerStorageUI.unregisterStorageInventory(inventory);
+        if (holder == null) {
             return;
         }
 
-        // Inventory close events already execute on the owning player's region thread.
-        // Do not defer this work to the player's scheduler: after closing, a block-backed
-        // inventory could belong to a different region and resolving its holder there
-        // violates Folia's thread ownership rules.
         handleInventoryClose(holder);
     }
 

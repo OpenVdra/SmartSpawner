@@ -13,7 +13,6 @@ import github.nighter.smartspawner.spawner.gui.synchronization.services.StorageU
 import github.nighter.smartspawner.spawner.gui.synchronization.services.TimerUpdateService;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -204,36 +203,39 @@ public class SpawnerGuiViewManager {
                 continue;
             }
 
-            // Schedule batched GUI update for main menu viewers
-            guiUpdateService.scheduleUpdate(viewerId, GuiUpdateService.UPDATE_ALL);
-
-            // Handle storage page updates - calculate pages on the correct thread
-            Inventory openInv = viewer.getOpenInventory().getTopInventory();
-            if (openInv.getHolder(false) instanceof StoragePageHolder holder) {
-                // Schedule storage update - page calculation happens inside
-                Location loc = viewer.getLocation();
-
-                if (!holder.getSpawnerData().getSpawnerId().equals(spawner.getSpawnerId())) {
-                    continue;
-                }
-                Scheduler.runLocationTask(loc, () -> {
-                    if (!viewer.isOnline()) {
-                        return;
-                    }
-
-                    Inventory inv = viewer.getOpenInventory().getTopInventory();
-                    if (inv.getHolder(false) instanceof StoragePageHolder spHolder) {
-
-                        if (!spHolder.getSpawnerData().getSpawnerId().equals(spawner.getSpawnerId())) {
-                            return;
-                        }
-                        int oldPages = storageUpdateService.calculateTotalPages(holder.getOldUsedSlots());
-                        int newPages = storageUpdateService.calculateTotalPages(spawner.getVirtualInventory().getUsedSlots());
-
-                        storageUpdateService.processStorageUpdateDirect(viewer, inv, spawner, spHolder, oldPages, newPages);
-                    }
-                });
+            ViewerTrackingManager.ViewerInfo viewerInfo = viewerTrackingManager.getViewerInfo(viewerId);
+            if (viewerInfo == null) {
+                continue;
             }
+
+            if (viewerInfo.getViewerType() == ViewerTrackingManager.ViewerType.MAIN_MENU) {
+                guiUpdateService.scheduleUpdate(viewerId, GuiUpdateService.UPDATE_ALL);
+                continue;
+            }
+            if (viewerInfo.getViewerType() != ViewerTrackingManager.ViewerType.STORAGE) {
+                continue;
+            }
+
+            // Entity schedulers follow players across region changes. Resolve the
+            // inventory only after the task owns the player, then use our registry
+            // rather than querying a potentially block-backed inventory holder.
+            Scheduler.runEntityTask(viewer, () -> {
+                if (!viewer.isOnline()) {
+                    return;
+                }
+
+                Inventory inv = viewer.getOpenInventory().getTopInventory();
+                StoragePageHolder holder = plugin.getSpawnerStorageUI().getStorageHolder(inv);
+                if (holder == null ||
+                        !holder.getSpawnerData().getSpawnerId().equals(spawner.getSpawnerId())) {
+                    return;
+                }
+
+                int oldPages = storageUpdateService.calculateTotalPages(holder.getOldUsedSlots());
+                int newPages = storageUpdateService.calculateTotalPages(spawner.getVirtualInventory().getUsedSlots());
+                storageUpdateService.processStorageUpdateDirect(
+                        viewer, inv, spawner, holder, oldPages, newPages);
+            });
         }
     }
 

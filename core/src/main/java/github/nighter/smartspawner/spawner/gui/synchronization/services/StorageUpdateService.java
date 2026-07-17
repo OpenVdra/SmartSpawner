@@ -6,7 +6,6 @@ import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
 import github.nighter.smartspawner.spawner.gui.storage.StoragePageHolder;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -58,22 +57,19 @@ public class StorageUpdateService {
      * @param newTotalPages New total pages
      */
     public void processStorageUpdate(Player viewer, SpawnerData spawner, int oldTotalPages, int newTotalPages) {
-        Location loc = viewer.getLocation();
-        if (loc != null) {
-            Scheduler.runLocationTask(loc, () -> {
-                if (!viewer.isOnline()) {
-                    return;
-                }
+        Scheduler.runEntityTask(viewer, () -> {
+            if (!viewer.isOnline()) {
+                return;
+            }
 
-                Inventory openInv = viewer.getOpenInventory().getTopInventory();
-                if (openInv == null || !(openInv.getHolder(false) instanceof StoragePageHolder)) {
-                    return;
-                }
+            Inventory openInv = viewer.getOpenInventory().getTopInventory();
+            StoragePageHolder holder = spawnerStorageUI.getStorageHolder(openInv);
+            if (holder == null) {
+                return;
+            }
 
-                StoragePageHolder holder = (StoragePageHolder) openInv.getHolder(false);
-                processStorageUpdateDirect(viewer, openInv, spawner, holder, oldTotalPages, newTotalPages);
-            });
-        }
+            processStorageUpdateDirect(viewer, openInv, spawner, holder, oldTotalPages, newTotalPages);
+        });
     }
 
     /**
