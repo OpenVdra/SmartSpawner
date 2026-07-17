@@ -41,7 +41,7 @@ dependencies {
     compileOnly("dev.aurelium:auraskills-api-bukkit:2.3.12")
     compileOnly("pl.minecodes.plots:plugin-api:4.6.2")
     compileOnly("fr.maxlego08.shop:zshop-api:3.3.4")
-    compileOnly("fr.maxlego08.menu:zmenu-api:1.1.1.5")
+    compileOnly("fr.maxlego08.menu:zmenu-api:1.1.1.6")
 
     implementation("com.github.GriefPrevention:GriefPrevention:18.0.0")
     implementation("com.github.IncrediblePlugins:LandsAPI:7.25.4")
