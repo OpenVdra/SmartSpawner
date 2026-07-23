@@ -51,7 +51,7 @@ dependencies {
         exclude(group = "org.bukkit")
     }
 
-    compileOnly("io.lumine:Mythic-Dist:5.12.1")
+    compileOnly("io.lumine:Mythic-Dist:5.13.0")
     compileOnly("com.iridium:IridiumSkyblock:4.1.4")
 
     implementation(platform("com.intellectualsites.bom:bom-newest:1.56"))
