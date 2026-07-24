@@ -2,7 +2,7 @@ plugins {
     java
     `java-library`
     `maven-publish`
-    id("com.gradleup.shadow") version "9.5.1" apply false
+    id("com.gradleup.shadow") version "9.6.1" apply false
 }
 
 allprojects {
