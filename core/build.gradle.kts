@@ -63,6 +63,8 @@ dependencies {
     compileOnly(libs.iridiumskyblock)
     compileOnly(libs.factions)
     compileOnly(libs.blocklocker)
+    compileOnly(libs.mmoitems) { isTransitive = false }
+    compileOnly(libs.mythiclib) { isTransitive = false }
 
     // Pinned directly: com.intellectualsites.bom:bom-newest would downgrade paper-api and guava.
     // adventure comes from paper-api.

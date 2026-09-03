@@ -47,16 +47,16 @@ public class PricesGUI implements Listener {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 
         // Collect all unique items with prices from all entity loot configs
-        Map<Material, PriceInfo> allItems = collectAllPriceableItems();
+        Map<String, PriceInfo> allItems = collectAllPriceableItems();
         
         if (allItems.isEmpty()) {
             messageService.sendMessage(player, "prices.no_priceable_items");
             return;
         }
 
-        // Sort items by material name for consistent ordering
-        List<Map.Entry<Material, PriceInfo>> sortedItems = allItems.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey(Comparator.comparing(Material::name)))
+        // Sort items by their price key for consistent ordering
+        List<Map.Entry<String, PriceInfo>> sortedItems = allItems.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
                 .toList();
 
         int totalPages = (int) Math.ceil((double) sortedItems.size() / ITEMS_PER_PAGE);
@@ -77,8 +77,8 @@ public class PricesGUI implements Listener {
         int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, sortedItems.size());
 
         for (int i = startIndex; i < endIndex; i++) {
-            Map.Entry<Material, PriceInfo> entry = sortedItems.get(i);
-            ItemStack itemStack = createPriceDisplayItem(entry.getKey(), entry.getValue());
+            Map.Entry<String, PriceInfo> entry = sortedItems.get(i);
+            ItemStack itemStack = createPriceDisplayItem(entry.getValue());
             inventory.setItem(i - startIndex, itemStack);
         }
 
@@ -88,8 +88,8 @@ public class PricesGUI implements Listener {
         player.openInventory(inventory);
     }
 
-    private Map<Material, PriceInfo> collectAllPriceableItems() {
-        Map<Material, PriceInfo> allItems = new HashMap<>();
+    private Map<String, PriceInfo> collectAllPriceableItems() {
+        Map<String, PriceInfo> allItems = new HashMap<>();
 
         for (EntityType entityType : EntityType.values()) {
             EntityLootConfig lootConfig = plugin.getSpawnerSettingsConfig().getLootConfig(entityType);
@@ -99,17 +99,23 @@ public class PricesGUI implements Listener {
                 if (!lootItem.isAvailable()) continue;
 
                 Material material = lootItem.material();
-                double finalPrice = priceManager.getPrice(material);
-                
+                String configuredItem = lootItem.configuredItem();
+                boolean byReference = priceManager.hasPluginReferencePrice(configuredItem);
+                double finalPrice = priceManager.getPrice(configuredItem, material);
+
                 if (finalPrice > 0) {
-                    // Get individual price components
-                    double customPrice = getCustomPrice(material);
-                    double shopPrice = getShopPrice(material);
-                    
-                    // Determine which source is being used
-                    String priceSource = determinePriceSource(material, finalPrice, customPrice, shopPrice);
-                    
-                    allItems.put(material, new PriceInfo(finalPrice, priceSource, customPrice, shopPrice));
+                    // Get individual price components. A shop cannot answer for an item it has no way
+                    // to address, so a reference row reports no shop price rather than its material's.
+                    double customPrice = byReference ? finalPrice : getCustomPrice(material);
+                    double shopPrice = byReference ? 0.0 : getShopPrice(material);
+
+                    String priceSource = byReference
+                            ? "Custom"
+                            : determinePriceSource(material, finalPrice, customPrice, shopPrice);
+
+                    allItems.put(byReference ? configuredItem : material.name(),
+                            new PriceInfo(byReference ? lootItem.createItemStack() : null,
+                                    material, finalPrice, priceSource, customPrice, shopPrice));
                 }
             }
         }
@@ -139,13 +145,17 @@ public class PricesGUI implements Listener {
         return "Unknown";
     }
 
-    private ItemStack createPriceDisplayItem(Material material, PriceInfo priceInfo) {
-        ItemStack item = new ItemStack(material, 1);
+    private ItemStack createPriceDisplayItem(PriceInfo priceInfo) {
+        ItemStack item = priceInfo.icon != null
+                ? priceInfo.icon.clone()
+                : new ItemStack(priceInfo.material, 1);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
         // Set display name
-        String materialName = languageManager.getVanillaItemName(material);
+        String materialName = meta.hasDisplayName()
+                ? meta.getDisplayName()
+                : languageManager.getVanillaItemName(priceInfo.material);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("item_name", materialName);
         placeholders.put("price", languageManager.formatNumber(priceInfo.finalPrice));
@@ -236,12 +246,17 @@ public class PricesGUI implements Listener {
     }
 
     private static class PriceInfo {
+        final ItemStack icon;
+        final Material material;
         final double finalPrice;
         final String source;
         final double customPrice;
         final double shopPrice;
 
-        PriceInfo(double finalPrice, String source, double customPrice, double shopPrice) {
+        PriceInfo(ItemStack icon, Material material, double finalPrice, String source,
+                  double customPrice, double shopPrice) {
+            this.icon = icon;
+            this.material = material;
             this.finalPrice = finalPrice;
             this.source = source;
             this.customPrice = customPrice;

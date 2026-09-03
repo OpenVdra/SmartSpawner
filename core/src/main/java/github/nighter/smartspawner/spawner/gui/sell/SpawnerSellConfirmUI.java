@@ -11,6 +11,7 @@ import github.nighter.smartspawner.spawner.gui.layout.GuiLayout;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.utils.SpawnerDisplayName;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -225,6 +226,7 @@ public class SpawnerSellConfirmUI {
         // OPTIMIZATION: Get cached spawner type from placeholders
         if (placeholders.containsKey("spawnedItem")) {
             spawnerItem = SpawnerMobHeadTexture.getItemSpawnerHead(
+                placeholders.get("spawnerConfig"),
                 Material.valueOf(placeholders.get("spawnedItem")), player, metaModifier);
         } else {
             spawnerItem = SpawnerMobHeadTexture.getCustomHead(
@@ -288,8 +290,9 @@ public class SpawnerSellConfirmUI {
 
         if (isItemSpawner) {
             Material spawnedItem = spawner.getSpawnedItemMaterial();
-            entityName = languageManager.getVanillaItemName(spawnedItem);
+            entityName = SpawnerDisplayName.of(plugin, spawner);
             placeholders.put("spawnedItem", spawnedItem.name());
+            placeholders.put("spawnerConfig", spawner.getConfigName());
         } else {
             org.bukkit.entity.EntityType entityType = spawner.getEntityType();
             entityName = languageManager.getFormattedMobName(entityType);

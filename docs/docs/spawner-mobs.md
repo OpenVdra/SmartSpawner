@@ -57,16 +57,23 @@ custom_spawner_name:
 Each loot entry names its item in the `item` field. It is required: an entry without one is skipped
 and reported in the console.
 
-`item` accepts three things:
+`item` accepts four things:
 
 | Form | Example | Use it for |
 |------|---------|------------|
 | A material name | `ARROW` | Plain items |
 | A `/give` item string | `tipped_arrow[potion_contents={potion:"minecraft:poison"}]` | Potions, enchanted items, named items, anything with extra data |
 | `nbt:` plus a code | `nbt:H4sIAAAA...` | Items copied out of the game exactly as they are |
+| A plugin name, a colon, and that plugin's own item id | `mmoitems:SWORD:CUTLASS` | Items owned by another plugin |
 
 The second form is the same text the `/give` command completes for you in game. Build the item you
 want with `/give`, copy the part after the player name, and paste it here between single quotes.
+
+The fourth form starts with the name of the plugin that owns the item; everything after the first
+colon is that plugin's own syntax, which is why an MMOItems value carries two colons. Only
+[MMOItems](/docs/integrations/mmoitems) is supported so far, and the entry is skipped with a console
+message when the plugin is not installed. `minecraft:` is not a plugin name: `minecraft:arrow` is
+read as the vanilla material, and `nbt` can never be a plugin name.
 
 Entries are numbered, and the number is only a position in the list. The `item` line is what says
 what drops, which is why the same material can appear more than once:

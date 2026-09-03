@@ -18,10 +18,12 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @param template      the item this row drops, amount 1, or null when the entry could not be resolved
  * @param material      the template's material, kept for price lookups and GUI display names
+ * @param configuredItem the entry's item: value, kept so a price can be looked up under it
  * @param minDurability start of a random damage range, null when the entry has no range
  * @param maxDurability end of a random damage range, null when the entry has no range
  */
-public record LootItem(ItemStack template, Material material, int minAmount, int maxAmount, double chance,
+public record LootItem(ItemStack template, Material material, String configuredItem,
+                       int minAmount, int maxAmount, double chance,
                        Integer minDurability, Integer maxDurability, double sellPrice) {
 
     public ItemStack createItemStack() {

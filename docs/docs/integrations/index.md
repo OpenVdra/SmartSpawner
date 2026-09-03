@@ -18,6 +18,8 @@ SmartSpawner detects optional plugins at startup and enables only the integratio
 
 <DocCard icon="Sparkles" title="MythicMobs" link="/docs/integrations/mythicmobs" desc="Create Smart Spawner items from custom mob drops." />
 
+<DocCard icon="Gem" title="MMOItems" link="/docs/integrations/mmoitems" desc="Use MMOItems items as spawner drops and as Item Spawners." />
+
 <DocCard icon="Wrench" title="Troubleshooting" link="/docs/integrations/troubleshooting" desc="Diagnose provider detection, selling, and protection issues." />
 
 </CardGrid>

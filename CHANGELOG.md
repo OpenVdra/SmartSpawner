@@ -7,9 +7,15 @@ All notable changes to SmartSpawner are documented in this file.
 ### Added
 - Spanish (es_ES) language.
 - Sulfur Cube spawner support for servers on Minecraft 26.2. Its spawner drops no items and gives 2 experience.
+- MMOItems items can now be spawner drops and Item Spawners of their own. Write `mmoitems:TYPE:ID` wherever an `item` is named, in `spawner_mobs.yml` and in `spawner_items.yml`, at the loot level and at the spawner level. The spawner takes its name, its menu icon and the item rotating in the cage from the MMOItems item itself.
+- An item another plugin owns can be given its own sell price in `sell_integration.yml`, keyed by the exact value its loot entry names, for example `"mmoitems:MATERIAL:RUBY": 250.0`. That price wins whatever `price_source_mode` says, because a shop plugin can only price a vanilla material. Items with no entry keep inheriting their base material's price.
+- Item Spawner name and lore can now be written per spawner name, not only per material. `items.yml` looks for a section named after the entry in `spawner_items.yml` first, then one named after its material, then `default`, so two spawners built on the same material can be styled apart.
 
 ### Changed
 - Happy Ghast, Copper Golem and Sulfur Cube now show a translated name in every language.
+- An Item Spawner is now identified by its configured name rather than by the material it produces. Existing spawners and existing spawner items are unaffected: those without a name still resolve to the first entry configured for their material, exactly as before.
+- Two Item Spawners built on the same base material no longer stack together. Previously anything sharing a material stacked, which merged spawners with different drop tables.
+- An Item Spawner entry with no `mob_head` section now shows the item it produces as its menu icon, instead of a spawner block.
 
 ## 1.8.1
 

@@ -49,6 +49,7 @@ final class LootEntryParser {
                     + ": it has no 'item:' line naming what should drop.");
             return null;
         }
+        configuredItem = configuredItem.trim();
 
         ItemStack template;
         try {
@@ -85,9 +86,10 @@ final class LootEntryParser {
             }
 
             Material material = template.getType();
-            double sellPrice = priceManager != null ? priceManager.getPrice(material) : 0.0;
+            double sellPrice = priceManager != null
+                    ? priceManager.getPrice(configuredItem, material) : 0.0;
 
-            return new LootItem(template, material, minAmount, maxAmount, chance,
+            return new LootItem(template, material, configuredItem, minAmount, maxAmount, chance,
                     minDurability, maxDurability, sellPrice);
 
         } catch (NumberFormatException e) {

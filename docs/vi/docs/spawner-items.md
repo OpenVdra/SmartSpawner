@@ -54,6 +54,16 @@ custom_spawner_name:
 | `chance` | `100.0` | Xác suất rơi từ 0.0–100.0 |
 | `item` | `DIAMOND` | Vật phẩm sẽ rơi. Bỏ trống để dùng tên mục. |
 
+Cả hai trường `item` đều nhận tên material, chuỗi vật phẩm của `/give` như
+`tipped_arrow[potion_contents={potion:"minecraft:poison"}]`, một mã `nbt:` sao chép từ trong game,
+hoặc một vật phẩm thuộc plugin khác như `mmoitems:MATERIAL:RUBY`. Xem
+[Cài Đặt Spawner](/vi/docs/spawner-mobs) để biết giải thích đầy đủ.
+
+Một Item Spawner được nhận diện bằng tên mục của nó, nên nhiều mục có thể tạo ra vật phẩm dùng chung
+một material gốc. Hai mục dựa trên `EMERALD`, một vanilla và một từ
+[MMOItems](/vi/docs/integrations/mmoitems), vẫn là hai spawner riêng: mỗi cái giữ bảng drop, biểu
+tượng và tên riêng, và chúng không xếp chồng với nhau.
+
 ::: tip Tên material
 Mỗi giá trị `material` là một tên material của Bukkit viết hoa, ví dụ `DIAMOND` hoặc `NETHERITE_INGOT`. Xem danh sách đầy đủ các tên hợp lệ tại đây: [Danh sách Bukkit Material](https://jd.papermc.io/paper/26.2/org/bukkit/Material.html).
 :::

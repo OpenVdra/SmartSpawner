@@ -12,6 +12,7 @@ import github.nighter.smartspawner.language.section.HologramLanguageSection;
 import github.nighter.smartspawner.language.section.ItemLanguageSection;
 import github.nighter.smartspawner.language.section.MessageLanguageSection;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -222,6 +223,10 @@ public class LanguageManager {
         return items.variantKey(section, variant, field);
     }
 
+    public String getItemVariantKey(String section, String variant, String fallbackVariant, String field) {
+        return items.variantKey(section, variant, fallbackVariant, field);
+    }
+
     public String[] getItemLore(String key) {
         return items.lore(key);
     }
@@ -290,6 +295,10 @@ public class LanguageManager {
             if (custom != null) return custom;
         }
         return item.effectiveName();
+    }
+
+    public String getItemDisplayNameText(ItemStack item) {
+        return item == null ? "" : LegacyComponentSerializer.legacySection().serialize(getItemDisplayName(item));
     }
 
     public List<Component> buildItemLoreAsComponents(

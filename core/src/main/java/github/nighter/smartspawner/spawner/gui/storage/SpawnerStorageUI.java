@@ -12,6 +12,7 @@ import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.properties.ItemSignature;
 import github.nighter.smartspawner.spawner.properties.VirtualInventory;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.utils.SpawnerDisplayName;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.Scheduler.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -197,12 +198,7 @@ public class SpawnerStorageUI {
 
         // OPTIMIZATION: Only compute entity placeholders if they exist in the title format
         if (titleFormat.contains("{entity}") || titleFormat.contains("{ᴇɴᴛɪᴛʏ}")) {
-            String entityName;
-            if (spawner.isItemSpawner()) {
-                entityName = languageManager.getVanillaItemName(spawner.getSpawnedItemMaterial());
-            } else {
-                entityName = languageManager.getFormattedMobName(spawner.getEntityType());
-            }
+            String entityName = SpawnerDisplayName.of(plugin, spawner);
 
             if (titleFormat.contains("{entity}")) {
                 placeholders.put("entity", entityName);
@@ -517,7 +513,7 @@ public class SpawnerStorageUI {
         // Cache key = loot identity (the available_items list) + selected sort + button look.
         // These only change on click or reload, so the cached ItemStack is reused across redraws.
         String lootKey = spawner.isItemSpawner()
-                ? "item:" + spawner.getSpawnedItemMaterial()
+                ? "item:" + spawner.getConfigName()
                 : "mob:" + spawner.getEntityType();
         String cacheKey = lootKey
                 + "|" + (currentSort == null ? "none" : currentSort.name())
@@ -568,12 +564,7 @@ public class SpawnerStorageUI {
         List<Component> lootComponents = buildStorageInfoLootComponents(spawner, storedItems);
 
         Map<String, String> placeholders = new HashMap<>();
-        String entityName;
-        if (spawner.isItemSpawner()) {
-            entityName = languageManager.getVanillaItemName(spawner.getSpawnedItemMaterial());
-        } else {
-            entityName = languageManager.getFormattedMobName(spawner.getEntityType());
-        }
+        String entityName = SpawnerDisplayName.of(plugin, spawner);
         placeholders.put("entity", entityName);
         placeholders.put("ᴇɴᴛɪᴛʏ", languageManager.getSmallCaps(entityName));
         placeholders.put("stack_size", String.valueOf(spawner.getStackSize()));
@@ -603,7 +594,7 @@ public class SpawnerStorageUI {
 
         ItemStack item;
         if (spawner.isItemSpawner()) {
-            item = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getSpawnedItemMaterial(), metaModifier);
+            item = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getConfigName(), spawner.getSpawnedItemMaterial(), metaModifier);
         } else if (button.getMaterial() == Material.PLAYER_HEAD) {
             String customTexture = button.getCustomTexture();
             if (customTexture != null && !customTexture.trim().isEmpty()) {

@@ -4,6 +4,7 @@ import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.format.ColorUtil;
 import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.spawner.utils.SpawnerDisplayName;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -15,6 +16,7 @@ import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SpawnerHologram {
@@ -25,6 +27,7 @@ public class SpawnerHologram {
     private int stackSize;
     private EntityType entityType;
     private Material spawnedItemMaterial;
+    private String configName;
     private long currentExp;
     private long maxExp;
     private int currentItems;
@@ -42,6 +45,7 @@ public class SpawnerHologram {
     // Cached entity display names (recomputed only when entityType/spawnedItemMaterial changes)
     private EntityType cachedEntityType = null;
     private Material cachedSpawnedItemMaterial = null;
+    private String cachedConfigName = null;
     private String cachedEntityName = null;
     private String cachedEntitySmallCaps = null;
 
@@ -134,11 +138,13 @@ public class SpawnerHologram {
     /** Builds the final display string from cached data. Must be called on the owning region thread. */
     private String computeText() {
         // Refresh entity name cache only when the entity type or item material changes
-        if (cachedEntityType != entityType || cachedSpawnedItemMaterial != spawnedItemMaterial) {
+        if (cachedEntityType != entityType || cachedSpawnedItemMaterial != spawnedItemMaterial
+                || !Objects.equals(cachedConfigName, configName)) {
             cachedEntityType = entityType;
             cachedSpawnedItemMaterial = spawnedItemMaterial;
+            cachedConfigName = configName;
             cachedEntityName = entityType == EntityType.ITEM && spawnedItemMaterial != null
-                    ? languageManager.getVanillaItemName(spawnedItemMaterial)
+                    ? SpawnerDisplayName.ofItem(plugin, configName, spawnedItemMaterial)
                     : languageManager.getFormattedMobName(entityType);
             cachedEntitySmallCaps = languageManager.getSmallCaps(cachedEntityName);
         }
@@ -185,7 +191,7 @@ public class SpawnerHologram {
         });
     }
 
-    public void updateData(int stackSize, EntityType entityType, Material spawnedItemMaterial, long currentExp, long maxExp, int currentItems, int maxSlots) {
+    public void updateData(int stackSize, EntityType entityType, Material spawnedItemMaterial, String configName, long currentExp, long maxExp, int currentItems, int maxSlots) {
         TextDisplay display = textDisplay.get();
 
         // Skip entirely when nothing has changed and the hologram already exists.
@@ -193,6 +199,7 @@ public class SpawnerHologram {
                 && this.stackSize == stackSize
                 && this.entityType == entityType
                 && this.spawnedItemMaterial == spawnedItemMaterial
+                && Objects.equals(this.configName, configName)
                 && this.currentExp == currentExp
                 && this.maxExp == maxExp
                 && this.currentItems == currentItems
@@ -203,6 +210,7 @@ public class SpawnerHologram {
         this.stackSize = stackSize;
         this.entityType = entityType;
         this.spawnedItemMaterial = spawnedItemMaterial;
+        this.configName = configName;
         this.currentExp = currentExp;
         this.maxExp = maxExp;
         this.currentItems = currentItems;

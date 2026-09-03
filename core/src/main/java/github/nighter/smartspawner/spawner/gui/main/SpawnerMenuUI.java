@@ -11,6 +11,7 @@ import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.spawner.properties.VirtualInventory;
+import github.nighter.smartspawner.spawner.utils.SpawnerDisplayName;
 import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.api.events.SpawnerOpenGUIEvent;
 import org.bukkit.Bukkit;
@@ -191,12 +192,7 @@ public class SpawnerMenuUI {
 
     private Inventory createMenu(SpawnerData spawner, GuiLayout layout) {
         // Get entity name with caching - for item spawners, use item name
-        String entityName;
-        if (spawner.isItemSpawner()) {
-            entityName = languageManager.getVanillaItemName(spawner.getSpawnedItemMaterial());
-        } else {
-            entityName = languageManager.getFormattedMobName(spawner.getEntityType());
-        }
+        String entityName = SpawnerDisplayName.of(plugin, spawner);
         String entityNameSmallCaps = languageManager.getSmallCaps(entityName);
 
         // Use string builder for efficient placeholder creation
@@ -419,13 +415,7 @@ public class SpawnerMenuUI {
 
         // Entity information
         if (usedPlaceholders.contains("entity") || usedPlaceholders.contains("ᴇɴᴛɪᴛʏ")) {
-            String entityName;
-            // For item spawners, use the item name instead of "Item Spawner"
-            if (spawner.isItemSpawner()) {
-                entityName = languageManager.getVanillaItemName(spawner.getSpawnedItemMaterial());
-            } else {
-                entityName = languageManager.getFormattedMobName(entityType);
-            }
+            String entityName = SpawnerDisplayName.of(plugin, spawner);
             if (usedPlaceholders.contains("entity")) {
                 placeholders.put("entity", entityName);
             }
@@ -528,7 +518,7 @@ public class SpawnerMenuUI {
         // Check if this is an item spawner and use appropriate head
         if (spawner.isItemSpawner()) {
             // For item spawners, use the item material as the head
-            spawnerItem = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getSpawnedItemMaterial(), player, metaModifier);
+            spawnerItem = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getConfigName(), spawner.getSpawnedItemMaterial(), player, metaModifier);
         } else if (button != null && button.getMaterial() == Material.PLAYER_HEAD && button.getCustomTexture() != null && !button.getCustomTexture().trim().isEmpty()) {
             // Use custom texture from GUI layout if provided
             spawnerItem = SpawnerMobHeadTexture.getCustomHeadFromTexture(button.getCustomTexture(), metaModifier);

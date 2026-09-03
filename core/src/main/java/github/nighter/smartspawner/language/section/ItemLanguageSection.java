@@ -79,8 +79,25 @@ public final class ItemLanguageSection {
         return variantKeyCache.computeIfAbsent(cacheKey, ignored -> resolveVariantKey(section, variant, field));
     }
 
+    public String variantKey(String section, String variant, String fallbackVariant, String field) {
+        if (!enabled.getAsBoolean()) return section + "." + field;
+
+        String cacheKey = section + "|" + variant + "|" + fallbackVariant + "|" + field;
+        return variantKeyCache.computeIfAbsent(cacheKey,
+                ignored -> resolveVariantKey(section, variant, fallbackVariant, field));
+    }
+
     public void clearCache() {
         variantKeyCache.clear();
+    }
+
+    private String resolveVariantKey(String section, String variant, String fallbackVariant, String field) {
+        String variantKey = section + "." + variant + "." + field;
+        if (locale().items().contains(variantKey)) {
+            return variantKey;
+        }
+
+        return resolveVariantKey(section, fallbackVariant, field);
     }
 
     private String resolveVariantKey(String section, String variant, String field) {

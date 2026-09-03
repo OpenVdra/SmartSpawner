@@ -164,9 +164,10 @@ public class SpawnerData {
         this.spawnerId = id;
         this.spawnerLocation = location;
         this.entityType = EntityType.ITEM;
-        this.spawnedItemMaterial = itemMaterial;
-        this.configName = configName == null || configName.isBlank()
-                ? defaultItemName(plugin, itemMaterial) : configName;
+        var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
+        this.spawnedItemMaterial = definition != null ? definition.material() : itemMaterial;
+        this.configName = definition != null ? definition.name()
+                : (configName == null || configName.isBlank() ? defaultItemName(plugin, itemMaterial) : configName);
 
         initializeDefaults();
         loadConfigurationValues();
@@ -198,9 +199,8 @@ public class SpawnerData {
 
         // Load loot config based on spawner type
         if (isItemSpawner() && spawnedItemMaterial != null) {
-            var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
-            this.lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getItemSpawnerSettingsConfig().getLootConfig(spawnedItemMaterial);
+            this.lootConfig = plugin.getItemSpawnerSettingsConfig()
+                    .getLootConfig(configName, spawnedItemMaterial);
         } else {
             var definition = plugin.getSpawnerSettingsConfig().getDefinition(configName);
             this.lootConfig = definition != null ? definition.lootConfig()
@@ -406,7 +406,7 @@ public class SpawnerData {
 
     public void updateHologramData() {
         if (hologram != null) {
-            hologram.updateData(stackSize, entityType, spawnedItemMaterial, spawnerExp, maxStoredExp,
+            hologram.updateData(stackSize, entityType, spawnedItemMaterial, configName, spawnerExp, maxStoredExp,
                     virtualInventory.getUsedSlots(), maxSpawnerLootSlots);
         }
     }
@@ -509,9 +509,8 @@ public class SpawnerData {
     public void setLootConfig() {
         // Load loot config based on spawner type
         if (isItemSpawner() && spawnedItemMaterial != null) {
-            var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
-            this.lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getItemSpawnerSettingsConfig().getLootConfig(spawnedItemMaterial);
+            this.lootConfig = plugin.getItemSpawnerSettingsConfig()
+                    .getLootConfig(configName, spawnedItemMaterial);
         } else {
             var definition = plugin.getSpawnerSettingsConfig().getDefinition(configName);
             this.lootConfig = definition != null ? definition.lootConfig()
@@ -708,7 +707,8 @@ public class SpawnerData {
 
         for (LootItem lootItem : allLootItems) {
             // Use live price from ItemPriceManager; fall back to baked sellPrice if unavailable
-            double price = (priceManager != null) ? priceManager.getPrice(lootItem.material()) : 0.0;
+            double price = (priceManager != null)
+                    ? priceManager.getPrice(lootItem.configuredItem(), lootItem.material()) : 0.0;
             if (price <= 0.0) {
                 price = lootItem.sellPrice();
             }

@@ -3,6 +3,8 @@ package github.nighter.smartspawner.hooks;
 import com.plotsquared.core.PlotAPI;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.hooks.drops.MythicMobsHook;
+import github.nighter.smartspawner.hooks.items.CustomItemRegistry;
+import github.nighter.smartspawner.hooks.items.providers.mmoitems.MMOItemsProvider;
 import github.nighter.smartspawner.hooks.protections.ProtectionHook;
 import github.nighter.smartspawner.hooks.protections.api.*;
 import github.nighter.smartspawner.hooks.rpg.AuraSkillsIntegration;
@@ -46,6 +48,7 @@ public class IntegrationManager {
 
     // Integration plugin flags
     private boolean hasAuraSkills = false;
+    private boolean hasMMOItems = false;
 
     // Integration instances
     public AuraSkillsIntegration auraSkillsIntegration;
@@ -55,6 +58,7 @@ public class IntegrationManager {
     }
 
     public void initializeIntegrations() {
+        CustomItemRegistry.clear();
         checkProtectionPlugins();
         checkIntegrationPlugins();
     }
@@ -241,6 +245,18 @@ public class IntegrationManager {
                 this.auraSkillsIntegration = null;
                 return false;
             }
+        }, true);
+
+        hasMMOItems = checkPlugin("MMOItems", () -> {
+            Plugin mmoItemsPlugin = Bukkit.getPluginManager().getPlugin("MMOItems");
+            if (mmoItemsPlugin != null && mmoItemsPlugin.isEnabled()) {
+                MMOItemsProvider provider = new MMOItemsProvider();
+                if (provider.isAvailable()) {
+                    CustomItemRegistry.register(provider);
+                    return true;
+                }
+            }
+            return false;
         }, true);
     }
 

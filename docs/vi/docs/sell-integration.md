@@ -73,6 +73,16 @@ custom_prices:
     ENDER_PEARL: 10.0
     WITHER_SKELETON_SKULL: 100.0
 ```
+
+Vật phẩm thuộc plugin khác được định giá dưới đúng giá trị mà mục loot của nó đặt tên, và mức giá đó
+được dùng bất kể `price_source_mode` là gì, bởi plugin cửa hàng chỉ định giá được cho material
+vanilla. Đừng dùng dấu chấm trong khoá: nó được đọc như một đường dẫn và mục sẽ bị bỏ qua.
+
+```yaml
+custom_prices:
+  prices:
+    "mmoitems:MATERIAL:RUBY": 250.0
+```
 </ConfigProperty>
 
 </ConfigGroup>

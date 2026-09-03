@@ -127,6 +127,12 @@ dependencies:
       required: false
       join-classpath: true
 
+    # Custom Item Plugins
+    MMOItems:
+      load: BEFORE
+      required: false
+      join-classpath: true
+
 # Permissions
 permissions:
   # Main command permission

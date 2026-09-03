@@ -26,6 +26,11 @@ custom_prices:
 
   # Sell price per material, in currency units. Add or remove entries freely, a material you delete
   # is not added back.
+  #
+  # An item another plugin owns is priced under the exact value its loot entry names, and that price
+  # wins whatever price_source_mode says: a shop plugin can only price a material, so it would sell a
+  # ruby for what an emerald is worth. Keep dots out of the key, they read as a path.
+  #   "mmoitems:MATERIAL:RUBY": 250.0
   prices:
     # Animal and fish drops
     LEATHER: 4.0
