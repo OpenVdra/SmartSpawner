@@ -115,13 +115,11 @@ public class SpawnerLootGenerator {
                         if (loot.experience() > 0 && spawner.getSpawnerExp() < spawner.getMaxStoredExp()) {
                             long currentExp = spawner.getSpawnerExp();
                             long maxExp = spawner.getMaxStoredExp();
-                            long newExpLong = (long) currentExp + loot.experience();
+                            long newExpLong = currentExp + loot.experience();
                             long newExp = Math.min(newExpLong, maxExp);
 
-                            if (newExp != currentExp) {
-                                spawner.setSpawnerExp(newExp);
-                                changed = true;
-                            }
+                            spawner.setSpawnerExp(newExp);
+                            changed = true;
                         }
 
                         if (!loot.items().isEmpty()) {
