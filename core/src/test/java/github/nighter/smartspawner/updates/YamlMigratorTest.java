@@ -1,6 +1,5 @@
 package github.nighter.smartspawner.updates;
 
-import github.nighter.smartspawner.ConfigFixtures;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,9 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * The version-less migration engine. Its contract, from {@code updates/CLAUDE.md}, is that it only
- * ever adds: a value the user already set is never touched, and the file is only written when
- * something actually changed.
+ * The version-less migration engine. Its contract is that it only ever adds: a value the user
+ * already set is never touched, and the file is only written when something actually changed.
  */
 class YamlMigratorTest {
 

@@ -81,7 +81,6 @@ local.properties
 javac.*.args
 *.backup
 .claude
-CLAUDE.md
 
 ##############################
 ## run-paper test server
