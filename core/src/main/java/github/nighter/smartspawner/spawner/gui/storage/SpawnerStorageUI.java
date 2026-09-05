@@ -452,8 +452,7 @@ public class SpawnerStorageUI {
     private int calculateTotalPages(SpawnerData spawner) {
         // Frozen layouts can leave permanent holes, so the display can span more cells than the packed
         // used-slot count. getDisplaySlotCount() returns the layout length while frozen.
-        int displaySlots = spawner.getVirtualInventory().getDisplaySlotCount();
-        return Math.max(1, (int) Math.ceil((double) displaySlots / StoragePageHolder.MAX_ITEMS_PER_PAGE));
+        return StoragePageHolder.totalPagesFor(spawner.getVirtualInventory().getDisplaySlotCount());
     }
 
     /**

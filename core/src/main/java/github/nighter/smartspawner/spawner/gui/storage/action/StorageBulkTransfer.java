@@ -5,7 +5,6 @@ import github.nighter.smartspawner.api.events.SpawnerDropAllEvent;
 import github.nighter.smartspawner.api.events.SpawnerTakeAllEvent;
 import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.logging.SpawnerEventType;
-import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
 import github.nighter.smartspawner.spawner.gui.storage.StoragePageHolder;
 import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewManager;
 import github.nighter.smartspawner.spawner.model.ItemSignature;
@@ -118,31 +117,12 @@ class StorageBulkTransfer {
             totalMoved += entry.getValue();
         }
         final long totalMovedFinal = totalMoved;
-        spawner.updateHologramData();
         player.updateInventory();
 
-        int newTotalPages = pageEditor.calculateTotalPages(spawner);
-
-        // Clamp current page to valid range (e.g., if on page 6 but only 5 pages remain)
-        int adjustedPage = Math.max(1, Math.min(currentPage, newTotalPages));
-
-        holder.setTotalPages(newTotalPages);
-        holder.updateOldUsedSlots();
-        if (adjustedPage != currentPage) {
-            holder.setCurrentPage(adjustedPage);
-            SpawnerStorageUI spawnerStorageUI = plugin.getSpawnerStorageUI();
-            spawnerStorageUI.updateDisplay(sourceInventory, spawner, adjustedPage, newTotalPages);
-        } else {
-            // Same page: still repaint so the emptied slots clear.
-            plugin.getSpawnerStorageUI().updateDisplay(sourceInventory, spawner, adjustedPage, newTotalPages);
-        }
-
-        pageEditor.updateInventoryTitle(player, spawner, adjustedPage, newTotalPages);
-
-        spawnerGuiViewManager.updateSpawnerMenuViewers(spawner);
-
-        pageEditor.clearCapacityIfBelow(spawner);
-        spawner.markStorageDirty();
+        // Page recount, clamp, repaint, hologram, menu-viewer refresh, capacity flag and dirty marker
+        // all live in the shared post-removal bookkeeping - the same path drop-page's reconcile and the
+        // native-take reconcile use - so take-all no longer re-implements it inline.
+        pageEditor.updatePageAfterRemoval(player, sourceInventory, spawner, holder, true);
 
         // Log take all items action
         if (plugin.getSpawnerActionLogger() != null) {

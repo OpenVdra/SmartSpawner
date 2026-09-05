@@ -5,7 +5,6 @@ import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
 import github.nighter.smartspawner.spawner.gui.storage.StoragePageHolder;
 import github.nighter.smartspawner.spawner.model.SpawnerData;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -14,8 +13,6 @@ import org.bukkit.inventory.Inventory;
  * Manages page transitions and title updates when storage contents change.
  */
 public class StorageUpdateService {
-
-    private static final int ITEMS_PER_PAGE = 45;
 
     private final SmartSpawner plugin;
     private final SpawnerStorageUI spawnerStorageUI;
@@ -35,11 +32,10 @@ public class StorageUpdateService {
      * @param spawner the spawner whose storage they are viewing
      */
     public void refreshStorageViewer(Player viewer, SpawnerData spawner) {
-        Location loc = viewer.getLocation();
-        if (loc == null) {
-            return;
-        }
-        Scheduler.runLocationTask(loc, () -> {
+        // Run in the viewer's own region, the same region the native-take reconcile
+        // (Scheduler.runEntityTaskLater(player, ...)) is dispatched to, so the flush below and that
+        // reconcile are serialized on one thread instead of racing across regions on Folia.
+        Scheduler.runEntityTask(viewer, () -> {
             if (!viewer.isOnline()) {
                 return;
             }
@@ -68,33 +64,6 @@ public class StorageUpdateService {
             int newPages = calculateTotalPages(spawner.getVirtualInventory().getDisplaySlotCount());
             processStorageUpdateDirect(viewer, openInv, spawner, holder, oldPages, newPages);
         });
-    }
-
-    /**
-     * Processes storage update for a viewer.
-     *
-     * @param viewer The player viewing storage
-     * @param spawner The spawner data
-     * @param oldTotalPages Previous total pages
-     * @param newTotalPages New total pages
-     */
-    public void processStorageUpdate(Player viewer, SpawnerData spawner, int oldTotalPages, int newTotalPages) {
-        Location loc = viewer.getLocation();
-        if (loc != null) {
-            Scheduler.runLocationTask(loc, () -> {
-                if (!viewer.isOnline()) {
-                    return;
-                }
-
-                Inventory openInv = viewer.getOpenInventory().getTopInventory();
-                if (openInv == null || !(openInv.getHolder(false) instanceof StoragePageHolder)) {
-                    return;
-                }
-
-                StoragePageHolder holder = (StoragePageHolder) openInv.getHolder(false);
-                processStorageUpdateDirect(viewer, openInv, spawner, holder, oldTotalPages, newTotalPages);
-            });
-        }
     }
 
     /**
@@ -170,7 +139,7 @@ public class StorageUpdateService {
      * @return Number of pages needed
      */
     public int calculateTotalPages(int totalItems) {
-        return totalItems <= 0 ? 1 : (int) Math.ceil((double) totalItems / ITEMS_PER_PAGE);
+        return StoragePageHolder.totalPagesFor(totalItems);
     }
 
     /**

@@ -35,7 +35,7 @@ class StorageReconciler {
      * close, so every path doing either calls {@link #flushPendingReconcile} first.
      */
     void scheduleReconcile(Player player, StoragePageHolder holder) {
-        holder.setPendingReconcile(true);
+        holder.armReconcile();
         Scheduler.runEntityTaskLater(player, () -> reconcileNativeTake(player, holder), 1L);
     }
 
@@ -46,12 +46,12 @@ class StorageReconciler {
         // The close and quit hooks flush while the inventory is still readable, so reaching either
         // branch below still armed means there is nothing left to diff against.
         if (!player.isOnline()) {
-            holder.setPendingReconcile(false);
+            holder.clearReconcile();
             return;
         }
         Inventory inventory = player.getOpenInventory().getTopInventory();
         if (!(inventory.getHolder(false) instanceof StoragePageHolder current) || current != holder) {
-            holder.setPendingReconcile(false);
+            holder.clearReconcile();
             return;
         }
 
@@ -71,6 +71,8 @@ class StorageReconciler {
                 || !holder.isPendingReconcile()) {
             return;
         }
+        // The isPendingReconcile() check above is only a cheap pre-filter; reconcile() re-checks it
+        // atomically via claimReconcile(), so a concurrent settle path cannot make us double-debit.
         reconcile(player, inventory, holder, repaint);
     }
 
@@ -83,9 +85,11 @@ class StorageReconciler {
      */
     private boolean reconcile(Player player, Inventory inventory, StoragePageHolder holder,
                               boolean repaint) {
-        // Disarm first: updatePageAfterRemoval repaints, and a re-entrant flush reached from there
-        // must not diff against the image it is replacing.
-        holder.setPendingReconcile(false);
+        // Claim atomically, which also disarms: only one racing settle path wins, and updatePageAfterRemoval
+        // repaints, so a re-entrant flush reached from there must not diff against the image it is replacing.
+        if (!holder.claimReconcile()) {
+            return false;
+        }
 
         SpawnerData spawner = holder.getSpawnerData();
         int page = holder.getCurrentPage();

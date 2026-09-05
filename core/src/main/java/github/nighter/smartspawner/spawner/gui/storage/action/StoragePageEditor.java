@@ -26,10 +26,9 @@ class StoragePageEditor {
 
     int calculateTotalPages(SpawnerData spawner) {
         // Pages follow the display layout (frozen cells, holes included), not the packed item count,
-        // so navigation matches what is actually rendered. Must agree with
-        // SpawnerStorageUI.calculateTotalPages, which uses the same source.
-        int displaySlots = spawner.getVirtualInventory().getDisplaySlotCount();
-        return Math.max(1, (int) Math.ceil((double) displaySlots / StoragePageHolder.MAX_ITEMS_PER_PAGE));
+        // so navigation matches what is actually rendered. The shared StoragePageHolder.totalPagesFor
+        // is the single formula, so this cannot diverge from SpawnerStorageUI / StorageUpdateService.
+        return StoragePageHolder.totalPagesFor(spawner.getVirtualInventory().getDisplaySlotCount());
     }
 
     void updatePageContent(Player player, SpawnerData spawner, int newPage, Inventory inventory) {
