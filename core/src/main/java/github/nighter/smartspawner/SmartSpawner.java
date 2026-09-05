@@ -49,7 +49,7 @@ import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuAction;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuUI;
 import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmListener;
 import github.nighter.smartspawner.spawner.gui.sell.SpawnerSellConfirmUI;
-import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageAction;
+import github.nighter.smartspawner.spawner.gui.storage.action.SpawnerStorageAction;
 import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
 import github.nighter.smartspawner.spawner.gui.storage.filter.FilterConfigUI;
 import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewManager;
@@ -545,7 +545,6 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
             spawnerMenuUI.clearCache();
         }
         
-        spawnerStorageAction.loadConfig();
         spawnerStorageUI.reload();
         filterConfigUI.reload();
 

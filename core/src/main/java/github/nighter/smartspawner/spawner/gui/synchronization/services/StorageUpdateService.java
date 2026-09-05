@@ -52,6 +52,11 @@ public class StorageUpdateService {
                 return;
             }
 
+            // Settle an undebited native take before anything below repaints, since that debit diffs
+            // the last painted image against the live slots. Before the version gate on purpose: the
+            // flush repaints and bumps the version itself.
+            plugin.getSpawnerStorageAction().flushPendingReconcile(viewer, openInv, true);
+
             // Authoritative gate on the region thread that owns this inventory.
             if (holder.getView().getRenderedVersion() >= spawner.getStorageVersion().get()) {
                 return;

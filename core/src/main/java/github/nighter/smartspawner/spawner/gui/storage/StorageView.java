@@ -26,7 +26,12 @@ public class StorageView {
         }
     }
 
-    ItemStack get(int slot) {
+    /**
+     * The last {@link ItemStack} painted into {@code slot}, or {@code null} if empty/out of range.
+     * Public so the reconciler in the {@code action} subpackage can diff against the painted image;
+     * {@link #set} and {@link #ensureSize} stay package-private to {@link StorageRenderer}.
+     */
+    public ItemStack get(int slot) {
         return (slot >= 0 && slot < rendered.length) ? rendered[slot] : null;
     }
 
