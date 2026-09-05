@@ -4,7 +4,7 @@ import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.language.MessageService;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

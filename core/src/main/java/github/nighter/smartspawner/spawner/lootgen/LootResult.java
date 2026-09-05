@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.lootgen;
 
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package github.nighter.smartspawner.api.impl;
 
 import github.nighter.smartspawner.api.data.SpawnerDataModifier;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 
 /**
  * Implementation of SpawnerDataModifier for modifying spawner properties through the API.

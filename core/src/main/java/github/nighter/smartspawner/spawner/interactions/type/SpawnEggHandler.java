@@ -3,7 +3,7 @@ package github.nighter.smartspawner.spawner.interactions.type;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.api.events.SpawnerEggChangeEvent;
 import github.nighter.smartspawner.language.MessageService;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.language.LanguageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

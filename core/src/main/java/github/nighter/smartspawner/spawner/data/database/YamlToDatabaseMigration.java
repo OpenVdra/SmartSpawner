@@ -4,7 +4,7 @@ import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.spawner.data.legacy.LegacyInventoryCodec;
 import github.nighter.smartspawner.spawner.data.storage.SpawnerInventoryCodec;
 import github.nighter.smartspawner.spawner.data.storage.StorageMode;
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
 import github.nighter.smartspawner.spawner.config.SpawnerConfigName;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;

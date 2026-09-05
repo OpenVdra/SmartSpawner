@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.data.storage;
 
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 
 import java.util.Map;
 

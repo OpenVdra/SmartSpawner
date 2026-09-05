@@ -7,8 +7,7 @@ import github.nighter.smartspawner.spawner.data.storage.StorageMode;
  *
  * <p>{@link #VALUE_COLUMNS} is the single source of the write column order: {@link SpawnerRowMapper}
  * binds them positionally at 2..28 (after {@code spawner_id} at 1), and both upserts are generated
- * from the same array so MySQL and SQLite can never drift. See spawner/data/CLAUDE.md
- * ("Database schema").</p>
+ * from the same array so MySQL and SQLite can never drift.</p>
  *
  * <p>The upsert is chosen from the backend at construction, because the storage mode is fixed for the
  * life of the handler. The dormant {@code rev} column (schema v5) appears in no statement, so an

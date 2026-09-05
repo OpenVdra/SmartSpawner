@@ -1138,11 +1138,11 @@ public class DatabaseManager {
             return null;
         }
 
-        Map<github.nighter.smartspawner.spawner.properties.ItemSignature, Long> consolidated =
+        Map<github.nighter.smartspawner.spawner.model.ItemSignature, Long> consolidated =
                 new LinkedHashMap<>(Math.max(16, items.size() * 2));
         for (Map.Entry<ItemStack, Long> entry : items.entrySet()) {
             consolidated.merge(
-                    new github.nighter.smartspawner.spawner.properties.ItemSignature(entry.getKey()),
+                    new github.nighter.smartspawner.spawner.model.ItemSignature(entry.getKey()),
                     entry.getValue(),
                     Long::sum);
         }

@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.gui.main;
 
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
 import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.utils.ItemTooltipUtil;
@@ -9,8 +9,8 @@ import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
-import github.nighter.smartspawner.spawner.properties.VirtualInventory;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
+import github.nighter.smartspawner.spawner.model.VirtualInventory;
 import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.api.events.SpawnerOpenGUIEvent;
 import org.bukkit.Bukkit;

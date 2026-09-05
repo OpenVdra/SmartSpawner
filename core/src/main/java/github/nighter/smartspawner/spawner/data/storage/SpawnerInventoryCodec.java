@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.data.storage;
 
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;

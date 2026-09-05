@@ -9,7 +9,7 @@ import github.nighter.smartspawner.api.gui.GuiLayoutData;
 import github.nighter.smartspawner.api.gui.GuiLayoutRegistryImpl;
 import github.nighter.smartspawner.api.gui.GuiLayoutType;
 import github.nighter.smartspawner.api.gui.SpawnerGuiLayoutProvider;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.updates.GuiLayoutUpdater;
 import lombok.Getter;
 import lombok.Setter;

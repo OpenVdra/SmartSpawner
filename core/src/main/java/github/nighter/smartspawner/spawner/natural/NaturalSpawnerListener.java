@@ -1,7 +1,7 @@
 package github.nighter.smartspawner.spawner.natural;
 
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -4,7 +4,7 @@ import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.commands.list.gui.CrossServerSpawnerData;
 import github.nighter.smartspawner.spawner.data.storage.SpawnerStorage;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import org.bukkit.Location;
 
 import java.sql.Connection;
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  * {@link SpawnerSql} holds the statements, {@link SpawnerRowMapper} maps rows to and from
  * {@link SpawnerData}, and {@link CrossServerSpawnerQueries} answers the list GUI's cross-server
  * reads. Mutations are marked dirty and flushed in a single batch on an async timer, on world save,
- * and on shutdown; see spawner/data/CLAUDE.md ("Writes are batched, always").</p>
+ * and on shutdown.</p>
  */
 public class SpawnerDatabaseHandler implements SpawnerStorage {
 

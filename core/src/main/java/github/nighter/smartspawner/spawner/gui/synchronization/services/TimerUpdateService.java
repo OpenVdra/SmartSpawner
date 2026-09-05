@@ -7,7 +7,7 @@ import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuHolder;
 import github.nighter.smartspawner.spawner.gui.synchronization.managers.ViewerTrackingManager;
 import github.nighter.smartspawner.spawner.gui.synchronization.utils.LootPreGenerationHelper;
 import github.nighter.smartspawner.spawner.gui.synchronization.utils.TimerFormatter;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

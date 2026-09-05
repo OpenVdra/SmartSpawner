@@ -6,7 +6,7 @@ import github.nighter.smartspawner.commands.list.gui.list.enums.FilterOption;
 import github.nighter.smartspawner.commands.list.gui.list.enums.SortOption;
 import github.nighter.smartspawner.commands.list.gui.worldselection.WorldSelectionHolder;
 import github.nighter.smartspawner.language.MessageService;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

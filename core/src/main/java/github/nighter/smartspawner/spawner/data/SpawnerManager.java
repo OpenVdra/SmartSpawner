@@ -3,7 +3,7 @@ package github.nighter.smartspawner.spawner.data;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.spawner.data.storage.SpawnerStorage;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.spawner.config.SpawnerDisplayConfigurator;
 import org.bukkit.*;
 import org.bukkit.block.Block;

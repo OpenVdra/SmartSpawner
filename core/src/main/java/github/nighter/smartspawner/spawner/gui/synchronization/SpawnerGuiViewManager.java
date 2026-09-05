@@ -10,7 +10,7 @@ import github.nighter.smartspawner.spawner.gui.synchronization.managers.ViewerTr
 import github.nighter.smartspawner.spawner.gui.synchronization.services.GuiUpdateService;
 import github.nighter.smartspawner.spawner.gui.synchronization.services.StorageUpdateService;
 import github.nighter.smartspawner.spawner.gui.synchronization.services.TimerUpdateService;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

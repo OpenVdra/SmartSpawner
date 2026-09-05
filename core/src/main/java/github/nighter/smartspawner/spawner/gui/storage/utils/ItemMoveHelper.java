@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.gui.storage.utils;
 
-import github.nighter.smartspawner.spawner.properties.VirtualInventory;
+import github.nighter.smartspawner.spawner.model.VirtualInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import java.util.*;

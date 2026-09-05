@@ -1,4 +1,4 @@
-package github.nighter.smartspawner.spawner.properties;
+package github.nighter.smartspawner.spawner.model;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;

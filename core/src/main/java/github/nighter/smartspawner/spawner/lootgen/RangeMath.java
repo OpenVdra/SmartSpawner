@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.lootgen;
 
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import org.bukkit.Location;
 import org.bukkit.World;
 

@@ -5,9 +5,9 @@ import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.api.events.SpawnerSellEvent;
 import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewManager;
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
-import github.nighter.smartspawner.spawner.properties.VirtualInventory;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
+import github.nighter.smartspawner.spawner.model.VirtualInventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -199,7 +199,6 @@ public class SpawnerSellManager {
         } else {
             messageService.sendMessage(player, "sell_success", placeholders);
         }
-        spawner.markLastSellAsProcessed();
     }
 
     /**

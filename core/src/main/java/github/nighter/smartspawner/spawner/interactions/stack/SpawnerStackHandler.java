@@ -5,7 +5,7 @@ import github.nighter.smartspawner.api.events.SpawnerStackEvent;
 import github.nighter.smartspawner.config.Config;
 import github.nighter.smartspawner.hooks.protections.CheckStackBlock;
 import github.nighter.smartspawner.language.MessageService;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.spawner.utils.SpawnerTypeChecker;
 import org.bukkit.*;

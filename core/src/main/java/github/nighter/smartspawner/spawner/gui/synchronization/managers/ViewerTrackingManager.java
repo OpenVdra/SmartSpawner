@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.gui.synchronization.managers;
 
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

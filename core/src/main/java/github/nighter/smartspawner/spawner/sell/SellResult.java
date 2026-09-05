@@ -1,6 +1,6 @@
 package github.nighter.smartspawner.spawner.sell;
 
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
 import lombok.Getter;
 
 import java.util.Collections;

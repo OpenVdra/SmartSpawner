@@ -2,8 +2,8 @@ package github.nighter.smartspawner.spawner.gui.synchronization.utils;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
-import github.nighter.smartspawner.spawner.properties.ItemSignature;
-import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import github.nighter.smartspawner.spawner.model.ItemSignature;
+import github.nighter.smartspawner.spawner.model.SpawnerData;
 import org.bukkit.Location;
 
 import java.util.Map;
