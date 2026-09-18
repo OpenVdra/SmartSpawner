@@ -51,6 +51,10 @@ public class SpawnerStorageAction implements Listener {
     private record TransferResult(boolean anyItemMoved, boolean inventoryFull, int totalMoved) {}
     private final Map<UUID, Long> lastItemClickTime = new ConcurrentHashMap<>();
     private static final long ITEM_CLICK_DELAY_MS = 100;
+    // Shift + double-click makes the client send one click per matching slot in the same tick,
+    // so warnings need their own cooldown or they flood chat.
+    private final Map<UUID, Map<String, Long>> lastWarningTimes = new ConcurrentHashMap<>();
+    private static final long WARNING_COOLDOWN_MS = 1000;
 
     public SpawnerStorageAction(SmartSpawner plugin) {
         this.plugin = plugin;
@@ -384,12 +388,12 @@ public class SpawnerStorageAction implements Listener {
 
                 // Notify if inventory was full
                 if (remaining > 0) {
-                    messageService.sendMessage(player, "inventory_full");
+                    sendThrottledWarning(player, "inventory_full");
                 }
             }
         } else {
             // No items moved - inventory full
-            messageService.sendMessage(player, "inventory_full");
+            sendThrottledWarning(player, "inventory_full");
         }
     }
 
@@ -582,16 +586,28 @@ public class SpawnerStorageAction implements Listener {
         long last = lastItemClickTime.getOrDefault(player.getUniqueId(), 0L);
 
         if ((now - last) < ITEM_CLICK_DELAY_MS) {
-            messageService.sendMessage(player, "click_too_fast");
+            sendThrottledWarning(player, "click_too_fast");
             return true;
         }
         return false;
+    }
+
+    private void sendThrottledWarning(Player player, String messageKey) {
+        long now = System.currentTimeMillis();
+        Map<String, Long> playerWarnings = lastWarningTimes.computeIfAbsent(
+                player.getUniqueId(), ignored -> new ConcurrentHashMap<>());
+        long lastWarning = playerWarnings.getOrDefault(messageKey, 0L);
+        if ((now - lastWarning) >= WARNING_COOLDOWN_MS) {
+            playerWarnings.put(messageKey, now);
+            messageService.sendMessage(player, messageKey);
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
         lastItemClickTime.remove(playerId);
+        lastWarningTimes.remove(playerId);
     }
 
     private boolean handleSortItemsClick(Player player, SpawnerData spawner, Inventory inventory) {
@@ -849,7 +865,7 @@ public class SpawnerStorageAction implements Listener {
 
     private void sendTransferMessage(Player player, TransferResult result) {
         if (!result.anyItemMoved) {
-            messageService.sendMessage(player, "inventory_full");
+            sendThrottledWarning(player, "inventory_full");
         }
     }
 

@@ -11,6 +11,10 @@ All notable changes to SmartSpawner are documented in this file.
 ### Changed
 - Happy Ghast, Copper Golem and Sulfur Cube now show a translated name in every language.
 
+### Fixed
+- **Critical:** Fixed an item duplication exploit in the spawner storage menu. Only one player can open a spawner's storage at a time now, and anyone else is told it is in use.
+- Clicking items quickly in the storage menu no longer floods chat with "clicking too fast" and "inventory full" messages.
+
 ## 1.8.1
 
 ### Fixed
