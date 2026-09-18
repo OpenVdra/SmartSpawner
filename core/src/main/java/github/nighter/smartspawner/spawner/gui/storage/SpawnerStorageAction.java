@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -852,6 +853,34 @@ public class SpawnerStorageAction implements Listener {
         }
     }
 
+
+    /**
+     * Storage is single-viewer: opening a spawner's storage while another player has it open is refused.
+     * Each viewer holds their own copy of the page, so with two viewers one can take items the other
+     * already emptied from the copy that has not been refreshed yet.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player player)
+                || !(event.getInventory().getHolder(false) instanceof StoragePageHolder holder)) {
+            return;
+        }
+
+        String spawnerId = holder.getSpawnerData().getSpawnerId();
+        for (Player viewer : spawnerGuiViewManager.getViewers(spawnerId)) {
+            if (!viewer.getUniqueId().equals(player.getUniqueId()) && isViewingStorage(viewer, spawnerId)) {
+                event.setCancelled(true);
+                messageService.sendMessage(player, "storage_in_use");
+                return;
+            }
+        }
+    }
+
+    // Checks the open inventory rather than trusting the tracker, so a stale entry never locks the storage.
+    private boolean isViewingStorage(Player viewer, String spawnerId) {
+        return viewer.getOpenInventory().getTopInventory().getHolder(false) instanceof StoragePageHolder holder
+                && holder.getSpawnerData().getSpawnerId().equals(spawnerId);
+    }
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {

@@ -82,6 +82,7 @@ javac.*.args
 *.backup
 .claude
 CLAUDE.md
+tools/**
 
 ##############################
 ## run-paper test server

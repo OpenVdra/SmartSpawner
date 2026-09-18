@@ -38,6 +38,10 @@ action_in_progress:
   message: '&#F0C857Ya hay una acción en progreso. Por favor, espera.'
   action_bar: '&#F0C857Acción en progreso. Por favor, espera.'
 
+storage_in_use:
+  message: '&#FF4444El almacenamiento de este generador está siendo usado por otro jugador.'
+  action_bar: '&#FF4444Almacenamiento en uso por otro jugador.'
+
 action_failed:
   message: '&#FF4444La acción ha fallado. Por favor, inténtalo de nuevo.'
   action_bar: '&#FF4444La acción ha fallado. Por favor, inténtalo de nuevo.'

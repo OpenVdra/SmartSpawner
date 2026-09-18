@@ -38,6 +38,10 @@ action_in_progress:
   message: '&#F0C857Đã có một thao tác đang diễn ra. Vui lòng chờ.'
   action_bar: '&#F0C857Đang thực hiện thao tác. Vui lòng chờ.'
 
+storage_in_use:
+  message: '&#FF4444Kho của spawner này đang được mở bởi người chơi khác.'
+  action_bar: '&#FF4444Kho đang được sử dụng bởi người khác.'
+
 action_failed:
   message: '&#FF4444Thao tác thất bại. Vui lòng thử lại.'
   action_bar: '&#FF4444Thao tác thất bại. Vui lòng thử lại.'

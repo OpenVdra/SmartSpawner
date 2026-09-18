@@ -38,6 +38,10 @@ action_in_progress:
   message: '&#F0C857Şu anda devam eden bir işlem var. Lütfen bekle.'
   action_bar: '&#F0C857İşlem sürüyor. Lütfen bekle.'
 
+storage_in_use:
+  message: '&#FF4444Bu spawner deposu şu anda başka bir oyuncu tarafından açık.'
+  action_bar: '&#FF4444Depo başka bir oyuncu tarafından kullanılıyor.'
+
 action_failed:
   message: '&#FF4444İşlem başarısız oldu. Lütfen tekrar dene.'
   action_bar: '&#FF4444İşlem başarısız. Lütfen tekrar dene.'
