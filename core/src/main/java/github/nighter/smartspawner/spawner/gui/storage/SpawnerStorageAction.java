@@ -338,23 +338,77 @@ public class SpawnerStorageAction implements Listener {
     private void transferToPlayerInventory(Player player, ItemStack clickedItem, int amountToTake,
                                           Inventory storageInv, SpawnerData spawner, StoragePageHolder holder) {
         PlayerInventory playerInv = player.getInventory();
-        ItemStack toTransfer = clickedItem.clone();
-        toTransfer.setAmount(amountToTake);
 
-        int amountMoved = 0;
-        int remaining = amountToTake;
+        // Debit the virtual inventory BEFORE handing items over. The GUI slot is only a projection
+        // and can be stale (second viewer, or a repaint that has not run yet), so granting first
+        // would let the same stack be taken twice.
+        int amountToTakeActual = calculatePlayerCapacity(playerInv, clickedItem, amountToTake);
+        if (amountToTakeActual <= 0) {
+            sendThrottledWarning(player, "inventory_full");
+            return;
+        }
 
-        // Optimize: Try to stack with existing items first (more efficient)
+        ItemStack removed = clickedItem.clone();
+        removed.setAmount(amountToTakeActual);
+
+        if (!spawner.removeItemsAndUpdateSellValue(List.of(removed))) {
+            // The count-map no longer holds this stack - another viewer got it first. Repaint so the
+            // stale slot disappears instead of remaining takeable.
+            updatePageAfterRemoval(player, storageInv, spawner, holder);
+            return;
+        }
+
+        addToPlayerInventory(playerInv, clickedItem, amountToTakeActual);
+
+        // Update display efficiently
+        updatePageAfterRemoval(player, storageInv, spawner, holder);
+
+        // Single sound effect
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.0f);
+
+        // Notify if the player could not receive the full requested amount
+        if (amountToTakeActual < amountToTake) {
+            sendThrottledWarning(player, "inventory_full");
+        }
+    }
+
+    /**
+     * Number of items of the given template the player inventory can still accept, capped at
+     * {@code desired}. Only slots 0-35 are considered, matching the storage transfer target area.
+     */
+    private int calculatePlayerCapacity(PlayerInventory playerInv, ItemStack template, int desired) {
+        int capacity = 0;
+        int maxStackSize = template.getMaxStackSize();
+
+        for (int i = 0; i < 36 && capacity < desired; i++) {
+            ItemStack slot = playerInv.getItem(i);
+
+            if (slot == null || slot.getType() == Material.AIR) {
+                capacity += maxStackSize;
+            } else if (slot.isSimilar(template)) {
+                capacity += Math.max(0, slot.getMaxStackSize() - slot.getAmount());
+            }
+        }
+
+        return Math.min(capacity, desired);
+    }
+
+    /**
+     * Adds exactly {@code amount} items of the template to the player inventory. Callers must have
+     * verified the inventory has room via {@link #calculatePlayerCapacity}.
+     */
+    private void addToPlayerInventory(PlayerInventory playerInv, ItemStack template, int amount) {
+        int remaining = amount;
+
+        // Stack onto existing items first
         for (int i = 0; i < 36 && remaining > 0; i++) {
             ItemStack slot = playerInv.getItem(i);
 
-            if (slot != null && slot.getType() != Material.AIR && slot.isSimilar(toTransfer)) {
-                // Found similar item - try to stack
+            if (slot != null && slot.getType() != Material.AIR && slot.isSimilar(template)) {
                 int space = slot.getMaxStackSize() - slot.getAmount();
                 if (space > 0) {
                     int add = Math.min(space, remaining);
                     slot.setAmount(slot.getAmount() + add);
-                    amountMoved += add;
                     remaining -= add;
                 }
             }
@@ -365,35 +419,12 @@ public class SpawnerStorageAction implements Listener {
             ItemStack slot = playerInv.getItem(i);
 
             if (slot == null || slot.getType() == Material.AIR) {
-                int stackSize = Math.min(remaining, toTransfer.getMaxStackSize());
-                ItemStack newStack = toTransfer.clone();
-                newStack.setAmount(stackSize);
+                int add = Math.min(remaining, template.getMaxStackSize());
+                ItemStack newStack = template.clone();
+                newStack.setAmount(add);
                 playerInv.setItem(i, newStack);
-                amountMoved += stackSize;
-                remaining -= stackSize;
+                remaining -= add;
             }
-        }
-
-        // Update VirtualInventory if any items were moved
-        if (amountMoved > 0) {
-            ItemStack removed = toTransfer.clone();
-            removed.setAmount(amountMoved);
-
-            if (spawner.removeItemsAndUpdateSellValue(List.of(removed))) {
-                // Update display efficiently
-                updatePageAfterRemoval(player, storageInv, spawner, holder);
-
-                // Single sound effect
-                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1.0f);
-
-                // Notify if inventory was full
-                if (remaining > 0) {
-                    sendThrottledWarning(player, "inventory_full");
-                }
-            }
-        } else {
-            // No items moved - inventory full
-            sendThrottledWarning(player, "inventory_full");
         }
     }
 
@@ -453,7 +484,6 @@ public class SpawnerStorageAction implements Listener {
             if (item != null && item.getType() != Material.AIR) {
                 pageItems.add(item.clone());
                 itemsFoundCount += item.getAmount();
-                inventory.setItem(i, null);
             }
         }
 
@@ -469,10 +499,15 @@ public class SpawnerStorageAction implements Listener {
             pageItems = event.getItems();
         }
 
-        final int itemsFound = itemsFoundCount;
+        // Debit the virtual inventory BEFORE dropping. A stale GUI projection must not be able to
+        // drop items another viewer already took.
+        if (!spawner.removeItemsAndUpdateSellValue(pageItems)) {
+            updatePageContent(player, spawner, holder.getCurrentPage(), inventory);
+            messageService.sendMessage(player, "spawner_storage_empty");
+            return false;
+        }
 
-        // Remove from VirtualInventory
-        spawner.removeItemsAndUpdateSellValue(pageItems);
+        final int itemsFound = itemsFoundCount;
 
         dropItemsInDirection(player, pageItems);
 
@@ -772,6 +807,10 @@ public class SpawnerStorageAction implements Listener {
                                 .metadata("items_left", itemsLeft)
                 );
             }
+        } else {
+            // Nothing was actually debited (stale projection or full inventory). Repaint so phantom
+            // slots left by another viewer's take disappear instead of staying clickable.
+            spawnerGuiViewManager.updateSpawnerMenuViewers(spawner);
         }
         return result.anyItemMoved;
     }
@@ -794,68 +833,41 @@ public class SpawnerStorageAction implements Listener {
         boolean inventoryFull = false;
         PlayerInventory playerInv = player.getInventory();
         int totalAmountMoved = 0;
-        List<ItemStack> itemsToRemove = new ArrayList<>();
+
+        StoragePageHolder holder = (StoragePageHolder) sourceInventory.getHolder(false);
+        SpawnerData spawnerData = holder.getSpawnerData();
 
         for (Map.Entry<Integer, ItemStack> entry : sourceItems.entrySet()) {
-            int sourceSlot = entry.getKey();
             ItemStack itemToMove = entry.getValue();
 
-            int amountToMove = itemToMove.getAmount();
-            int amountMoved = 0;
-
-            for (int i = 0; i < 36 && amountToMove > 0; i++) {
-                ItemStack targetItem = playerInv.getItem(i);
-
-                if (targetItem == null || targetItem.getType() == Material.AIR) {
-                    ItemStack newStack = itemToMove.clone();
-                    newStack.setAmount(Math.min(amountToMove, itemToMove.getMaxStackSize()));
-                    playerInv.setItem(i, newStack);
-                    amountMoved += newStack.getAmount();
-                    amountToMove -= newStack.getAmount();
-                    anyItemMoved = true;
-                }
-                else if (targetItem.isSimilar(itemToMove)) {
-                    int spaceInStack = targetItem.getMaxStackSize() - targetItem.getAmount();
-                    if (spaceInStack > 0) {
-                        int addAmount = Math.min(spaceInStack, amountToMove);
-                        targetItem.setAmount(targetItem.getAmount() + addAmount);
-                        amountMoved += addAmount;
-                        amountToMove -= addAmount;
-                        anyItemMoved = true;
-                    }
-                }
+            // Only take what the player can actually receive, then debit the virtual inventory
+            // BEFORE adding it. With a stale projection the removal fails and nothing is granted,
+            // which is what makes take-all dupe-safe against a second viewer.
+            int capacity = calculatePlayerCapacity(playerInv, itemToMove, itemToMove.getAmount());
+            if (capacity <= 0) {
+                inventoryFull = true;
+                break;
             }
 
-            if (amountMoved > 0) {
-                totalAmountMoved += amountMoved;
+            ItemStack removed = itemToMove.clone();
+            removed.setAmount(capacity);
 
-                ItemStack movedItem = itemToMove.clone();
-                movedItem.setAmount(amountMoved);
-                itemsToRemove.add(movedItem);
-
-                if (amountMoved == itemToMove.getAmount()) {
-                    sourceInventory.setItem(sourceSlot, null);
-                } else {
-                    ItemStack remaining = itemToMove.clone();
-                    remaining.setAmount(itemToMove.getAmount() - amountMoved);
-                    sourceInventory.setItem(sourceSlot, remaining);
-                    inventoryFull = true;
-                }
+            if (!spawnerData.removeItemsAndUpdateSellValue(List.of(removed))) {
+                continue;
             }
 
-            if (inventoryFull) {
+            addToPlayerInventory(playerInv, itemToMove, capacity);
+            totalAmountMoved += capacity;
+            anyItemMoved = true;
+
+            if (capacity < itemToMove.getAmount()) {
+                inventoryFull = true;
                 break;
             }
         }
 
-        // Update VirtualInventory
-        if (!itemsToRemove.isEmpty()) {
-            StoragePageHolder holder = (StoragePageHolder) sourceInventory.getHolder(false);
-            SpawnerData spawnerData = holder.getSpawnerData();
-
-            spawnerData.removeItemsAndUpdateSellValue(itemsToRemove);
+        if (anyItemMoved) {
             spawnerData.updateHologramData();
-
             holder.updateOldUsedSlots();
         }
 
