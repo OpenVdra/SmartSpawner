@@ -5,6 +5,7 @@ import github.nighter.smartspawner.language.LanguageManager;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.config.SpawnerDisplayConfigurator;
+import github.nighter.smartspawner.spawner.utils.SpawnerDisplayName;
 import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -239,13 +240,12 @@ public class SpawnerItemFactory {
                 }
             }
             
-            String itemName = languageManager.getVanillaItemName(itemMaterial);
+            String itemName = SpawnerDisplayName.ofItem(plugin, configName, itemMaterial);
             String itemNameSmallCaps = languageManager.getSmallCaps(itemName);
             
             // Get loot config for this item spawner
-            var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
-            EntityLootConfig lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getItemSpawnerSettingsConfig().getLootConfig(itemMaterial);
+            EntityLootConfig lootConfig = plugin.getItemSpawnerSettingsConfig()
+                    .getLootConfig(configName, itemMaterial);
             List<LootItem> lootItems = lootConfig != null ? lootConfig.getAllItems() : Collections.emptyList();
             
             Map<String, String> placeholders = new HashMap<>();
@@ -256,10 +256,10 @@ public class SpawnerItemFactory {
             // Build loot items list similar to regular spawners
             List<LootItem> sortedLootItems = new ArrayList<>(lootItems);
             sortedLootItems.sort(Comparator.comparing(item -> item.material().name()));
-            String nameKey = itemKey("item_spawner", itemMaterial.name(), "name");
-            String lootItemsKey = itemKey("item_spawner", itemMaterial.name(), "loot_items");
-            String emptyLootKey = itemKey("item_spawner", itemMaterial.name(), "loot_items_empty");
-            String loreKey = itemKey("item_spawner", itemMaterial.name(), "lore");
+            String nameKey = itemKey("item_spawner", configName, itemMaterial.name(), "name");
+            String lootItemsKey = itemKey("item_spawner", configName, itemMaterial.name(), "loot_items");
+            String emptyLootKey = itemKey("item_spawner", configName, itemMaterial.name(), "loot_items_empty");
+            String loreKey = itemKey("item_spawner", configName, itemMaterial.name(), "lore");
             // Build translatable loot lines – each player sees item names in their own client language
             List<Component> lootComponents = new ArrayList<>(sortedLootItems.size());
             for (LootItem item : sortedLootItems) {
@@ -322,5 +322,11 @@ public class SpawnerItemFactory {
 
     private String itemKey(String section, String variant, String field) {
         return languageManager.getItemVariantKey(section, variant, field);
+    }
+
+    private String itemKey(String section, String variant, String fallbackVariant, String field) {
+        return variant == null
+                ? languageManager.getItemVariantKey(section, fallbackVariant, field)
+                : languageManager.getItemVariantKey(section, variant, fallbackVariant, field);
     }
 }

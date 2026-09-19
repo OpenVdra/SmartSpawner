@@ -14,6 +14,7 @@ import org.bukkit.profile.PlayerProfile;
 
 import java.net.URL;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
 public class SpawnerMobHeadTexture {
     private static final Map<EntityType, ItemStack> HEAD_CACHE = new EnumMap<>(EntityType.class);
     private static final Map<EntityType, SkullMeta> BASE_META_CACHE = new EnumMap<>(EntityType.class);
-    private static final Map<Material, ItemStack> ITEM_HEAD_CACHE = new EnumMap<>(Material.class);
+    private static final Map<String, ItemStack> ITEM_HEAD_CACHE = new HashMap<>();
     private static final Map<String, SkullMeta> CUSTOM_TEXTURE_META_CACHE = new java.util.concurrent.ConcurrentHashMap<>();
     private static final ItemStack DEFAULT_SPAWNER_BLOCK = new ItemStack(Material.SPAWNER);
 
@@ -156,14 +157,15 @@ public class SpawnerMobHeadTexture {
     }
 
     /**
-     * Get a custom head for an item spawner material
-     * 
-     * @param itemMaterial The material for the item spawner
+     * Get a custom head for an item spawner
+     *
+     * @param configName The item spawner name, which several entries may share a material under
+     * @param itemMaterial The base material for the item spawner
      * @param player The player requesting the head
      * @param metaModifier Consumer to modify the ItemMeta (can be null)
      * @return The configured ItemStack
      */
-    public static ItemStack getItemSpawnerHead(Material itemMaterial, Player player, Consumer<ItemMeta> metaModifier) {
+    public static ItemStack getItemSpawnerHead(String configName, Material itemMaterial, Player player, Consumer<ItemMeta> metaModifier) {
         if (itemMaterial == null) {
             ItemStack item = DEFAULT_SPAWNER_BLOCK.clone();
             if (metaModifier != null) {
@@ -172,17 +174,18 @@ public class SpawnerMobHeadTexture {
             return item;
         }
 
-        return getItemSpawnerHead(itemMaterial, metaModifier);
+        return getItemSpawnerHead(configName, itemMaterial, metaModifier);
     }
 
     /**
-     * Get a custom head for an item spawner material
-     * 
-     * @param itemMaterial The material for the item spawner
+     * Get a custom head for an item spawner
+     *
+     * @param configName The item spawner name, which several entries may share a material under
+     * @param itemMaterial The base material for the item spawner
      * @param metaModifier Consumer to modify the ItemMeta (can be null)
      * @return The configured ItemStack
      */
-    public static ItemStack getItemSpawnerHead(Material itemMaterial, Consumer<ItemMeta> metaModifier) {
+    public static ItemStack getItemSpawnerHead(String configName, Material itemMaterial, Consumer<ItemMeta> metaModifier) {
         if (itemMaterial == null) {
             ItemStack item = DEFAULT_SPAWNER_BLOCK.clone();
             if (metaModifier != null) {
@@ -201,18 +204,21 @@ public class SpawnerMobHeadTexture {
         }
 
         // Get head data from item spawner config
-        ItemSpawnerSettingsConfig.ItemHeadData headData = plugin.getItemSpawnerSettingsConfig().getHeadData(itemMaterial);
-        Material headMaterial = headData.getMaterial();
+        ItemSpawnerSettingsConfig config = plugin.getItemSpawnerSettingsConfig();
+        ItemSpawnerSettingsConfig.ItemHeadData headData = config.getHeadData(configName, itemMaterial);
 
-        // For item spawners, we just use the item material as the head (no custom textures)
-        ItemStack item = new ItemStack(headMaterial);
+        // For item spawners, we just use the item as the head (no custom textures)
+        ItemStack item = headData == null
+                ? config.getTemplate(configName, itemMaterial)
+                : new ItemStack(headData.getMaterial());
         if (metaModifier != null) {
             item.editMeta(metaModifier);
         }
 
         // Cache the unmodified version for reuse
-        if (metaModifier == null && !ITEM_HEAD_CACHE.containsKey(itemMaterial)) {
-            ITEM_HEAD_CACHE.put(itemMaterial, item.clone());
+        String cacheKey = configName != null ? configName : itemMaterial.name();
+        if (metaModifier == null && !ITEM_HEAD_CACHE.containsKey(cacheKey)) {
+            ITEM_HEAD_CACHE.put(cacheKey, item.clone());
         }
 
         return item;

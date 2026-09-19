@@ -34,7 +34,7 @@ public final class SpawnerDisplayConfigurator {
         spawner.setSpawnedType(EntityType.ITEM);
         // BlockStateMeta owns an unplaced, world-less spawner state. Paper's setSpawnedItem
         // implementation needs a real CraftWorld, so defer the complete item model until placement.
-        if (spawner.isPlaced()) {
+        if (spawner.isPlaced() && displayItem != null && displayItem.getType() != Material.AIR) {
             spawner.setSpawnedItem(displayItem);
         }
     }

@@ -56,6 +56,7 @@ SmartSpawner detects optional plugins and enables only the integrations availabl
 
 - **[AuraSkills](/docs/integrations/auraskills)**: XP from spawners counts toward skills
 - **[MythicMobs](/docs/integrations/mythicmobs)**: Custom mob drop tables
+- **[MMOItems](/docs/integrations/mmoitems)**: MMOItems items as spawner drops and as Item Spawners
 
 </FeatureCard>
 

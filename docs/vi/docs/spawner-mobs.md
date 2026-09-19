@@ -59,16 +59,23 @@ custom_spawner_name:
 Mỗi mục trong `loot` chỉ định vật phẩm qua trường `item`. Trường này bắt buộc: mục nào thiếu sẽ bị
 bỏ qua và báo trong console.
 
-`item` nhận ba dạng:
+`item` nhận bốn dạng:
 
 | Dạng | Ví dụ | Dùng khi |
 |------|-------|----------|
 | Tên material | `ARROW` | Vật phẩm thường |
 | Chuỗi vật phẩm của `/give` | `tipped_arrow[potion_contents={potion:"minecraft:poison"}]` | Potion, đồ phù phép, đồ đặt tên, mọi thứ có dữ liệu kèm theo |
 | `nbt:` kèm một mã | `nbt:H4sIAAAA...` | Vật phẩm sao chép nguyên vẹn từ trong game |
+| Tên plugin, dấu hai chấm, rồi id vật phẩm của plugin đó | `mmoitems:SWORD:CUTLASS` | Vật phẩm thuộc về plugin khác |
 
 Dạng thứ hai chính là chuỗi mà lệnh `/give` gợi ý sẵn trong game. Bạn dựng vật phẩm mong muốn bằng
 `/give`, sao chép phần sau tên người chơi, rồi dán vào đây trong dấu nháy đơn.
+
+Dạng thứ tư bắt đầu bằng tên plugin sở hữu vật phẩm; mọi thứ sau dấu hai chấm đầu tiên là cú pháp
+riêng của plugin đó, vì vậy một giá trị MMOItems mang hai dấu hai chấm. Hiện chỉ hỗ trợ
+[MMOItems](/vi/docs/integrations/mmoitems), và mục sẽ bị bỏ qua kèm thông báo console khi plugin
+không được cài. `minecraft:` không phải tên plugin: `minecraft:arrow` được đọc là material vanilla,
+còn `nbt` không bao giờ có thể là tên plugin.
 
 Các mục được đánh số, và con số chỉ là vị trí trong danh sách. Dòng `item` mới là thứ quyết định
 vật phẩm rơi ra, nhờ vậy cùng một material có thể xuất hiện nhiều lần:

@@ -73,6 +73,16 @@ custom_prices:
     ENDER_PEARL: 10.0
     WITHER_SKELETON_SKULL: 100.0
 ```
+
+An item owned by another plugin is priced under the exact value its loot entry names, and that price
+is used whatever `price_source_mode` says, because a shop plugin can only price a vanilla material.
+Keep dots out of the key: they are read as a path and the entry is ignored.
+
+```yaml
+custom_prices:
+  prices:
+    "mmoitems:MATERIAL:RUBY": 250.0
+```
 </ConfigProperty>
 
 </ConfigGroup>

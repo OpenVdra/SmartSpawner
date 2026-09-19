@@ -109,6 +109,14 @@ allprojects {
                 includeGroup("nl.rutgerkok")
             }
         }
+        maven {
+            name = "phoenixdevt"
+            url = uri("https://nexus.phoenixdevt.fr/repository/maven-public/")
+            content {
+                includeGroup("net.Indyuce")
+                includeModule("io.lumine", "MythicLib-dist")
+            }
+        }
     }
 
     // Compile, runtime and their test counterparts. `shade` is left unmatched so the shaded jar

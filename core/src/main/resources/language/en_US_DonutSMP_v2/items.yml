@@ -57,7 +57,8 @@ item_spawner:
       - ' &#5DB5F1 ᴅʀᴏᴘꜱ:'
       - '{loot_items}'
       - ''
-  # Material-specific sections override default per key. Unspecified keys use default.
+  # A section named after an entry in spawner_items.yml wins, then one named after that entry's
+  # material, then default. Unspecified keys fall back the same way.
   DIAMOND:
     name: '&#00E5FF{entity} Spawner'
     loot_items: '  &#EAFDFF • {amount} {item_name} &#00B8D4({chance}%)'

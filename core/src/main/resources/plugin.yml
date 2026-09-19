@@ -43,6 +43,9 @@ softdepend:
   #Drops Plugins
   - MythicMobs
 
+  # Custom Item Plugins
+  - MMOItems
+
 commands:
   smartspawner:
     description: Main command for SmartSpawner plugin

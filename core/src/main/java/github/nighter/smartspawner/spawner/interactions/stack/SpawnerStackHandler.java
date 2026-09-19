@@ -124,21 +124,26 @@ public class SpawnerStackHandler {
         }
 
         String handConfigName = SpawnerTypeChecker.getConfigName(itemInHand);
-        if (handConfigName != null && !handConfigName.equals(targetSpawner.getConfigName())) {
-            messageService.sendMessage(player, "spawner_different");
-            return false;
-        }
 
-        // If both are item spawners, check if they spawn the same item
+        // If both are item spawners, check they are the same item spawner
         if (isItemSpawnerItem && isTargetItemSpawner) {
             Material handItemMaterial = SpawnerTypeChecker.getItemSpawnerMaterial(itemInHand);
-            Material targetItemMaterial = targetSpawner.getSpawnedItemMaterial();
+            var config = plugin.getItemSpawnerSettingsConfig();
+            var definition = handConfigName != null
+                    ? config.getDefinition(handConfigName)
+                    : config.getDefaultDefinition(handItemMaterial);
+            String handDefinitionName = definition != null ? definition.name() : handConfigName;
 
-            if (handItemMaterial == null || targetItemMaterial == null || handItemMaterial != targetItemMaterial) {
+            if (handDefinitionName == null || !handDefinitionName.equals(targetSpawner.getConfigName())) {
                 messageService.sendMessage(player, "spawner_different");
                 return false;
             }
         } else {
+            if (handConfigName != null && !handConfigName.equals(targetSpawner.getConfigName())) {
+                messageService.sendMessage(player, "spawner_different");
+                return false;
+            }
+
             // For regular spawners, check entity type
             // Always check the entity type directly without caching
             Optional<EntityType> handEntityTypeOpt = getEntityTypeFromItem(itemInHand);

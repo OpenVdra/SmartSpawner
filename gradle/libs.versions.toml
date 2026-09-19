@@ -32,6 +32,8 @@ griefprevention = { module = "com.github.GriefPrevention:GriefPrevention", versi
 iridiumskyblock = { module = "com.iridium:IridiumSkyblock", version = "4.1.4" }
 lands = { module = "com.github.IncrediblePlugins:LandsAPI", version = "7.25.4" }
 minecodes-plots = { module = "pl.minecodes.plots:plugin-api", version = "4.6.2" }
+mmoitems = { module = "net.Indyuce:MMOItems-API", version = "6.10.1-SNAPSHOT" }
+mythiclib = { module = "io.lumine:MythicLib-dist", version = "1.7.1-SNAPSHOT" }
 mythicmobs = { module = "io.lumine:Mythic-Dist", version = "5.13.0" }
 nightcore = { module = "su.nightexpress.nightcore:main", version = "2.16.4" }
 plotsquared = { module = "com.intellectualsites.plotsquared:plotsquared-core", version = "7.6.0" }

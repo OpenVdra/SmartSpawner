@@ -27,6 +27,7 @@ public class ItemPriceManager {
 
     private final SmartSpawner plugin;
     private final Map<String, Double> itemPrices = new ConcurrentHashMap<>();
+    private final Set<String> pluginReferenceKeys = ConcurrentHashMap.newKeySet();
     private File sellFile;
 
     /**
@@ -146,12 +147,21 @@ public class ItemPriceManager {
 
     private void loadPrices() {
         itemPrices.clear();
+        pluginReferenceKeys.clear();
         ConfigurationSection prices = sellConfig.getConfigurationSection(PRICES_SECTION);
         if (prices == null) {
             return;
         }
         for (String key : prices.getKeys(false)) {
+            if (prices.isConfigurationSection(key)) {
+                plugin.getLogger().warning("Ignoring price entry '" + key + "' in " + SELL_FILE_NAME
+                        + ": a price key cannot contain a dot.");
+                continue;
+            }
             itemPrices.put(key, prices.getDouble(key, defaultPrice));
+            if (isPluginReference(key)) {
+                pluginReferenceKeys.add(key);
+            }
         }
     }
 
@@ -172,6 +182,42 @@ public class ItemPriceManager {
             default:
                 return defaultPrice;
         }
+    }
+
+    /**
+     * The price of a loot row, which names its item either by material or by a reference to another
+     * plugin's item. A reference with its own entry in the price list is answered from there whatever
+     * price_source_mode says: a shop plugin can only price a {@link Material}, so asking it would sell
+     * the item for what its base material is worth.
+     *
+     * @param configuredItem the item: value of the loot row
+     */
+    public double getPrice(String configuredItem, Material material) {
+        if (!economyEnabled) return 0.0;
+
+        Double referencePrice = pluginReferencePrice(configuredItem);
+        return referencePrice != null ? referencePrice : getPrice(material);
+    }
+
+    /** True when this loot value is priced by its own entry rather than by its material's. */
+    public boolean hasPluginReferencePrice(String configuredItem) {
+        return pluginReferencePrice(configuredItem) != null;
+    }
+
+    private Double pluginReferencePrice(String configuredItem) {
+        if (!customPricesEnabled || configuredItem == null
+                || !pluginReferenceKeys.contains(configuredItem)) {
+            return null;
+        }
+        return itemPrices.get(configuredItem);
+    }
+
+    /**
+     * Mirrors ConfiguredItemParser's order, so a value a material answers to is a material:
+     * {@code minecraft:arrow} is priced as an arrow and not as an item owned by "minecraft".
+     */
+    private static boolean isPluginReference(String key) {
+        return key.indexOf(':') >= 0 && Material.matchMaterial(key) == null;
     }
 
     private double getCustomPrice(Material material) {
@@ -232,6 +278,7 @@ public class ItemPriceManager {
             }
             shopIntegrationManager = null;
             itemPrices.clear();
+            pluginReferenceKeys.clear();
             plugin.getLogger().info("Storage selling disabled - all sell integration cleaned up.");
         }
     }
@@ -353,5 +400,6 @@ public class ItemPriceManager {
             shopIntegrationManager = null;
         }
         itemPrices.clear();
+        pluginReferenceKeys.clear();
     }
 }

@@ -47,16 +47,22 @@ custom_spawner_name:
 
 | Property | Format | Description |
 |----------|--------|-------------|
-| `item` (spawner level) | `DIAMOND` | Material used by this named Item Spawner entry |
+| `item` (spawner level) | `DIAMOND` | The item this named Item Spawner produces |
 | `experience` | `1` | XP generated per spawner trigger |
 | `nbt_data` | `nbt:...` | Exact item rendered as the rotating model inside the spawner cage |
 | `item` | `DIAMOND` | The item that drops. Omit it to use the entry name. |
 | `amount` | `1-1` | Base item quantity range per cycle |
 | `chance` | `100.0` | Drop probability (0.0 to 100.0) |
 
-`item` accepts a material name, a `/give` item string such as
-`tipped_arrow[potion_contents={potion:"minecraft:poison"}]`, or an `nbt:` code copied out of the
-game. See [Spawner Settings](/docs/spawner-mobs) for the full explanation.
+Both `item` fields accept a material name, a `/give` item string such as
+`tipped_arrow[potion_contents={potion:"minecraft:poison"}]`, an `nbt:` code copied out of the game,
+or an item owned by another plugin such as `mmoitems:MATERIAL:RUBY`. See
+[Spawner Settings](/docs/spawner-mobs) for the full explanation.
+
+An Item Spawner is identified by its entry name, so several entries can produce items that share a
+base material. Two entries built on `EMERALD`, one vanilla and one from
+[MMOItems](/docs/integrations/mmoitems), stay separate spawners: they keep their own drop table, own
+icon and own name, and they do not stack together.
 
 ::: tip Material names
 Every `material` value is a Bukkit material name in capital letters, for example `DIAMOND` or `NETHERITE_INGOT`. See the full list of valid names here: [Bukkit Material list](https://jd.papermc.io/paper/26.2/org/bukkit/Material.html).

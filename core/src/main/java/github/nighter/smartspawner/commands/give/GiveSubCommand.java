@@ -9,6 +9,7 @@ import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.BaseSubCommand;
 import github.nighter.smartspawner.utils.DynamicEntityValidator;
 import github.nighter.smartspawner.spawner.item.SpawnerItemFactory;
+import github.nighter.smartspawner.spawner.utils.SpawnerDisplayName;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -250,7 +251,7 @@ public class GiveSubCommand extends BaseSubCommand {
             target.playSound(target.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
 
             // Get formatted item names for placeholders
-            String itemName = plugin.getLanguageManager().getVanillaItemName(itemMaterial);
+            String itemName = SpawnerDisplayName.ofItem(plugin, definition.name(), itemMaterial);
             String smallCapsItemName = plugin.getLanguageManager().getSmallCaps(itemName);
 
             // Create placeholders for sender message (use "entity" key for compatibility with spawner messages)

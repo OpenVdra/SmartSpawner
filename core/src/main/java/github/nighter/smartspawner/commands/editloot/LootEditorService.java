@@ -1,6 +1,7 @@
 package github.nighter.smartspawner.commands.editloot;
 
 import github.nighter.smartspawner.SmartSpawner;
+import github.nighter.smartspawner.hooks.items.CustomItemRegistry;
 import github.nighter.smartspawner.spawner.config.ConfiguredItemParser;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -176,24 +177,28 @@ public class LootEditorService {
     /**
      * Points a loot row at an item the admin dropped into the capture GUI.
      *
-     * <p>A plain vanilla item is written as its material name so the file stays readable. Anything
-     * carrying extra data is written as a {@code nbt:} blob, the only form that survives a round trip
-     * without losing components.</p>
+     * <p>A plain vanilla item is written as its material name so the file stays readable, and an item
+     * another plugin owns is written as that plugin's reference. Anything else is written as a
+     * {@code nbt:} blob, the only form that survives a round trip without losing components.</p>
      */
     public void setLootItem(LootEditorTarget target, String key, String lootKey, ItemStack item) {
-        String value = describesItselfFully(item)
-                ? item.getType().name()
-                : ConfiguredItemParser.toNbtValue(item);
+        String value = describeItem(item);
         mutate(target, config -> config.set(key + ".loot." + lootKey + ".item", value));
+    }
+
+    private String describeItem(ItemStack item) {
+        if (describesItselfFully(item)) {
+            return item.getType().name();
+        }
+        String custom = CustomItemRegistry.describe(item);
+        return custom != null ? custom : ConfiguredItemParser.toNbtValue(item);
     }
 
     /** Adds a loot row for a dropped item under a generated, unused numeric label. */
     public String addLoot(LootEditorTarget target, String key, ItemStack item, int min, int max,
                           double chance, Integer durabilityMin, Integer durabilityMax) {
         String label = uniqueLootLabel(target, key);
-        String value = describesItselfFully(item)
-                ? item.getType().name()
-                : ConfiguredItemParser.toNbtValue(item);
+        String value = describeItem(item);
         int low = Math.max(0, Math.min(min, max));
         int high = Math.max(low, Math.max(min, max));
 

@@ -56,6 +56,7 @@ SmartSpawner tự phát hiện plugin tùy chọn và chỉ bật những tích 
 
 - **[AuraSkills](/vi/docs/integrations/auraskills)**: XP từ spawner được tính vào kỹ năng
 - **[MythicMobs](/vi/docs/integrations/mythicmobs)**: Bảng vật phẩm mob tùy chỉnh
+- **[MMOItems](/vi/docs/integrations/mmoitems)**: Vật phẩm MMOItems làm drop và làm Item Spawner
 
 </FeatureCard>
 

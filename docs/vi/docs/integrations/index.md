@@ -18,6 +18,8 @@ SmartSpawner phát hiện plugin tùy chọn khi khởi động và chỉ bật 
 
 <DocCard icon="Sparkles" title="MythicMobs" link="/vi/docs/integrations/mythicmobs" desc="Tạo vật phẩm Smart Spawner từ bảng drop mob tùy chỉnh." />
 
+<DocCard icon="Gem" title="MMOItems" link="/vi/docs/integrations/mmoitems" desc="Dùng vật phẩm MMOItems làm drop và làm Item Spawner." />
+
 <DocCard icon="Wrench" title="Khắc Phục Sự Cố" link="/vi/docs/integrations/troubleshooting" desc="Chẩn đoán lỗi phát hiện provider, bán vật phẩm và bảo vệ." />
 
 </CardGrid>

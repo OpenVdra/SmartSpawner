@@ -1,5 +1,7 @@
 package github.nighter.smartspawner.spawner.config;
 
+import github.nighter.smartspawner.hooks.items.CustomItemRegistry;
+import github.nighter.smartspawner.hooks.items.providers.CustomItemProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -19,14 +21,15 @@ import java.util.Base64;
  *   <tr><td>1</td><td>starts with {@code nbt:}</td><td>Base64 of raw NBT</td><td>{@code nbt:H4sIAAAA...}</td></tr>
  *   <tr><td>2</td><td>contains {@code [}</td><td>vanilla component syntax</td><td>{@code tipped_arrow[potion_contents={potion:"minecraft:poison"}]}</td></tr>
  *   <tr><td>3</td><td>matches a material</td><td>plain material</td><td>{@code ARROW}</td></tr>
- *   <tr><td>4</td><td>contains {@code :}</td><td>item owned by another plugin</td><td>{@code itemsadder:gems/ruby}</td></tr>
+ *   <tr><td>4</td><td>contains {@code :}</td><td>item owned by another plugin</td><td>{@code mmoitems:SWORD:CUTLASS}</td></tr>
  * </table>
  *
  * <p>Form 2 is the string the vanilla {@code /give} command autocompletes, so server owners can
  * build an item in game and copy it straight into the config. Form 1 is what an in-game editor
- * would write, since it round-trips any item losslessly. Form 4 is not resolved yet; it is rejected
- * with a clear message rather than silently treated as an unknown material, so the hook can be
- * added later without changing the config format.</p>
+ * would write, since it round-trips any item losslessly. Form 4 is handed to the
+ * {@link CustomItemProvider} claiming the part before the first colon; everything after it is that
+ * plugin's own syntax, so an MMOItems value carries two colons. A namespace no installed plugin
+ * claims is rejected with a clear message rather than silently treated as an unknown material.</p>
  *
  * <p>{@code nbt} is a reserved namespace: no plugin reference may use it.</p>
  */
@@ -68,10 +71,9 @@ public final class ConfiguredItemParser {
             return new ItemStack(material, 1);
         }
 
-        if (value.indexOf(':') >= 0) {
-            throw new IllegalArgumentException("'" + value + "' looks like an item from another plugin, "
-                    + "which is not supported yet. Use the item's material name, the /give syntax, "
-                    + "or an nbt: value instead");
+        int separator = value.indexOf(':');
+        if (separator >= 0) {
+            return fromProvider(value.substring(0, separator), value.substring(separator + 1), value);
         }
 
         throw new IllegalArgumentException("'" + value + "' is not a material available on this server version");
@@ -105,6 +107,30 @@ public final class ConfiguredItemParser {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("invalid item syntax: " + e.getMessage(), e);
         }
+    }
+
+    private static ItemStack fromProvider(String namespace, String id, String value) {
+        CustomItemProvider provider = CustomItemRegistry.find(namespace);
+        if (provider == null) {
+            throw new IllegalArgumentException("'" + value + "' looks like an item from another plugin, "
+                    + "but no installed plugin claims '" + namespace + "'. Use the item's material name, "
+                    + "the /give syntax, or an nbt: value instead");
+        }
+
+        ItemStack item;
+        try {
+            item = provider.createItem(id);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("'" + value + "' could not be read by "
+                    + provider.getPluginName() + ": " + e.getMessage(), e);
+        }
+
+        if (item == null || item.getType() == Material.AIR) {
+            throw new IllegalArgumentException("'" + value + "' resolved to an empty item");
+        }
+        return item.asQuantity(1);
     }
 
     /**
