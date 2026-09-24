@@ -22,7 +22,7 @@ bstats = { module = "org.bstats:bstats-bukkit", version = "3.2.1" }
 sqlite = { module = "org.xerial:sqlite-jdbc", version = "3.53.4.0" }
 
 # Hooks. Never bundled: the server either has the plugin or the hook stays dormant.
-auraskills = { module = "dev.aurelium:auraskills-api-bukkit", version = "2.3.12" }
+auraskills = { module = "dev.aurelium:auraskills-api-bukkit", version = "2.4.0" }
 bentobox = { module = "world.bentobox:bentobox", version = "3.22.3" }
 blocklocker = { module = "nl.rutgerkok:blocklocker", version = "1.13" }
 economyshopgui = { module = "com.github.Gypopo:EconomyShopGUI-API", version = "1.10.1" }
