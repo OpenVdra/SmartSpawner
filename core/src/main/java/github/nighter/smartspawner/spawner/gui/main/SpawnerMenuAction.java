@@ -211,6 +211,11 @@ public class SpawnerMenuAction implements Listener {
     }
 
     private void handleStorageClick(Player player, SpawnerData spawner, boolean playSound) {
+        // Refuse before opening: a refused open would already have closed this menu server-side.
+        if (plugin.getSpawnerStorageAction().isStorageInUseByOther(player, spawner)) {
+            messageService.sendMessage(player, "storage_in_use");
+            return;
+        }
         Inventory pageInventory = spawnerStorageUI.createStorageInventory(player, spawner, 1, -1);
         if (playSound) {
             player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 1.0f, 1.0f);

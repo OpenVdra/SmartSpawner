@@ -1,5 +1,6 @@
 package github.nighter.smartspawner.spawner.gui.storage;
 
+import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.api.events.SpawnerDropAllEvent;
 import github.nighter.smartspawner.api.events.SpawnerTakeAllEvent;
@@ -24,6 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -882,14 +884,31 @@ public class SpawnerStorageAction implements Listener {
             return;
         }
 
-        String spawnerId = holder.getSpawnerData().getSpawnerId();
+        if (isStorageInUseByOther(player, holder.getSpawnerData())) {
+            event.setCancelled(true);
+            messageService.sendMessage(player, "storage_in_use");
+            // Paper closes the previous menu server-side before this event without telling the client,
+            // which would leave the player on a stale GUI whose items it can take. Close it client-side too.
+            Scheduler.runEntityTask(player, () -> {
+                if (player.isOnline() && player.getOpenInventory().getType() == InventoryType.CRAFTING) {
+                    player.closeInventory();
+                }
+            });
+        }
+    }
+
+    /**
+     * Whether another player has this spawner's storage open. Callers that open the storage from
+     * another GUI check this first, so a refused player stays on the GUI they came from.
+     */
+    public boolean isStorageInUseByOther(Player player, SpawnerData spawner) {
+        String spawnerId = spawner.getSpawnerId();
         for (Player viewer : spawnerGuiViewManager.getViewers(spawnerId)) {
             if (!viewer.getUniqueId().equals(player.getUniqueId()) && isViewingStorage(viewer, spawnerId)) {
-                event.setCancelled(true);
-                messageService.sendMessage(player, "storage_in_use");
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     // Checks the open inventory rather than trusting the tracker, so a stale entry never locks the storage.
