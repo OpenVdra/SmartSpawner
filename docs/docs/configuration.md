@@ -6,9 +6,8 @@ Two areas have their own files. Selling and item prices are in `sell_integration
 
 Most settings apply on `/ss reload`. The ones marked RESTART are only read when the server starts.
 
-Mob and Item Spawner drop tables can also be managed in game. Use `/ss edit smartspawner` or
-`/ss edit itemspawner` to edit existing entries, and `/ss add smartspawner|itemspawner` to create
-one. See [Commands](/docs/commands) for the exact syntax and permissions.
+Mob and Item Spawner drop tables can also be edited in game with `/ss editloot <name>`. See
+[Commands](/docs/commands#ss-editloot) for how it works.
 
 Click any option or category to view additional information.
 

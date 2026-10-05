@@ -1,33 +1,12 @@
 # Mob Spawners
 
-The `spawner_mobs.yml` file in `plugins/SmartSpawner/` controls the drop tables, XP values, head textures, and optional drop chances for each mob type used by Smart Spawners.
+The `spawner_mobs.yml` file in `plugins/SmartSpawner/` controls the drops, XP, menu head and drop chance of every mob spawner.
 
-## In-game Management
+Every mob has one spawner under its own name, such as `zombie`. Extra spawners for the same mob, each with its own loot, go under `custom_spawners`.
 
-Use `/ss edit smartspawner` to edit existing mob entries. This editor is separate from the Item
-Spawner editor and has no switch button. To create an entry, use:
+## In-game Editing
 
-```bash
-/ss add smartspawner <mob> [name] [NBT tag]
-```
-
-The mob argument tab-completes living, spawnable entity types from the current server version and
-accepts namespaced IDs such as `minecraft:zombie`. The name is optional and defaults to a value such
-as `zombie_spawner`; spaces are converted to underscores. NBT is also optional and defaults to `{}`. When used,
-it is a summon-style SNBT compound and must include its outer braces:
-
-```bash
-/ss add smartspawner zombie {}
-/ss add smartspawner minecraft:zombie
-/ss add smartspawner zombie Boss Room {NoAI:1b,Silent:1b}
-```
-
-SmartSpawner validates the tag without spawning an entity and stores it as `nbt_data`. The tagged
-entity is rendered as the rotating model inside the spawner cage; the plugin still generates virtual
-loot and does not spawn that entity into the world. Existing entries are never overwritten.
-
-The loot screen has 27 slots and no pagination or navigation items. One lime stained-glass pane is
-shown immediately after the last configured loot item; click it to add an item, and it moves one slot forward.
+Use `/ss editloot <name>` to change a spawner's loot without opening the file. It works for both mob spawners and custom spawners, for example `/ss editloot zombie` or `/ss editloot golden_zombie`. See [Commands](/docs/commands#ss-editloot) for how the editor works.
 
 ::: info Drop Multiplier
 Each generation cycle rolls drops between **min_mobs** and **max_mobs** times (default: 1–4). The configured amounts are base values per mob; actual output is higher.
@@ -36,21 +15,56 @@ Each generation cycle rolls drops between **min_mobs** and **max_mobs** times (d
 ## Configuration Format
 
 ```yaml
-custom_spawner_name:
-  entity: MOB_NAME          # Required; controls the entity type
+zombie:                       # The mob's own spawner, named after the mob
   experience: <number>
-  nbt_data: <summon-style SNBT> # Present on entries created with /ss add
-  drop_chance: <percentage>   # Optional, defaults to 100.0 when omitted
+  drop_chance: <percentage>   # Optional, defaults to 100.0
+  nbt_data: <summon-style SNBT> # Optional
   mob_head:
     item: <MATERIAL>
-    hash_texture: <hash>    # null for vanilla heads
+    hash_texture: <hash>      # null for vanilla heads
   loot:                       # Optional
     1:
       item: <item>            # Required
       amount: <min>-<max>
       chance: <percentage>
       durability: <min>-<max> # Optional, for tools and weapons
+
+custom_spawners:
+  golden_zombie:              # Any name that is not a mob name
+    entity: ZOMBIE            # Required
+    display_name: Golden Zombie # Optional
+    loot:
+      1:
+        item: GOLD_INGOT
+        amount: 1-2
+        chance: 50.0
 ```
+
+## Custom Spawners
+
+A custom spawner is a second spawner for a mob that already has one, with its own loot. Players see it as a separate spawner: it has its own name, it cannot be stacked with the normal spawner of that mob, and `/ss give` gives it by its own name.
+
+- `entity` is required and names the mob.
+- `display_name` replaces the mob name everywhere players see this spawner: the item name, menu titles and the hologram. Use plain text, the colors come from the language files.
+- `experience`, `drop_chance`, `nbt_data` and `mob_head` are optional. Anything left out is taken from the mob's own spawner.
+- `loot` is never taken from the mob's spawner. A custom spawner without `loot` drops nothing.
+- The name must not be a mob name, and must be unique across `spawner_mobs.yml` and `spawner_items.yml`. The console warns about any name that breaks these rules.
+
+### Renaming a Custom Spawner
+
+Spawners already placed in the world remember the name they were given. To rename a custom spawner and keep the ones already placed, list the old name under `aliases`:
+
+```yaml
+custom_spawners:
+  golden_zombie:
+    entity: ZOMBIE
+    aliases: [lucky_zombie]
+    loot: ...
+```
+
+Placed spawners and spawner items with the old name then belong to `golden_zombie`. They stack with new ones, and placed spawners switch to the new name on their own.
+
+If a custom spawner is removed instead, its placed spawners work as the mob's own spawner and the console names the missing spawner once. Adding the entry back restores them.
 
 ## Naming an Item
 
@@ -72,8 +86,7 @@ Entries are numbered, and the number is only a position in the list. The `item` 
 what drops, which is why the same material can appear more than once:
 
 ```yaml
-poison_bogged_spawner:
-  entity: BOGGED
+bogged:
   loot:
     1:
       item: 'tipped_arrow[potion_contents={potion:"minecraft:poison"}]'
@@ -85,7 +98,7 @@ poison_bogged_spawner:
       chance: 10.0
 ```
 
-An entry the server cannot read is skipped and reported in the console with the mob and entry name.
+An entry the server cannot read is skipped and reported in the console with the spawner and entry name.
 The rest of the file still loads.
 
 ## Properties Reference
@@ -94,18 +107,20 @@ The rest of the file still loads.
 
 | Property | Format | Description |
 |----------|--------|-------------|
-| `entity` | `ZOMBIE` | Entity type used by this named spawner entry |
+| `entity` | `ZOMBIE` | The mob of a custom spawner. Only used under `custom_spawners`. |
+| `display_name` | `Golden Zombie` | Name players see instead of the mob name. |
+| `aliases` | `[lucky_zombie]` | Old names of a renamed custom spawner. |
 | `experience` | `5` | XP generated per spawner trigger |
 | `nbt_data` | `{profile:DrDonutt}` | Summon-style SNBT used by the rotating entity model inside the spawner cage |
 | `drop_chance` | `75.0` | Chance the Smart Spawner item drops when broken. Omit to use 100.0. |
-| `material` | `"PLAYER_HEAD"` | Head material displayed in the spawner block |
-| `hash_texture` | `"abc123..."` | Base64 texture hash for player heads. Use `null` for vanilla heads. |
+| `mob_head.item` | `"PLAYER_HEAD"` | Head shown for this spawner in menus |
+| `mob_head.hash_texture` | `"abc123..."` | Texture hash for player heads. Use `null` for vanilla heads. |
 
 ### Loot Properties
 
 | Property | Format | Description |
 |----------|--------|-------------|
-| `item` | `ARROW` | The item that drops. Omit it to use the entry name. |
+| `item` | `ARROW` | The item that drops |
 | `amount` | `1-3` | Item quantity range per generation cycle |
 | `chance` | `50.0` | Drop probability (0.0 to 100.0) |
 | `durability` | `1-384` | Durability range for tools and weapons. A single value like `100` is also accepted. |
@@ -125,8 +140,7 @@ The `drop_chance` property controls whether the **spawner item itself** drops wh
 
 ```yaml
 # Reference: https://minecraft.wiki/w/Cow#Drops
-cow_spawner:
-  entity: COW
+cow:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
@@ -142,38 +156,11 @@ cow_spawner:
       chance: 100.0
 ```
 
-### Mob with Vanilla Head
-
-```yaml
-# Reference: https://minecraft.wiki/w/Skeleton#Drops
-skeleton_spawner:
-  entity: SKELETON
-  experience: 5
-  mob_head:
-    item: "SKELETON_SKULL"
-    hash_texture: null
-  loot:
-    1:
-      item: BONE
-      amount: 0-2
-      chance: 66.67
-    2:
-      item: ARROW
-      amount: 0-2
-      chance: 66.67
-    3:
-      item: BOW
-      amount: 1-1
-      chance: 8.5
-      durability: 1-384
-```
-
 ### Mob with Weapons
 
 ```yaml
 # Reference: https://minecraft.wiki/w/Wither_Skeleton#Drops
-wither_skeleton_spawner:
-  entity: WITHER_SKELETON
+wither_skeleton:
   experience: 5
   mob_head:
     item: "WITHER_SKELETON_SKULL"
@@ -188,42 +175,16 @@ wither_skeleton_spawner:
       amount: 0-2
       chance: 66.67
     3:
-      item: WITHER_SKELETON_SKULL
-      amount: 0-1
-      chance: 2.5
-    4:
       item: STONE_SWORD
       amount: 1-1
       chance: 8.5
       durability: 1-131
 ```
 
-### Mob with Tipped Arrows
-
-```yaml
-# Reference: https://minecraft.wiki/w/Bogged#Drops
-bogged_spawner:
-  entity: BOGGED
-  experience: 5
-  mob_head:
-    item: "PLAYER_HEAD"
-    hash_texture: "a3b9003ba2d05562c75119b8a62185c67130e9282f7acbac4bc2824c21eb95d9"
-  loot:
-    1:
-      item: BONE
-      amount: 0-2
-      chance: 66.67
-    2:
-      item: 'tipped_arrow[potion_contents={potion:"minecraft:poison"}]'
-      amount: 0-2
-      chance: 50.0
-```
-
 ### Mob with Potions and Enchanted Gear
 
 ```yaml
-witch_spawner:
-  entity: WITCH
+witch:
   experience: 5
   loot:
     1:
@@ -239,26 +200,44 @@ witch_spawner:
 ### Mob with Drop Chance
 
 ```yaml
-allay_spawner:
-  entity: ALLAY
+allay:
   experience: 0
   drop_chance: 75.0   # 75% chance to drop spawner when broken
-  mob_head:
-    item: "PLAYER_HEAD"
-    hash_texture: "df5de940bfe499c59ee8dac9f9c3919e7535eff3a9acb16f4842bf290f4c679f"
 ```
 
 ### Mob with No Drops
 
 ```yaml
 # Reference: https://minecraft.wiki/w/Bat#Drops
-bat_spawner:
-  entity: BAT
+bat:
   experience: 0
-  mob_head:
-    item: "PLAYER_HEAD"
-    hash_texture: "81c5cc1f40005a33124c60384a0f17a36a7b19ae90f1c32dcda17b5b56280a43"
   # No loot section = no item drops
+```
+
+### Two Spawners for the Same Mob
+
+The normal zombie spawner, plus a rarer one that drops gold and uses a different head. The custom one keeps the zombie's XP because it leaves `experience` out.
+
+```yaml
+zombie:
+  experience: 5
+  loot:
+    1:
+      item: ROTTEN_FLESH
+      amount: 0-2
+      chance: 100.0
+
+custom_spawners:
+  golden_zombie:
+    entity: ZOMBIE
+    display_name: Golden Zombie
+    mob_head:
+      item: GOLD_BLOCK
+    loot:
+      1:
+        item: GOLD_INGOT
+        amount: 1-2
+        chance: 50.0
 ```
 
 ## Drop Mechanics
@@ -298,19 +277,23 @@ Some mobs use built-in skull types with `hash_texture: null`:
 
 ## Default Configuration
 
-SmartSpawner ships with a comprehensive default `spawner_mobs.yml` covering all vanilla mob types with accurate drop tables based on [Minecraft Wiki](https://minecraft.wiki) data.
+SmartSpawner ships with a default `spawner_mobs.yml` covering all vanilla mob types with drop tables based on [Minecraft Wiki](https://minecraft.wiki) data.
 
 - **View online:** [GitHub: spawner_mobs.yml](https://github.com/OpenVdra/SmartSpawner/blob/main/core/src/main/resources/spawner_mobs.yml)
 - **Reset:** Delete `spawner_mobs.yml` and restart the server to regenerate it.
 
+::: info Upgrading from 1.8
+A `spawner_mobs.yml` in the 1.8 layout is converted on the first start. Entries named like `zombie_spawner` become `zombie`, other entries move to `custom_spawners`, and the old file is kept as `spawner_mobs.yml.1.8-backup`. Placed spawners and spawner items keep working.
+:::
+
 ## Give Spawners
 
 ```bash
-/ss give <player> smart_spawner <name> [amount]
+/ss give <player> <name> [amount]
 ```
 
 Examples:
 ```bash
-/ss give Steve smart_spawner skeleton_spawner 1
-/ss give Player123 smart_spawner wither_skeleton_spawner 3
+/ss give Steve skeleton 1
+/ss give Player123 golden_zombie 3
 ```

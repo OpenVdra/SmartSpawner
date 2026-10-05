@@ -25,7 +25,7 @@ Generates raw items such as diamonds, emeralds, and netherite ingots instead of 
 
 - Configured in `spawner_items.yml`
 - Uses the same GUI and stacking system as Smart Spawners
-- Give one with `/ss give <player> item_spawner <MATERIAL>`
+- Give one with `/ss give <player> <name>`
 
 </FeatureCard>
 
@@ -34,7 +34,7 @@ Generates raw items such as diamonds, emeralds, and netherite ingots instead of 
 A normal Minecraft spawner given through the plugin command. It spawns actual mobs with standard behavior.
 
 - No GUI or stacking
-- Give one with `/ss give <player> vanilla_spawner <type>`
+- Give one with `/ss give <player> vanilla <type>`
 - Useful for hybrid setups
 
 </FeatureCard>

@@ -27,6 +27,7 @@ SmartSpawner dùng hệ thống quyền nhiều lớp. Nhấp vào node quyền 
 <PermRow permission="smartspawner.command.clear" defaultVal="op">Cho phép dọn hologram và ghost spawner bằng <code>/ss clear</code>.</PermRow>
 <PermRow permission="smartspawner.command.near" defaultVal="op">Cho phép quét và đánh dấu spawner gần đó bằng <code>/ss near</code>.</PermRow>
 <PermRow permission="smartspawner.command.set" defaultVal="op">Cho phép đặt kích thước stack, phạm vi và độ trễ bằng <code>/ss set</code>.</PermRow>
+<PermRow permission="smartspawner.command.editloot" defaultVal="op">Cho phép chỉnh loot của spawner trong game bằng <code>/ss editloot</code>.</PermRow>
 <PermRow permission="smartspawner.command.language" defaultVal="op">Cho phép đổi ngôn ngữ bằng <code>/ss language</code>.</PermRow>
 <PermRow permission="smartspawner.command.gui_layout" defaultVal="op">Cho phép đổi bố cục GUI bằng <code>/ss gui_layout</code>.</PermRow>
 

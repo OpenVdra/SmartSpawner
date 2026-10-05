@@ -20,33 +20,26 @@ All commands require `smartspawner.command.use` as a base permission, plus the s
 
 ## Give Commands
 
-### /ss give smart_spawner
+### /ss give
 
-<CommandRow commands="/ss give &lt;player&gt; smart_spawner &lt;name&gt; [amount]" permission="smartspawner.command.give">
+<CommandRow :commands="['/ss give &lt;player&gt; &lt;spawner&gt; [amount]', '/ss give &lt;player&gt; vanilla &lt;mob&gt; [amount]']" permission="smartspawner.command.give">
 
-Give Smart Spawners to a player.
+Give spawners to a player.
 
 - `<player>`: Target player. Only online player names are suggested.
-- `<name>`: Top-level entry name from `spawner_mobs.yml` (e.g. `zombie_spawner`)
-- `[amount]`: Optional quantity 1–6400, default: 1
+- `<spawner>`: A spawner name from `spawner_mobs.yml` or `spawner_items.yml`, such as `zombie`, `diamond` or a custom spawner like `golden_zombie`.
+- `vanilla <mob>`: A plain Minecraft spawner. No GUI, no stacking, same as a spawner placed in creative mode.
+- `[amount]`: Optional quantity 1-6400, default: 1
 
-</CommandRow>
+Examples: `/ss give Steve zombie 5`, `/ss give Steve golden_zombie`, `/ss give Steve vanilla skeleton`.
 
-### /ss give vanilla_spawner
+::: tip
+Give each spawner a name that is unique across both files. The console warns about names that clash.
+:::
 
-<CommandRow commands="/ss give &lt;player&gt; vanilla_spawner &lt;type&gt; [amount]" permission="smartspawner.command.give">
-
-Give vanilla Minecraft spawners to a player. No GUI, no stacking. Works exactly like a default spawner block placed from creative mode.
-
-</CommandRow>
-
-### /ss give item_spawner
-
-<CommandRow commands="/ss give &lt;player&gt; item_spawner &lt;name&gt; [amount]" permission="smartspawner.command.give">
-
-Give Item Spawners to a player.
-
-- `<name>`: Top-level entry name from `spawner_items.yml` (e.g. `diamond_spawner`)
+::: info
+The old form (`smart_spawner`, `item_spawner`, `vanilla_spawner`) still works from the console and command blocks, so existing shop, crate and vote setups keep working.
+:::
 
 </CommandRow>
 
@@ -104,6 +97,20 @@ Set a property on a spawner. Without coordinates, targets the spawner the player
 
 - Properties: `stack_size`, `range`, `delay`
 - `delay` accepts raw ticks or time format: `25s`, `1m`, `1h`
+
+</CommandRow>
+
+### /ss editloot
+
+<CommandRow commands="/ss editloot &lt;name&gt;" permission="smartspawner.command.editloot">
+
+Edit a spawner's loot in game instead of editing the config file.
+
+- `<name>`: A spawner name from `spawner_mobs.yml` or `spawner_items.yml`, such as `blaze` or a custom spawner. Tab completion lists every valid name.
+- Left click a loot item to change its amount, chance and durability. Amount and durability accept a range like `0-2`.
+- Right click a loot item to swap it for another item.
+- Click the green pane after the last item to add new loot. The item is saved exactly as you drop it, including its name, lore and enchantments.
+- Changes are saved to the file and apply right away. No reload is needed.
 
 </CommandRow>
 

@@ -54,6 +54,10 @@ Allows scanning and highlighting nearby spawners with <code>/ss near</code>.
 Allows setting spawner properties (stack size, range, delay) with <code>/ss set</code>.
 </PermRow>
 
+<PermRow permission="smartspawner.command.editloot" defaultVal="op">
+Allows editing spawner loot in game with <code>/ss editloot</code>.
+</PermRow>
+
 <PermRow permission="smartspawner.command.language" defaultVal="op">
 Allows changing the active language with <code>/ss language</code>.
 </PermRow>

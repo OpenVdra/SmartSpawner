@@ -2,20 +2,11 @@
 
 File `plugins/SmartSpawner/spawner_items.yml` cấu hình vật phẩm, XP và texture cho **Item Spawner**, loại spawner tạo nguyên liệu trực tiếp thay vì drop mob.
 
-## Quản Lý Trong Game
+Mỗi item spawner nằm dưới tên vật phẩm của nó, ví dụ `diamond`. Spawner thêm cho cùng một vật phẩm, mỗi cái có loot riêng, đặt trong `custom_spawners`.
 
-Dùng `/ss edit itemspawner` để chỉnh các mục hiện có. GUI này tách biệt với trình sửa mob
-SmartSpawner và không có nút chuyển đổi.
+## Chỉnh Trong Game
 
-Chạy `/ss add itemspawner [name]` để tạo mục mới. Tên là tùy chọn, khoảng trắng tự đổi thành dấu gạch dưới;
-nếu bỏ qua, tên mặc định dựa trên material như `diamond_spawner`. Đặt vật phẩm nguồn vào GUI rồi xác nhận.
-
-Vật phẩm nguồn được lưu nguyên vẹn dưới `nbt_data` và hiển thị bên trong lồng spawner. Các
-component của item được giữ lại, vì vậy splash potion Jump Boost sẽ hiện đúng potion đó thay vì một
-splash potion thường. Mục cũ chưa có `nbt_data` sẽ dùng loot hợp lệ đầu tiên làm model.
-
-Màn hình loot có 27 slot, không phân trang và không có item điều hướng. Chỉ có một ô kính xanh lá nằm
-ngay sau loot cuối cùng; khi thêm item, ô kính này tự dịch sang slot kế tiếp.
+Dùng `/ss editloot <name>` để đổi loot của item spawner mà không cần mở file, ví dụ `/ss editloot diamond`. Xem trang [Lệnh](/vi/docs/commands#ss-editloot) để biết cách dùng trình chỉnh.
 
 ::: info Hệ số vật phẩm
 Mỗi chu kỳ tạo từ **min_mobs** đến **max_mobs** lần (mặc định 1–4). Số lượng cấu hình là giá trị cơ sở được nhân lên.
@@ -28,11 +19,9 @@ Item Spawner không hỗ trợ potion hoặc enchanted book. Chỉ **tipped arro
 ## Định Dạng Cấu Hình
 
 ```yaml
-
-custom_spawner_name:
-  item: ITEM_MATERIAL
+diamond:                    # Spawner của chính vật phẩm, đặt theo tên vật phẩm
   experience: <number>
-  nbt_data: <vật phẩm đã bắt> # Được /ss add itemspawner tự ghi
+  nbt_data: <item>          # Tùy chọn, vật phẩm hiển thị trong lồng spawner
   loot:
     1:
       item: <item>          # Bắt buộc
@@ -40,22 +29,48 @@ custom_spawner_name:
       chance: <percentage>
   mob_head:
     item: <MATERIAL>
-    hash_texture: <hash>  # null đối với material vanilla
+    hash_texture: <hash>    # null cho material vanilla
+
+custom_spawners:
+  rich_diamond:             # Tên bất kỳ không trùng tên vật phẩm
+    item: DIAMOND           # Bắt buộc
+    display_name: Rich Diamond # Tùy chọn
+    loot:
+      1:
+        item: DIAMOND_BLOCK
+        amount: 1-1
+        chance: 10.0
 ```
+
+## Spawner Custom
+
+Item spawner custom hoạt động giống [spawner mob custom](/vi/docs/spawner-mobs#spawner-custom):
+
+- `item` là bắt buộc, cho biết vật phẩm nào.
+- `display_name` thay tên vật phẩm ở mọi chỗ người chơi nhìn thấy spawner này.
+- `experience`, `nbt_data` và `mob_head` là tùy chọn. Thiếu cái nào thì lấy từ spawner của chính vật phẩm đó.
+- `loot` không bao giờ lấy từ spawner của vật phẩm. Spawner custom không có `loot` thì không rơi gì.
+- Muốn đổi tên mà vẫn giữ các spawner đã đặt, hãy liệt kê tên cũ trong `aliases`.
 
 ## Tham Chiếu Thuộc Tính
 
 | Thuộc tính | Định dạng | Mô tả |
 |------------|-----------|-------|
-| `material` | `"DIAMOND"` | Material chính mà spawner đại diện |
-| `experience` | `1` | XP tạo ra mỗi lần kích hoạt |
-| `nbt_data` | `nbt:...` | Vật phẩm nguyên vẹn được dùng làm model quay bên trong lồng spawner |
+| `item` (cấp spawner) | `DIAMOND` | Vật phẩm của spawner custom. Chỉ dùng trong `custom_spawners`. |
+| `display_name` | `Rich Diamond` | Tên người chơi thấy thay cho tên vật phẩm |
+| `aliases` | `[old_name]` | Tên cũ của một spawner custom đã đổi tên |
+| `experience` | `1` | XP tạo ra mỗi lần spawner kích hoạt |
+| `nbt_data` | `nbt:...` | Vật phẩm hiển thị dạng model quay bên trong lồng spawner |
+| `item` (loot) | `DIAMOND` | Vật phẩm sẽ rơi |
 | `amount` | `1-1` | Khoảng số lượng cơ sở mỗi chu kỳ |
-| `chance` | `100.0` | Xác suất rơi từ 0.0–100.0 |
-| `item` | `DIAMOND` | Vật phẩm sẽ rơi. Bỏ trống để dùng tên mục. |
+| `chance` | `100.0` | Xác suất rơi (0.0 đến 100.0) |
+
+`item` nhận tên material, chuỗi vật phẩm của `/give` như
+`tipped_arrow[potion_contents={potion:"minecraft:poison"}]`, hoặc mã `nbt:` sao chép từ trong game.
+Xem giải thích đầy đủ tại [Spawner Mob](/vi/docs/spawner-mobs#đat-ten-vat-pham).
 
 ::: tip Tên material
-Mỗi giá trị `material` là một tên material của Bukkit viết hoa, ví dụ `DIAMOND` hoặc `NETHERITE_INGOT`. Xem danh sách đầy đủ các tên hợp lệ tại đây: [Danh sách Bukkit Material](https://jd.papermc.io/paper/26.2/org/bukkit/Material.html).
+Mọi giá trị material là tên material của Bukkit viết hoa, ví dụ `DIAMOND` hoặc `NETHERITE_INGOT`. Danh sách đầy đủ: [Bukkit Material list](https://jd.papermc.io/paper/26.2/org/bukkit/Material.html).
 :::
 
 ## Ví Dụ
@@ -63,11 +78,11 @@ Mỗi giá trị `material` là một tên material của Bukkit viết hoa, ví
 ### Spawner Tài Nguyên Cơ Bản
 
 ```yaml
-diamond_spawner:
-  item: DIAMOND
+diamond:
   experience: 1
   loot:
     1:
+      item: DIAMOND
       amount: 1-1
       chance: 100.0
   mob_head:
@@ -78,29 +93,27 @@ diamond_spawner:
 ### Nhiều Loại Vật Phẩm
 
 ```yaml
-gold_ingot_spawner:
-  item: GOLD_INGOT
+gold_ingot:
   experience: 1
   loot:
     1:
+      item: GOLD_INGOT
       amount: 1-2
       chance: 100.0
     2:
+      item: GOLD_NUGGET
       amount: 3-5
       chance: 50.0
-  mob_head:
-    item: "GOLD_INGOT"
-    hash_texture: null
 ```
 
-### Custom Head
+### Head Có Texture Riêng
 
 ```yaml
-emerald_spawner:
-  item: EMERALD
+emerald:
   experience: 1
   loot:
     1:
+      item: EMERALD
       amount: 1-1
       chance: 100.0
   mob_head:
@@ -108,38 +121,38 @@ emerald_spawner:
     hash_texture: "abc123def456..."
 ```
 
-### Tipped Arrow
+### Spawner Tipped Arrow
 
 ```yaml
-tipped_arrow_spawner:
-  item: TIPPED_ARROW
+tipped_arrow:
   experience: 1
   loot:
     1:
       item: 'tipped_arrow[potion_contents={potion:"minecraft:poison"}]'
       amount: 8-16
       chance: 100.0
-  mob_head:
-    material: "TIPPED_ARROW"
-    hash_texture: null
 ```
 
-### Vật Phẩm Hiếm Có Xác Suất
+### Hai Spawner Cho Cùng Một Vật Phẩm
 
 ```yaml
-totem_of_undying_spawner:
-  item: TOTEM_OF_UNDYING
-  experience: 2
+diamond:
+  experience: 1
   loot:
     1:
+      item: DIAMOND
       amount: 1-1
-      chance: 75.0
-    2:
-      amount: 1-3
-      chance: 50.0
-  mob_head:
-    material: "TOTEM_OF_UNDYING"
-    hash_texture: null
+      chance: 100.0
+
+custom_spawners:
+  rich_diamond:
+    item: DIAMOND
+    display_name: Rich Diamond
+    loot:
+      1:
+        item: DIAMOND_BLOCK
+        amount: 1-1
+        chance: 10.0
 ```
 
 ## Cơ Chế Tạo Vật Phẩm
@@ -161,13 +174,17 @@ SmartSpawner có sẵn cấu hình cho các nguyên liệu giá trị phổ bi�
 - **Xem online:** [spawner_items.yml trên GitHub](https://github.com/OpenVdra/SmartSpawner/blob/main/core/src/main/resources/spawner_items.yml)
 - **Đặt lại:** Xóa file rồi khởi động lại để tạo mới
 
+::: info Nâng Cấp Từ 1.8
+File `spawner_items.yml` theo định dạng 1.8 được chuyển đổi ở lần khởi động đầu tiên, giống như [`spawner_mobs.yml`](/vi/docs/spawner-mobs#cau-hinh-mac-đinh). File cũ được giữ lại thành `spawner_items.yml.1.8-backup`.
+:::
+
 ## Trao Item Spawner
 
 ```bash
-/ss give <player> item_spawner <name> [amount]
+/ss give <player> <name> [amount]
 ```
 
 ```bash
-/ss give Steve item_spawner diamond_spawner 1
-/ss give Player123 item_spawner netherite_ingot_spawner 5
+/ss give Steve diamond 1
+/ss give Player123 rich_diamond 5
 ```

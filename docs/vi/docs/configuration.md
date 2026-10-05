@@ -6,9 +6,8 @@ Hai phần có file riêng. Bán vật phẩm và bảng giá nằm trong `sell_
 
 Hầu hết tùy chọn áp dụng khi chạy `/ss reload`. Những tùy chọn ghi RESTART chỉ được đọc lúc máy chủ khởi động.
 
-Có thể quản lý bảng loot của mob và Item Spawner ngay trong game. Dùng `/ss edit smartspawner` hoặc
-`/ss edit itemspawner` để chỉnh mục hiện có, và `/ss add smartspawner|itemspawner` để tạo mục mới.
-Xem trang [Lệnh](/vi/docs/commands) để biết cú pháp và quyền tương ứng.
+Có thể chỉnh bảng loot của mob và Item Spawner ngay trong game bằng `/ss editloot <name>`. Xem
+trang [Lệnh](/vi/docs/commands#ss-editloot) để biết cách dùng.
 
 Nhấp vào một tùy chọn hoặc nhóm để xem thông tin chi tiết.
 

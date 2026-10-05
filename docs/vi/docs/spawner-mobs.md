@@ -1,62 +1,74 @@
 # Spawner Mob
 
-File `plugins/SmartSpawner/spawner_mobs.yml` điều khiển bảng vật phẩm, XP, texture head và tỷ lệ rơi tùy chọn cho từng loại mob của Smart Spawner.
+File `plugins/SmartSpawner/spawner_mobs.yml` điều khiển bảng vật phẩm, XP, head trong menu và tỷ lệ rơi của mọi spawner mob.
 
-## Quản Lý Trong Game
+Mỗi mob có một spawner nằm dưới chính tên của nó, ví dụ `zombie`. Spawner thêm cho cùng một mob, mỗi cái có loot riêng, đặt trong `custom_spawners`.
 
-Dùng `/ss edit smartspawner` để chỉnh các mục mob hiện có. GUI này tách biệt với trình sửa Item
-Spawner và không có nút chuyển đổi. Để tạo mục mới, dùng:
+## Chỉnh Trong Game
 
-```bash
-/ss add smartspawner <mob> [name] [NBT tag]
-```
+Dùng `/ss editloot <name>` để đổi loot của spawner mà không cần mở file. Lệnh dùng được cho cả spawner mob lẫn spawner custom, ví dụ `/ss editloot zombie` hoặc `/ss editloot golden_zombie`. Xem trang [Lệnh](/vi/docs/commands#ss-editloot) để biết cách dùng trình chỉnh.
 
-Đối số mob tự động gợi ý các entity sống và có thể spawn trong phiên bản máy chủ hiện tại, đồng thời
-nhận ID có namespace như `minecraft:zombie`. NBT là tùy chọn và mặc định là `{}`. Khi được dùng, NBT
-là compound SNBT giống `/summon` và phải có cặp dấu ngoặc nhọn bên ngoài:
-
-Tên cấu hình cũng là tùy chọn và mặc định theo entity, ví dụ `zombie_spawner`. Khoảng trắng trong tên
-được tự động đổi thành dấu gạch dưới.
-
-```bash
-/ss add smartspawner zombie {}
-/ss add smartspawner minecraft:zombie
-/ss add smartspawner zombie Boss Room {NoAI:1b,Silent:1b}
-```
-
-SmartSpawner kiểm tra NBT mà không spawn entity thật rồi lưu vào `nbt_data`. Entity mang NBT này
-được dùng làm model quay bên trong lồng spawner; plugin vẫn tạo loot ảo và không spawn mob đó ra thế
-giới. Lệnh không ghi đè mục đã tồn tại.
-
-Màn hình loot có 27 slot, không phân trang và không có item điều hướng. Chỉ có một ô kính xanh lá nằm
-ngay sau loot cuối cùng; khi thêm item, ô kính này tự dịch sang slot kế tiếp.
-
-::: info Hệ số vật phẩm
-Mỗi chu kỳ tạo vật phẩm chạy từ **min_mobs** đến **max_mobs** lần (mặc định 1–4). Số lượng cấu hình là giá trị cơ sở cho mỗi mob nên đầu ra thực tế có thể lớn hơn.
+::: info Hệ Số Rơi Đồ
+Mỗi chu kỳ roll vật phẩm từ **min_mobs** đến **max_mobs** lần (mặc định 1–4). Số lượng cấu hình là giá trị gốc cho mỗi mob; đầu ra thực tế cao hơn.
 :::
 
 ## Định Dạng Cấu Hình
 
 ```yaml
-custom_spawner_name:
-  entity: MOB_NAME
+zombie:                       # Spawner của chính mob, đặt theo tên mob
   experience: <number>
-  nbt_data: <SNBT giống lệnh summon> # Có trên mục được tạo bằng /ss add
-  drop_chance: <percentage>   # Tùy chọn, mặc định 100.0 nếu bỏ qua
+  drop_chance: <percentage>   # Tùy chọn, mặc định 100.0
+  nbt_data: <SNBT kiểu /summon> # Tùy chọn
   mob_head:
     item: <MATERIAL>
-    hash_texture: <hash>    # null đối với head vanilla
+    hash_texture: <hash>      # null cho head vanilla
   loot:                       # Tùy chọn
     1:
       item: <item>            # Bắt buộc
       amount: <min>-<max>
       chance: <percentage>
       durability: <min>-<max> # Tùy chọn, cho công cụ và vũ khí
+
+custom_spawners:
+  golden_zombie:              # Tên bất kỳ không trùng tên mob
+    entity: ZOMBIE            # Bắt buộc
+    display_name: Golden Zombie # Tùy chọn
+    loot:
+      1:
+        item: GOLD_INGOT
+        amount: 1-2
+        chance: 50.0
 ```
 
-## Chỉ Định Vật Phẩm
+## Spawner Custom
 
-Mỗi mục trong `loot` chỉ định vật phẩm qua trường `item`. Trường này bắt buộc: mục nào thiếu sẽ bị
+Spawner custom là spawner thứ hai cho một mob đã có spawner, với loot riêng. Người chơi thấy nó như một spawner khác: có tên riêng, không stack được với spawner thường của mob đó, và `/ss give` trao nó theo tên riêng.
+
+- `entity` là bắt buộc, cho biết mob nào.
+- `display_name` thay tên mob ở mọi chỗ người chơi nhìn thấy spawner này: tên item, tiêu đề menu và hologram. Chỉ dùng chữ thường, màu lấy từ file ngôn ngữ.
+- `experience`, `drop_chance`, `nbt_data` và `mob_head` là tùy chọn. Thiếu cái nào thì lấy từ spawner của chính mob đó.
+- `loot` không bao giờ lấy từ spawner của mob. Spawner custom không có `loot` thì không rơi gì.
+- Tên không được trùng tên mob, và không được trùng giữa `spawner_mobs.yml` và `spawner_items.yml`. Console sẽ cảnh báo mọi tên vi phạm.
+
+### Đổi Tên Spawner Custom
+
+Spawner đã đặt ngoài thế giới nhớ tên được trao lúc đầu. Muốn đổi tên một spawner custom mà vẫn giữ các spawner đã đặt, hãy liệt kê tên cũ trong `aliases`:
+
+```yaml
+custom_spawners:
+  golden_zombie:
+    entity: ZOMBIE
+    aliases: [lucky_zombie]
+    loot: ...
+```
+
+Khi đó spawner đã đặt và item spawner mang tên cũ sẽ thuộc về `golden_zombie`. Chúng stack được với spawner mới, và spawner đã đặt tự chuyển sang tên mới.
+
+Nếu xóa hẳn một spawner custom, các spawner đã đặt của nó hoạt động như spawner của chính mob đó, và console báo tên spawner bị thiếu một lần. Thêm lại mục đó là chúng trở về như cũ.
+
+## Đặt Tên Vật Phẩm
+
+Mỗi mục loot ghi vật phẩm của nó ở trường `item`. Trường này bắt buộc: mục nào thiếu sẽ bị
 bỏ qua và báo trong console.
 
 `item` nhận ba dạng:
@@ -74,8 +86,7 @@ Các mục được đánh số, và con số chỉ là vị trí trong danh sá
 vật phẩm rơi ra, nhờ vậy cùng một material có thể xuất hiện nhiều lần:
 
 ```yaml
-poison_bogged_spawner:
-  entity: BOGGED
+bogged:
   loot:
     1:
       item: 'tipped_arrow[potion_contents={potion:"minecraft:poison"}]'
@@ -87,7 +98,7 @@ poison_bogged_spawner:
       chance: 10.0
 ```
 
-Mục nào máy chủ không đọc được sẽ bị bỏ qua và báo trong console kèm tên mob và tên mục. Phần còn
+Mục nào máy chủ không đọc được sẽ bị bỏ qua và báo trong console kèm tên spawner và tên mục. Phần còn
 lại của file vẫn nạp bình thường.
 
 ## Tham Chiếu Thuộc Tính
@@ -96,27 +107,30 @@ lại của file vẫn nạp bình thường.
 
 | Thuộc tính | Định dạng | Mô tả |
 |------------|-----------|-------|
+| `entity` | `ZOMBIE` | Mob của spawner custom. Chỉ dùng trong `custom_spawners`. |
+| `display_name` | `Golden Zombie` | Tên người chơi thấy thay cho tên mob |
+| `aliases` | `[lucky_zombie]` | Tên cũ của một spawner custom đã đổi tên |
 | `experience` | `5` | XP tạo ra mỗi lần spawner kích hoạt |
 | `nbt_data` | `{profile:DrDonutt}` | SNBT kiểu `/summon` dùng cho model entity quay bên trong lồng spawner |
 | `drop_chance` | `75.0` | Xác suất vật phẩm Smart Spawner rơi khi bị phá; bỏ qua để dùng 100.0 |
-| `material` | `"PLAYER_HEAD"` | Material head hiển thị trong block spawner |
-| `hash_texture` | `"abc123..."` | Hash texture cho player head; dùng `null` cho head vanilla |
+| `mob_head.item` | `"PLAYER_HEAD"` | Head hiển thị cho spawner này trong menu |
+| `mob_head.hash_texture` | `"abc123..."` | Hash texture cho player head; dùng `null` cho head vanilla |
 
 ### Thuộc Tính Vật Phẩm
 
 | Thuộc tính | Định dạng | Mô tả |
 |------------|-----------|-------|
-| `item` | `ARROW` | Vật phẩm sẽ rơi. Bỏ trống để dùng tên mục. |
+| `item` | `ARROW` | Vật phẩm sẽ rơi |
 | `amount` | `1-3` | Khoảng số lượng vật phẩm mỗi chu kỳ |
-| `chance` | `50.0` | Xác suất rơi từ 0.0 đến 100.0 |
-| `durability` | `1-384` | Khoảng độ bền của công cụ và vũ khí. Một giá trị đơn như `100` cũng được chấp nhận. |
+| `chance` | `50.0` | Xác suất rơi (0.0 đến 100.0) |
+| `durability` | `1-384` | Khoảng độ bền cho công cụ và vũ khí. Cũng nhận một giá trị đơn như `100`. |
 
-## Tỷ Lệ Rơi Khi Phá Spawner
+## Tỷ Lệ Rơi Spawner Khi Phá
 
-`drop_chance` quyết định **vật phẩm spawner** có rơi khi block bị phá hay không. Nó độc lập với `chance` trong `loot`, vốn điều khiển vật phẩm được tạo.
+Thuộc tính `drop_chance` quyết định **vật phẩm spawner** có rơi ra khi spawner bị phá hay không. Nó độc lập với `chance` của loot.
 
-- Bỏ qua `drop_chance`: spawner luôn rơi, tỷ lệ 100%.
-- Khi đặt giá trị, mỗi lần phá có xác suất tương ứng để trả lại vật phẩm spawner.
+- Nếu **không đặt** `drop_chance`, spawner luôn rơi (100%).
+- Nếu có đặt, mỗi lần phá có đúng tỷ lệ đó để nhận lại vật phẩm spawner.
 - Khi bật `sneak_break`, spawner có `drop_chance` **không thể** bị phá cả stack khi cúi; người chơi phải phá từng chiếc.
 - Người có `smartspawner.break.bypassdropchance` luôn nhận vật phẩm và dùng được mọi tính năng stack.
 
@@ -125,8 +139,7 @@ lại của file vẫn nạp bình thường.
 ### Mob Dùng Custom Head
 
 ```yaml
-cow_spawner:
-  entity: COW
+cow:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
@@ -142,36 +155,10 @@ cow_spawner:
       chance: 100.0
 ```
 
-### Mob Dùng Head Vanilla
-
-```yaml
-skeleton_spawner:
-  entity: SKELETON
-  experience: 5
-  mob_head:
-    item: "SKELETON_SKULL"
-    hash_texture: null
-  loot:
-    1:
-      item: BONE
-      amount: 0-2
-      chance: 66.67
-    2:
-      item: ARROW
-      amount: 0-2
-      chance: 66.67
-    3:
-      item: BOW
-      amount: 1-1
-      chance: 8.5
-      durability: 1-384
-```
-
 ### Mob Có Vũ Khí
 
 ```yaml
-wither_skeleton_spawner:
-  entity: WITHER_SKELETON
+wither_skeleton:
   experience: 5
   mob_head:
     item: "WITHER_SKELETON_SKULL"
@@ -186,41 +173,16 @@ wither_skeleton_spawner:
       amount: 0-2
       chance: 66.67
     3:
-      item: WITHER_SKELETON_SKULL
-      amount: 0-1
-      chance: 2.5
-    4:
       item: STONE_SWORD
       amount: 1-1
       chance: 8.5
       durability: 1-131
 ```
 
-### Mob Có Tipped Arrow
-
-```yaml
-bogged_spawner:
-  entity: BOGGED
-  experience: 5
-  mob_head:
-    item: "PLAYER_HEAD"
-    hash_texture: "a3b9003ba2d05562c75119b8a62185c67130e9282f7acbac4bc2824c21eb95d9"
-  loot:
-    1:
-      item: BONE
-      amount: 0-2
-      chance: 66.67
-    2:
-      item: 'tipped_arrow[potion_contents={potion:"minecraft:poison"}]'
-      amount: 0-2
-      chance: 50.0
-```
-
 ### Mob Có Potion Và Đồ Phù Phép
 
 ```yaml
-witch_spawner:
-  entity: WITCH
+witch:
   experience: 5
   loot:
     1:
@@ -236,25 +198,43 @@ witch_spawner:
 ### Mob Có Tỷ Lệ Rơi Spawner
 
 ```yaml
-allay_spawner:
-  entity: ALLAY
+allay:
   experience: 0
   drop_chance: 75.0
-  mob_head:
-    item: "PLAYER_HEAD"
-    hash_texture: "df5de940bfe499c59ee8dac9f9c3919e7535eff3a9acb16f4842bf290f4c679f"
 ```
 
 ### Mob Không Có Vật Phẩm
 
 ```yaml
-bat_spawner:
-  entity: BAT
+bat:
   experience: 0
-  mob_head:
-    item: "PLAYER_HEAD"
-    hash_texture: "81c5cc1f40005a33124c60384a0f17a36a7b19ae90f1c32dcda17b5b56280a43"
   # Không có mục loot = không tạo vật phẩm
+```
+
+### Hai Spawner Cho Cùng Một Mob
+
+Spawner zombie thường, cùng một spawner hiếm hơn rơi vàng và dùng head khác. Spawner custom giữ XP của zombie vì nó không khai báo `experience`.
+
+```yaml
+zombie:
+  experience: 5
+  loot:
+    1:
+      item: ROTTEN_FLESH
+      amount: 0-2
+      chance: 100.0
+
+custom_spawners:
+  golden_zombie:
+    entity: ZOMBIE
+    display_name: Golden Zombie
+    mob_head:
+      item: GOLD_BLOCK
+    loot:
+      1:
+        item: GOLD_INGOT
+        amount: 1-2
+        chance: 50.0
 ```
 
 ## Cơ Chế Tạo Vật Phẩm
@@ -297,13 +277,17 @@ SmartSpawner cung cấp `spawner_mobs.yml` đầy đủ cho mọi mob vanilla v�
 - **Xem online:** [spawner_mobs.yml trên GitHub](https://github.com/OpenVdra/SmartSpawner/blob/main/core/src/main/resources/spawner_mobs.yml)
 - **Đặt lại:** Xóa file rồi khởi động lại máy chủ
 
+::: info Nâng Cấp Từ 1.8
+File `spawner_mobs.yml` theo định dạng 1.8 được chuyển đổi ở lần khởi động đầu tiên. Các mục có tên như `zombie_spawner` thành `zombie`, các mục còn lại chuyển vào `custom_spawners`, và file cũ được giữ lại thành `spawner_mobs.yml.1.8-backup`. Spawner đã đặt và item spawner vẫn hoạt động bình thường.
+:::
+
 ## Trao Spawner
 
 ```bash
-/ss give <player> smart_spawner <name> [amount]
+/ss give <player> <name> [amount]
 ```
 
 ```bash
-/ss give Steve smart_spawner skeleton_spawner 1
-/ss give Player123 smart_spawner wither_skeleton_spawner 3
+/ss give Steve skeleton 1
+/ss give Player123 golden_zombie 3
 ```

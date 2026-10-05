@@ -20,33 +20,26 @@ Mọi lệnh cần quyền gốc `smartspawner.command.use` cùng node cụ th�
 
 ## Lệnh Trao Spawner
 
-### /ss give smart_spawner
+### /ss give
 
-<CommandRow commands="/ss give &lt;player&gt; smart_spawner &lt;name&gt; [amount]" permission="smartspawner.command.give">
+<CommandRow :commands="['/ss give &lt;player&gt; &lt;spawner&gt; [amount]', '/ss give &lt;player&gt; vanilla &lt;mob&gt; [amount]']" permission="smartspawner.command.give">
 
-Trao Smart Spawner cho người chơi.
+Trao spawner cho người chơi.
 
 - `<player>`: Người chơi đích. Chỉ gợi ý tên người chơi đang online.
-- `<name>`: Tên mục cấp cao nhất trong `spawner_mobs.yml`, ví dụ `zombie_spawner`
-- `[amount]`: Số lượng tùy chọn từ 1–6400, mặc định 1
+- `<spawner>`: Tên spawner trong `spawner_mobs.yml` hoặc `spawner_items.yml`, như `zombie`, `diamond` hoặc một spawner custom như `golden_zombie`.
+- `vanilla <mob>`: Spawner Minecraft thường. Không GUI, không xếp chồng, giống spawner đặt từ chế độ sáng tạo.
+- `[amount]`: Số lượng tùy chọn từ 1-6400, mặc định 1
 
-</CommandRow>
+Ví dụ: `/ss give Steve zombie 5`, `/ss give Steve golden_zombie`, `/ss give Steve vanilla skeleton`.
 
-### /ss give vanilla_spawner
+::: tip
+Đặt tên spawner không trùng nhau giữa hai file. Console sẽ cảnh báo khi có tên bị trùng.
+:::
 
-<CommandRow commands="/ss give &lt;player&gt; vanilla_spawner &lt;type&gt; [amount]" permission="smartspawner.command.give">
-
-Trao spawner Minecraft vanilla. Không GUI, không xếp chồng; hoạt động như block spawner mặc định đặt từ chế độ sáng tạo.
-
-</CommandRow>
-
-### /ss give item_spawner
-
-<CommandRow commands="/ss give &lt;player&gt; item_spawner &lt;name&gt; [amount]" permission="smartspawner.command.give">
-
-Trao Item Spawner cho người chơi.
-
-- `<name>`: Tên mục cấp cao nhất trong `spawner_items.yml`, ví dụ `diamond_spawner`
+::: info
+Cú pháp cũ (`smart_spawner`, `item_spawner`, `vanilla_spawner`) vẫn chạy từ console và command block, nên cấu hình shop, crate, vote hiện có không bị ảnh hưởng.
+:::
 
 </CommandRow>
 
@@ -104,6 +97,20 @@ Quét spawner trong bán kính đã cho (mặc định 50, tối đa 200) và đ
 
 - Thuộc tính: `stack_size`, `range`, `delay`
 - `delay` nhận tick thô hoặc định dạng thời gian: `25s`, `1m`, `1h`
+
+</CommandRow>
+
+### /ss editloot
+
+<CommandRow commands="/ss editloot &lt;name&gt;" permission="smartspawner.command.editloot">
+
+Chỉnh loot của spawner ngay trong game thay vì sửa file cấu hình.
+
+- `<name>`: Tên spawner trong `spawner_mobs.yml` hoặc `spawner_items.yml`, như `blaze` hoặc một spawner custom. Tab-complete liệt kê mọi tên hợp lệ.
+- Click trái vào một loot để đổi số lượng, tỉ lệ rơi và độ bền. Số lượng và độ bền nhận khoảng như `0-2`.
+- Click phải vào một loot để thay bằng vật phẩm khác.
+- Click ô kính xanh ngay sau loot cuối cùng để thêm loot mới. Vật phẩm được lưu đúng như khi bạn thả vào, gồm cả tên, lore và phù phép.
+- Thay đổi được lưu vào file và áp dụng ngay, không cần reload.
 
 </CommandRow>
 
