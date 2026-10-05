@@ -2,6 +2,36 @@
 
 All notable changes to SmartSpawner are documented in this file.
 
+## 1.8.3
+
+### Fixed
+- Opening a spawner's storage while another player was using it could leave the menu stuck open with its ghost items takeable. In creative mode those items were kept. The player now stays on the spawner menu with a "storage in use" message.
+
+### Added
+- Custom spawners: any number of extra spawners for the same mob or item, each with its own loot, set up under `custom_spawners`. They stack only with each other and are given by their own name.
+- `display_name` gives a spawner its own name on the item, in menus and on the hologram, so players can tell custom spawners apart.
+- Each spawner can have its own menu head and drop chance. A custom spawner takes anything it leaves out, except loot, from the normal spawner of its mob or item.
+- A custom spawner can be renamed without losing the ones already placed by listing the old name under `aliases`.
+- The console warns about spawner names that clash, and about placed spawners whose spawner was removed from the settings files.
+
+### Changed
+- `/ss give` is shorter: `/ss give <player> <spawner> [amount]`, for example `/ss give Steve zombie 5`. Vanilla spawners use `/ss give <player> vanilla <mob> [amount]`.
+- `spawner_mobs.yml` and `spawner_items.yml` use a simpler layout. Each mob or item is listed under its own name, and custom spawners have their own section. See the details below.
+
+### Notes
+- Both settings files are converted on the first start, and the old files are kept with a `.1.8-backup` ending. Placed spawners and spawner items keep working and stack with new ones. No action is required.
+- The old give form (`smart_spawner`, `item_spawner`, `vanilla_spawner`) still works from the console and command blocks, so shop, crate and vote setups need no changes.
+
+<details>
+<summary>Configuration file details</summary>
+
+- Entries are keyed by the mob or item itself: `zombie_spawner:` with `entity: ZOMBIE` becomes `zombie:`, and `diamond_spawner:` with `item: DIAMOND` becomes `diamond:`.
+- Entries that were not named after their mob or item move under `custom_spawners`, keeping their `entity` or `item` line.
+- New optional keys on every entry: `display_name` and `aliases`.
+- Spawner names now match the entry keys, so `zombie_spawner` is `zombie` in commands. The old names are still accepted.
+
+</details>
+
 ## 1.8.2
 
 **This release fixes a critical item duplication exploit. Update as soon as possible.**
