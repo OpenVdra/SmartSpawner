@@ -54,7 +54,7 @@ zshop = { module = "fr.maxlego08.shop:zshop-api", version = "3.3.6" }
 # take the newest version anything asks for. After bumping paper-api, recheck against:
 #   ./gradlew :core:dependencies --configuration compileClasspath
 provided-annotations = { module = "org.jetbrains:annotations", version = "26.1.0" }
-provided-checkerqual = { module = "org.checkerframework:checker-qual", version = "4.2.3" }
+provided-checkerqual = { module = "org.checkerframework:checker-qual", version = "4.3.0" }
 provided-errorprone = { module = "com.google.errorprone:error_prone_annotations", version = "2.50.0" }
 provided-fastutil = { module = "it.unimi.dsi:fastutil", version = "8.5.19" }
 provided-gson = { module = "com.google.code.gson:gson", version = "2.14.0" }
