@@ -38,8 +38,6 @@ public class SpawnerMenuUI {
     private final LanguageManager languageManager;
 
     // Format strings - initialized in constructor to avoid repeated lookups
-    private String lootItemFormat;
-    private String emptyLootMessage;
 
     // Cached materials from layout config (for performance)
     private Material cachedStorageMaterial = Material.CHEST;
@@ -59,8 +57,6 @@ public class SpawnerMenuUI {
 
     public void loadConfig() {
         clearCache();
-        this.lootItemFormat = languageManager.getGuiItemName(LOOT_ITEM_FORMAT_KEY, EMPTY_PLACEHOLDERS);
-        this.emptyLootMessage = languageManager.getGuiItemName(EMPTY_LOOT_MESSAGE_KEY, EMPTY_PLACEHOLDERS);
 
         // OPTIMIZATION: Cache materials from layout config for performance
         // Find buttons by their action instead of name
@@ -191,12 +187,7 @@ public class SpawnerMenuUI {
 
     private Inventory createMenu(SpawnerData spawner, GuiLayout layout) {
         // Get entity name with caching - for item spawners, use item name
-        String entityName;
-        if (spawner.isItemSpawner()) {
-            entityName = languageManager.getVanillaItemName(spawner.getSpawnedItemMaterial());
-        } else {
-            entityName = languageManager.getFormattedMobName(spawner.getEntityType());
-        }
+        String entityName = spawner.getDisplayName();
         String entityNameSmallCaps = languageManager.getSmallCaps(entityName);
 
         // Use string builder for efficient placeholder creation
@@ -296,82 +287,6 @@ public class SpawnerMenuUI {
         return chestItem;
     }
 
-    private String buildLootItemsText(EntityType entityType, Map<ItemSignature, Long> storedItems) {
-        // Create material-to-amount map for quick lookups
-        Map<Material, Long> materialAmountMap = new HashMap<>();
-        for (Map.Entry<ItemSignature, Long> entry : storedItems.entrySet()) {
-            Material material = entry.getKey().getMaterial();
-            materialAmountMap.merge(material, entry.getValue(), Long::sum);
-        }
-
-        // Get possible loot items
-        EntityLootConfig lootConfig = plugin.getSpawnerSettingsConfig().getLootConfig(entityType);
-        List<LootItem> possibleLootItems = lootConfig != null
-                ? lootConfig.getAllItems()
-                : Collections.emptyList();
-
-        // Return early for empty cases
-        if (possibleLootItems.isEmpty() && storedItems.isEmpty()) {
-            return emptyLootMessage;
-        }
-
-        // Use StringBuilder for efficient string concatenation
-        StringBuilder builder = new StringBuilder(Math.max(possibleLootItems.size(), storedItems.size()) * 40);
-
-        if (!possibleLootItems.isEmpty()) {
-            // Sort items by name for consistent display
-            possibleLootItems.sort(Comparator.comparing(item -> languageManager.getVanillaItemName(item.material())));
-
-            for (LootItem lootItem : possibleLootItems) {
-                Material material = lootItem.material();
-                long amount = materialAmountMap.getOrDefault(material, 0L);
-
-                String materialName = languageManager.getVanillaItemName(material);
-                String formattedAmount = languageManager.formatNumber(amount);
-                String chance = String.format("%.1f", lootItem.chance()) + "%";
-
-                // Format the line with minimal string operations
-                String line = lootItemFormat
-                        .replace("{item_name}", materialName)
-                        .replace("{amount}", formattedAmount)
-                        .replace("{raw_amount}", String.valueOf(amount))
-                        .replace("{chance}", chance);
-
-                builder.append(line).append('\n');
-            }
-        } else if (!storedItems.isEmpty()) {
-            // Sort items by name
-            List<Map.Entry<ItemSignature, Long>> sortedItems =
-                    new ArrayList<>(storedItems.entrySet());
-            sortedItems.sort(Comparator.comparing(e -> e.getKey().getMaterialName()));
-
-            for (Map.Entry<ItemSignature, Long> entry : sortedItems) {
-                Material material = entry.getKey().getMaterial();
-                long amount = entry.getValue();
-
-                String materialName = languageManager.getVanillaItemName(material);
-                String formattedAmount = languageManager.formatNumber(amount);
-
-                // Format with minimal replacements
-                String line = lootItemFormat
-                        .replace("{item_name}", materialName)
-                        .replace("{amount}", formattedAmount)
-                        .replace("{raw_amount}", String.valueOf(amount))
-                        .replace("{chance}", "");
-
-                builder.append(line).append('\n');
-            }
-        }
-
-        // Remove trailing newline if it exists
-        int length = builder.length();
-        if (length > 0 && builder.charAt(length - 1) == '\n') {
-            builder.setLength(length - 1);
-        }
-
-        return builder.toString();
-    }
-
     public ItemStack createSpawnerInfoItem(Player player, SpawnerData spawner, GuiButton button) {
         // Get important data upfront
         EntityType entityType = spawner.getEntityType();
@@ -419,13 +334,7 @@ public class SpawnerMenuUI {
 
         // Entity information
         if (usedPlaceholders.contains("entity") || usedPlaceholders.contains("ᴇɴᴛɪᴛʏ")) {
-            String entityName;
-            // For item spawners, use the item name instead of "Item Spawner"
-            if (spawner.isItemSpawner()) {
-                entityName = languageManager.getVanillaItemName(spawner.getSpawnedItemMaterial());
-            } else {
-                entityName = languageManager.getFormattedMobName(entityType);
-            }
+            String entityName = spawner.getDisplayName();
             if (usedPlaceholders.contains("entity")) {
                 placeholders.put("entity", entityName);
             }
@@ -527,21 +436,21 @@ public class SpawnerMenuUI {
 
         // Check if this is an item spawner and use appropriate head
         if (spawner.isItemSpawner()) {
-            // For item spawners, use the item material as the head
-            spawnerItem = SpawnerMobHeadTexture.getItemSpawnerHead(spawner.getSpawnedItemMaterial(), player, metaModifier);
+            // For item spawners, use the head configured in spawner_items.yml
+            spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, metaModifier);
         } else if (button != null && button.getMaterial() == Material.PLAYER_HEAD && button.getCustomTexture() != null && !button.getCustomTexture().trim().isEmpty()) {
             // Use custom texture from GUI layout if provided
             spawnerItem = SpawnerMobHeadTexture.getCustomHeadFromTexture(button.getCustomTexture(), metaModifier);
         } else if (button != null && button.getMaterial() == Material.PLAYER_HEAD) {
-            // Fallback to entity-based custom head (from spawner_mobs.yml)
-            spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, player, metaModifier);
+            // Fallback to this spawner's own head (from spawner_mobs.yml)
+            spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, metaModifier);
         } else if (button != null) {
             // Use the configured material
             spawnerItem = new ItemStack(button.getMaterial());
             spawnerItem.editMeta(metaModifier);
         } else {
             // Fallback to default behavior
-            spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, player, metaModifier);
+            spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, metaModifier);
         }
 
         if (spawnerItem.getType() == Material.SPAWNER) ItemTooltipUtil.hideTooltip(spawnerItem);

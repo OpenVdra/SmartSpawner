@@ -12,58 +12,60 @@ import org.bukkit.inventory.ItemStack;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages the item spawner settings configuration
+ * Loads {@code spawner_items.yml}: one base spawner per item, keyed by the item itself, plus any
+ * number of custom spawners under {@code custom_spawners}. See {@link SpawnerFileLayout} for the shape.
+ *
+ * <p>A custom spawner inherits its head, {@code nbt_data} and {@code experience} from the base spawner
+ * of the same item when it leaves them out. Its loot is never inherited.</p>
  */
 public class ItemSpawnerSettingsConfig {
     private static final String RESOURCE = "spawner_items.yml";
     /** Replaced by {@link #RESOURCE} in 1.8.0. Never read, only reported once. */
     private static final String LEGACY_RESOURCE = "item_spawners_settings.yml";
+    private static final String TYPE_KEY = "item";
 
     private final SmartSpawner plugin;
-    private FileConfiguration config;
     private final File configFile;
-    
-    /**
-     * Shown when an entry names no head of its own, or names one that does not exist. Not a config
-     * key: it is only ever a fallback, so a server owner has nothing useful to change here.
-     */
-    private static final Material FALLBACK_HEAD = Material.SPAWNER;
 
-    private final Map<Material, ItemHeadData> itemHeadMap = new EnumMap<>(Material.class);
-    private final Set<Material> validItemSpawnerMaterials = new HashSet<>();
-    
-    // Loot data for item spawners
-    private final Map<Material, EntityLootConfig> itemLootConfigs = new ConcurrentHashMap<>();
-    private final Map<Material, ItemStack> displayItems = new EnumMap<>(Material.class);
-    private final Map<String, ItemDefinition> definitionsByName = new HashMap<>();
-    private final Map<String, ItemStack> displayItemsByName = new HashMap<>();
-    private final Map<Material, ItemDefinition> defaultDefinitionsByMaterial = new EnumMap<>(Material.class);
-    
+    private final Map<String, ItemDefinition> definitionsByName = new LinkedHashMap<>();
+    private final Map<String, String> aliasToName = new HashMap<>();
+    private final Map<Material, ItemDefinition> baseDefinitions = new EnumMap<>(Material.class);
+    private final Map<String, String> sectionPaths = new HashMap<>();
+
     public ItemSpawnerSettingsConfig(SmartSpawner plugin) {
         this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder(), RESOURCE);
     }
-    
+
     /**
      * Load or create the item spawners settings configuration
      */
     public void load() {
-        // Create config file if it doesn't exist
         if (!configFile.exists()) {
             saveDefaultConfig();
             SupersededConfigNotice.warn(plugin, RESOURCE, LEGACY_RESOURCE);
         }
-        
-        // Load the configuration
-        config = YamlConfiguration.loadConfiguration(configFile);
-        
-        // Parse configuration
-        parseConfig();
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        if (SpawnerFileLayout.isLegacy(config, TYPE_KEY)) {
+            SpawnerFileLayout.backup(configFile, plugin.getLogger());
+            SpawnerFileLayout.convertLegacy(config, TYPE_KEY, ItemSpawnerSettingsConfig::baseIdOf);
+            try {
+                config.save(configFile);
+            } catch (IOException e) {
+                plugin.getLogger().severe("Failed to save converted " + RESOURCE + ": " + e.getMessage());
+            }
+        }
+
+        parseConfig(config);
     }
-    
+
+    public void reload() {
+        load();
+    }
+
     /**
      * Save the default configuration from resources
      */
@@ -73,10 +75,10 @@ public class ItemSpawnerSettingsConfig {
             if (inputStream == null) {
                 return;
             }
-            
+
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                  BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))) {
-                
+
                 String line;
                 while ((line = reader.readLine()) != null) {
                     writer.write(line);
@@ -87,233 +89,226 @@ public class ItemSpawnerSettingsConfig {
             plugin.getLogger().severe("Failed to create default spawner_items.yml: " + e.getMessage());
         }
     }
-    
-    /**
-     * Parse the configuration and populate item head data
-     */
-    private void parseConfig() {
-        itemHeadMap.clear();
-        validItemSpawnerMaterials.clear();
-        itemLootConfigs.clear();
-        displayItems.clear();
+
+    private static Material materialOf(String raw) {
+        String name = SpawnerConfigName.normalize(raw).toUpperCase(Locale.ROOT);
+        if (name.isEmpty()) return null;
+        Material material = Material.getMaterial(name);
+        return material != null && material.isItem() && !material.isAir() ? material : null;
+    }
+
+    private static String baseIdOf(String raw) {
+        Material material = materialOf(raw);
+        return material == null ? null : baseId(material);
+    }
+
+    private static String baseId(Material material) {
+        return material.name().toLowerCase(Locale.ROOT);
+    }
+
+    private void parseConfig(FileConfiguration config) {
+        SpawnerNameNotices.reset();
         definitionsByName.clear();
-        displayItemsByName.clear();
-        defaultDefinitionsByMaterial.clear();
-        
-        // Parse each item's configuration
-        for (String configName : config.getKeys(false)) {
-            // Anything that is not a section is a stray scalar, not an entry.
-            ConfigurationSection itemSection = config.getConfigurationSection(configName);
-            if (itemSection == null) continue;
+        aliasToName.clear();
+        baseDefinitions.clear();
+        sectionPaths.clear();
 
-            // Validate material type
-            Material material;
-            try {
-                String materialName = itemSection.getString("item", configName);
-                material = Material.valueOf(materialName == null ? "" : materialName.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Item for '" + configName + "' is invalid or missing in " + RESOURCE);
+        for (String key : config.getKeys(false)) {
+            if (key.equals(SpawnerFileLayout.CUSTOM_SECTION)) continue;
+            ConfigurationSection section = config.getConfigurationSection(key);
+            if (section == null) continue;
+
+            Material material = materialOf(key);
+            if (material == null) {
+                plugin.getLogger().warning("'" + key + "' in " + RESOURCE + " is not an item name. Custom spawners go under "
+                        + SpawnerFileLayout.CUSTOM_SECTION + ".");
                 continue;
             }
-
-            String normalizedName = itemSection.contains("item")
-                    ? SpawnerConfigName.normalize(configName)
-                    : SpawnerConfigName.defaultName(material.name());
-            if (normalizedName.isEmpty() || definitionsByName.containsKey(normalizedName)) {
-                plugin.getLogger().warning("Duplicate or invalid spawner name '" + configName + "' in " + RESOURCE);
+            String id = baseId(material);
+            if (definitionsByName.containsKey(id)) {
+                plugin.getLogger().warning("'" + key + "' in " + RESOURCE + " repeats the " + id + " spawner and is ignored.");
                 continue;
             }
+            register(parseEntry(id, material, section, true, null), key);
+        }
 
-            // Parse head texture data
-            parseHeadTexture(material, itemSection);
-            ItemStack displayItem = parseDisplayItem(material, itemSection);
-            
-            // Parse loot data
-            parseLootData(material, itemSection);
-            
-            // Add to valid materials set
-            validItemSpawnerMaterials.add(material);
-            ItemDefinition definition = new ItemDefinition(normalizedName, material, itemLootConfigs.get(material));
-            definitionsByName.put(normalizedName, definition);
-            if (displayItem != null) {
-                displayItemsByName.put(normalizedName, displayItem);
-                displayItems.putIfAbsent(material, displayItem);
+        ConfigurationSection customs = config.getConfigurationSection(SpawnerFileLayout.CUSTOM_SECTION);
+        if (customs != null) {
+            for (String key : customs.getKeys(false)) {
+                ConfigurationSection section = customs.getConfigurationSection(key);
+                if (section == null) continue;
+                String id = SpawnerConfigName.normalize(key);
+                String label = "custom spawner '" + key + "' in " + RESOURCE;
+                if (id.isEmpty() || materialOf(id) != null) {
+                    plugin.getLogger().warning(label + " uses an item name. Give it a name of its own.");
+                    continue;
+                }
+                if (definitionsByName.containsKey(id)) {
+                    plugin.getLogger().warning(label + " repeats another spawner's name and is ignored.");
+                    continue;
+                }
+                Material material = materialOf(section.getString(TYPE_KEY, ""));
+                if (material == null) {
+                    plugin.getLogger().warning(label + " needs a valid '" + TYPE_KEY + "'.");
+                    continue;
+                }
+                register(parseEntry(id, material, section, false, baseDefinitions.get(material)),
+                        SpawnerFileLayout.CUSTOM_SECTION + "." + key);
             }
-            defaultDefinitionsByMaterial.putIfAbsent(material, definition);
+        }
+
+        for (ItemDefinition definition : definitionsByName.values()) {
+            for (String alias : definition.aliases()) {
+                String name = SpawnerConfigName.normalize(alias);
+                if (name.isEmpty() || definitionsByName.containsKey(name) || aliasToName.containsKey(name)) {
+                    plugin.getLogger().warning("Alias '" + alias + "' of " + definition.name() + " in " + RESOURCE
+                            + " is already a spawner name and is ignored.");
+                    continue;
+                }
+                aliasToName.put(name, definition.name());
+            }
         }
     }
 
-    private ItemStack parseDisplayItem(Material material, ConfigurationSection itemSection) {
-        String rawItem = itemSection.getString("nbt_data");
+    private void register(ItemDefinition definition, String sectionPath) {
+        definitionsByName.put(definition.name(), definition);
+        sectionPaths.put(definition.name(), sectionPath);
+        if (definition.base()) {
+            baseDefinitions.put(definition.material(), definition);
+        }
+    }
+
+    private ItemDefinition parseEntry(String id, Material material, ConfigurationSection section, boolean base,
+                                      ItemDefinition inherited) {
+        String label = id + " in " + RESOURCE;
+
+        int experience = section.contains("experience") || inherited == null
+                ? section.getInt("experience", 0)
+                : inherited.lootConfig().experience();
+        EntityLootConfig lootConfig = new EntityLootConfig(experience, parseLoot(section, id));
+
+        SpawnerHead head = SpawnerHead.parse(section, material, label, plugin.getLogger());
+        if (head == null) head = inherited != null ? inherited.head() : new SpawnerHead(material, null);
+
+        ItemStack displayItem = section.contains("nbt_data") || inherited == null
+                ? parseDisplayItem(section, label)
+                : inherited.displayItem();
+
+        String displayName = section.getString("display_name");
+        if (displayName != null && displayName.isBlank()) displayName = null;
+
+        return new ItemDefinition(id, material, base, displayName, lootConfig, head, displayItem,
+                List.copyOf(section.getStringList(SpawnerFileLayout.ALIASES)));
+    }
+
+    private List<LootItem> parseLoot(ConfigurationSection section, String id) {
+        List<LootItem> items = new ArrayList<>();
+        ConfigurationSection lootSection = section.getConfigurationSection("loot");
+        if (lootSection == null) {
+            return items;
+        }
+        for (String itemKey : lootSection.getKeys(false)) {
+            ConfigurationSection lootItemSection = lootSection.getConfigurationSection(itemKey);
+            if (lootItemSection == null) continue;
+            LootItem lootItem = LootEntryParser.parse(lootItemSection, itemKey, plugin.getItemPriceManager(),
+                    plugin.getLogger(), "item spawner " + id);
+            if (lootItem != null) {
+                items.add(lootItem);
+            }
+        }
+        return items;
+    }
+
+    private ItemStack parseDisplayItem(ConfigurationSection section, String label) {
+        String rawItem = section.getString("nbt_data");
         if (rawItem == null || rawItem.isBlank()) {
             return null;
         }
         try {
             return ConfiguredItemParser.parse(rawItem).asQuantity(1);
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid nbt_data for " + material.name() + ": " + e.getMessage());
+            plugin.getLogger().warning("Invalid nbt_data for " + label + ": " + e.getMessage());
             return null;
         }
     }
-    
-    /**
-     * Parse loot configuration for an item spawner
-     */
-    private void parseLootData(Material material, ConfigurationSection itemSection) {
-        int experience = itemSection.getInt("experience", 0);
-        List<LootItem> items = new ArrayList<>();
 
-        ConfigurationSection lootSection = itemSection.getConfigurationSection("loot");
-        if (lootSection != null) {
-            for (String itemKey : lootSection.getKeys(false)) {
-                ConfigurationSection lootItemSection = lootSection.getConfigurationSection(itemKey);
-                if (lootItemSection == null) continue;
+    // ===== Lookups =====
 
-                LootItem lootItem = LootEntryParser.parse(
-                        lootItemSection, itemKey, plugin.getItemPriceManager(), plugin.getLogger(),
-                        "item spawner " + material.name());
-                if (lootItem != null) {
-                    items.add(lootItem);
-                }
-            }
-        }
-
-        // Create and store EntityLootConfig
-        EntityLootConfig lootConfig = new EntityLootConfig(experience, items);
-        itemLootConfigs.put(material, lootConfig);
-    }
-    
-    /**
-     * Parse head texture configuration for an item
-     */
-    private void parseHeadTexture(Material material, ConfigurationSection itemSection) {
-        ConfigurationSection headSection = itemSection.getConfigurationSection("mob_head");
-        if (headSection == null) {
-            return;
-        }
-        
-        String headMaterialName = headSection.getString("item", material.name());
-        String customTexture = headSection.getString("hash_texture");
-        
-        // Validate material
-        Material headMaterial;
-        try {
-            headMaterial = Material.valueOf(headMaterialName.toUpperCase());
-            if (!headMaterial.isItem()) {
-                plugin.getLogger().warning("Material " + headMaterialName + " for " + material + " is not an item, using the item itself");
-                headMaterial = material;
-            }
-        } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid head material " + headMaterialName + " for " + material + ", using the item itself");
-            headMaterial = material;
-        }
-        
-        // Store item head data
-        itemHeadMap.putIfAbsent(material, new ItemHeadData(headMaterial, customTexture));
-    }
-    
-    /**
-     * Get the head texture data for an item material
-     */
-    public ItemHeadData getHeadData(Material material) {
-        return itemHeadMap.getOrDefault(material, new ItemHeadData(FALLBACK_HEAD, null));
-    }
-    
-    /**
-     * Get the loot configuration for an item spawner material
-     */
-    public EntityLootConfig getLootConfig(Material material) {
-        return itemLootConfigs.get(material);
-    }
-
-    /** Uses the first configured loot template as the model rendered inside the spawner cage. */
-    public ItemStack getDisplayItem(Material material) {
-        ItemStack configuredDisplay = displayItems.get(material);
-        if (configuredDisplay != null) {
-            return configuredDisplay.clone();
-        }
-        EntityLootConfig lootConfig = itemLootConfigs.get(material);
-        if (lootConfig != null) {
-            for (LootItem lootItem : lootConfig.getAllItems()) {
-                if (lootItem.template() != null) {
-                    return lootItem.template().asQuantity(1);
-                }
-            }
-        }
-        return new ItemStack(material, 1);
-    }
-
-    public ItemStack getDisplayItem(String configName, Material fallback) {
-        String normalized = SpawnerConfigName.normalize(configName);
-        ItemStack configured = displayItemsByName.get(normalized);
-        if (configured != null) return configured.clone();
-        ItemDefinition definition = definitionsByName.get(normalized);
-        if (definition != null && definition.lootConfig() != null) {
-            for (LootItem lootItem : definition.lootConfig().getAllItems()) {
-                if (lootItem.template() != null) return lootItem.template().asQuantity(1);
-            }
-            return new ItemStack(definition.material(), 1);
-        }
-        return getDisplayItem(fallback);
-    }
-
+    /** The spawner with exactly this name. */
     public ItemDefinition getDefinition(String name) {
         return definitionsByName.get(SpawnerConfigName.normalize(name));
     }
 
-    public ItemDefinition getDefaultDefinition(Material material) {
-        return defaultDefinitionsByMaterial.get(material);
+    /**
+     * The spawner a stored or typed name stands for: its own name, one of its {@code aliases}, or a
+     * 1.8 {@code <item>_spawner} name. Null when nothing matches.
+     */
+    public ItemDefinition resolve(String name) {
+        String normalized = SpawnerConfigName.normalize(name);
+        if (normalized.isEmpty()) return null;
+        ItemDefinition definition = definitionsByName.get(normalized);
+        if (definition != null) return definition;
+        String aliased = aliasToName.get(normalized);
+        if (aliased != null) return definitionsByName.get(aliased);
+        String legacy = SpawnerFileLayout.legacyBaseId(normalized);
+        return legacy == null ? null : definitionsByName.get(legacy);
+    }
+
+    /** The base spawner of an item, used for unknown names. */
+    public ItemDefinition getBaseDefinition(Material material) {
+        return material == null ? null : baseDefinitions.get(material);
+    }
+
+    /** The spawner a stored name stands for, or the item's base spawner when the name is gone. */
+    public ItemDefinition resolveOrBase(String name, Material material) {
+        ItemDefinition definition = resolve(name);
+        return definition != null && definition.material() == material ? definition : getBaseDefinition(material);
     }
 
     public Set<String> getDefinitionNames() {
         return Collections.unmodifiableSet(definitionsByName.keySet());
     }
 
-    public record ItemDefinition(String name, Material material, EntityLootConfig lootConfig) {}
-    
-    /**
-     * Check if a material is a valid item spawner type
-     */
-    public boolean isValidItemSpawner(Material material) {
-        return validItemSpawnerMaterials.contains(material);
+    /** Where a spawner lives in the file, for the loot editor: {@code diamond} or {@code custom_spawners.x}. */
+    public String getSectionPath(String name) {
+        return sectionPaths.get(SpawnerConfigName.normalize(name));
     }
-    
-    /**
-     * Get all valid item spawner materials
-     */
-    public Set<Material> getValidItemSpawnerMaterials() {
-        return Collections.unmodifiableSet(validItemSpawnerMaterials);
+
+    /** Loot of the item's base spawner. */
+    public EntityLootConfig getLootConfig(Material material) {
+        ItemDefinition definition = getBaseDefinition(material);
+        return definition == null ? null : definition.lootConfig();
     }
-    
-    /**
-     * Reload the configuration
-     */
-    public void reload() {
-        load();
+
+    /** Head of the item's base spawner, never null. */
+    public SpawnerHead getBaseHead(Material material) {
+        ItemDefinition definition = getBaseDefinition(material);
+        return definition != null ? definition.head() : new SpawnerHead(material, null);
     }
-    
-    /**
-     * Data class for item head information
-     */
-    public static class ItemHeadData {
-        private final Material material;
-        private final String customTexture;
-        
-        public ItemHeadData(Material material, String customTexture) {
-            this.material = material;
-            this.customTexture = customTexture;
+
+    /** The item rendered inside the spawner cage: {@code nbt_data}, else the first loot template. */
+    public ItemStack getDisplayItem(String configName, Material fallback) {
+        ItemDefinition definition = resolveOrBase(configName, fallback);
+        if (definition == null) {
+            return new ItemStack(fallback, 1);
         }
-        
-        public Material getMaterial() {
-            return material;
+        if (definition.displayItem() != null) {
+            return definition.displayItem().clone();
         }
-        
-        public String getCustomTexture() {
-            return customTexture;
+        for (LootItem lootItem : definition.lootConfig().getAllItems()) {
+            if (lootItem.template() != null) return lootItem.template().asQuantity(1);
         }
-        
-        public boolean hasCustomTexture() {
-            return customTexture != null && !customTexture.isEmpty() && !customTexture.equalsIgnoreCase("null");
-        }
+        return new ItemStack(definition.material(), 1);
     }
+
+    /**
+     * One spawner from the file.
+     *
+     * @param base        true for the item's own entry, false for one under {@code custom_spawners}
+     * @param displayName replaces the item name everywhere players see this spawner, or null
+     * @param displayItem item shown in the spawner cage from {@code nbt_data}, or null
+     */
+    public record ItemDefinition(String name, Material material, boolean base, String displayName,
+                                 EntityLootConfig lootConfig, SpawnerHead head, ItemStack displayItem,
+                                 List<String> aliases) {}
 }

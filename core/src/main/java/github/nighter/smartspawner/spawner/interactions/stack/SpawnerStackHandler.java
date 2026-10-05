@@ -124,7 +124,7 @@ public class SpawnerStackHandler {
         }
 
         String handConfigName = SpawnerTypeChecker.getConfigName(itemInHand);
-        if (handConfigName != null && !handConfigName.equals(targetSpawner.getConfigName())) {
+        if (handConfigName != null && !currentName(handConfigName, targetSpawner).equals(targetSpawner.getConfigName())) {
             messageService.sendMessage(player, "spawner_different");
             return false;
         }
@@ -272,5 +272,20 @@ public class SpawnerStackHandler {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("amount", String.valueOf(newStack));
         messageService.sendMessage(player, "spawner_stack_success", placeholders);
+    }
+
+    /**
+     * The name a spawner item's stored name stands for today, so an item saved under a 1.8 name or an
+     * alias stacks with spawners placed after the rename. A name with no entry is compared as it is.
+     */
+    private String currentName(String storedName, SpawnerData target) {
+        if (target.isItemSpawner()) {
+            var definition = plugin.getItemSpawnerSettingsConfig().resolve(storedName);
+            return definition != null && definition.material() == target.getSpawnedItemMaterial()
+                    ? definition.name() : storedName;
+        }
+        var definition = plugin.getSpawnerSettingsConfig().resolve(storedName);
+        return definition != null && definition.entityType() == target.getEntityType()
+                ? definition.name() : storedName;
     }
 }

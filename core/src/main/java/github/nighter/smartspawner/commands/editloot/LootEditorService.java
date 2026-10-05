@@ -2,6 +2,7 @@ package github.nighter.smartspawner.commands.editloot;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.spawner.config.ConfiguredItemParser;
+import github.nighter.smartspawner.spawner.config.SpawnerNames;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 /**
  * Every read and write {@code /ss editloot} performs against the two loot files.
@@ -57,33 +57,29 @@ public class LootEditorService {
 
     // ============== Entry lookup ==============
 
-    /** Points a typed spawner name at the file that holds it, or null when nothing matches. */
+    /**
+     * Points a typed spawner name at the section that holds it, or null when nothing matches. The
+     * entry key is the section path: {@code zombie}, or {@code custom_spawners.lucky_zombie}.
+     */
     public synchronized EntryRef findEntry(String name) {
         if (name == null || name.isBlank()) {
             return null;
         }
-        String key = name.trim();
-        // Mobs first, then items: a name is expected to be unique across the two in practice.
-        for (LootEditorTarget target : LootEditorTarget.values()) {
-            if (snapshot(target).isConfigurationSection(key)) {
-                return new EntryRef(target, key);
-            }
+        var resolved = SpawnerNames.resolve(plugin, name.trim());
+        if (resolved == null) {
+            return null;
         }
-        return null;
+        if (resolved.mob() != null) {
+            String path = plugin.getSpawnerSettingsConfig().getSectionPath(resolved.mob().name());
+            return path == null ? null : new EntryRef(LootEditorTarget.SMART_SPAWNER, path);
+        }
+        String path = plugin.getItemSpawnerSettingsConfig().getSectionPath(resolved.item().name());
+        return path == null ? null : new EntryRef(LootEditorTarget.ITEM_SPAWNER, path);
     }
 
     /** Every spawner name across both files, sorted, for tab completion. */
     public synchronized List<String> listAllEntryNames() {
-        TreeSet<String> names = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-        for (LootEditorTarget target : LootEditorTarget.values()) {
-            YamlConfiguration config = snapshot(target);
-            for (String key : config.getKeys(false)) {
-                if (config.isConfigurationSection(key)) {
-                    names.add(key);
-                }
-            }
-        }
-        return new ArrayList<>(names);
+        return new ArrayList<>(SpawnerNames.suggestionNames(plugin));
     }
 
     public synchronized boolean hasEntry(LootEditorTarget target, String key) {

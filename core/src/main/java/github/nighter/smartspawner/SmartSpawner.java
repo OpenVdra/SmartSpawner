@@ -35,6 +35,7 @@ import github.nighter.smartspawner.migration.SpawnerDataMigration;
 import github.nighter.smartspawner.spawner.config.ItemSpawnerSettingsConfig;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig;
+import github.nighter.smartspawner.spawner.config.SpawnerNames;
 import github.nighter.smartspawner.spawner.data.SpawnerManager;
 import github.nighter.smartspawner.spawner.data.WorldEventHandler;
 import github.nighter.smartspawner.spawner.data.database.DatabaseManager;
@@ -275,6 +276,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         if (itemSpawnerSettingsConfig != null) {
             itemSpawnerSettingsConfig.load();
         }
+        SpawnerNames.warnConflicts(this);
         
         // Pre-warm the head texture cache after settings are loaded
         // This prevents the brief flash of default player heads when opening GUIs
@@ -573,6 +575,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         if (itemSpawnerSettingsConfig != null) {
             itemSpawnerSettingsConfig.reload();
         }
+        SpawnerNames.warnConflicts(this);
 
         // Keep loot-editor navigation reading fresh snapshots after a full plugin reload.
         if (lootEditorService != null) {

@@ -3,6 +3,10 @@ package github.nighter.smartspawner.spawner.properties;
 import com.google.common.util.concurrent.AtomicDouble;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.hologram.SpawnerHologram;
+import github.nighter.smartspawner.spawner.config.ItemSpawnerSettingsConfig.ItemDefinition;
+import github.nighter.smartspawner.spawner.config.SpawnerHead;
+import github.nighter.smartspawner.spawner.config.SpawnerNameNotices;
+import github.nighter.smartspawner.spawner.config.SpawnerSettingsConfig.MobDefinition;
 import github.nighter.smartspawner.spawner.lootgen.loot.EntityLootConfig;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.sell.SellResult;
@@ -76,6 +80,12 @@ public class SpawnerData {
     private String configName;
     @Getter @Setter
     private EntityLootConfig lootConfig;
+    // The settings entry in use: its own, or its mob's or item's base spawner when its own is gone.
+    // Refreshed on load and on every config reload.
+    @Getter
+    private MobDefinition mobDefinition;
+    @Getter
+    private ItemDefinition itemDefinition;
 
     // Item spawner support - stores the material being spawned for item spawners
     @Getter @Setter
@@ -196,26 +206,74 @@ public class SpawnerData {
         this.cachedSpawnDelay = (this.spawnDelay + 20L) * 50L; // Add 1 second buffer for GUI display and convert tick to ms
         this.spawnerRange = plugin.getConfig().getInt("spawner_properties.default.range", 16);
 
-        // Load loot config based on spawner type
-        if (isItemSpawner() && spawnedItemMaterial != null) {
-            var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
-            this.lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getItemSpawnerSettingsConfig().getLootConfig(spawnedItemMaterial);
+        refreshDefinition();
+    }
+
+    /**
+     * Points this spawner at its entry in the settings file and loads that entry's loot.
+     *
+     * <p>A stored name that is an alias or a 1.8 {@code <mob>_spawner} name is rewritten to the
+     * entry's current name and saved, once. A name with no entry at all is kept as it is, so the
+     * spawner comes back if the entry is restored, and meanwhile uses the base spawner of its mob.</p>
+     */
+    private void refreshDefinition() {
+        String resolved;
+        if (isItemSpawner()) {
+            var settings = plugin.getItemSpawnerSettingsConfig();
+            var own = settings.resolve(configName);
+            if (own != null && own.material() != spawnedItemMaterial) own = null;
+            this.itemDefinition = own != null ? own : settings.getBaseDefinition(spawnedItemMaterial);
+            this.mobDefinition = null;
+            resolved = own != null ? own.name() : null;
+            this.lootConfig = itemDefinition != null ? itemDefinition.lootConfig() : null;
         } else {
-            var definition = plugin.getSpawnerSettingsConfig().getDefinition(configName);
-            this.lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getSpawnerSettingsConfig().getLootConfig(entityType);
+            var settings = plugin.getSpawnerSettingsConfig();
+            var own = settings.resolve(configName);
+            if (own != null && own.entityType() != entityType) own = null;
+            this.mobDefinition = own != null ? own : settings.getBaseDefinition(entityType);
+            this.itemDefinition = null;
+            resolved = own != null ? own.name() : null;
+            this.lootConfig = mobDefinition != null ? mobDefinition.lootConfig() : null;
+        }
+
+        if (resolved == null) {
+            SpawnerNameNotices.missing(plugin, configName, isItemSpawner());
+        } else if (!resolved.equals(configName)) {
+            this.configName = resolved;
+            if (plugin.getSpawnerManager() != null) {
+                plugin.getSpawnerManager().markSpawnerModified(spawnerId);
+            }
         }
     }
 
+    /** What players see as this spawner's name: its {@code display_name}, else the mob or item name. */
+    public String getDisplayName() {
+        if (isItemSpawner()) {
+            return itemDefinition != null && itemDefinition.displayName() != null ? itemDefinition.displayName()
+                    : plugin.getLanguageManager().getVanillaItemName(spawnedItemMaterial);
+        }
+        return mobDefinition != null && mobDefinition.displayName() != null ? mobDefinition.displayName()
+                : plugin.getLanguageManager().getFormattedMobName(entityType);
+    }
+
+    /** The menu icon configured for this spawner, inherited from its base spawner when it has none. */
+    public SpawnerHead getHead() {
+        if (isItemSpawner()) {
+            return itemDefinition != null ? itemDefinition.head()
+                    : plugin.getItemSpawnerSettingsConfig().getBaseHead(spawnedItemMaterial);
+        }
+        return mobDefinition != null && mobDefinition.head() != null ? mobDefinition.head()
+                : plugin.getSpawnerSettingsConfig().getBaseHead(entityType);
+    }
+
     private static String defaultMobName(SmartSpawner plugin, EntityType type) {
-        var definition = plugin.getSpawnerSettingsConfig().getDefaultDefinition(type);
-        return definition != null ? definition.name() : type.name().toLowerCase(Locale.ROOT) + "_spawner";
+        var definition = plugin.getSpawnerSettingsConfig().getBaseDefinition(type);
+        return definition != null ? definition.name() : type.name().toLowerCase(Locale.ROOT);
     }
 
     private static String defaultItemName(SmartSpawner plugin, Material material) {
-        var definition = plugin.getItemSpawnerSettingsConfig().getDefaultDefinition(material);
-        return definition != null ? definition.name() : material.name().toLowerCase(Locale.ROOT) + "_spawner";
+        var definition = plugin.getItemSpawnerSettingsConfig().getBaseDefinition(material);
+        return definition != null ? definition.name() : material.name().toLowerCase(Locale.ROOT);
     }
 
     public void recalculateAfterConfigReload() {
@@ -406,7 +464,7 @@ public class SpawnerData {
 
     public void updateHologramData() {
         if (hologram != null) {
-            hologram.updateData(stackSize, entityType, spawnedItemMaterial, spawnerExp, maxStoredExp,
+            hologram.updateData(stackSize, entityType, spawnedItemMaterial, getDisplayName(), spawnerExp, maxStoredExp,
                     virtualInventory.getUsedSlots(), maxSpawnerLootSlots);
         }
     }
@@ -450,10 +508,8 @@ public class SpawnerData {
 
     public void setEntityType(EntityType newType) {
         this.entityType = newType;
-        var definition = plugin.getSpawnerSettingsConfig().getDefaultDefinition(newType);
-        this.configName = definition != null ? definition.name() : defaultMobName(plugin, newType);
-        this.lootConfig = definition != null ? definition.lootConfig()
-                : plugin.getSpawnerSettingsConfig().getLootConfig(newType);
+        this.configName = defaultMobName(plugin, newType);
+        refreshDefinition();
         // Mark sell value as dirty since entity type and prices changed
         this.sellValueDirty = true;
         updateHologramData();
@@ -507,16 +563,7 @@ public class SpawnerData {
     }
 
     public void setLootConfig() {
-        // Load loot config based on spawner type
-        if (isItemSpawner() && spawnedItemMaterial != null) {
-            var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
-            this.lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getItemSpawnerSettingsConfig().getLootConfig(spawnedItemMaterial);
-        } else {
-            var definition = plugin.getSpawnerSettingsConfig().getDefinition(configName);
-            this.lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getSpawnerSettingsConfig().getLootConfig(entityType);
-        }
+        refreshDefinition();
         // Mark sell value as dirty since prices may have changed
         this.sellValueDirty = true;
         // Invalidate no-loot cache since config changed

@@ -1,52 +1,44 @@
-# Drop tables, XP and head textures for every mob a Smart Spawner can be.
-# Guide and examples: https://openvdra.github.io/SmartSpawner/spawner-mobs/
+# Drop tables, XP and menu heads. Each mob's spawner is under its own name, like zombie.
+# Full guide: https://docs.smartspawner.site/docs/spawner-mobs
 
-allay_spawner:
-  entity: ALLAY
+allay:
   experience: 0
-  # Optional spawner item drop chance when this Smart Spawner is broken.
-  # If this key is omitted, the spawner item drop chance defaults to 100.0.
-  # Values must be percentages from 0.0 to 100.0.
+  # Chance to drop the spawner item when broken, 0.0 to 100.0. Default 100.0.
   # drop_chance: 100.0
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "df5de940bfe499c59ee8dac9f9c3919e7535eff3a9acb16f4842bf290f4c679f"
 
 # Reference: https://minecraft.wiki/w/Armadillo#Drops
-armadillo_spawner:
-  entity: ARMADILLO
+armadillo:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "9164ed0e0ef69b0ce7815e4300b4413a4828fcb0092918543545a418a48e0c3c"
 
 # Reference: https://minecraft.wiki/w/Axolotl#Drops
-axolotl_spawner:
-  entity: AXOLOTL
+axolotl:
   experience: 1
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "21c3aa0d539208b47972bf8e72f0505cdcfb8d7796b2fcf85911ce94fd0193d0"
 
 # Reference: https://minecraft.wiki/w/Bat#Drops
-bat_spawner:
-  entity: BAT
+bat:
   experience: 0
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "81c5cc1f40005a33124c60384a0f17a36a7b19ae90f1c32dcda17b5b56280a43"
 
 # Reference: https://minecraft.wiki/w/Bee#Drops
-bee_spawner:
-  entity: BEE
+bee:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "76ded8355a5625893e8041877af65683c2fd0aa09c3d3c1c94f5f80a0f8c22cb"
 
 # Reference: https://minecraft.wiki/w/Blaze#Drops
-blaze_spawner:
-  entity: BLAZE
+blaze:
   experience: 10
   loot:
     1:
@@ -58,8 +50,7 @@ blaze_spawner:
     hash_texture: "737623f79f7eb4f3f80da65b652cc44b2148eea41f9ffe2e86a23bdf49ab77b1"
 
 # Reference: https://minecraft.wiki/w/Bogged#Drops
-bogged_spawner:
-  entity: BOGGED
+bogged:
   experience: 5
   loot:
     1:
@@ -84,8 +75,7 @@ bogged_spawner:
     hash_texture: "a3b9003ba2d05562c75119b8a62185c67130e9282f7acbac4bc2824c21eb95d9"
 
 # Reference: https://minecraft.wiki/w/Breeze#Drops
-breeze_spawner:
-  entity: BREEZE
+breeze:
   experience: 10
   loot:
     1:
@@ -97,16 +87,14 @@ breeze_spawner:
     hash_texture: "a275728af7e6a29c88125b675a39d88ae9919bb61fdc200337fed6ab0c49d65c"
 
 # Reference: https://minecraft.wiki/w/Camel#Drops
-camel_spawner:
-  entity: CAMEL
+camel:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "7eb6ad908b8d5155bc4d249271ef6084d455dd0e70a4002eb148f9e20b9deb2c"
 
 # Reference: https://minecraft.wiki/w/Camel_Husk#Drops
-camel_husk_spawner:
-  entity: CAMEL_HUSK
+camel_husk:
   experience: 3
   loot:
     1:
@@ -118,8 +106,7 @@ camel_husk_spawner:
     hash_texture: "750bfc9b2cc40f4d8d0224ccbabac26b338aa947d99dcde769f859b59b8d0b0e"
 
 # Reference: https://minecraft.wiki/w/Cat#Drops
-cat_spawner:
-  entity: CAT
+cat:
   experience: 1
   loot:
     1:
@@ -131,8 +118,7 @@ cat_spawner:
     hash_texture: "e0eeaa869f53fa989198f5595520aec9395509aba993596a86654b3a0f6ca4a6"
 
 # Reference: https://minecraft.wiki/w/Cave_Spider#Drops
-cave_spider_spawner:
-  entity: CAVE_SPIDER
+cave_spider:
   experience: 5
   loot:
     1:
@@ -148,8 +134,7 @@ cave_spider_spawner:
     hash_texture: "eccc4a32d45d74e8b14ef1ffd55cd5f381a06d4999081d52eaea12e13293e209"
 
 # Reference: https://minecraft.wiki/w/Chicken#Drops
-chicken_spawner:
-  entity: CHICKEN
+chicken:
   experience: 3
   loot:
     1:
@@ -165,8 +150,7 @@ chicken_spawner:
     hash_texture: "4e8f3ea46735ad0c106c549ccb6cd489c97a41e73d092497ee424becd9dfd29c"
 
 # Reference: https://minecraft.wiki/w/Cod#Drops
-cod_spawner:
-  entity: COD
+cod:
   experience: 1
   loot:
     1:
@@ -182,8 +166,7 @@ cod_spawner:
     hash_texture: "7892d7dd6aadf35f86da27fb63da4edda211df96d2829f691462a4fb1cab0"
 
 # Reference: https://minecraft.wiki/w/Copper_Golem#Drops
-copper_golem_spawner:
-  entity: COPPER_GOLEM
+copper_golem:
   experience: 0
   loot:
     1:
@@ -195,8 +178,7 @@ copper_golem_spawner:
     hash_texture: "fb2c96b6961ff5b53075116aa94331c471851de5008ba0594c387b46a429ebc4"
 
 # Reference: https://minecraft.wiki/w/Cow#Drops
-cow_spawner:
-  entity: COW
+cow:
   experience: 3
   loot:
     1:
@@ -212,16 +194,14 @@ cow_spawner:
     hash_texture: "b667c0e107be79d7679bfe89bbc57c6bf198ecb529a3295fcfdfd2f24408dca3"
 
 # Reference: https://minecraft.wiki/w/Creaking#Drops
-creaking_spawner:
-  entity: CREAKING
+creaking:
   experience: 0
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "ac91c87bbe7f4c586e0f8b60f9b76d173a41daa302944531703be9ff4fd117f8"
 
 # Reference: https://minecraft.wiki/w/Creeper#Drops
-creeper_spawner:
-  entity: CREEPER
+creeper:
   experience: 5
   loot:
     1:
@@ -233,8 +213,7 @@ creeper_spawner:
     hash_texture: null
 
 # Reference: https://minecraft.wiki/w/Dolphin#Drops
-dolphin_spawner:
-  entity: DOLPHIN
+dolphin:
   experience: 1
   loot:
     1:
@@ -246,8 +225,7 @@ dolphin_spawner:
     hash_texture: "8e9688b950d880b55b7aa2cfcd76e5a0fa94aac6d16f78e833f7443ea29fed3"
 
 # Reference: https://minecraft.wiki/w/Donkey#Drops
-donkey_spawner:
-  entity: DONKEY
+donkey:
   experience: 1
   loot:
     1:
@@ -259,8 +237,7 @@ donkey_spawner:
     hash_texture: "63a976c047f412ebc5cb197131ebef30c004c0faf49d8dd4105fca1207edaff3"
 
 # Reference: https://minecraft.wiki/w/Drowned#Drops
-drowned_spawner:
-  entity: DROWNED
+drowned:
   experience: 5
   loot:
     1:
@@ -281,8 +258,7 @@ drowned_spawner:
     hash_texture: "c84df79c49104b198cdad6d99fd0d0bcf1531c92d4ab6269e40b7d3cbbb8e98c"
 
 # Reference: https://minecraft.wiki/w/Elder_Guardian#Drops
-elder_guardian_spawner:
-  entity: ELDER_GUARDIAN
+elder_guardian:
   experience: 10
   loot:
     1:
@@ -310,8 +286,7 @@ elder_guardian_spawner:
     hash_texture: "8df4fec3aa34ceddb025a42c9fc435a8029b062598b325322ba3cb5e5f351c1f"
 
 # Reference: https://minecraft.wiki/w/Enderman#Drops
-enderman_spawner:
-  entity: ENDERMAN
+enderman:
   experience: 5
   loot:
     1:
@@ -323,16 +298,14 @@ enderman_spawner:
     hash_texture: "4f24767c8138b3dfec02f77bd151994d480d4e869664ce09a26b19289212162b"
 
 # Reference: https://minecraft.wiki/w/Endermite#Drops
-endermite_spawner:
-  entity: ENDERMITE
+endermite:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "5bc7b9d36fb92b6bf292be73d32c6c5b0ecc25b44323a541fae1f1e67e393a3e"
 
 # Reference: https://minecraft.wiki/w/Evoker#Drops
-evoker_spawner:
-  entity: EVOKER
+evoker:
   experience: 10
   loot:
     1:
@@ -348,8 +321,7 @@ evoker_spawner:
     hash_texture: "630ce775edb65db8c2741bdfae84f3c0d0285aba93afadc74900d55dfd9504a5"
 
 # Reference: https://minecraft.wiki/w/Fox#Drops
-fox_spawner:
-  entity: FOX
+fox:
   experience: 1
   loot:
     1:
@@ -385,16 +357,14 @@ fox_spawner:
     hash_texture: "d8954a42e69e0881ae6d24d4281459c144a0d5a968aed35d6d3d73a3c65d26a"
 
 # Reference: https://minecraft.wiki/w/Frog#Drops
-frog_spawner:
-  entity: FROG
+frog:
   experience: 1
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "2ca4a8e494582c62aaa2c92474b16d69cd63baa3d3f50a4b631d6559ca0f33f5"
 
 # Reference: https://minecraft.wiki/w/Ghast#Drops
-ghast_spawner:
-  entity: GHAST
+ghast:
   experience: 5
   loot:
     1:
@@ -410,8 +380,7 @@ ghast_spawner:
     hash_texture: "64ab8a22e7687cc4c78f3b6ff5b1eb04917b51cd3cd7dbce36171160b3c77ced"
 
 # Reference: https://minecraft.wiki/w/Glow_Squid#Drops
-glow_squid_spawner:
-  entity: GLOW_SQUID
+glow_squid:
   experience: 1
   loot:
     1:
@@ -423,16 +392,14 @@ glow_squid_spawner:
     hash_texture: "4cb07d905888f8472252f9cfa39aa317babcad30af08cfe751adefa716b02036"
 
 # Reference: https://minecraft.wiki/w/Goat#Drops
-goat_spawner:
-  entity: GOAT
+goat:
   experience: 1
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "457a0d538fa08a7affe312903468861720f9fa34e86d44b89dcec5639265f03"
 
 # Reference: https://minecraft.wiki/w/Guardian#Drops
-guardian_spawner:
-  entity: GUARDIAN
+guardian:
   experience: 10
   loot:
     1:
@@ -452,16 +419,14 @@ guardian_spawner:
     hash_texture: "b8e725779c234c590cce854db5c10485ed8d8a33fa9b2bdc3424b68bb1380bed"
 
 # Reference: https://minecraft.wiki/w/Happy_Ghast#Drops
-happy_ghast_spawner:
-  entity: HAPPY_GHAST
+happy_ghast:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "a1a36cb93d01675c4622dd5c8d872110911ec12c372e89afa8ba03862867f6fb"
 
 # Reference: https://minecraft.wiki/w/Hoglin#Drops
-hoglin_spawner:
-  entity: HOGLIN
+hoglin:
   experience: 5
   loot:
     1:
@@ -477,8 +442,7 @@ hoglin_spawner:
     hash_texture: "7ad7b5aeb220c079e319cd70ac8800e80774a9313c22f38e77afb89999e6ec87"
 
 # Reference: https://minecraft.wiki/w/Horse#Drops
-horse_spawner:
-  entity: HORSE
+horse:
   experience: 3
   loot:
     1:
@@ -490,8 +454,7 @@ horse_spawner:
     hash_texture: "e335e31961713353a76401e00c3454b7ca885b7784d5288d3227222d9b48d393"
 
 # Reference: https://minecraft.wiki/w/Husk#Drops
-husk_spawner:
-  entity: HUSK
+husk:
   experience: 5
   loot:
     1:
@@ -515,8 +478,7 @@ husk_spawner:
     hash_texture: "d674c63c8db5f4ca628d69a3b1f8a36e29d8fd775e1a6bdb6cabb4be4db121"
 
 # Reference: https://minecraft.wiki/w/Iron_Golem#Drops
-iron_golem_spawner:
-  entity: IRON_GOLEM
+iron_golem:
   experience: 0
   loot:
     1:
@@ -532,8 +494,7 @@ iron_golem_spawner:
     hash_texture: "4271913a3fc8f56bdf6b90a4b4ed6a05c562ce0076b5344d444fb2b040ae57d"
 
 # Reference: https://minecraft.wiki/w/Llama#Drops
-llama_spawner:
-  entity: LLAMA
+llama:
   experience: 1
   loot:
     1:
@@ -545,8 +506,7 @@ llama_spawner:
     hash_texture: "9f7d90b305aa64313c8d4404d8d652a96eba8a754b67f4347dcccdd5a6a63398"
 
 # Reference: https://minecraft.wiki/w/Nautilus#Drops
-nautilus_spawner:
-  entity: NAUTILUS
+nautilus:
   experience: 3
   loot:
     1:
@@ -558,8 +518,7 @@ nautilus_spawner:
     hash_texture: "b53d63eb175b00fb35285f4330d0be68a0713db94e00e6fdd85832d41e3a08b"
 
 # Reference: https://minecraft.wiki/w/Magma_Cube#Drops
-magma_cube_spawner:
-  entity: MAGMA_CUBE
+magma_cube:
   experience: 4
   loot:
     1:
@@ -571,8 +530,7 @@ magma_cube_spawner:
     hash_texture: "38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429"
 
 # Reference: https://minecraft.wiki/w/Mooshroom#Drops
-mooshroom_spawner:
-  entity: MOOSHROOM
+mooshroom:
   experience: 1
   loot:
     1:
@@ -588,8 +546,7 @@ mooshroom_spawner:
     hash_texture: "45603d539f666fdf0f7a0fe20b81dfef3abe6c51da34b9525a5348432c5523b2"
 
 # Reference: https://minecraft.wiki/w/Mule#Drops
-mule_spawner:
-  entity: MULE
+mule:
   experience: 1
   loot:
     1:
@@ -601,16 +558,14 @@ mule_spawner:
     hash_texture: "a0486a742e7dda0bae61ce2f55fa13527f1c3b334c57c034bb4cf132fb5f5f"
 
 # Reference: https://minecraft.wiki/w/Ocelot#Drops
-ocelot_spawner:
-  entity: OCELOT
+ocelot:
   experience: 1
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1"
 
 # Reference: https://minecraft.wiki/w/Panda#Drops
-panda_spawner:
-  entity: PANDA
+panda:
   experience: 1
   loot:
     1:
@@ -622,8 +577,7 @@ panda_spawner:
     hash_texture: "d5c3d618a70cc062e2edfaed15173e2a32ab6d773cf6050452e1b97fc66fb388"
 
 # Reference: https://minecraft.wiki/w/Parched#Drops
-parched_spawner:
-  entity: PARCHED
+parched:
   experience: 5
   loot:
     1:
@@ -643,8 +597,7 @@ parched_spawner:
     hash_texture: "24aeceff5f26dd8413c5c03547c234ac03108d187af0b9cd834a8ce12598591c"
 
 # Reference: https://minecraft.wiki/w/Parrot#Drops
-parrot_spawner:
-  entity: PARROT
+parrot:
   experience: 1
   loot:
     1:
@@ -656,8 +609,7 @@ parrot_spawner:
     hash_texture: "5df4b3401a4d06ad66ac8b5c4d189618ae617f9c143071c8ac39a563cf4e4208"
 
 # Reference: https://minecraft.wiki/w/Phantom#Drops
-phantom_spawner:
-  entity: PHANTOM
+phantom:
   experience: 5
   loot:
     1:
@@ -669,8 +621,7 @@ phantom_spawner:
     hash_texture: "adfe51801761660ebf6dae70e9cad588b2ef5e6cb2b3194d028a40ac0eebcdf5"
 
 # Reference: https://minecraft.wiki/w/Pig#Drops
-pig_spawner:
-  entity: PIG
+pig:
   experience: 1
   loot:
     1:
@@ -682,8 +633,7 @@ pig_spawner:
     hash_texture: "9b1760e3778f8087046b86bec6a0a83a567625f30f0d6bce866d4bed95dba6c1"
 
 # Reference: https://minecraft.wiki/w/Piglin#Drops
-piglin_spawner:
-  entity: PIGLIN
+piglin:
   experience: 5
   loot:
     1:
@@ -701,8 +651,7 @@ piglin_spawner:
     hash_texture: null
 
 # Reference: https://minecraft.wiki/w/Piglin_Brute#Drops
-piglin_brute_spawner:
-  entity: PIGLIN_BRUTE
+piglin_brute:
   experience: 20
   loot:
     1:
@@ -715,8 +664,7 @@ piglin_brute_spawner:
     hash_texture: null
 
 # Reference: https://minecraft.wiki/w/Pillager#Drops
-pillager_spawner:
-  entity: PILLAGER
+pillager:
   experience: 5
   loot:
     1:
@@ -733,8 +681,7 @@ pillager_spawner:
     hash_texture: "4aee6bb37cbfc92b0d86db5ada4790c64ff4468d68b84942fde04405e8ef5333"
 
 # Reference: https://minecraft.wiki/w/Polar_Bear#Drops
-polar_bear_spawner:
-  entity: POLAR_BEAR
+polar_bear:
   experience: 1
   loot:
     1:
@@ -750,8 +697,7 @@ polar_bear_spawner:
     hash_texture: "3d3cd8548e7dceb5c2394d1b00da2c61ffc0dde46229b10509eb27a0dcb23bfb"
 
 # Reference: https://minecraft.wiki/w/Pufferfish#Drops
-pufferfish_spawner:
-  entity: PUFFERFISH
+pufferfish:
   experience: 3
   loot:
     1:
@@ -767,8 +713,7 @@ pufferfish_spawner:
     hash_texture: "292350c9f0993ed54db2c7113936325683ffc20104a9b622aa457d37e708d931"
 
 # Reference: https://minecraft.wiki/w/Rabbit#Drops
-rabbit_spawner:
-  entity: RABBIT
+rabbit:
   experience: 3
   loot:
     1:
@@ -788,8 +733,7 @@ rabbit_spawner:
     hash_texture: "cd1d2bbc3d77ab0d119c031ea74d8781c93285cf736abc422baec1eb1560e8ca"
 
 # Reference: https://minecraft.wiki/w/Ravager#Drops
-ravager_spawner:
-  entity: RAVAGER
+ravager:
   experience: 20
   loot:
     1:
@@ -801,8 +745,7 @@ ravager_spawner:
     hash_texture: "cd20bf52ec390a0799299184fc678bf84cf732bb1bd78fd1c4b441858f0235a8"
 
 # Reference: https://minecraft.wiki/w/Salmon#Drops
-salmon_spawner:
-  entity: SALMON
+salmon:
   experience: 1
   loot:
     1:
@@ -818,8 +761,7 @@ salmon_spawner:
     hash_texture: "d4d001589b86c22cf24f1618fe7efef12932aa9148b5e4fc6ff4a614b990ae12"
 
 # Reference: https://minecraft.wiki/w/Sheep#Drops
-sheep_spawner:
-  entity: SHEEP
+sheep:
   experience: 1
   loot:
     1:
@@ -835,8 +777,7 @@ sheep_spawner:
     hash_texture: "a723893df4cfb9c7240fc47b560ccf6ddeb19da9183d33083f2c71f46dad290a"
 
 # Reference: https://minecraft.wiki/w/Shulker#Drops
-shulker_spawner:
-  entity: SHULKER
+shulker:
   experience: 5
   loot:
     1:
@@ -848,16 +789,14 @@ shulker_spawner:
     hash_texture: "537a294f6b7b4ba437e5cb35fb20f46792e7ac0a490a66132a557124ec5f997a"
 
 # Reference: https://minecraft.wiki/w/Silverfish#Drops
-silverfish_spawner:
-  entity: SILVERFISH
+silverfish:
   experience: 5
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "bfe13237e1109cab7264dc53b0aa697cf9a7c62c984a269fb0755a288912bbca"
 
 # Reference: https://minecraft.wiki/w/Skeleton#Drops
-skeleton_spawner:
-  entity: SKELETON
+skeleton:
   experience: 5
   loot:
     1:
@@ -878,8 +817,7 @@ skeleton_spawner:
     hash_texture: null
 
 # Reference: https://minecraft.wiki/w/Skeleton_Horse#Drops
-skeleton_horse_spawner:
-  entity: SKELETON_HORSE
+skeleton_horse:
   experience: 3
   loot:
     1:
@@ -891,8 +829,7 @@ skeleton_horse_spawner:
     hash_texture: "ac7d8a16d3f0f98b598df93f2c2d34e75171cd52dbf4a1211d7b84c019416a40"
 
 # Reference: https://minecraft.wiki/w/Slime#Drops
-slime_spawner:
-  entity: SLIME
+slime:
   experience: 4
   loot:
     1:
@@ -904,16 +841,14 @@ slime_spawner:
     hash_texture: "c7d29dbf3d98213ec2fb0ca25da74779e57bd0c1234268f828a3ec9869e15a9c"
 
 # Reference: https://minecraft.wiki/w/Sniffer#Drops
-sniffer_spawner:
-  entity: SNIFFER
+sniffer:
   experience: 5
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "fe5a8341c478a134302981e6a7758ea4ecfd8d62a0df4067897e75502f9b25de"
 
 # Reference: https://minecraft.wiki/w/Snow_Golem#Drops
-snow_golem_spawner:
-  entity: SNOW_GOLEM
+snow_golem:
   experience: 0
   loot:
     1:
@@ -925,8 +860,7 @@ snow_golem_spawner:
     hash_texture: "1fdfd1f7538c040258be7a91446da89ed845cc5ef728eb5e690543378fcf4"
 
 # Reference: https://minecraft.wiki/w/Spider#Drops
-spider_spawner:
-  entity: SPIDER
+spider:
   experience: 5
   loot:
     1:
@@ -942,8 +876,7 @@ spider_spawner:
     hash_texture: "35e248da2e108f09813a6b848a0fcef111300978180eda41d3d1a7a8e4dba3c3"
 
 # Reference: https://minecraft.wiki/w/Squid#Drops
-squid_spawner:
-  entity: SQUID
+squid:
   experience: 3
   loot:
     1:
@@ -955,8 +888,7 @@ squid_spawner:
     hash_texture: "d8705624daa2956aa45956c81bab5f4fdb2c74a596051e24192039aea3a8b8"
 
 # Reference: https://minecraft.wiki/w/Stray#Drops
-stray_spawner:
-  entity: STRAY
+stray:
   experience: 5
   loot:
     1:
@@ -981,8 +913,7 @@ stray_spawner:
     hash_texture: "2c5097916bc0565d30601c0eebfeb287277a34e867b4ea43c63819d53e89ede7"
 
 # Reference: https://minecraft.wiki/w/Strider#Drops
-strider_spawner:
-  entity: STRIDER
+strider:
   experience: 3
   loot:
     1:
@@ -994,24 +925,21 @@ strider_spawner:
     hash_texture: "125851a86ee1c54c94fc5bed017823dfb3ba08eddbcab2a914ef45b596c1603"
 
 # Reference: https://minecraft.wiki/w/Sulfur_Cube#Drops
-sulfur_cube_spawner:
-  entity: SULFUR_CUBE
+sulfur_cube:
   experience: 2
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "ca9570cd1dc43c1e83f36cc4995665513dc2405dad241d2114249e8da976fc3d"
 
 # Reference: https://minecraft.wiki/w/Tadpole#Drops
-tadpole_spawner:
-  entity: TADPOLE
+tadpole:
   experience: 0
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "987035f5352334c2cba6ac4c65c2b9059739d6d0e839c1dd98d75d2e77957847"
 
 # Reference: https://minecraft.wiki/w/Trader_Llama#Drops
-trader_llama_spawner:
-  entity: TRADER_LLAMA
+trader_llama:
   experience: 1
   loot:
     1:
@@ -1023,8 +951,7 @@ trader_llama_spawner:
     hash_texture: "56307f42fc88ebc211e04ea2bb4d247b7428b711df9a4e0c6d1b921589e443a1"
 
 # Reference: https://minecraft.wiki/w/Tropical_Fish#Drops
-tropical_fish_spawner:
-  entity: TROPICAL_FISH
+tropical_fish:
   experience: 1
   loot:
     1:
@@ -1040,8 +967,7 @@ tropical_fish_spawner:
     hash_texture: "d6dd5e6addb56acbc694ea4ba5923b1b25688178feffa72290299e2505c97281"
 
 # Reference: https://minecraft.wiki/w/Turtle#Drops
-turtle_spawner:
-  entity: TURTLE
+turtle:
   experience: 1
   loot:
     1:
@@ -1053,24 +979,21 @@ turtle_spawner:
     hash_texture: "0a4050e7aacc4539202658fdc339dd182d7e322f9fbcc4d5f99b5718a"
 
 # Reference: https://minecraft.wiki/w/Vex#Drops
-vex_spawner:
-  entity: VEX
+vex:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "b663134d7306bb604175d2575d686714b04412fe501143611fcf3cc19bd70abe"
 
 # Reference: https://minecraft.wiki/w/Villager#Drops
-villager_spawner:
-  entity: VILLAGER
+villager:
   experience: 0
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "a36e9841794a37eb99524925668b47a62b5cb72e096a9f8f95e106804ae13e1b"
 
 # Reference: https://minecraft.wiki/w/Vindicator#Drops
-vindicator_spawner:
-  entity: VINDICATOR
+vindicator:
   experience: 5
   loot:
     1:
@@ -1087,16 +1010,14 @@ vindicator_spawner:
     hash_texture: "4f6fb89d1c631bd7e79fe185ba1a6705425f5c31a5ff626521e395d4a6f7e2"
 
 # Reference: https://minecraft.wiki/w/Wandering_Trader#Drops
-wandering_trader_spawner:
-  entity: WANDERING_TRADER
+wandering_trader:
   experience: 0
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "ee011aac817259f2b48da3e5ef266094703866608b3d7d1754432bf249cd2234"
 
 # Reference: https://minecraft.wiki/w/Warden#Drops
-warden_spawner:
-  entity: WARDEN
+warden:
   experience: 5
   loot:
     1:
@@ -1108,8 +1029,7 @@ warden_spawner:
     hash_texture: "f8c211d66c803aac15ab86f79c7edfd6c3b2034d23355a92f6bd42e835260be0"
 
 # Reference: https://minecraft.wiki/w/Witch#Drops
-witch_spawner:
-  entity: WITCH
+witch:
   experience: 5
   loot:
     1:
@@ -1145,8 +1065,7 @@ witch_spawner:
     hash_texture: "8aa986a6e1c2d88ff198ab2c3259e8d2674cb83a6d206f883bad2c8ada819"
 
 # Reference: https://minecraft.wiki/w/Wither_Skeleton#Drops
-wither_skeleton_spawner:
-  entity: WITHER_SKELETON
+wither_skeleton:
   experience: 5
   loot:
     1:
@@ -1171,16 +1090,14 @@ wither_skeleton_spawner:
     hash_texture: null
 
 # Reference: https://minecraft.wiki/w/Wolf#Drops
-wolf_spawner:
-  entity: WOLF
+wolf:
   experience: 3
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "8f0b221786f193c06dd19a7875a903635113f84523927bb69764237fe20703de"
 
 # Reference: https://minecraft.wiki/w/Zoglin#Drops
-zoglin_spawner:
-  entity: ZOGLIN
+zoglin:
   experience: 5
   loot:
     1:
@@ -1192,8 +1109,7 @@ zoglin_spawner:
     hash_texture: "c19b7b5e9ffd4e22b890ab778b4795b662faff2b4978bf815574e48b0e52b301"
 
 # Reference: https://minecraft.wiki/w/Zombie#Drops
-zombie_spawner:
-  entity: ZOMBIE
+zombie:
   experience: 5
   loot:
     1:
@@ -1217,8 +1133,7 @@ zombie_spawner:
     hash_texture: null
 
 # Reference: https://minecraft.wiki/w/Zombie_Horse#Drops
-zombie_horse_spawner:
-  entity: ZOMBIE_HORSE
+zombie_horse:
   experience: 3
   loot:
     1:
@@ -1230,8 +1145,7 @@ zombie_horse_spawner:
     hash_texture: "171ce469cba4426c811f69be5d958a09bfb9b1b2bb649d3577a0c2161ad2f524"
 
 # Reference: https://minecraft.wiki/w/Zombie_Nautilus#Drops
-zombie_nautilus_spawner:
-  entity: ZOMBIE_NAUTILUS
+zombie_nautilus:
   experience: 3
   loot:
     1:
@@ -1243,8 +1157,7 @@ zombie_nautilus_spawner:
     hash_texture: "fd9a933376da44c3391307cb9f4cf03f16f3a54f495fd5a11bad8a373f9d5720"
 
 # Reference: https://minecraft.wiki/w/Zombie_Villager#Drops
-zombie_villager_spawner:
-  entity: ZOMBIE_VILLAGER
+zombie_villager:
   experience: 5
   loot:
     1:
@@ -1268,8 +1181,7 @@ zombie_villager_spawner:
     hash_texture: "37e838ccc26776a217c678386f6a65791fe8cdab8ce9ca4ac6b28397a4d81c22"
 
 # Reference: https://minecraft.wiki/w/Zombified_Piglin#Drops
-zombified_piglin_spawner:
-  entity: ZOMBIFIED_PIGLIN
+zombified_piglin:
   experience: 5
   loot:
     1:
@@ -1292,3 +1204,14 @@ zombified_piglin_spawner:
   mob_head:
     item: "PLAYER_HEAD"
     hash_texture: "e935842af769380f78e8b8a88d1ea6ca2807c1e5693c2cf797456620833e936f"
+
+# Extra spawners for a mob, each with its own loot. Anything left out except loot comes from that mob's spawner.
+custom_spawners:
+#  lucky_zombie:
+#    entity: ZOMBIE
+#    display_name: Lucky Zombie
+#    loot:
+#      1:
+#        item: DIAMOND
+#        amount: 1-2
+#        chance: 5.0

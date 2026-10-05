@@ -220,17 +220,7 @@ public class SpawnerSellConfirmUI {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
         };
 
-        ItemStack spawnerItem;
-
-        // OPTIMIZATION: Get cached spawner type from placeholders
-        if (placeholders.containsKey("spawnedItem")) {
-            spawnerItem = SpawnerMobHeadTexture.getItemSpawnerHead(
-                Material.valueOf(placeholders.get("spawnedItem")), player, metaModifier);
-        } else {
-            spawnerItem = SpawnerMobHeadTexture.getCustomHead(
-                EntityType.valueOf(placeholders.get("entityType")),
-                player, metaModifier);
-        }
+        ItemStack spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, metaModifier);
 
         if (spawnerItem.getType() == Material.SPAWNER) {
             ItemTooltipUtil.hideTooltip(spawnerItem);
@@ -288,11 +278,11 @@ public class SpawnerSellConfirmUI {
 
         if (isItemSpawner) {
             Material spawnedItem = spawner.getSpawnedItemMaterial();
-            entityName = languageManager.getVanillaItemName(spawnedItem);
+            entityName = spawner.getDisplayName();
             placeholders.put("spawnedItem", spawnedItem.name());
         } else {
             org.bukkit.entity.EntityType entityType = spawner.getEntityType();
-            entityName = languageManager.getFormattedMobName(entityType);
+            entityName = spawner.getDisplayName();
             placeholders.put("entityType", entityType.name());
         }
 

@@ -714,7 +714,7 @@ public class ListSubCommand extends BaseSubCommand {
         // Prepare all placeholders upfront
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("id", String.valueOf(spawner.getSpawnerId()));
-        placeholders.put("entity", languageManager.getFormattedMobName(entityType));
+        placeholders.put("entity", spawner.getDisplayName());
         placeholders.put("size", String.valueOf(spawner.getStackSize()));
         if (spawner.getSpawnerStop().get()) {
             placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.inactive"));
@@ -742,7 +742,7 @@ public class ListSubCommand extends BaseSubCommand {
             });
         } else {
             // Use optimized method with consumer to avoid extra getItemMeta/setItemMeta
-            spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, meta -> {
+            spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, meta -> {
                 meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
                 List<String> lore = Arrays.asList(languageManager.commandGui().lore(loreKey, placeholders));
                 meta.setLore(lore);

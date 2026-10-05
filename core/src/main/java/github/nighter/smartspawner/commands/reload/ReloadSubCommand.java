@@ -55,6 +55,7 @@ public class ReloadSubCommand extends BaseSubCommand {
             plugin.setUpHopperHandler();
             plugin.getItemPriceManager().reload();
             plugin.getSpawnerSettingsConfig().reload();
+            plugin.getItemSpawnerSettingsConfig().reload();
             plugin.getSpawnerManager().reloadSpawnerDropsAndConfigs();
             plugin.getLanguageManager().reloadLanguages();
 

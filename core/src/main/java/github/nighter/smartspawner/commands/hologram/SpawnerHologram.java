@@ -25,6 +25,7 @@ public class SpawnerHologram {
     private int stackSize;
     private EntityType entityType;
     private Material spawnedItemMaterial;
+    private String displayName;
     private long currentExp;
     private long maxExp;
     private int currentItems;
@@ -39,9 +40,7 @@ public class SpawnerHologram {
     // Cached color-translated template (static part; recomputed after reload)
     private String cachedProcessedTemplate = null;
 
-    // Cached entity display names (recomputed only when entityType/spawnedItemMaterial changes)
-    private EntityType cachedEntityType = null;
-    private Material cachedSpawnedItemMaterial = null;
+    // Cached small caps of the display name (recomputed only when the name changes)
     private String cachedEntityName = null;
     private String cachedEntitySmallCaps = null;
 
@@ -133,13 +132,9 @@ public class SpawnerHologram {
 
     /** Builds the final display string from cached data. Must be called on the owning region thread. */
     private String computeText() {
-        // Refresh entity name cache only when the entity type or item material changes
-        if (cachedEntityType != entityType || cachedSpawnedItemMaterial != spawnedItemMaterial) {
-            cachedEntityType = entityType;
-            cachedSpawnedItemMaterial = spawnedItemMaterial;
-            cachedEntityName = entityType == EntityType.ITEM && spawnedItemMaterial != null
-                    ? languageManager.getVanillaItemName(spawnedItemMaterial)
-                    : languageManager.getFormattedMobName(entityType);
+        // Refresh the small caps name only when the display name changes
+        if (cachedEntityName == null || !cachedEntityName.equals(displayName)) {
+            cachedEntityName = displayName != null ? displayName : languageManager.getFormattedMobName(entityType);
             cachedEntitySmallCaps = languageManager.getSmallCaps(cachedEntityName);
         }
 
@@ -185,7 +180,8 @@ public class SpawnerHologram {
         });
     }
 
-    public void updateData(int stackSize, EntityType entityType, Material spawnedItemMaterial, long currentExp, long maxExp, int currentItems, int maxSlots) {
+    public void updateData(int stackSize, EntityType entityType, Material spawnedItemMaterial, String displayName,
+                           long currentExp, long maxExp, int currentItems, int maxSlots) {
         TextDisplay display = textDisplay.get();
 
         // Skip entirely when nothing has changed and the hologram already exists.
@@ -193,6 +189,7 @@ public class SpawnerHologram {
                 && this.stackSize == stackSize
                 && this.entityType == entityType
                 && this.spawnedItemMaterial == spawnedItemMaterial
+                && java.util.Objects.equals(this.displayName, displayName)
                 && this.currentExp == currentExp
                 && this.maxExp == maxExp
                 && this.currentItems == currentItems
@@ -203,6 +200,7 @@ public class SpawnerHologram {
         this.stackSize = stackSize;
         this.entityType = entityType;
         this.spawnedItemMaterial = spawnedItemMaterial;
+        this.displayName = displayName;
         this.currentExp = currentExp;
         this.maxExp = maxExp;
         this.currentItems = currentItems;

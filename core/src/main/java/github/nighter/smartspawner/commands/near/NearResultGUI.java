@@ -192,7 +192,7 @@ public class NearResultGUI implements Listener {
 
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("id", spawner.getSpawnerId());
-        placeholders.put("entity", languageManager.getFormattedMobName(entityType));
+        placeholders.put("entity", spawner.getDisplayName());
         placeholders.put("size", String.valueOf(spawner.getStackSize()));
         if (spawner.getSpawnerStop().get()) {
             placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.inactive"));
@@ -216,7 +216,7 @@ public class NearResultGUI implements Listener {
                 meta.setLore(Arrays.asList(languageManager.commandGui().lore("spawner_item_list.lore", placeholders)));
             });
         } else {
-            spawnerItem = SpawnerMobHeadTexture.getCustomHead(entityType, meta -> {
+            spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, meta -> {
                 meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
                 meta.setLore(Arrays.asList(languageManager.commandGui().lore("spawner_item_list.lore", placeholders)));
             });

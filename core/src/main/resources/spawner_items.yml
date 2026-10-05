@@ -1,8 +1,7 @@
 # Item spawners: which items can be an Item Spawner, and what each one produces.
-# Guide and examples: https://openvdra.github.io/SmartSpawner/spawner-items/
+# Full guide: https://docs.smartspawner.site/docs/spawner-items
 
-netherite_ingot_spawner:
-  item: NETHERITE_INGOT
+netherite_ingot:
   experience: 1
   loot:
     1:
@@ -14,8 +13,7 @@ netherite_ingot_spawner:
     hash_texture: null
 
 # Diamond spawner
-diamond_spawner:
-  item: DIAMOND
+diamond:
   experience: 1
   loot:
     1:
@@ -27,8 +25,7 @@ diamond_spawner:
     hash_texture: null
 
 # Coal spawner
-coal_spawner:
-  item: COAL
+coal:
   experience: 1
   loot:
     1:
@@ -40,8 +37,7 @@ coal_spawner:
     hash_texture: null
 
 # Amethyst Shard spawner
-amethyst_shard_spawner:
-  item: AMETHYST_SHARD
+amethyst_shard:
   experience: 1
   loot:
     1:
@@ -53,8 +49,7 @@ amethyst_shard_spawner:
     hash_texture: null
 
 # Emerald spawner
-emerald_spawner:
-  item: EMERALD
+emerald:
   experience: 1
   loot:
     1:
@@ -66,8 +61,7 @@ emerald_spawner:
     hash_texture: null
 
 # Nether Star spawner
-nether_star_spawner:
-  item: NETHER_STAR
+nether_star:
   experience: 1
   loot:
     1:
@@ -79,8 +73,7 @@ nether_star_spawner:
     hash_texture: null
 
 # Totem of Undying spawner
-totem_of_undying_spawner:
-  item: TOTEM_OF_UNDYING
+totem_of_undying:
   experience: 1
   loot:
     1:
@@ -90,3 +83,14 @@ totem_of_undying_spawner:
   mob_head:
     item: "TOTEM_OF_UNDYING"
     hash_texture: null
+
+# Extra spawners for an item, each with its own loot. Anything left out except loot comes from that item's spawner.
+custom_spawners:
+#  rich_diamond:
+#    item: DIAMOND
+#    display_name: Rich Diamond
+#    loot:
+#      1:
+#        item: DIAMOND_BLOCK
+#        amount: 1-1
+#        chance: 10.0

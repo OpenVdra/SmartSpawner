@@ -54,7 +54,7 @@ public class LootEditorUI {
      */
     public void openLootList(Player player, LootEditorTarget target, String entryKey) {
         Map<String, String> titlePlaceholders = new HashMap<>();
-        titlePlaceholders.put("entry", entryKey);
+        titlePlaceholders.put("entry", entryKey.substring(entryKey.lastIndexOf('.') + 1));
 
         Inventory inventory = Bukkit.createInventory(
                 new LootListHolder(target, entryKey), LOOT_SIZE,

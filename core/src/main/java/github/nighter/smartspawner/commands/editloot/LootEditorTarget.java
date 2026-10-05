@@ -5,8 +5,9 @@ import lombok.Getter;
 /**
  * The two settings files whose loot tables {@code /ss editloot} can change.
  *
- * <p>They share a shape: a top-level key per spawner, each with a {@code loot} section of labelled
- * rows. They differ only in which file holds them and which live component rereads them.</p>
+ * <p>They share a shape: a section per spawner, top level or under {@code custom_spawners}, each with
+ * a {@code loot} section of labelled rows. They differ only in which file holds them and which live
+ * component rereads them.</p>
  */
 @Getter
 public enum LootEditorTarget {

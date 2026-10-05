@@ -8,15 +8,18 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.EntitySnapshot;
+import org.bukkit.entity.EntityType;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages the merged spawner settings configuration that combines mob drops and head textures.
+ * Loads {@code spawner_mobs.yml}: one base spawner per mob, keyed by the mob itself, plus any number
+ * of custom spawners under {@code custom_spawners}. See {@link SpawnerFileLayout} for the shape.
+ *
+ * <p>A custom spawner inherits its head, {@code drop_chance}, {@code nbt_data} and {@code experience}
+ * from the base spawner of the same mob when it leaves them out. Its loot is never inherited.</p>
  *
  * <p>The file is kept in sync by the version-less {@link YamlMigrator}: it is created if missing and,
  * on every startup, any keys added by a plugin update are topped up while the user's own edits are
@@ -26,10 +29,7 @@ public class SpawnerSettingsConfig {
     private static final String RESOURCE = "spawner_mobs.yml";
     /** Replaced by {@link #RESOURCE} in 1.8.0. Never read, only reported once. */
     private static final String LEGACY_RESOURCE = "spawners_settings.yml";
-
-    private final SmartSpawner plugin;
-    private FileConfiguration config;
-    private final File configFile;
+    private static final String TYPE_KEY = "entity";
 
     /**
      * Shown when a mob names no head of its own, or names one that does not exist. Not a config key:
@@ -37,19 +37,13 @@ public class SpawnerSettingsConfig {
      */
     private static final Material FALLBACK_HEAD = Material.SPAWNER;
 
-    // Mob head data
-    private final Map<EntityType, MobHeadData> mobHeadMap = new EnumMap<>(EntityType.class);
+    private final SmartSpawner plugin;
+    private final File configFile;
 
-    // Loot data
-    private final Map<String, EntityLootConfig> entityLootConfigs = new ConcurrentHashMap<>();
-
-    // Spawner item drop chance when the spawner block is broken
-    private final Map<EntityType, Double> spawnerDropChances = new EnumMap<>(EntityType.class);
-    private final Map<String, Double> namedSpawnerDropChances = new HashMap<>();
-    private final Map<EntityType, EntitySnapshot> entityDisplaySnapshots = new EnumMap<>(EntityType.class);
-    private final Map<String, MobDefinition> definitionsByName = new HashMap<>();
-    private final Map<String, EntitySnapshot> snapshotsByName = new HashMap<>();
-    private final Map<EntityType, MobDefinition> defaultDefinitionsByEntity = new EnumMap<>(EntityType.class);
+    private final Map<String, MobDefinition> definitionsByName = new LinkedHashMap<>();
+    private final Map<String, String> aliasToName = new HashMap<>();
+    private final Map<EntityType, MobDefinition> baseDefinitions = new EnumMap<>(EntityType.class);
+    private final Map<String, String> sectionPaths = new HashMap<>();
 
     public SpawnerSettingsConfig(SmartSpawner plugin) {
         this.plugin = plugin;
@@ -62,87 +56,183 @@ public class SpawnerSettingsConfig {
     public void load() {
         boolean firstRun = !configFile.exists();
 
-        // Creates the file if missing and tops up any keys added by a plugin update. A mob's loot
-        // section is left alone once the user has one: those entries are a list they curate, so
-        // topping it up would resurrect drops they deleted and duplicate any entry the shipped file
-        // has since renamed.
-        YamlMigrator.migrate(configFile, plugin.getResource(RESOURCE), List.of(), null, true,
-                YamlMigrator.OwnedSection.curated((defaults, path) -> path.endsWith(".loot")),
+        if (!firstRun && SpawnerFileLayout.isLegacy(YamlConfiguration.loadConfiguration(configFile), TYPE_KEY)) {
+            SpawnerFileLayout.backup(configFile, plugin.getLogger());
+        }
+
+        // Creates the file if missing, converts a 1.8 file, then tops up any keys added by a plugin
+        // update. A mob's loot section is left alone once the user has one: those entries are a list
+        // they curate, so topping it up would resurrect drops they deleted and duplicate any entry the
+        // shipped file has since renamed. custom_spawners belongs to the user entirely.
+        YamlMigrator.migrate(configFile, plugin.getResource(RESOURCE), List.of(),
+                (user, defaults) -> SpawnerFileLayout.convertLegacy(user, TYPE_KEY, SpawnerSettingsConfig::baseIdOf),
+                true,
+                YamlMigrator.OwnedSection.curated((defaults, path) -> path.endsWith(".loot")
+                        || path.equals(SpawnerFileLayout.CUSTOM_SECTION)),
                 plugin.getLogger());
 
         if (firstRun) {
             SupersededConfigNotice.warn(plugin, RESOURCE, LEGACY_RESOURCE);
         }
 
-        config = YamlConfiguration.loadConfiguration(configFile);
-        parseConfig();
+        parseConfig(YamlConfiguration.loadConfiguration(configFile));
     }
 
-    /**
-     * Parse the configuration and populate both mob head and loot data
-     */
-    private void parseConfig() {
-        mobHeadMap.clear();
-        entityLootConfigs.clear();
-        spawnerDropChances.clear();
-        namedSpawnerDropChances.clear();
-        entityDisplaySnapshots.clear();
-        definitionsByName.clear();
-        snapshotsByName.clear();
-        defaultDefinitionsByEntity.clear();
+    public void reload() {
+        load();
+    }
 
-        // Parse each mob's configuration
-        for (String configName : config.getKeys(false)) {
-            // Anything that is not a section is a stray scalar, not an entry.
-            ConfigurationSection entitySection = config.getConfigurationSection(configName);
-            if (entitySection == null) continue;
-
-            // Validate entity type
-            EntityType entityType;
-            try {
-                String entityName = entitySection.getString("entity", configName);
-                entityType = EntityType.valueOf(entityName == null ? "" : entityName.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Entity for '" + configName + "' is invalid or missing in " + RESOURCE);
-                continue;
-            }
-
-            String normalizedName = entitySection.contains("entity")
-                    ? SpawnerConfigName.normalize(configName)
-                    : SpawnerConfigName.defaultName(entityType.name());
-            if (normalizedName.isEmpty() || definitionsByName.containsKey(normalizedName)) {
-                plugin.getLogger().warning("Duplicate or invalid spawner name '" + configName + "' in " + RESOURCE);
-                continue;
-            }
-
-            // Parse head texture data
-            parseHeadTexture(entityType, entitySection);
-            EntitySnapshot snapshot = parseEntityDisplay(entityType, entitySection);
-
-            // Parse loot data
-            parseLootData(normalizedName, entitySection);
-
-            parseSpawnerDropChance(normalizedName, entityType, entitySection);
-            MobDefinition definition = new MobDefinition(normalizedName, entityType,
-                    entityLootConfigs.get(normalizedName));
-            definitionsByName.put(normalizedName, definition);
-            if (snapshot != null) {
-                snapshotsByName.put(normalizedName, snapshot);
-                entityDisplaySnapshots.putIfAbsent(entityType, snapshot);
-            }
-            defaultDefinitionsByEntity.putIfAbsent(entityType, definition);
+    private static EntityType entityTypeOf(String raw) {
+        String name = SpawnerConfigName.normalize(raw).toUpperCase(Locale.ROOT);
+        if (name.isEmpty()) return null;
+        try {
+            EntityType type = EntityType.valueOf(name);
+            return type == EntityType.UNKNOWN ? null : type;
+        } catch (IllegalArgumentException e) {
+            return null;
         }
     }
 
-    private EntitySnapshot parseEntityDisplay(EntityType entityType, ConfigurationSection entitySection) {
-        String nbt = entitySection.getString("nbt_data");
+    private static String baseIdOf(String raw) {
+        EntityType type = entityTypeOf(raw);
+        return type == null ? null : baseId(type);
+    }
+
+    private static String baseId(EntityType type) {
+        return type.name().toLowerCase(Locale.ROOT);
+    }
+
+    private void parseConfig(FileConfiguration config) {
+        SpawnerNameNotices.reset();
+        definitionsByName.clear();
+        aliasToName.clear();
+        baseDefinitions.clear();
+        sectionPaths.clear();
+
+        for (String key : config.getKeys(false)) {
+            if (key.equals(SpawnerFileLayout.CUSTOM_SECTION)) continue;
+            ConfigurationSection section = config.getConfigurationSection(key);
+            if (section == null) continue;
+
+            EntityType type = entityTypeOf(key);
+            if (type == null) {
+                plugin.getLogger().warning("'" + key + "' in " + RESOURCE + " is not a mob name. Custom spawners go under "
+                        + SpawnerFileLayout.CUSTOM_SECTION + ".");
+                continue;
+            }
+            String id = baseId(type);
+            if (definitionsByName.containsKey(id)) {
+                plugin.getLogger().warning("'" + key + "' in " + RESOURCE + " repeats the " + id + " spawner and is ignored.");
+                continue;
+            }
+            register(parseEntry(id, type, section, true, null), key);
+        }
+
+        ConfigurationSection customs = config.getConfigurationSection(SpawnerFileLayout.CUSTOM_SECTION);
+        if (customs != null) {
+            for (String key : customs.getKeys(false)) {
+                ConfigurationSection section = customs.getConfigurationSection(key);
+                if (section == null) continue;
+                String id = SpawnerConfigName.normalize(key);
+                String label = "custom spawner '" + key + "' in " + RESOURCE;
+                if (id.isEmpty() || entityTypeOf(id) != null) {
+                    plugin.getLogger().warning(label + " uses a mob name. Give it a name of its own.");
+                    continue;
+                }
+                if (definitionsByName.containsKey(id)) {
+                    plugin.getLogger().warning(label + " repeats another spawner's name and is ignored.");
+                    continue;
+                }
+                EntityType type = entityTypeOf(section.getString(TYPE_KEY, ""));
+                if (type == null) {
+                    plugin.getLogger().warning(label + " needs a valid '" + TYPE_KEY + "' mob.");
+                    continue;
+                }
+                register(parseEntry(id, type, section, false, baseDefinitions.get(type)),
+                        SpawnerFileLayout.CUSTOM_SECTION + "." + key);
+            }
+        }
+
+        for (MobDefinition definition : definitionsByName.values()) {
+            for (String alias : definition.aliases()) {
+                String name = SpawnerConfigName.normalize(alias);
+                if (name.isEmpty() || definitionsByName.containsKey(name) || aliasToName.containsKey(name)) {
+                    plugin.getLogger().warning("Alias '" + alias + "' of " + definition.name() + " in " + RESOURCE
+                            + " is already a spawner name and is ignored.");
+                    continue;
+                }
+                aliasToName.put(name, definition.name());
+            }
+        }
+    }
+
+    private void register(MobDefinition definition, String sectionPath) {
+        definitionsByName.put(definition.name(), definition);
+        sectionPaths.put(definition.name(), sectionPath);
+        if (definition.base()) {
+            baseDefinitions.put(definition.entityType(), definition);
+        }
+    }
+
+    private MobDefinition parseEntry(String id, EntityType type, ConfigurationSection section, boolean base,
+                                     MobDefinition inherited) {
+        String label = id + " in " + RESOURCE;
+
+        int experience = section.contains("experience") || inherited == null
+                ? section.getInt("experience", 0)
+                : inherited.lootConfig().experience();
+        EntityLootConfig lootConfig = new EntityLootConfig(experience, parseLoot(section, id));
+
+        SpawnerHead head = SpawnerHead.parse(section, FALLBACK_HEAD, label, plugin.getLogger());
+        if (head == null && inherited != null) head = inherited.head();
+
+        Double dropChance = inherited == null ? null : inherited.dropChance();
+        if (section.contains("drop_chance")) {
+            dropChance = section.getDouble("drop_chance", 100.0);
+            if (dropChance < 0.0 || dropChance > 100.0) {
+                plugin.getLogger().warning("Invalid drop_chance for " + label + ". It must be 0.0 to 100.0; using 100.0");
+                dropChance = 100.0;
+            }
+        }
+
+        EntitySnapshot snapshot = section.contains("nbt_data") || inherited == null
+                ? parseEntityDisplay(type, section, label)
+                : inherited.snapshot();
+
+        String displayName = section.getString("display_name");
+        if (displayName != null && displayName.isBlank()) displayName = null;
+
+        return new MobDefinition(id, type, base, displayName, lootConfig, head, dropChance, snapshot,
+                List.copyOf(section.getStringList(SpawnerFileLayout.ALIASES)));
+    }
+
+    private List<LootItem> parseLoot(ConfigurationSection section, String id) {
+        List<LootItem> items = new ArrayList<>();
+        ConfigurationSection lootSection = section.getConfigurationSection("loot");
+        if (lootSection == null) {
+            return items;
+        }
+        for (String itemKey : lootSection.getKeys(false)) {
+            ConfigurationSection itemSection = lootSection.getConfigurationSection(itemKey);
+            if (itemSection == null) continue;
+            LootItem lootItem = LootEntryParser.parse(itemSection, itemKey, plugin.getItemPriceManager(),
+                    plugin.getLogger(), "spawner " + id);
+            if (lootItem != null) {
+                items.add(lootItem);
+            }
+        }
+        return items;
+    }
+
+    private EntitySnapshot parseEntityDisplay(EntityType entityType, ConfigurationSection section, String label) {
+        String nbt = section.getString("nbt_data");
         if (nbt == null || nbt.isBlank()) {
             return null;
         }
 
         String trimmed = nbt.trim();
         if (trimmed.length() < 2 || trimmed.charAt(0) != '{' || trimmed.charAt(trimmed.length() - 1) != '}') {
-            plugin.getLogger().warning("Invalid nbt_data for " + entityType.name() + ": expected an SNBT compound");
+            plugin.getLogger().warning("Invalid nbt_data for " + label + ": expected an SNBT compound");
             return null;
         }
 
@@ -155,188 +245,89 @@ public class SpawnerSettingsConfig {
                 return snapshot;
             }
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid nbt_data for " + entityType.name() + ": " + e.getMessage());
+            plugin.getLogger().warning("Invalid nbt_data for " + label + ": " + e.getMessage());
         }
         return null;
     }
 
-    private void parseSpawnerDropChance(String configName, EntityType entityType,
-                                        ConfigurationSection entitySection) {
-        if (!entitySection.contains("drop_chance")) {
-            return;
-        }
+    // ===== Lookups =====
 
-        double dropChance = entitySection.getDouble("drop_chance", 100.0);
-        if (dropChance < 0.0 || dropChance > 100.0) {
-            plugin.getLogger().warning("Invalid drop_chance for " + entityType.name() +
-                    " in spawner_mobs.yml. Value must be between 0.0 and 100.0; using 100.0");
-            dropChance = 100.0;
-        }
-
-        spawnerDropChances.putIfAbsent(entityType, dropChance);
-        namedSpawnerDropChances.put(configName, dropChance);
-    }
-
-    /**
-     * Parse head texture configuration for an entity
-     */
-    private void parseHeadTexture(EntityType entityType, ConfigurationSection entitySection) {
-        ConfigurationSection headSection = entitySection.getConfigurationSection("mob_head");
-        if (headSection == null) {
-            return;
-        }
-
-        String materialName = headSection.getString("item", "SPAWNER");
-        String customTexture = headSection.getString("hash_texture");
-
-        // Validate material
-        Material material;
-        try {
-            material = Material.valueOf(materialName.toUpperCase());
-            if (!material.isItem()) {
-                plugin.getLogger().warning("Material " + materialName + " for " + entityType + " is not an item, using default");
-                material = FALLBACK_HEAD;
-            }
-        } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid material " + materialName + " for " + entityType + ", using default");
-            material = FALLBACK_HEAD;
-        }
-
-        // Store mob head data
-        mobHeadMap.putIfAbsent(entityType, new MobHeadData(material, customTexture));
-    }
-
-    /**
-     * Parse loot configuration for an entity
-     */
-    private void parseLootData(String entityName, ConfigurationSection entitySection) {
-        int experience = entitySection.getInt("experience", 0);
-        List<LootItem> items = new ArrayList<>();
-
-        ConfigurationSection lootSection = entitySection.getConfigurationSection("loot");
-        if (lootSection != null) {
-            for (String itemKey : lootSection.getKeys(false)) {
-                ConfigurationSection itemSection = lootSection.getConfigurationSection(itemKey);
-                if (itemSection == null) continue;
-
-                LootItem lootItem = LootEntryParser.parse(
-                        itemSection, itemKey, plugin.getItemPriceManager(), plugin.getLogger(),
-                        "entity " + entityName);
-                if (lootItem != null) {
-                    items.add(lootItem);
-                }
-            }
-        }
-
-        entityLootConfigs.put(entityName.toLowerCase(), new EntityLootConfig(experience, items));
-    }
-
-    // ===== Mob Head Methods =====
-
-    /**
-     * Get the material for a specific entity type
-     */
-    public Material getMaterial(EntityType entityType) {
-        MobHeadData data = mobHeadMap.get(entityType);
-        return data != null ? data.material : FALLBACK_HEAD;
-    }
-
-    /**
-     * Get the custom texture for a specific entity type
-     */
-    public String getCustomTexture(EntityType entityType) {
-        MobHeadData data = mobHeadMap.get(entityType);
-        return data != null ? data.customTexture : null;
-    }
-
-    /**
-     * Check if an entity type has a custom texture configured
-     */
-    public boolean hasCustomTexture(EntityType entityType) {
-        MobHeadData data = mobHeadMap.get(entityType);
-        return data != null && data.customTexture != null && !data.customTexture.isEmpty();
-    }
-
-    // ===== Loot Methods =====
-
-    /**
-     * Get loot configuration for an entity type
-     */
-    public EntityLootConfig getLootConfig(EntityType entityType) {
-        if (entityType == null || entityType == EntityType.UNKNOWN) {
-            return null;
-        }
-        MobDefinition definition = defaultDefinitionsByEntity.get(entityType);
-        return definition == null ? null : definition.lootConfig();
-    }
-
-    /**
-     * Get the spawner item drop chance for a broken Smart Spawner.
-     */
-    public double getSpawnerDropChance(EntityType entityType) {
-        if (entityType == null || entityType == EntityType.UNKNOWN) {
-            return 100.0;
-        }
-        return spawnerDropChances.getOrDefault(entityType, 100.0);
-    }
-
-    /**
-     * Check whether an entity has an explicit spawner item drop chance configured.
-     */
-    public boolean hasSpawnerDropChance(EntityType entityType) {
-        return entityType != null && entityType != EntityType.UNKNOWN && spawnerDropChances.containsKey(entityType);
-    }
-
-    public double getSpawnerDropChance(String configName, EntityType fallback) {
-        return namedSpawnerDropChances.getOrDefault(SpawnerConfigName.normalize(configName),
-                getSpawnerDropChance(fallback));
-    }
-
-    public boolean hasSpawnerDropChance(String configName) {
-        return namedSpawnerDropChances.containsKey(SpawnerConfigName.normalize(configName));
-    }
-
-    public EntitySnapshot getEntityDisplaySnapshot(EntityType entityType) {
-        return entityDisplaySnapshots.get(entityType);
-    }
-
-    public EntitySnapshot getEntityDisplaySnapshot(String configName, EntityType fallback) {
-        String normalized = SpawnerConfigName.normalize(configName);
-        if (definitionsByName.containsKey(normalized)) return snapshotsByName.get(normalized);
-        return entityDisplaySnapshots.get(fallback);
-    }
-
+    /** The spawner with exactly this name. */
     public MobDefinition getDefinition(String name) {
         return definitionsByName.get(SpawnerConfigName.normalize(name));
     }
 
-    public MobDefinition getDefaultDefinition(EntityType type) {
-        return defaultDefinitionsByEntity.get(type);
+    /**
+     * The spawner a stored or typed name stands for: its own name, one of its {@code aliases}, or a
+     * 1.8 {@code <mob>_spawner} name. Null when nothing matches.
+     */
+    public MobDefinition resolve(String name) {
+        String normalized = SpawnerConfigName.normalize(name);
+        if (normalized.isEmpty()) return null;
+        MobDefinition definition = definitionsByName.get(normalized);
+        if (definition != null) return definition;
+        String aliased = aliasToName.get(normalized);
+        if (aliased != null) return definitionsByName.get(aliased);
+        String legacy = SpawnerFileLayout.legacyBaseId(normalized);
+        return legacy == null ? null : definitionsByName.get(legacy);
+    }
+
+    /** The base spawner of a mob, used for natural spawners, spawn eggs and unknown names. */
+    public MobDefinition getBaseDefinition(EntityType type) {
+        return type == null ? null : baseDefinitions.get(type);
+    }
+
+    /** The spawner a stored name stands for, or the mob's base spawner when the name is gone. */
+    public MobDefinition resolveOrBase(String name, EntityType type) {
+        MobDefinition definition = resolve(name);
+        return definition != null && definition.entityType() == type ? definition : getBaseDefinition(type);
     }
 
     public Set<String> getDefinitionNames() {
         return Collections.unmodifiableSet(definitionsByName.keySet());
     }
 
-    public record MobDefinition(String name, EntityType entityType, EntityLootConfig lootConfig) {}
+    /** Where a spawner lives in the file, for the loot editor: {@code zombie} or {@code custom_spawners.x}. */
+    public String getSectionPath(String name) {
+        return sectionPaths.get(SpawnerConfigName.normalize(name));
+    }
 
-    /**
-     * Reload the configuration
-     */
-    public void reload() {
-        load();
+    /** Loot of the mob's base spawner. */
+    public EntityLootConfig getLootConfig(EntityType entityType) {
+        MobDefinition definition = getBaseDefinition(entityType);
+        return definition == null ? null : definition.lootConfig();
+    }
+
+    /** Head of the mob's base spawner, never null. */
+    public SpawnerHead getBaseHead(EntityType entityType) {
+        MobDefinition definition = getBaseDefinition(entityType);
+        return definition != null && definition.head() != null ? definition.head() : new SpawnerHead(FALLBACK_HEAD, null);
+    }
+
+    public double getSpawnerDropChance(String configName, EntityType fallback) {
+        MobDefinition definition = resolveOrBase(configName, fallback);
+        return definition == null || definition.dropChance() == null ? 100.0 : definition.dropChance();
+    }
+
+    public boolean hasSpawnerDropChance(String configName, EntityType fallback) {
+        MobDefinition definition = resolveOrBase(configName, fallback);
+        return definition != null && definition.dropChance() != null;
+    }
+
+    public EntitySnapshot getEntityDisplaySnapshot(String configName, EntityType fallback) {
+        MobDefinition definition = resolveOrBase(configName, fallback);
+        return definition == null ? null : definition.snapshot();
     }
 
     /**
-     * Internal class to store mob head data
+     * One spawner from the file.
+     *
+     * @param base        true for the mob's own entry, false for one under {@code custom_spawners}
+     * @param displayName replaces the mob name everywhere players see this spawner, or null
+     * @param head        menu icon, or null for the default spawner block
+     * @param dropChance  chance to drop the spawner item when broken, or null when not configured
      */
-    private static class MobHeadData {
-        final Material material;
-        final String customTexture;
-
-        MobHeadData(Material material, String customTexture) {
-            this.material = material;
-            this.customTexture = customTexture;
-        }
-    }
+    public record MobDefinition(String name, EntityType entityType, boolean base, String displayName,
+                                EntityLootConfig lootConfig, SpawnerHead head, Double dropChance,
+                                EntitySnapshot snapshot, List<String> aliases) {}
 }

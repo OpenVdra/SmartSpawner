@@ -74,18 +74,22 @@ public class SpawnerItemFactory {
     }
 
     public ItemStack createSmartSpawnerItem(EntityType entityType, int amount) {
-        var definition = plugin.getSpawnerSettingsConfig().getDefaultDefinition(entityType);
-        return definition == null ? createSmartSpawnerItem(null, entityType, amount)
-                : createSmartSpawnerItem(definition.name(), entityType, amount);
+        var definition = plugin.getSpawnerSettingsConfig().getBaseDefinition(entityType);
+        return createSmartSpawnerItem(definition == null ? null : definition.name(), entityType, amount);
     }
 
+    /** The item of a configured spawner, by its name, alias or 1.8 name. Null when there is none. */
     public ItemStack createSmartSpawnerItem(String configName, int amount) {
-        var definition = plugin.getSpawnerSettingsConfig().getDefinition(configName);
+        var definition = plugin.getSpawnerSettingsConfig().resolve(configName);
         if (definition == null) return null;
         return createSmartSpawnerItem(definition.name(), definition.entityType(), amount);
     }
 
-    private ItemStack createSmartSpawnerItem(String configName, EntityType entityType, int amount) {
+    /**
+     * The item of a placed spawner. A name with no entry any more is kept on the item, so it still
+     * stacks with the spawner it came from; it looks and drops like the mob's base spawner meanwhile.
+     */
+    public ItemStack createSmartSpawnerItem(String configName, EntityType entityType, int amount) {
         cleanupCacheIfNeeded();
         String cacheKey = "mob:" + (configName != null ? configName : entityType.name());
         if (amount == 1) {
@@ -105,11 +109,11 @@ public class SpawnerItemFactory {
                     blockMeta.setBlockState(cs);
                 }
             }
-            String entityTypeName = languageManager.getFormattedMobName(entityType);
+            var definition = plugin.getSpawnerSettingsConfig().resolveOrBase(configName, entityType);
+            String entityTypeName = definition != null && definition.displayName() != null
+                    ? definition.displayName() : languageManager.getFormattedMobName(entityType);
             String entityTypeNameSmallCaps = languageManager.getSmallCaps(entityTypeName);
-            var definition = plugin.getSpawnerSettingsConfig().getDefinition(configName);
-            EntityLootConfig lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getSpawnerSettingsConfig().getLootConfig(entityType);
+            EntityLootConfig lootConfig = definition != null ? definition.lootConfig() : null;
             List<LootItem> lootItems = lootConfig != null ? lootConfig.getAllItems() : Collections.emptyList();
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("entity", entityTypeName);
@@ -210,18 +214,19 @@ public class SpawnerItemFactory {
     }
 
     public ItemStack createItemSpawnerItem(Material itemMaterial, int amount) {
-        var definition = plugin.getItemSpawnerSettingsConfig().getDefaultDefinition(itemMaterial);
-        return definition == null ? createItemSpawnerItem(null, itemMaterial, amount)
-                : createItemSpawnerItem(definition.name(), itemMaterial, amount);
+        var definition = plugin.getItemSpawnerSettingsConfig().getBaseDefinition(itemMaterial);
+        return createItemSpawnerItem(definition == null ? null : definition.name(), itemMaterial, amount);
     }
 
+    /** The item of a configured item spawner, by its name, alias or 1.8 name. Null when there is none. */
     public ItemStack createItemSpawnerItem(String configName, int amount) {
-        var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
+        var definition = plugin.getItemSpawnerSettingsConfig().resolve(configName);
         if (definition == null) return null;
         return createItemSpawnerItem(definition.name(), definition.material(), amount);
     }
 
-    private ItemStack createItemSpawnerItem(String configName, Material itemMaterial, int amount) {
+    /** The item of a placed item spawner; see {@link #createSmartSpawnerItem(String, EntityType, int)}. */
+    public ItemStack createItemSpawnerItem(String configName, Material itemMaterial, int amount) {
         cleanupCacheIfNeeded();
         String cacheKey = "item:" + (configName != null ? configName : itemMaterial.name());
         if (amount == 1) {
@@ -239,13 +244,11 @@ public class SpawnerItemFactory {
                 }
             }
             
-            String itemName = languageManager.getVanillaItemName(itemMaterial);
+            var definition = plugin.getItemSpawnerSettingsConfig().resolveOrBase(configName, itemMaterial);
+            String itemName = definition != null && definition.displayName() != null
+                    ? definition.displayName() : languageManager.getVanillaItemName(itemMaterial);
             String itemNameSmallCaps = languageManager.getSmallCaps(itemName);
-            
-            // Get loot config for this item spawner
-            var definition = plugin.getItemSpawnerSettingsConfig().getDefinition(configName);
-            EntityLootConfig lootConfig = definition != null ? definition.lootConfig()
-                    : plugin.getItemSpawnerSettingsConfig().getLootConfig(itemMaterial);
+            EntityLootConfig lootConfig = definition != null ? definition.lootConfig() : null;
             List<LootItem> lootItems = lootConfig != null ? lootConfig.getAllItems() : Collections.emptyList();
             
             Map<String, String> placeholders = new HashMap<>();
