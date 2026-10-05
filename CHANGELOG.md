@@ -2,6 +2,17 @@
 
 All notable changes to SmartSpawner are documented in this file.
 
+## Unreleased
+
+### Fixed
+- Changing `spawner_properties.default.delay` now applies to spawners already placed, after `/ss reload` or a restart. Before, they kept the old delay until broken and placed again.
+
+### Changed
+- A delay set with `/ss set delay` now stays on that spawner through reloads and restarts, instead of following the config.
+
+### Notes
+- Spawners given their own delay with `/ss set delay` before this version go back to the config delay once. Set it again where needed.
+
 ## 1.8.3
 
 ### Fixed

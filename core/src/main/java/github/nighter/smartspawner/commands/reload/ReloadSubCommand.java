@@ -50,6 +50,8 @@ public class ReloadSubCommand extends BaseSubCommand {
             // Reload all configurations
             plugin.reloadConfig();
             Config.reload(plugin);
+            // Parsed times are cached; clear before spawners re-read their delay below.
+            plugin.getTimeFormatter().clearCache();
 
             // Reload components in dependency order
             plugin.setUpHopperHandler();

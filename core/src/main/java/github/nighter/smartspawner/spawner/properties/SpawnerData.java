@@ -73,6 +73,10 @@ public class SpawnerData {
     private Long lastSpawnTime;
     @Getter
     private long spawnDelay;
+    // True once /ss set delay or the API gave this spawner its own delay. Otherwise the delay
+    // follows spawner_properties.default.delay on every load and reload.
+    @Getter
+    private boolean customSpawnDelay;
 
     @Getter
     private EntityType entityType;
@@ -202,8 +206,9 @@ public class SpawnerData {
         this.baseMinMobs = plugin.getConfig().getInt("spawner_properties.default.min_mobs", 1);
         this.baseMaxMobs = plugin.getConfig().getInt("spawner_properties.default.max_mobs", 4);
         this.maxStackSize = plugin.getConfig().getInt("spawner_properties.default.max_stack_size", 1000);
-        this.spawnDelay = plugin.getTimeFromConfig("spawner_properties.default.delay", "25s");
-        this.cachedSpawnDelay = (this.spawnDelay + 20L) * 50L; // Add 1 second buffer for GUI display and convert tick to ms
+        if (!customSpawnDelay) {
+            applySpawnDelay(configSpawnDelay());
+        }
         this.spawnerRange = plugin.getConfig().getInt("spawner_properties.default.range", 16);
 
         refreshDefinition();
@@ -327,21 +332,29 @@ public class SpawnerData {
         }
     }
 
+    /** Gives this spawner its own delay, kept across reloads and restarts instead of the config default. */
     public void setSpawnDelay(long baseSpawnerDelay) {
-        this.spawnDelay = baseSpawnerDelay > 0 ? baseSpawnerDelay : 500;
+        this.customSpawnDelay = true;
+        applySpawnDelay(baseSpawnerDelay);
+    }
+
+    /** Drops any delay of its own, so the spawner follows the config default again. */
+    public void setSpawnDelayFromConfig() {
+        this.customSpawnDelay = false;
+        applySpawnDelay(configSpawnDelay());
+    }
+
+    private long configSpawnDelay() {
+        return plugin.getTimeFromConfig("spawner_properties.default.delay", "25s");
+    }
+
+    private void applySpawnDelay(long ticks) {
+        this.spawnDelay = ticks > 0 ? ticks : 500;
         long ticksWithBuffer = this.spawnDelay > Long.MAX_VALUE - 20L ? Long.MAX_VALUE : this.spawnDelay + 20L;
         this.cachedSpawnDelay = ticksWithBuffer > Long.MAX_VALUE / 50L ? Long.MAX_VALUE : ticksWithBuffer * 50L;
-        if (baseSpawnerDelay <= 0) {
+        if (ticks <= 0) {
             plugin.getLogger().warning("Invalid spawner delay value. Setting to default: 500 ticks (25s)");
         }
-    }
-    public void setSpawnDelayFromConfig() {
-        long delay = plugin.getTimeFromConfig("spawner_properties.default.delay", "25s");
-        if (delay <= 0) {
-            plugin.getLogger().warning("Invalid spawner delay value in config. Setting to default: 500 ticks (25s)");
-            delay = 500L;
-        }
-        setSpawnDelay(delay);
     }
 
     private void initializeComponents() {

@@ -123,6 +123,8 @@ public class DatabaseManager {
                 stop BOOLEAN NOT NULL DEFAULT TRUE,
                 activation_range INT NOT NULL DEFAULT 16,
                 delay BIGINT NOT NULL DEFAULT 500,
+                -- delay only overrides spawner_properties.default.delay when this is set
+                custom_delay BOOLEAN NOT NULL DEFAULT FALSE,
                 last_spawn_time BIGINT NOT NULL DEFAULT 0,
                 min_mobs INT NOT NULL DEFAULT 1,
                 max_mobs INT NOT NULL DEFAULT 4,
@@ -181,6 +183,8 @@ public class DatabaseManager {
                 stop BOOLEAN NOT NULL DEFAULT 1,
                 activation_range INT NOT NULL DEFAULT 16,
                 delay BIGINT NOT NULL DEFAULT 500,
+                -- delay only overrides spawner_properties.default.delay when this is set
+                custom_delay BOOLEAN NOT NULL DEFAULT 0,
                 last_spawn_time BIGINT NOT NULL DEFAULT 0,
                 min_mobs INT NOT NULL DEFAULT 1,
                 max_mobs INT NOT NULL DEFAULT 4,
@@ -217,7 +221,7 @@ public class DatabaseManager {
 
     private static final String SCHEMA_VERSION_KEY = "schema_version";
     private static final int LEGACY_SCHEMA_VERSION = 1;
-    private static final int CURRENT_SCHEMA_VERSION = 4;
+    private static final int CURRENT_SCHEMA_VERSION = 5;
 
     /** Rows converted per transaction while rewriting inventories during the v3 migration. */
     private static final int MIGRATION_BATCH_SIZE = 250;
@@ -724,6 +728,9 @@ public class DatabaseManager {
             case 2 -> migrateXpColumnsToBigIntIfNeeded();
             case 3 -> migrateToChunkAndItemBlobColumns();
             case 4 -> addColumnIfMissing("config_name", "VARCHAR(128) DEFAULT NULL");
+            // Existing rows start as not custom, so they pick up the configured delay.
+            case 5 -> addColumnIfMissing("custom_delay", storageMode == StorageMode.SQLITE
+                    ? "BOOLEAN NOT NULL DEFAULT 0" : "BOOLEAN NOT NULL DEFAULT FALSE");
             default -> throw new SQLException("No database migration handler found for schema version: " + targetVersion);
         }
     }

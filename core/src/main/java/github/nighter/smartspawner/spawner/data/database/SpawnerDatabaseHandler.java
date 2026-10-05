@@ -57,7 +57,7 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
             entity_type, itemspawner_type, config_name, stack_size, max_stack_size,
             active, stop, activation_range, delay, last_spawn_time, min_mobs, max_mobs,
             max_loot_slots, is_at_capacity, exp, max_stored_exp,
-            last_interacted_player, preferred_sort_item, filtered_items, storage_items
+            last_interacted_player, preferred_sort_item, filtered_items, storage_items, custom_delay
             """;
 
     // MySQL/MariaDB upsert syntax
@@ -67,8 +67,8 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
                 entity_type, itemspawner_type, stack_size, max_stack_size,
                 active, stop, activation_range, delay, last_spawn_time, min_mobs, max_mobs,
                 max_loot_slots, is_at_capacity, total_items, exp, max_stored_exp,
-                last_interacted_player, preferred_sort_item, filtered_items, storage_items, config_name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                last_interacted_player, preferred_sort_item, filtered_items, storage_items, config_name, custom_delay
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
                 world = VALUES(world),
                 loc_x = VALUES(loc_x),
@@ -96,7 +96,8 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
                 preferred_sort_item = VALUES(preferred_sort_item),
                 filtered_items = VALUES(filtered_items),
                 storage_items = VALUES(storage_items),
-                config_name = VALUES(config_name)
+                config_name = VALUES(config_name),
+                custom_delay = VALUES(custom_delay)
             """;
 
     // SQLite upsert syntax (ON CONFLICT)
@@ -106,8 +107,8 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
                 entity_type, itemspawner_type, stack_size, max_stack_size,
                 active, stop, activation_range, delay, last_spawn_time, min_mobs, max_mobs,
                 max_loot_slots, is_at_capacity, total_items, exp, max_stored_exp,
-                last_interacted_player, preferred_sort_item, filtered_items, storage_items, config_name
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                last_interacted_player, preferred_sort_item, filtered_items, storage_items, config_name, custom_delay
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(spawner_id) DO UPDATE SET
                 world = excluded.world,
                 loc_x = excluded.loc_x,
@@ -135,7 +136,8 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
                 preferred_sort_item = excluded.preferred_sort_item,
                 filtered_items = excluded.filtered_items,
                 storage_items = excluded.storage_items,
-                config_name = excluded.config_name
+                config_name = excluded.config_name,
+                custom_delay = excluded.custom_delay
             """;
 
     /** Columns the cross-server list GUI needs. Deliberately excludes the item blob. */
@@ -451,6 +453,7 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
         stmt.setString(26, serializeFilteredItems(spawner.getFilteredItems()));
         stmt.setBytes(27, items);
         stmt.setString(28, spawner.getConfigName());
+        stmt.setBoolean(29, spawner.isCustomSpawnDelay());
         return true;
     }
 
@@ -585,7 +588,11 @@ public class SpawnerDatabaseHandler implements SpawnerStorage {
         spawner.setSpawnerActive(rs.getBoolean("active"));
         spawner.setSpawnerRange(rs.getInt("activation_range"));
         spawner.getSpawnerStop().set(rs.getBoolean("stop"));
-        spawner.setSpawnDelay(Math.max(1L, rs.getLong("delay")));
+        // Only a delay set by /ss set or the API is kept; otherwise the config default applies,
+        // so changing spawner_properties.default.delay reaches existing spawners.
+        if (rs.getBoolean("custom_delay")) {
+            spawner.setSpawnDelay(Math.max(1L, rs.getLong("delay")));
+        }
         spawner.setMaxSpawnerLootSlots(rs.getInt("max_loot_slots"));
         spawner.setMaxStoredExp(rs.getLong("max_stored_exp"));
         spawner.setMinMobs(rs.getInt("min_mobs"));
