@@ -16,7 +16,7 @@ permissions:
 env:
   # Game versions these uploads target. Must match the version lists that exist on
   # Modrinth and Hangar. Keep this set in sync with the platforms when you add a new one.
-  GAME_VERSIONS: "1.21.6,1.21.7,1.21.8,1.21.9,1.21.10,1.21.11,26.1,26.1.1,26.1.2,26.2"
+  GAME_VERSIONS: "1.21.6,1.21.7,1.21.8,1.21.9,1.21.10,1.21.11,26.1,26.1.1,26.1.2,26.2,26.3"
   MODRINTH_ID: "9tQwxSFr"
   # Your project slug on hangar.papermc.io. Verify it matches the project you created.
   HANGAR_SLUG: "SmartSpawner"
