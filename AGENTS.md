@@ -26,12 +26,22 @@ Every protection/shop/economy plugin is `compileOnly` or `implementation`, never
 Produces `core/build/libs/SmartSpawner-<version>.jar` via `shadowJar`. The plain `jar` task outputs
 `SmartSpawnerJar-*.jar` and is not the plugin artifact.
 
+Local server and client come from the [mc-run](https://github.com/n1ght3r/mc-run) Gradle plugin
+(`mcRun { }` block in [core/build.gradle.kts](core/build.gradle.kts), Paper 26.2):
+
 ```bash
-./gradlew runServer
+./gradlew runServer   # Paper dev server in run/ with the freshly built plugin, console attached
+./gradlew runClient   # vanilla client (offline account "Dev") in run/client, joins localhost
+./gradlew runDev      # server, then the client once the server is ready; closing the client stops both
 ```
 
-Boots a Paper test server in `run/` with the freshly built plugin injected. The Minecraft version is
-pinned in `tasks.runServer` in [core/build.gradle.kts](core/build.gradle.kts).
+The Minecraft version is pinned by `mcRun { minecraftVersion }`. mc-run forces `online-mode=false`
+so the offline client can join.
+
+For agent-driven testing, `tools/agent-client/` (local only, gitignored) is a Fabric client mod that
+answers a file queue of JSON requests and captures screenshots without taking the mouse:
+`./gradlew -p tools/agent-client runClient`, then drive it with `tools/agent-client/drive.py`. Its
+Minecraft version must match `mcRun`. See its README.
 
 There are **no unit tests** in this repo (0 files under `src/test`). Verification is manual, in game.
 See the `playtest-server` skill for the full loop of building, booting and driving the client.

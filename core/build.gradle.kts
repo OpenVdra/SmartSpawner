@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.shadow)
-    alias(libs.plugins.run.paper)
+    alias(libs.plugins.mc.run)
 }
 
 val shade = configurations.create("shade")
@@ -135,13 +135,23 @@ tasks.build {
 }
 
 
-tasks.runServer {
-    minecraftVersion("26.2")
-    runDirectory.set(rootProject.layout.projectDirectory.dir("run"))
-    // Minecraft bundles JOML 1.10.8, whose Unsafe path is deprecated on Java 25.
-    // Prefer JOML's NIO implementation and allow remaining upstream users (such as spark)
-    // until Paper updates them, preventing Java 25's terminal-deprecation warning block.
-    jvmArgs("-Djoml.nounsafe=true", "--sun-misc-unsafe-memory-access=allow")
+// Local dev server and client (mc-run): ./gradlew runServer | runClient | runDev
+mcRun {
+    minecraftVersion = "26.2"
+    server {
+        type = PAPER
+        acceptEula = true
+        // Keep the existing run/ directory (world, configs, test plugins) from the run-paper days.
+        runDirectory = rootProject.layout.projectDirectory.dir("run")
+        // Minecraft bundles JOML 1.10.8, whose Unsafe path is deprecated on Java 25.
+        // Prefer JOML's NIO implementation and allow remaining upstream users (such as spark)
+        // until Paper updates them, preventing Java 25's terminal-deprecation warning block.
+        jvmArgs.addAll("-Djoml.nounsafe=true", "--sun-misc-unsafe-memory-access=allow")
+    }
+    client {
+        username = "Dev"
+        gameDirectory = rootProject.layout.projectDirectory.dir("run/client")
+    }
 }
 
 tasks.processResources {
