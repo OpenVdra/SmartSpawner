@@ -1,0 +1,232 @@
+# SmartSpawner – command_messages.yml
+# Messages related to plugin commands, including usage instructions and command errors.
+
+# ──────────────────────────────────────────────────────
+#                        General
+# ──────────────────────────────────────────────────────
+player_only:
+  message: "&#FF4444此命令只能由玩家使用。"
+  sound: block.note_block.bass
+
+no_permission:
+  message: "&#FF4444你没有权限执行此操作。"
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                     /ss list
+# ──────────────────────────────────────────────────────
+list:
+  no_spawners_found:
+    message: '&#FF4444未找到任何刷怪笼。'
+    sound: block.note_block.pling
+  teleported_to_spawner:
+    message: '已传送到刷怪笼。'
+    sound: entity.enderman.teleport
+  teleport_failed:
+    message: '&#FF4444无法传送到刷怪笼。'
+    sound: entity.enderman.teleport
+  spawner_removed:
+    message: '&f刷怪笼已&#FF4444成功移除&f。'
+    sound: entity.item.break
+
+# ──────────────────────────────────────────────────────
+#                        /ss set
+# ──────────────────────────────────────────────────────
+set:
+  usage:
+    message: "用法：&#3498db/ss set <stack_size|range|delay> <value> [world x y z]"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444无效的值或 SmartSpawner 位置。"
+    sound: block.note_block.pling
+  stack_size_exceeds_max:
+    message: "&#FF4444堆叠数量 &f{value} &#FF4444超过此刷怪笼的最大堆叠数：&f{max}"
+    sound: block.note_block.pling
+  location_required:
+    message: "&#F0C857控制台必须提供位置：&#3498db/ss set <stack_size|range|delay> <value> <world> <x> <y> <z>"
+    sound: block.note_block.pling
+  success:
+    message: "已将 &a{property} &f从 &e{old_value} &f设置为 &a{new_value} &f，位置：&#3498db{world} {x} {y} {z}&f。"
+    sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#                        /ss near
+# ──────────────────────────────────────────────────────
+near:
+  bossbar:
+    analyzing: "正在扫描附近的刷怪笼... {percent}%"
+    found: "在 {radius} 格范围内找到 {count} 个刷怪笼。"
+    not_found: "在 {radius} 格范围内未找到刷怪笼。"
+  view_gui:
+    button: " [在界面中查看]"
+    hover: "点击浏览附近找到的 {count} 个刷怪笼。"
+  scan_start:
+    message: "正在扫描 &e{radius} &f格范围内的刷怪笼..."
+    sound: block.note_block.hat
+  scan_found:
+    message: "在 &e{radius} &f格范围内找到 &a{count} &f个刷怪笼。高亮持续 &e30 秒&f。"
+    sound: entity.experience_orb.pickup
+  scan_none:
+    message: "&#FF4444在 &f{radius} &#FF4444格范围内未找到刷怪笼。"
+    sound: block.note_block.pling
+  scan_cancelled:
+    message: "&#F0C857扫描已取消，高亮已移除。"
+    sound: block.note_block.bass
+  no_active_scan:
+    message: "&#FF4444你没有可取消的进行中扫描。"
+    sound: block.note_block.bass
+  highlights_expired:
+    message: "&#888888刷怪笼高亮已过期。"
+
+# ──────────────────────────────────────────────────────
+#                        /ss give
+# ──────────────────────────────────────────────────────
+give:
+  player_not_found:
+    message: "&#FF4444未找到玩家。"
+    sound: block.note_block.pling
+  invalid_mob_type:
+    message: "&#FF4444无效的生物类型或刷怪笼名称。"
+    sound: block.note_block.pling
+  invalid_item_type:
+    message: "&#FF4444无效的物品类型。"
+    sound: block.note_block.pling
+  invalid_item_spawner:
+    message: "&#FF4444无效的物品刷怪笼名称。"
+    sound: block.note_block.pling
+  inventory_full:
+    message: "&#FF4444由于背包已满，部分刷怪笼物品已被丢弃。"
+    sound: block.note_block.pling
+  spawner_received:
+    message: "你获得了 &a{amount} 个 {entity} &f刷怪笼。"
+    sound: entity.experience_orb.pickup
+  spawner_given:
+    message: "已给予 &#3498db{player}&f &a{amount} 个 {entity} &f刷怪笼。"
+    sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#                      /ss hologram
+# ──────────────────────────────────────────────────────
+hologram:
+  enabled:
+    message: "全息显示已对所有刷怪笼&a启用&f。"
+    sound: entity.experience_orb.pickup
+  disabled:
+    message: "全息显示已对所有刷怪笼&#FF4444禁用&f。"
+    sound: block.note_block.bass
+  cleared:
+    message: "成功清除&a所有全息显示&f。"
+    sound: entity.experience_orb.pickup
+  clear_error:
+    message: "&#FF4444清除全息显示失败。"
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                       /ss clear
+# ──────────────────────────────────────────────────────
+clear:
+  usage:
+    message: "用法：&#3498db/ss clear <holograms|ghost_spawners>"
+    sound: block.note_block.hat
+  ghost_check_start:
+    message: "正在检查幽灵刷怪笼..."
+    sound: block.note_block.hat
+  ghost_cleared:
+    message: "成功移除 &a{count} &f个幽灵刷怪笼。"
+    sound: entity.experience_orb.pickup
+  ghost_none_found:
+    message: "&#FF4444未找到幽灵刷怪笼。"
+    sound: entity.experience_orb.pickup
+
+# ──────────────────────────────────────────────────────
+#                       /ss prices
+# ──────────────────────────────────────────────────────
+prices:
+  not_available:
+    message: "&#FF4444出售集成不可用。请配置经济设置。"
+    sound: block.note_block.pling
+  no_priceable_items:
+    message: "&#FF4444未找到有价格的物品。"
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                      /ss reload
+# ──────────────────────────────────────────────────────
+reload:
+  start:
+    message: "&#F0C857正在重载插件... 请稍候。"
+  success:
+    message: "成功重加载 &#3498dbSmartSpawner&f。"
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444重加载 SmartSpawner 失败。请检查控制台了解详情。"
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                      /ss language
+# ──────────────────────────────────────────────────────
+language:
+  current:
+    message: "当前语言：&a{current} &#888888| &f可用：{available}"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444未知语言：&f{value}&#FF4444。请尝试：&f{available}"
+    sound: block.note_block.pling
+  already_set:
+    message: "&#F0C857语言已设置为 &f{value}&#F0C857。"
+    sound: block.note_block.hat
+  success:
+    message: "语言已从 &e{old_value} &f更改为 &a{new_value}&f。"
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444更改语言失败。请检查控制台。"
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                     /ss gui_layout
+# ──────────────────────────────────────────────────────
+gui_layout:
+  current:
+    message: "当前布局：&a{current} &#888888| &f可用：{available}"
+    sound: block.note_block.hat
+  invalid:
+    message: "&#FF4444未知界面布局：&f{value}&#FF4444。请尝试：&f{available}"
+    sound: block.note_block.pling
+  already_set:
+    message: "&#F0C857界面布局已设置为 &f{value}&#F0C857。"
+    sound: block.note_block.hat
+  success:
+    message: "界面布局已从 &e{old_value} &f更改为 &a{new_value}&f。"
+    sound: entity.experience_orb.pickup
+  error:
+    message: "&#FF4444更改界面布局失败。请检查控制台。"
+    sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#                     /ss editloot
+# ──────────────────────────────────────────────────────
+editloot:
+  usage:
+    message: "用法：&#37eb9a/ss editloot <刷怪笼名称>&f。示例：&#37eb9a/ss editloot blaze_spawner"
+    sound: block.note_block.hat
+  unknown_entry:
+    message: "&#FF4444没有名为 &f{name}&#FF4444 的刷怪笼。使用 Tab 补全查看有效名称。"
+    sound: block.note_block.bass
+  entry_missing:
+    message: "&#FF4444该条目已不在文件中。"
+    sound: block.note_block.bass
+  loot_added:
+    message: "&#37eb9a已添加战利品条目 &f{label}&#37eb9a。"
+    sound: entity.experience_orb.pickup
+  loot_saved:
+    message: "&#37eb9a已保存战利品条目 &f{label}&#37eb9a。"
+    sound: entity.experience_orb.pickup
+  loot_replaced:
+    message: "&#37eb9a已更新 &f{label}&#37eb9a 的物品。"
+    sound: entity.experience_orb.pickup
+  loot_deleted:
+    message: "&#FF6B6B已移除战利品条目 &f{label}&#FF6B6B。"
+    sound: entity.item.pickup
+  capture_empty:
+    message: "&#FF4444请先在中间槽位放入物品。"
+    sound: block.note_block.bass

@@ -1,0 +1,141 @@
+# SmartSpawner – messages.yml
+# Each entry supports: message, title, subtitle, action_bar, sound, enabled.
+#
+#   MESSAGE STRUCTURE:
+#   message_name:               # Unique identifier for the message
+#     enabled: true/false       # Enable or disable this entire message (default: true if not specified)
+#     message: "Text content"   # Main chat message (optional)
+#     title: "Title text"       # Title display (optional)
+#     subtitle: "Subtitle"      # Subtitle display (optional)
+#     action_bar: "Text"        # Action bar text (optional)
+#     sound: sound.effect       # Sound to play (optional)
+#
+#   KEY FEATURES:
+#   - If "enabled: false" is set, none of the components will be sent to the player
+#   - If multiple components are present (message, title, action_bar, sound), all will be sent
+#   - All components are optional - you can use any combination as needed
+#   - The "message" field is not required and can be omitted if you only want other components
+
+prefix: '&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ &8⏩ &r'
+
+missing_message_key:
+  message: '&#FF4444缺少消息键：&f{key}'
+
+# ──────────────────────────────────────────────────────
+#              Player Interaction (General)
+# ──────────────────────────────────────────────────────
+spawner_activated:
+  message: '刷怪笼已&a激活&r。你现在可以收集掉落物和经验了。'
+  sound: block.beacon.activate
+
+inventory_full:
+  message: '&#FF4444你的背包已满。'
+
+spawner_storage_empty:
+  message: '&#FF4444刷怪笼存储为空。'
+
+action_in_progress:
+  message: '&#F0C857已有操作正在进行，请稍候。'
+  action_bar: '&#F0C857操作正在进行，请稍候。'
+
+storage_in_use:
+  message: '&#FF4444此刷怪笼存储正被另一名玩家打开。'
+  action_bar: '&#FF4444存储正被另一名玩家使用。'
+
+action_failed:
+  message: '&#FF4444操作失败，请重试。'
+  action_bar: '&#FF4444操作失败，请重试。'
+
+action_not_ready:
+  message: '&#F0C857此操作尚未就绪，请在 &f{time}&#F0C857 后重试。'
+  sound: block.note_block.bass
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Main GUI Interactions
+# ──────────────────────────────────────────────────────
+no_exp:
+  message: '&#FF4444没有可用的经验。'
+
+exp_collected:
+  message: '你收集了 &a{exp} &f点经验。'
+  action_bar: '&a+{exp} 经验'
+
+exp_collected_with_mending:
+  message: '你收集了 &a{exp} &f点经验，其中 &c{exp_mending} &f用于经验修补。'
+  action_bar: '&a+{exp} 经验 &f| &c-{exp_mending} 用于经验修补'
+
+# ──────────────────────────────────────────────────────
+#            Spawner - Storage GUI Interactions
+# ──────────────────────────────────────────────────────
+click_too_fast:
+  message: '&#FF4444你点击得太快了。'
+  sound: block.note_block.bass
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Stack Interaction
+# ──────────────────────────────────────────────────────
+spawner_different:
+  message: '&#FF4444刷怪笼必须是相同类型才能堆叠。'
+  action_bar: '&#FF4444刷怪笼必须是相同类型。'
+  sound: block.note_block.pling
+
+spawner_stack_full:
+  action_bar: '&#FF4444最大堆叠限制：&f{max}'
+  sound: block.note_block.pling
+
+spawner_stack_success:
+  action_bar: '&a你成功堆叠了 &f{amount} &a个刷怪笼。'
+  sound: entity.player.levelup
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Egg Interaction
+# ──────────────────────────────────────────────────────
+entity_changed:
+  message: '刷怪笼已变为 &e{entity}&f。'
+  action_bar: '&f刷怪笼已变为 &e{entity}&f。'
+  sound: entity.player.levelup
+
+# ──────────────────────────────────────────────────────
+#             Spawner - Break Interaction
+# ──────────────────────────────────────────────────────
+break_no_permission:
+  message: '&#FF4444你没有权限破坏此刷怪笼。'
+  sound: entity.villager.no
+
+break_silk_touch:
+  message: '&#FF4444你需要精准采集才能破坏此刷怪笼。'
+  action_bar: '&#FF4444需要精准采集。'
+  sound: item.shield.block
+
+break_tool_required:
+  message: '&#FF4444你无法使用此工具破坏刷怪笼。'
+  action_bar: '&#FF4444无法使用此工具破坏刷怪笼。'
+  sound: item.shield.block
+
+drop_failed:
+  message: '&#FF4444运气不佳，刷怪笼没有掉落。'
+  action_bar: '&#FF4444刷怪笼没有掉落。'
+  sound: block.note_block.pling
+
+sneak_break_blocked:
+  message: '&#FF4444此刷怪笼有掉落概率时，你无法破坏整个堆叠。'
+  action_bar: '&#FF4444无法破坏整个堆叠。'
+  sound: block.note_block.pling
+
+# ──────────────────────────────────────────────────────
+#              Sell Integration Messages
+# ──────────────────────────────────────────────────────
+no_sellable_items:
+  message: '&#FF4444未找到可出售的物品。'
+
+sell_success:
+  message: '你出售了 &e{amount} &f个物品，获得 &a${price}&f。'
+  action_bar: '&a+${price}'
+
+sell_and_exp_success:
+  message: '你出售了 &e{amount} &f个物品，获得 &a${price}&f，并收集了 &a{exp} &f点经验。'
+  action_bar: '&a+${price} &f| &a+{exp} 经验'
+
+sell_and_exp_success_with_mending:
+  message: '你出售了 &e{amount} &f个物品，获得 &a${price}&f，收集了 &a{exp} &f点经验（其中 &c{exp_mending} &f用于经验修补）。'
+  action_bar: '&a+${price} &f| &a+{exp} 经验 &f(&c-{exp_mending} 经验修补)'
