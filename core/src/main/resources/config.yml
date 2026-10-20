@@ -102,6 +102,34 @@ hologram:
   see_through: false
   transparent_background: false
 
+antiesp:
+  # Hide spawners and holograms behind walls to prevent ESP / chest-stealer cheats
+  enabled: true
+
+  # Check frequency in server ticks (4 ticks = 5 times per second)
+  check_interval: 4
+
+  # Max distance in blocks to check for ESP occlusion
+  max_distance: 48
+
+  # If a player is within this distance (in blocks), reveal immediately without raytracing
+  proximity_bypass_distance: 3.5
+
+  # Raytrace accuracy: LOW (center only), MEDIUM (center + 6 points), HIGH (center + 8 corners)
+  raytrace_accuracy: MEDIUM
+
+  # Disguise mode: AUTO (detects environment: NETHERRACK, END_STONE, DEEPSLATE or STONE) or CUSTOM
+  disguise_mode: AUTO
+
+  # Used only when disguise_mode is set to CUSTOM
+  custom_material: STONE
+
+  # Disguise spawner blocks as natural blocks when occluded
+  disguise_block: true
+
+  # Hide hologram TextDisplay entity when occluded
+  hide_hologram: true
+
 particle:
   spawner_stack: true
   spawner_activate: true

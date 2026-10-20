@@ -44,6 +44,7 @@ import github.nighter.smartspawner.spawner.data.database.SqliteToMySqlMigration;
 import github.nighter.smartspawner.spawner.data.database.YamlToDatabaseMigration;
 import github.nighter.smartspawner.spawner.data.storage.SpawnerStorage;
 import github.nighter.smartspawner.spawner.data.storage.StorageMode;
+import github.nighter.smartspawner.spawner.antiesp.AntiEspManager;
 import github.nighter.smartspawner.spawner.gui.layout.GuiLayoutConfig;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButtonInteractionService;
 import github.nighter.smartspawner.spawner.gui.main.SpawnerMenuAction;
@@ -140,6 +141,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
     private NaturalSpawnerListener naturalSpawnerListener;
     private SpawnerLootGenerator spawnerLootGenerator;
     private SpawnerRangeChecker rangeChecker;
+    private AntiEspManager antiEspManager;
     private SpawnerGuiViewManager spawnerGuiViewManager;
     private SpawnerExplosionListener spawnerExplosionListener;
     private SpawnerBreakListener spawnerBreakListener;
@@ -306,6 +308,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         this.spawnerLootGenerator = new SpawnerLootGenerator(this);
         this.spawnerSellManager = new SpawnerSellManager(this);
         this.rangeChecker = new SpawnerRangeChecker(this);
+        this.antiEspManager = new AntiEspManager(this);
         return true;
     }
 
@@ -446,6 +449,11 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         if (spawnerAuditListener != null) {
             pm.registerEvents(spawnerAuditListener, this);
         }
+
+        // Register Anti-ESP listener
+        if (antiEspManager != null) {
+            pm.registerEvents(antiEspManager, this);
+        }
     }
 
     private void setupCommand() {
@@ -582,6 +590,10 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
             lootEditorService.reload();
         }
 
+        if (antiEspManager != null) {
+            antiEspManager.reload();
+        }
+
         // Reload logging system (file logging + discord webhook)
         loggingConfig.loadConfig();
         spawnerActionLogger.reloadDiscord();
@@ -643,6 +655,7 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         if (hopperService != null) hopperService.cleanup();
         if (spawnerClickManager != null) spawnerClickManager.cleanup();
         if (spawnerStorageUI != null) spawnerStorageUI.cleanup();
+        if (antiEspManager != null) antiEspManager.cleanup();
     }
 
     // Spawner Provider for ShopGUI+ integration
