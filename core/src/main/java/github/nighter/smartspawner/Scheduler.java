@@ -41,6 +41,10 @@ public final class Scheduler {
         isFolia = foliaDetected;
     }
 
+    public static boolean isFolia() {
+        return isFolia;
+    }
+
     /**
      * Runs a task on the main thread (or global region in Folia).
      *

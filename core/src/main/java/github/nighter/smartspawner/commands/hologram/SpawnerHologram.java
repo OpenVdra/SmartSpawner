@@ -165,6 +165,10 @@ public class SpawnerHologram {
     // Public update API
     // -------------------------------------------------------------------------
 
+    public TextDisplay getTextDisplay() {
+        return textDisplay.get();
+    }
+
     public void updateText() {
         TextDisplay display = textDisplay.get();
         if (display == null || entityType == null) return;
