@@ -14,7 +14,7 @@ lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 
 # Shaded into the plugin jar and relocated under github.nighter.smartspawner.libs.
 hikaricp = { module = "com.zaxxer:HikariCP", version = "7.1.0" }
-mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version = "3.5.10" }
+mariadb = { module = "org.mariadb.jdbc:mariadb-java-client", version = "4.0.0" }
 bstats = { module = "org.bstats:bstats-bukkit", version = "3.2.1" }
 
 # Not shaded: the driver derives its native library path from its own package name, so relocating
