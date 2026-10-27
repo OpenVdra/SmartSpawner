@@ -3,6 +3,7 @@ package github.nighter.smartspawner.spawner.sell;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.api.events.SpawnerSellEvent;
+import github.nighter.smartspawner.api.events.SpawnerSellCompletedEvent;
 import github.nighter.smartspawner.language.MessageService;
 import github.nighter.smartspawner.spawner.gui.synchronization.SpawnerGuiViewManager;
 import github.nighter.smartspawner.spawner.properties.ItemSignature;
@@ -169,7 +170,11 @@ public class SpawnerSellManager {
 
         // Remove items – if removal somehow fails (should never happen under isSelling guard),
         // items are simply lost; no rollback. Attempting to dupe results in item loss.
-        spawner.removeItemsAndUpdateSellValue(sellResult.getItemsToRemove());
+        if (!spawner.removeItemsAndUpdateSellValue(sellResult.getItemsToRemove())) {
+            plugin.getLogger().severe("Spawner sale was paid but storage removal failed; reconcile " + spawner.getSpawnerId());
+            messageService.sendMessage(player, "action_failed");
+            return;
+        }
 
         // Update spawner state
         spawner.updateHologramData();
@@ -181,6 +186,13 @@ public class SpawnerSellManager {
         // Invalidate GUI caches so the next open shows fresh data
         spawnerGuiViewManager.updateSpawnerMenuViewers(spawner);
         plugin.getSpawnerManager().markSpawnerModified(spawner.getSpawnerId());
+        if (SpawnerSellCompletedEvent.getHandlerList().getRegisteredListeners().length != 0) {
+            List<SpawnerSellCompletedEvent.SoldItem> sold = sellResult.getItemsToRemove().entrySet().stream()
+                    .map(entry -> new SpawnerSellCompletedEvent.SoldItem(entry.getKey().getTemplate(), entry.getValue()))
+                    .toList();
+            Bukkit.getPluginManager().callEvent(new SpawnerSellCompletedEvent(
+                    player, spawner.getSpawnerLocation(), sold, amount));
+        }
 
         // Notify the player
         Map<String, String> placeholders = new HashMap<>();
