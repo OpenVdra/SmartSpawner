@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "github.nighter.smartspawner.agentclient.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ChatComponentMixin",
+    "ContainerScreenAccessor",
+    "HudMixin",
+    "MinecraftTickMixin",
+    "MouseGrabMixin",
+    "MouseHandlerAccessor",
+    "MouseMoveMixin"
+  ],
+  "injectors": { "defaultRequire": 1 }
+}

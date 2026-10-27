@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "smartspawner_agent",
+  "version": "0.1.0",
+  "name": "SmartSpawner agent client",
+  "description": "Development only: answers a file queue of JSON requests so an agent can drive this client.",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["github.nighter.smartspawner.agentclient.AgentClient"]
+  },
+  "mixins": ["smartspawner_agent.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19",
+    "minecraft": "${minecraftVersion}",
+    "java": ">=25"
+  }
+}

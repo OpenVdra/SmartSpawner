@@ -83,6 +83,11 @@ javac.*.args
 .claude
 CLAUDE.md
 tools/**
+!tools/agent-client/
+!tools/agent-client/**
+tools/agent-client/.gradle/
+tools/agent-client/build/
+tools/agent-client/run/
 
 ##############################
 ## run-paper test server

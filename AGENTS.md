@@ -38,8 +38,8 @@ Local server and client come from the [mc-run](https://github.com/n1ght3r/mc-run
 The Minecraft version is pinned by `mcRun { minecraftVersion }`. mc-run forces `online-mode=false`
 so the offline client can join.
 
-For agent-driven testing, `tools/agent-client/` (local only, gitignored) is a Fabric client mod that
-answers a file queue of JSON requests and captures screenshots without taking the mouse:
+For agent-driven testing, `tools/agent-client/` is a Fabric client mod that answers a file queue of
+JSON requests (item tooltips and received messages as styled text, screenshots) without taking the mouse:
 `./gradlew -p tools/agent-client runClient`, then drive it with `tools/agent-client/drive.py`. Its
 Minecraft version must match `mcRun`. See its README.
 
