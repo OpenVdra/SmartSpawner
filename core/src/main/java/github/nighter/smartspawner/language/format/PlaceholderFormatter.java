@@ -32,8 +32,7 @@ public final class PlaceholderFormatter {
         }
 
         cacheMisses.incrementAndGet();
-        String result = replacePlaceholders(text, placeholders);
-        result = ColorUtil.translateHexColorCodes(result);
+        String result = TextFormatter.toLegacy(text, placeholders);
         cache.putCachedString(key, result);
         return result;
     }

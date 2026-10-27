@@ -58,8 +58,7 @@ public class LanguageManager {
         smallCapsFormatter = new SmallCapsFormatter(cache, cacheHits, cacheMisses);
         messages = new MessageLanguageSection(
                 repository::current,
-                placeholderFormatter::apply,
-                placeholderFormatter::applyOnlyPlaceholders
+                placeholderFormatter::apply
         );
         guiLanguage = createGuiSection("GUI", LanguageFileType.GUI);
         commandGuiLanguage = createGuiSection("command GUI", LanguageFileType.COMMAND_GUI);

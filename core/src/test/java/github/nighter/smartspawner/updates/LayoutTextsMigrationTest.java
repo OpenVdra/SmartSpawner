@@ -43,7 +43,7 @@ class LayoutTextsMigrationTest {
     private static final String DONUT_TEXTS = """
             # SmartSpawner DonutSMP layout texts
             sell_button:
-              name: '&#00F986SELL ALL'
+              name: '<#00F986>SELL ALL'
             """;
 
     private static final String BASE_MESSAGES = """
@@ -129,6 +129,14 @@ class LayoutTextsMigrationTest {
     }
 
     @Test
+    @DisplayName("an unedited legacy value matches the same shipped text written in MiniMessage")
+    void legacyValueMatchesMiniMessage() {
+        assertTrue(LayoutTextsMigration.sameText("&#00F986SELL ALL", "<#00F986>SELL ALL"));
+        assertTrue(LayoutTextsMigration.sameText(List.of("&7Sell everything"), List.of("<gray>Sell everything")));
+        assertFalse(LayoutTextsMigration.sameText("&aSell", "<red>Sell"));
+    }
+
+    @Test
     @DisplayName("edited GUI texts move into the layout's texts.yml, on top of the shipped ones")
     void editedTextsMove() {
         write(folder, "config.yml", "language: en_US\n");
@@ -145,7 +153,7 @@ class LayoutTextsMigrationTest {
         assertFalse(migrate(), "the active locale was en_US, so config.yml is untouched");
 
         YamlConfiguration texts = read(folder, "gui_layouts/DonutSMP/texts.yml");
-        assertEquals("&#00F986SELL ALL", texts.getString("sell_button.name"), "shipped text is still there");
+        assertEquals("<#00F986>SELL ALL", texts.getString("sell_button.name"), "shipped text is still there");
         assertEquals(List.of("&eMy lore"), texts.getStringList("sell_button.lore"));
         assertEquals("mine", texts.getString("custom_key"), "an unknown key is kept");
         assertFalse(texts.contains("return_button"), "a text equal to en_US is not copied");

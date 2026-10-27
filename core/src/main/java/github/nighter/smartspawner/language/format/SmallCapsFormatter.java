@@ -28,23 +28,21 @@ public final class SmallCapsFormatter {
         }
 
         cacheMisses.incrementAndGet();
-        StringBuilder result = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            if (Character.isLetter(c)) {
-                char lowercaseChar = Character.toLowerCase(c);
-                char smallCapsChar = getSmallCapsChar(lowercaseChar);
-                result.append(smallCapsChar);
-            } else {
-                result.append(c);
-            }
-        }
-
-        String smallCapsText = result.toString();
+        String smallCapsText = toSmallCaps(text);
         cache.putCachedSmallCaps(cacheKey, smallCapsText);
         return smallCapsText;
     }
 
-    private char getSmallCapsChar(char c) {
+    /** Uncached; also backs the {@code <smallcaps>} tag. Letters without a small capital are kept. */
+    public static String toSmallCaps(String text) {
+        StringBuilder result = new StringBuilder(text.length());
+        for (char c : text.toCharArray()) {
+            result.append(Character.isLetter(c) ? getSmallCapsChar(Character.toLowerCase(c)) : c);
+        }
+        return result.toString();
+    }
+
+    private static char getSmallCapsChar(char c) {
         return switch (c) {
             case 'a' -> 'ᴀ';
             case 'b' -> 'ʙ';

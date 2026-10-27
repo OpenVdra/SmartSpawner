@@ -57,10 +57,11 @@ public final class GuiLanguageSection {
         return title == null ? "Missing " + label + " title: " + key : formatter.apply(title, placeholders);
     }
 
+    /** A short text used inside other texts (a world or menu name), formatted but with no placeholders. */
     public String configString(String key, String defaultValue) {
         if (!enabled.getAsBoolean()) return defaultValue;
         String value = string(key);
-        return value == null || value.isBlank() ? defaultValue : value;
+        return value == null || value.isBlank() ? defaultValue : formatter.apply(value, Collections.emptyMap());
     }
 
     public boolean contains(String key) {

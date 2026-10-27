@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import github.nighter.smartspawner.language.format.TextFormatter;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -81,9 +82,9 @@ public class SpawnerHighlightManager implements Listener {
         final int finalRadius = radius;
 
         BossBar bossBar = BossBar.bossBar(
-                Component.text(plugin.getLanguageManager().getCommandConfig(
+                TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
                         "near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
-                        Map.of("percent", "0")), NamedTextColor.AQUA),
+                        Map.of("percent", "0"))).colorIfAbsent(NamedTextColor.AQUA),
                 0f,
                 BossBar.Color.BLUE,
                 BossBar.Overlay.PROGRESS
@@ -132,9 +133,9 @@ public class SpawnerHighlightManager implements Listener {
                 if (i % 50 == 0 || i == total - 1) {
                     float progress = (float) (i + 1) / total;
                     int pct = (int) (progress * 100);
-                    bossBar.name(Component.text(plugin.getLanguageManager().getCommandConfig(
+                    bossBar.name(TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
                             "near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
-                            Map.of("percent", String.valueOf(pct))), NamedTextColor.AQUA));
+                            Map.of("percent", String.valueOf(pct)))).colorIfAbsent(NamedTextColor.AQUA));
                     bossBar.progress(progress);
                 }
             }
@@ -189,14 +190,14 @@ public class SpawnerHighlightManager implements Listener {
         session.scannedSpawners = new ArrayList<>(spawners);
 
         if (count == 0) {
-            session.bossBar.name(Component.text(plugin.getLanguageManager().getCommandConfig(
+            session.bossBar.name(TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
                     "near.bossbar.not_found", BOSSBAR_NOT_FOUND_FALLBACK,
-                    Map.of("radius", String.valueOf(radius))), NamedTextColor.RED));
+                    Map.of("radius", String.valueOf(radius)))).colorIfAbsent(NamedTextColor.RED));
             session.bossBar.color(BossBar.Color.RED);
         } else {
-            session.bossBar.name(Component.text(plugin.getLanguageManager().getCommandConfig(
+            session.bossBar.name(TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
                     "near.bossbar.found", BOSSBAR_FOUND_FALLBACK,
-                    Map.of("count", String.valueOf(count), "radius", String.valueOf(radius))), NamedTextColor.GREEN));
+                    Map.of("count", String.valueOf(count), "radius", String.valueOf(radius)))).colorIfAbsent(NamedTextColor.GREEN));
             session.bossBar.color(BossBar.Color.GREEN);
         }
         session.bossBar.progress(1f);
@@ -215,20 +216,19 @@ public class SpawnerHighlightManager implements Listener {
                     : Component.empty();
 
             Component viewGuiHint = Component.text()
-                    .append(Component.text(
-                            plugin.getLanguageManager().getCommandConfig("near.view_gui.button", VIEW_GUI_BUTTON_FALLBACK),
-                            NamedTextColor.GOLD)
+                    .append(TextFormatter.fromLegacy(
+                            plugin.getLanguageManager().getCommandConfig("near.view_gui.button", VIEW_GUI_BUTTON_FALLBACK))
+                            .colorIfAbsent(NamedTextColor.GOLD)
                             .clickEvent(ClickEvent.callback(audience -> {
                                 if (audience instanceof Player clickPlayer) {
                                     plugin.getNearResultGUI().openNearResultGUI(clickPlayer, 1);
                                 }
                             }))
                             .hoverEvent(HoverEvent.showText(
-                                    Component.text(plugin.getLanguageManager().getCommandConfig(
+                                    TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
                                             "near.view_gui.hover",
                                             "Click to browse the {count} spawner(s) found nearby",
-                                            Map.of("count", String.valueOf(count))),
-                                            NamedTextColor.GRAY))))
+                                            Map.of("count", String.valueOf(count)))).colorIfAbsent(NamedTextColor.GRAY))))
                     .build();
 
             player.sendMessage(Component.text().append(textPart).append(viewGuiHint).build());

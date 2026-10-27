@@ -1,6 +1,7 @@
 package github.nighter.smartspawner.updates;
 
 import github.nighter.smartspawner.SmartSpawner;
+import github.nighter.smartspawner.language.format.TextFormatter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -142,7 +143,7 @@ public final class LayoutTextsMigration {
             if (user.isConfigurationSection(path)) continue;
             Object value = user.get(path);
             Object shipped = shippedTexts.contains(path) ? shippedTexts.get(path) : shippedBase.get(path);
-            if (Objects.equals(value, shipped)) continue;
+            if (sameText(value, shipped)) continue;
 
             if (texts == null) {
                 extractIfMissing(resources, textsResource, textsFile);
@@ -180,7 +181,7 @@ public final class LayoutTextsMigration {
     /** True when a value differs, or the owner removed a shipped key (a message component, say). */
     private static boolean differs(YamlConfiguration user, YamlConfiguration shipped) {
         for (String path : user.getKeys(true)) {
-            if (!user.isConfigurationSection(path) && !Objects.equals(user.get(path), shipped.get(path))) {
+            if (!user.isConfigurationSection(path) && !sameText(user.get(path), shipped.get(path))) {
                 return true;
             }
         }
@@ -188,6 +189,24 @@ public final class LayoutTextsMigration {
             if (!user.contains(path)) return true;
         }
         return false;
+    }
+
+    /**
+     * Equal once rendered. Shipped text moved from legacy codes to MiniMessage, so an owner's unedited
+     * {@code &a} value must still match the shipped {@code <green>} one.
+     */
+    static boolean sameText(Object a, Object b) {
+        if (a instanceof String first && b instanceof String second) {
+            return first.equals(second) || TextFormatter.toLegacy(first).equals(TextFormatter.toLegacy(second));
+        }
+        if (a instanceof List<?> first && b instanceof List<?> second) {
+            if (first.size() != second.size()) return false;
+            for (int i = 0; i < first.size(); i++) {
+                if (!sameText(first.get(i), second.get(i))) return false;
+            }
+            return true;
+        }
+        return Objects.equals(a, b);
     }
 
     private static YamlConfiguration loadResource(Function<String, InputStream> resources, String path) {

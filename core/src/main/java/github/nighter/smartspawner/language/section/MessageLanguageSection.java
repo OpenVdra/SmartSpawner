@@ -1,6 +1,7 @@
 package github.nighter.smartspawner.language.section;
 
 import github.nighter.smartspawner.language.file.LocaleData;
+import github.nighter.smartspawner.language.format.TextFormatter;
 
 import java.util.Collections;
 import java.util.Map;
@@ -12,16 +13,13 @@ public final class MessageLanguageSection {
 
     private final Supplier<LocaleData> localeSupplier;
     private final BiFunction<String, Map<String, String>, String> formatter;
-    private final BiFunction<String, Map<String, String>, String> placeholderFormatter;
 
     public MessageLanguageSection(
             Supplier<LocaleData> localeSupplier,
-            BiFunction<String, Map<String, String>, String> formatter,
-            BiFunction<String, Map<String, String>, String> placeholderFormatter
+            BiFunction<String, Map<String, String>, String> formatter
     ) {
         this.localeSupplier = localeSupplier;
         this.formatter = formatter;
-        this.placeholderFormatter = placeholderFormatter;
     }
 
     public String message(String key, Map<String, String> placeholders) {
@@ -44,7 +42,7 @@ public final class MessageLanguageSection {
         if (!isEnabled(key)) return null;
 
         String message = resolve(key + ".message");
-        return message == null ? "Missing message: " + key : placeholderFormatter.apply(message, placeholders);
+        return message == null ? "Missing message: " + key : TextFormatter.toPlain(message, placeholders);
     }
 
     public String title(String key, Map<String, String> placeholders) {
