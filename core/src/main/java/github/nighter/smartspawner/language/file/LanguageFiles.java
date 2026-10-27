@@ -28,8 +28,23 @@ public final class LanguageFiles {
         this.activeFileTypes = activeFileTypes;
     }
 
+    /**
+     * The active locale plus every locale folder already on disk, bundled or custom. A fresh install
+     * only gets the active one; the others are extracted the first time they are selected.
+     */
+    public static Set<String> localesInUse(File dataFolder, String activeLocale) {
+        Set<String> locales = new LinkedHashSet<>();
+        locales.add(activeLocale);
+        File[] folders = new File(dataFolder, "language").listFiles(File::isDirectory);
+        if (folders != null) {
+            Arrays.stream(folders).map(File::getName).sorted().forEach(locales::add);
+        }
+        return locales;
+    }
+
     public void saveDefaultFiles() {
-        for (String locale : SUPPORTED_LANGUAGES) {
+        for (String locale : localesInUse(plugin.getDataFolder(), defaultLocale)) {
+            if (!SUPPORTED_LANGUAGES.contains(locale)) continue;
             for (LanguageFileType fileType : LanguageFileType.values()) {
                 saveResource(String.format("language/%s/%s", locale, fileType.getFileName()));
             }

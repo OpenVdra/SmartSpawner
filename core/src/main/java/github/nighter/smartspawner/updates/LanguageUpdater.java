@@ -45,16 +45,22 @@ public class LanguageUpdater {
     }
 
     /**
-     * For each supported locale, ensures every language file is present and up-to-date.
-     * Files are created if missing, otherwise merged-updated. User-customised values are preserved.
+     * For the active locale and every locale folder on disk, ensures every language file is present and
+     * up-to-date. Files are created if missing, otherwise merged-updated. User-customised values are
+     * preserved. A custom locale (no bundled copy) only gets the renames: there is nothing to top up
+     * from, and a key it lacks falls back to the shipped text at runtime.
      */
     public void checkAndUpdateLanguageFiles() {
-        for (String language : LanguageFiles.SUPPORTED_LANGUAGES) {
+        String activeLocale = plugin.getConfig().getString("language", "en_US");
+        for (String language : LanguageFiles.localesInUse(plugin.getDataFolder(), activeLocale)) {
+            boolean bundled = LanguageFiles.SUPPORTED_LANGUAGES.contains(language);
             File langDir = new File(plugin.getDataFolder(), "language/" + language);
+            if (!bundled && !langDir.isDirectory()) continue;
             langDir.mkdirs();
 
             for (LanguageFileType type : activeFileTypes) {
                 File langFile   = new File(langDir, type.getFileName());
+                if (!bundled && !langFile.exists()) continue;
                 String resource = "language/" + language + "/" + type.getFileName();
                 List<YamlMigrator.Rename> renames = ConfigMigrations.forLanguageFile(type);
 

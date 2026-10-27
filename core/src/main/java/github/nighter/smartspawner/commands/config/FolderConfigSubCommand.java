@@ -8,6 +8,8 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.BaseSubCommand;
 import github.nighter.smartspawner.config.Config;
+import github.nighter.smartspawner.language.file.LanguageFiles;
+import github.nighter.smartspawner.updates.GuiLayoutUpdater;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
@@ -15,12 +17,12 @@ import org.jspecify.annotations.NullMarked;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.TreeSet;
 
 @NullMarked
 public class FolderConfigSubCommand extends BaseSubCommand {
@@ -165,21 +167,16 @@ public class FolderConfigSubCommand extends BaseSubCommand {
                 .findFirst();
     }
 
+    /** Bundled names plus folders on disk. A bundled one is extracted by the reload the first time it is picked. */
     private java.util.List<String> getAvailableFolderNames() {
-        File directory = new File(plugin.getDataFolder(), option.folderName());
-        if (!directory.exists() && !directory.mkdirs()) {
-            return java.util.List.of();
-        }
+        Set<String> names = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        names.addAll(option.bundledNames());
 
-        File[] folders = directory.listFiles(File::isDirectory);
-        if (folders == null || folders.length == 0) {
-            return java.util.List.of();
+        File[] folders = new File(plugin.getDataFolder(), option.folderName()).listFiles(File::isDirectory);
+        if (folders != null) {
+            Arrays.stream(folders).map(File::getName).forEach(names::add);
         }
-
-        return Arrays.stream(folders)
-                .map(File::getName)
-                .sorted(Comparator.comparing(name -> name.toLowerCase(Locale.ROOT)))
-                .collect(Collectors.toList());
+        return java.util.List.copyOf(names);
     }
 
     public enum ConfigOption {
@@ -272,6 +269,10 @@ public class FolderConfigSubCommand extends BaseSubCommand {
 
         String suggestionTooltip() {
             return suggestionTooltip;
+        }
+
+        java.util.List<String> bundledNames() {
+            return this == LANGUAGE ? LanguageFiles.SUPPORTED_LANGUAGES : GuiLayoutUpdater.LAYOUT_NAMES;
         }
     }
 }

@@ -6,6 +6,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Keeps the bundled GUI layout files in sync with the defaults. Version-less: on every startup it
@@ -24,7 +28,8 @@ import java.io.InputStream;
 public class GuiLayoutUpdater {
     private static final String GUI_LAYOUTS_DIR = "gui_layouts";
     private static final String[] LAYOUT_FILES  = {"storage_gui.yml", "main_gui.yml", "sell_confirm_gui.yml"};
-    private static final String[] LAYOUT_NAMES  = {"default", "DonutSMP", "DonutSMP_v2"};
+    /** The layouts bundled in the jar. Only the active one and those already on disk are extracted. */
+    public static final List<String> LAYOUT_NAMES = List.of("default", "DonutSMP", "DonutSMP_v2");
     private static final String TEXTS_FILE      = "texts.yml";
     private static final String BUTTON_PREFIX   = "slot_";
 
@@ -45,17 +50,21 @@ public class GuiLayoutUpdater {
         File layoutsDir = new File(plugin.getDataFolder(), GUI_LAYOUTS_DIR);
         layoutsDir.mkdirs();
 
-        for (String layoutName : LAYOUT_NAMES) {
+        for (String layoutName : layoutsInUse(layoutsDir)) {
+            boolean bundled = LAYOUT_NAMES.contains(layoutName);
             File layoutDir = new File(layoutsDir, layoutName);
+            // An addon layout registered through the API may have no folder at all; never create one for it.
+            if (!bundled && !layoutDir.isDirectory()) continue;
             layoutDir.mkdirs();
 
             for (String fileName : LAYOUT_FILES) {
                 File dataFile   = new File(layoutDir, fileName);
+                if (!bundled && !dataFile.exists()) continue;
                 String resource = GUI_LAYOUTS_DIR + "/" + layoutName + "/" + fileName;
                 YamlMigrator.migrate(
                         dataFile,
                         plugin.getResource(resource),
-                        java.util.List.of(),
+                        List.of(),
                         ConfigMigrations.GUI_LAYOUT,
                         true,
                         hasAnyButton(dataFile) ? YamlMigrator.OwnedSection.userManaged(BUTTON_SECTIONS) : null,
@@ -69,6 +78,17 @@ public class GuiLayoutUpdater {
                         null, false, plugin.getLogger());
             }
         }
+    }
+
+    /** The active layout plus every layout folder already on disk. */
+    private Set<String> layoutsInUse(File layoutsDir) {
+        Set<String> layouts = new LinkedHashSet<>();
+        layouts.add(plugin.getConfig().getString("gui_layout", "default"));
+        File[] folders = layoutsDir.listFiles(File::isDirectory);
+        if (folders != null) {
+            Arrays.stream(folders).map(File::getName).sorted().forEach(layouts::add);
+        }
+        return layouts;
     }
 
     /**

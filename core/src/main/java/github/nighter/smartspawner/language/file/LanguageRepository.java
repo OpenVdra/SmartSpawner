@@ -49,6 +49,8 @@ public final class LanguageRepository {
     public void reload() {
         defaultLocale = configuredLocale();
         loadedLocales.add(defaultLocale);
+        // A bundled locale selected for the first time is extracted here.
+        files().saveDefaultFiles();
 
         for (String locale : Set.copyOf(loadedLocales)) {
             locales.remove(locale);
