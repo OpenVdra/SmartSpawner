@@ -144,7 +144,8 @@ Document it as a known limit.
 - `{ᴇɴᴛɪᴛʏ}` is a placeholder whose name is unicode small caps. MiniMessage tag names must be
   `[a-z0-9_-]`, so add `{entity_small}` as the documented name and keep `{ᴇɴᴛɪᴛʏ}` as a permanent
   alias (it is inside owners' values, which migration never rewrites).
-- Add a `<smallcaps>…</smallcaps>` tag backed by `SmallCapsFormatter`. Shipped English files can then
+- Add a custom `<smallcaps>…</smallcaps>` tag (a `TagResolver` backed by `SmallCapsFormatter`;
+  MiniMessage has no built-in small caps tag as of 4.26.1). Shipped English files can then
   say `<smallcaps>Open storage</smallcaps>` instead of `ᴏᴘᴇɴ ꜱᴛᴏʀᴀɢᴇ`, which translators can read. It
   is a no-op for scripts without small caps (CJK, Cyrillic).
 
