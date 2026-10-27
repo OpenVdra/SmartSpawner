@@ -131,6 +131,7 @@ public class SpawnerData {
     @Getter
     private volatile boolean sellValueDirty;
 
+    @Getter
     private SpawnerHologram hologram;
     @Getter @Setter
     private long cachedSpawnDelay;
