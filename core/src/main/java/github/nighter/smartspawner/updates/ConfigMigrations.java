@@ -144,7 +144,7 @@ public final class ConfigMigrations {
     /** Renames applied to {@code command_messages.yml}, whose keys nest under a command, for example {@code list.no_spawners_found}. */
     public static final List<YamlMigrator.Rename> COMMAND_MESSAGES = List.of();
 
-    /** Renames applied to {@code gui.yml}. */
+    /** Renames applied to {@code gui.yml}, and to each layout's {@code texts.yml}, which uses the same keys. */
     public static final List<YamlMigrator.Rename> GUI = List.of();
 
     /** Renames applied to {@code command_gui.yml}. */

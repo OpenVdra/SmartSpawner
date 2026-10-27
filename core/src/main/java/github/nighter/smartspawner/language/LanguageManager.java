@@ -13,11 +13,13 @@ import github.nighter.smartspawner.language.section.ItemLanguageSection;
 import github.nighter.smartspawner.language.section.MessageLanguageSection;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,8 @@ public class LanguageManager {
     private final HologramLanguageSection hologram;
     private final AtomicInteger cacheHits = new AtomicInteger();
     private final AtomicInteger cacheMisses = new AtomicInteger();
+    // The active GUI layout's texts.yml, checked before the locale's gui.yml. Null when it has none.
+    private volatile YamlConfiguration layoutTexts;
 
     public LanguageManager(JavaPlugin plugin) {
         this(plugin, LanguageFileType.values());
@@ -82,6 +86,7 @@ public class LanguageManager {
                 () -> fileType == LanguageFileType.COMMAND_GUI
                         ? repository.current().commandGui()
                         : repository.current().gui(),
+                fileType == LanguageFileType.GUI ? () -> layoutTexts : () -> null,
                 () -> repository.isActive(fileType),
                 placeholderFormatter::apply,
                 1000,
@@ -105,6 +110,15 @@ public class LanguageManager {
     public void reloadLanguages() {
         clearCache();
         repository.reload();
+    }
+
+    /**
+     * Loads the active layout's text overrides for the spawner GUIs. {@code GuiLayoutConfig} calls this
+     * whenever it loads a layout, so both reload paths pick it up.
+     */
+    public void loadLayoutTexts(File file) {
+        layoutTexts = file.isFile() ? YamlConfiguration.loadConfiguration(file) : null;
+        guiLanguage.clearCache();
     }
 
     public String getMessage(String key, Map<String, String> placeholders) {

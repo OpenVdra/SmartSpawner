@@ -70,6 +70,7 @@ import github.nighter.smartspawner.spawner.sell.SpawnerSellManager;
 import github.nighter.smartspawner.spawner.utils.SpawnerTypeChecker;
 import github.nighter.smartspawner.updates.ConfigUpdater;
 import github.nighter.smartspawner.updates.LanguageUpdater;
+import github.nighter.smartspawner.updates.LayoutTextsMigration;
 import github.nighter.smartspawner.updates.UpdateChecker;
 import github.nighter.smartspawner.utils.TimeFormatter;
 import lombok.Getter;
@@ -244,6 +245,8 @@ public class SmartSpawner extends JavaPlugin implements SmartSpawnerPlugin {
         this.timeFormatter = new TimeFormatter(this);
         this.configUpdater = new ConfigUpdater(this);
         configUpdater.checkAndUpdateConfig();
+        // Before the language manager and layout config read 'language' and 'gui_layout'.
+        LayoutTextsMigration.run(this);
         this.languageManager = new LanguageManager(this);
         this.languageUpdater = new LanguageUpdater(this);
         this.messageService = new MessageService(this, languageManager);

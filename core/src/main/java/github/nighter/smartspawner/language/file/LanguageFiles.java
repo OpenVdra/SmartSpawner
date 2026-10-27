@@ -12,8 +12,6 @@ import java.util.*;
 public final class LanguageFiles {
     public static final List<String> SUPPORTED_LANGUAGES = Arrays.asList(
             "en_US",
-            "en_US_DonutSMP",
-            "en_US_DonutSMP_v2",
             "tr_TR",
             "vi_VN",
             "es_ES",

@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 public final class GuiLanguageSection {
     private final String label;
     private final Supplier<YamlConfiguration> configSupplier;
+    private final Supplier<YamlConfiguration> overrideSupplier;
     private final BooleanSupplier enabled;
     private final BiFunction<String, Map<String, String>, String> formatter;
     private final LRUCache<String, String> nameCache;
@@ -29,6 +30,7 @@ public final class GuiLanguageSection {
     public GuiLanguageSection(
             String label,
             Supplier<YamlConfiguration> configSupplier,
+            Supplier<YamlConfiguration> overrideSupplier,
             BooleanSupplier enabled,
             BiFunction<String, Map<String, String>, String> formatter,
             int stringCacheSize,
@@ -37,6 +39,7 @@ public final class GuiLanguageSection {
     ) {
         this.label = label;
         this.configSupplier = configSupplier;
+        this.overrideSupplier = overrideSupplier;
         this.enabled = enabled;
         this.formatter = formatter;
         this.nameCache = new LRUCache<>(stringCacheSize);
@@ -50,18 +53,20 @@ public final class GuiLanguageSection {
 
     public String title(String key, Map<String, String> placeholders) {
         if (!enabled.getAsBoolean()) return null;
-        String title = config().getString(key);
+        String title = string(key);
         return title == null ? "Missing " + label + " title: " + key : formatter.apply(title, placeholders);
     }
 
     public String configString(String key, String defaultValue) {
         if (!enabled.getAsBoolean()) return defaultValue;
-        String value = config().getString(key);
+        String value = string(key);
         return value == null || value.isBlank() ? defaultValue : value;
     }
 
     public boolean contains(String key) {
-        return enabled.getAsBoolean() && config().isString(key);
+        if (!enabled.getAsBoolean()) return false;
+        YamlConfiguration override = overrideSupplier.get();
+        return (override != null && override.isString(key)) || config().isString(key);
     }
 
     public String name(String key) {
@@ -79,7 +84,7 @@ public final class GuiLanguageSection {
         }
 
         cacheMisses.incrementAndGet();
-        String name = config().getString(key);
+        String name = string(key);
         if (name == null) return "Missing " + label + " item name: " + key;
 
         String result = formatter.apply(name, placeholders);
@@ -102,7 +107,7 @@ public final class GuiLanguageSection {
         }
 
         cacheMisses.incrementAndGet();
-        String[] result = config().getStringList(key).stream()
+        String[] result = stringList(key).stream()
                 .map(line -> formatter.apply(line, placeholders))
                 .toArray(String[]::new);
         loreCache.put(cacheKey, result);
@@ -124,7 +129,7 @@ public final class GuiLanguageSection {
         }
 
         cacheMisses.incrementAndGet();
-        List<String> result = config().getStringList(key).stream()
+        List<String> result = stringList(key).stream()
                 .map(line -> formatter.apply(line, placeholders))
                 .toList();
         loreListCache.put(cacheKey, result);
@@ -135,7 +140,7 @@ public final class GuiLanguageSection {
         if (!enabled.getAsBoolean()) return Collections.emptyList();
 
         List<String> result = new ArrayList<>();
-        for (String line : config().getStringList(key)) {
+        for (String line : stringList(key)) {
             String multilineKey = findMultilinePlaceholder(line, placeholders);
             if (multilineKey == null) {
                 result.add(formatter.apply(line, placeholders));
@@ -158,11 +163,11 @@ public final class GuiLanguageSection {
     }
 
     public Component translatableLootLine(String templateKey, Material material, String amount, String chance) {
-        return LanguageComponentFormatter.translatableLootLine(config().getString(templateKey), material, amount, chance);
+        return LanguageComponentFormatter.translatableLootLine(string(templateKey), material, amount, chance);
     }
 
     public Component translatableLootLine(String templateKey, Component itemName, String amount, String chance) {
-        return LanguageComponentFormatter.translatableLootLine(config().getString(templateKey), itemName, amount, chance);
+        return LanguageComponentFormatter.translatableLootLine(string(templateKey), itemName, amount, chance);
     }
 
     /**
@@ -174,7 +179,7 @@ public final class GuiLanguageSection {
         if (!enabled.getAsBoolean()) return Collections.emptyList();
 
         return LanguageComponentFormatter.loreWithItemName(
-                config().getStringList(key),
+                stringList(key),
                 line -> formatter.apply(line, placeholders),
                 placeholder,
                 itemName
@@ -190,16 +195,16 @@ public final class GuiLanguageSection {
         if (!enabled.getAsBoolean()) return Collections.emptyList();
 
         return LanguageComponentFormatter.loreComponents(
-                config().getStringList(key),
+                stringList(key),
                 line -> formatter.apply(line, placeholders),
-                () -> config().getString(emptyLootKey, ""),
+                () -> Objects.requireNonNullElse(string(emptyLootKey), ""),
                 lootItemComponents
         );
     }
 
     public String colorCode(String path) {
         if (!enabled.getAsBoolean()) return ChatColor.WHITE.toString();
-        String color = config().getString(path);
+        String color = string(path);
         return color == null ? ChatColor.WHITE.toString() : formatter.apply(color, Collections.emptyMap());
     }
 
@@ -218,6 +223,26 @@ public final class GuiLanguageSection {
         stats.put(prefix + "_lore_list_cache_capacity", loreListCache.capacity());
         stats.put(prefix + "_cache_hits", cacheHits.get());
         stats.put(prefix + "_cache_misses", cacheMisses.get());
+    }
+
+    /**
+     * A text from the layout's override file when it has one, otherwise from the locale. A key the
+     * override sets to an empty string still wins, so a layout can blank out a line.
+     */
+    private String string(String key) {
+        YamlConfiguration override = overrideSupplier.get();
+        if (override != null && override.contains(key) && !override.isConfigurationSection(key)) {
+            return override.getString(key);
+        }
+        return config().getString(key);
+    }
+
+    private List<String> stringList(String key) {
+        YamlConfiguration override = overrideSupplier.get();
+        if (override != null && override.isList(key)) {
+            return override.getStringList(key);
+        }
+        return config().getStringList(key);
     }
 
     private YamlConfiguration config() {

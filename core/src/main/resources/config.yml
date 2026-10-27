@@ -3,10 +3,10 @@
 # Time format: 20s, 5m, 1h, or 1d_2h_30m_15s. Units: s m h d w mo y.
 # Most settings apply on /ss reload. Ones marked RESTART need a full server restart.
 
-# Language folder under language/. Bundled: en_US, en_US_DonutSMP, en_US_DonutSMP_v2, es_ES, tr_TR, vi_VN, zh_CN.
+# Language folder under language/. Bundled: en_US, es_ES, tr_TR, vi_VN, zh_CN.
 language: en_US
 
-# GUI layout folder under gui_layouts/. Bundled: default, DonutSMP, DonutSMP_v2.
+# GUI layout folder under gui_layouts/. Bundled: default, DonutSMP, DonutSMP_v2. Also sets the GUI text style.
 gui_layout: default
 
 spawner_properties:

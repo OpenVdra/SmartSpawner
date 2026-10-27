@@ -5,6 +5,7 @@ import github.nighter.smartspawner.SmartSpawner;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * Keeps the bundled GUI layout files in sync with the defaults. Version-less: on every startup it
@@ -16,11 +17,15 @@ import java.io.File;
  * it back up would give the user two copies of the same button. Once a layout has any button at
  * all, its {@code slot_*} sections belong to the user; only the settings around them are topped
  * up.</p>
+ *
+ * <p>A layout's optional {@code texts.yml} overrides GUI texts from the locale. It is extracted and
+ * renamed but never topped up: a key the owner deletes from it falls back to the locale on purpose.</p>
  */
 public class GuiLayoutUpdater {
     private static final String GUI_LAYOUTS_DIR = "gui_layouts";
     private static final String[] LAYOUT_FILES  = {"storage_gui.yml", "main_gui.yml", "sell_confirm_gui.yml"};
     private static final String[] LAYOUT_NAMES  = {"default", "DonutSMP", "DonutSMP_v2"};
+    private static final String TEXTS_FILE      = "texts.yml";
     private static final String BUTTON_PREFIX   = "slot_";
 
     /** Matches the top-level {@code slot_*} button sections, the ones whose key encodes a position. */
@@ -55,6 +60,13 @@ public class GuiLayoutUpdater {
                         true,
                         hasAnyButton(dataFile) ? YamlMigrator.OwnedSection.userManaged(BUTTON_SECTIONS) : null,
                         plugin.getLogger());
+            }
+
+            String textsResource = GUI_LAYOUTS_DIR + "/" + layoutName + "/" + TEXTS_FILE;
+            InputStream texts = plugin.getResource(textsResource);
+            if (texts != null) {
+                YamlMigrator.migrate(new File(layoutDir, TEXTS_FILE), texts, ConfigMigrations.GUI,
+                        null, false, plugin.getLogger());
             }
         }
     }

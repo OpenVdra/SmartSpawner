@@ -25,6 +25,7 @@ public class GuiLayoutConfig {
     private static final String STORAGE_GUI_FILE = "storage_gui.yml";
     private static final String MAIN_GUI_FILE = "main_gui.yml";
     private static final String SELL_CONFIRM_GUI_FILE = "sell_confirm_gui.yml";
+    private static final String TEXTS_FILE = "texts.yml";
     private static final String DEFAULT_LAYOUT = "default";
 
     private final SmartSpawner plugin;
@@ -73,6 +74,9 @@ public class GuiLayoutConfig {
 
         // Load GUI behaviour settings from the respective layout files
         loadLayoutSettings();
+
+        // Not resolved through the default layout: a layout without texts.yml uses the locale's words.
+        plugin.getLanguageManager().loadLayoutTexts(new File(new File(layoutsDir, currentLayout), TEXTS_FILE));
     }
 
     private void loadLayoutSettings() {
