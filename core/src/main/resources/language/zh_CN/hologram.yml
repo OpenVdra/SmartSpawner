@@ -1,0 +1,20 @@
+# SmartSpawner – hologram.yml
+# Text lines shown above each spawner. Supports &#RRGGBB hex and &x color codes.
+#
+# Placeholders:
+#   {entity}                  – Mob name
+#   {ᴇɴᴛɪᴛʏ}                 – Mob name in small-caps unicode
+#   {stack_size}              – Stack count
+#   {current_exp}             – Stored XP
+#   {max_exp}                 – Max XP capacity
+#   {used_slots}              – Used item slots
+#   {max_slots}               – Total item slots
+#   {percent_storage_decimal} – Storage % (1 decimal, e.g. "75.5")
+#   {percent_storage_rounded} – Storage % rounded (e.g. "76")
+#   {percent_exp_decimal}     – XP % (1 decimal, e.g. "50.0")
+#   {percent_exp_rounded}     – XP % rounded (e.g. "50")
+
+hologram_text:
+  - '&8[&f{stack_size}&8] &#5DB5F1{entity} 刷怪笼'
+  - '&#5DB5F1• &f经验：&a{current_exp}&f/&a{max_exp}'
+  - '&#5DB5F1• &f物品：&e{used_slots}&f/&e{max_slots}'
