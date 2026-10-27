@@ -11,12 +11,19 @@ plugins/SmartSpawner/gui_layouts/
 │   ├── storage_gui.yml
 │   └── sell_confirm_gui.yml
 ├── DonutSMP/
-│   └── ...
+│   ├── ...
+│   └── texts.yml
 └── DonutSMP_v2/
     └── ...
 ```
 
 Select the active layout with `gui_layout` in `config.yml`, or switch it live using `/ss gui_layout <name>`.
+
+## Layout Texts
+
+A layout can have a `texts.yml` that replaces GUI names, lore and titles from `language/<locale>/gui.yml`. It uses the same keys as `gui.yml` and only lists the ones it changes. `DonutSMP` and `DonutSMP_v2` use it for their look, so picking the layout is all it takes.
+
+Delete a key from `texts.yml` to use the language's text again. A layout without `texts.yml` uses the language's text everywhere. The texts in `texts.yml` are not translated, so they show the same with every `language`.
 
 ## How Your Edits Are Kept
 

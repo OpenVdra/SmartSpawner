@@ -6,14 +6,21 @@ All notable changes to SmartSpawner are documented in this file.
 
 ### Added
 - Chinese (Simplified) language, `zh_CN`. Thanks to CTfish0101.
+- Every message and menu text accepts MiniMessage, such as `<red>`, `<#5DB5F1>` and `<gradient:#5DB5F1:#FFFFFF>`, alone or mixed with `&` codes. A new `<smallcaps>` tag writes small capitals. See the new Language Files page.
+- Placeholder values, such as player and item names, can no longer add colours to a message.
 
 ### Fixed
 - Changing `spawner_properties.default.delay` now applies to spawners already placed, after `/ss reload` or a restart. Before, they kept the old delay until broken and placed again.
 
 ### Changed
+- The shipped language files use MiniMessage instead of `&` codes. Edited texts keep their `&` codes and keep working.
+- Only the active language and GUI layout are written to the plugin folder. Others are added the first time they are selected with `/ss language` or `/ss gui_layout`.
+- Custom language folders now get key renames on update, like the built-in ones.
+- The DonutSMP look is now chosen with `gui_layout` alone. The `en_US_DonutSMP` and `en_US_DonutSMP_v2` languages were removed; their GUI text now comes with the `DonutSMP` and `DonutSMP_v2` layouts, in a new `texts.yml`.
 - A delay set with `/ss set delay` now stays on that spawner through reloads and restarts, instead of following the config.
 
 ### Notes
+- Servers using `language: en_US_DonutSMP` or `en_US_DonutSMP_v2` are switched to `en_US` with the matching layout on the first start, and edited DonutSMP texts and messages are kept. The old language folders are saved in `language.backup-<date>/`. No action is required.
 - Spawners given their own delay with `/ss set delay` before this version go back to the config delay once. Set it again where needed.
 
 ## 1.8.3

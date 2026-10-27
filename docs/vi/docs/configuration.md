@@ -36,19 +36,18 @@ Thư mục ngôn ngữ được tải từ <code>plugins/SmartSpawner/language/<
 | Locale | Ngôn ngữ |
 |--------|----------|
 | <code>en_US</code> | Tiếng Anh |
-| <code>en_US_DonutSMP</code> | Tiếng Anh – bố cục DonutSMP |
-| <code>en_US_DonutSMP_v2</code> | Tiếng Anh – bố cục DonutSMP v2 |
 | <code>es_ES</code> | Tiếng Tây Ban Nha |
 | <code>tr_TR</code> | Tiếng Thổ Nhĩ Kỳ |
 | <code>vi_VN</code> | Tiếng Việt |
 | <code>zh_CN</code> | Tiếng Trung (Giản thể) |
 
-Để thêm ngôn ngữ riêng, tạo thư mục mới trong <code>language/</code>, sao chép file từ <code>en_US/</code> làm mẫu rồi dịch nội dung.
+Chỉ ngôn ngữ đang dùng được ghi vào thư mục plugin. Xem [File Ngôn Ngữ](/vi/docs/language) về màu, placeholder và cách thêm ngôn ngữ.
 
 </ConfigProperty>
 
 <ConfigProperty name="gui_layout" value="default" type="string">
-Thư mục bố cục GUI trong <code>plugins/SmartSpawner/gui_layouts/</code>. Tùy chọn có sẵn: <code>default</code>, <code>DonutSMP</code>, <code>DonutSMP_v2</code>.
+Thư mục bố cục GUI trong <code>plugins/SmartSpawner/gui_layouts/</code>. Tùy chọn có sẵn: <code>default</code>, <code>DonutSMP</code>, <code>DonutSMP_v2</code>.<br><br>
+Bố cục có thể đổi cả chữ trong GUI, không chỉ nút, qua file <code>texts.yml</code> của nó. Xem [Bố Cục GUI](/vi/docs/gui-layout#chu-cua-bo-cuc).
 </ConfigProperty>
 
 <ConfigGroup name="spawner_properties">

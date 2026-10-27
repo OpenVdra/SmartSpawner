@@ -8,7 +8,7 @@ while the underlying `SpawnerData` changes. The domain object lives in `spawner/
 
 | Package | What it is |
 |---|---|
-| `layout/` | Parses `gui_layout` config into `GuiLayout` / `GuiButton`; `GuiButtonInteractionService` runs per-button cooldowns and click sounds. Layout defines which slot holds which action |
+| `layout/` | Parses `gui_layout` config into `GuiLayout` / `GuiButton`; `GuiButtonInteractionService` runs per-button cooldowns and click sounds. Layout defines which slot holds which action. A layout's optional `texts.yml` overrides the locale's `gui.yml` texts (see `language/AGENTS.md`) |
 | `main/` | The main spawner menu (`SpawnerMenuUI`, `SpawnerMenuHolder`, `SpawnerMenuAction`): storage/exp/info buttons and the `{time}` countdown |
 | `storage/` | The paged virtual-inventory view. See `storage/AGENTS.md` |
 | `sell/` | The sell-confirmation GUI (`SpawnerSellConfirmUI` / `...Holder` / `...Listener`) |

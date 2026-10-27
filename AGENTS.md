@@ -43,8 +43,9 @@ answers a file queue of JSON requests and captures screenshots without taking th
 `./gradlew -p tools/agent-client runClient`, then drive it with `tools/agent-client/drive.py`. Its
 Minecraft version must match `mcRun`. See its README.
 
-There are **no unit tests** in this repo (0 files under `src/test`). Verification is manual, in game.
-See the `playtest-server` skill for the full loop of building, booting and driving the client.
+Unit tests under `core/src/test` cover config migration, storage and text parsing (`./gradlew :core:test`).
+Anything visible in game is verified on the dev server: the `playtest-server` skill has the full loop of
+building, booting and driving the agent client.
 
 ## Architecture in one pass
 

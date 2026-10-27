@@ -38,19 +38,18 @@ Language folder to load from <code>plugins/SmartSpawner/language/</code>.<br><br
 | Locale | Language |
 |--------|----------|
 | <code>en_US</code> | English |
-| <code>en_US_DonutSMP</code> | English – DonutSMP layout |
-| <code>en_US_DonutSMP_v2</code> | English – DonutSMP v2 layout |
 | <code>es_ES</code> | Spanish |
 | <code>tr_TR</code> | Turkish |
 | <code>vi_VN</code> | Vietnamese |
 | <code>zh_CN</code> | Chinese (Simplified) |
 
-To add a custom language, create a new folder in <code>language/</code>, copy the files from <code>en_US/</code> as a template, and translate them.
+Only the active language is written to the plugin folder. See [Language Files](/docs/language) for colours, placeholders and adding a language.
 
 </ConfigProperty>
 
 <ConfigProperty name="gui_layout" value="default" type="string">
-GUI layout folder to load from <code>plugins/SmartSpawner/gui_layouts/</code>. Built-in options: <code>default</code>, <code>DonutSMP</code>, <code>DonutSMP_v2</code>.
+GUI layout folder to load from <code>plugins/SmartSpawner/gui_layouts/</code>. Built-in options: <code>default</code>, <code>DonutSMP</code>, <code>DonutSMP_v2</code>.<br><br>
+A layout can change GUI text as well as buttons, through its <code>texts.yml</code>. See [GUI Layout](/docs/gui-layout#layout-texts).
 </ConfigProperty>
 
 <ConfigGroup name="spawner_properties">

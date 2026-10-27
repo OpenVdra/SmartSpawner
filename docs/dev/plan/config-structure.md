@@ -1,6 +1,10 @@
 # Plan: simplify the language and GUI files
 
-Status: proposed. Nothing here is implemented yet.
+Status: phases 1 to 3 implemented (layout `texts.yml` and `LayoutTextsMigration`; extraction of the
+active locale and layout only; `TextFormatter` with MiniMessage input, and the shipped files converted
+from `&` codes to MiniMessage). Phases 4 to 6 not started. Phase 4 must compare owner values to shipped
+ones after rendering (`LayoutTextsMigration.sameText`), since owners keep `&` codes while shipped text
+is MiniMessage.
 
 The MiniMessage approach follows common practice for Paper plugins, adjusted for what does not fit
 SmartSpawner (see "MiniMessage" below).

@@ -33,7 +33,8 @@ const enManualSidebar = [
       { text: 'Sell Integration', link: '/docs/sell-integration' },
       { text: 'Mob Spawners', link: '/docs/spawner-mobs' },
       { text: 'Item Spawners', link: '/docs/spawner-items' },
-      { text: 'GUI Layout', link: '/docs/gui-layout' }
+      { text: 'GUI Layout', link: '/docs/gui-layout' },
+      { text: 'Language Files', link: '/docs/language' }
     ]
   },
   {
@@ -114,7 +115,8 @@ const viManualSidebar = [
       { text: 'Tích hợp bán', link: '/vi/docs/sell-integration' },
       { text: 'Spawner Mob', link: '/vi/docs/spawner-mobs' },
       { text: 'Item Spawner', link: '/vi/docs/spawner-items' },
-      { text: 'Bố cục GUI', link: '/vi/docs/gui-layout' }
+      { text: 'Bố cục GUI', link: '/vi/docs/gui-layout' },
+      { text: 'File ngôn ngữ', link: '/vi/docs/language' }
     ]
   },
   {
