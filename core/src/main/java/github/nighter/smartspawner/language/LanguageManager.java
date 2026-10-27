@@ -1,294 +1,219 @@
 package github.nighter.smartspawner.language;
 
-import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.language.cache.LanguageCache;
-import github.nighter.smartspawner.language.file.LanguageFileType;
 import github.nighter.smartspawner.language.file.LanguageRepository;
-import github.nighter.smartspawner.language.format.PlaceholderFormatter;
-import github.nighter.smartspawner.language.format.SmallCapsFormatter;
-import github.nighter.smartspawner.language.section.FormattingLanguageSection;
+import github.nighter.smartspawner.language.file.LocaleData;
 import github.nighter.smartspawner.language.section.GuiLanguageSection;
-import github.nighter.smartspawner.language.section.HologramLanguageSection;
-import github.nighter.smartspawner.language.section.ItemLanguageSection;
-import github.nighter.smartspawner.language.section.MessageLanguageSection;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Every player-visible text. The server locale ({@code language}) is used for everything shared:
+ * spawner items, holograms, the console. With {@code language_auto_detect} on, messages and GUIs a
+ * single player sees use that player's client language when a locale folder for it exists, through
+ * {@link #texts(CommandSender)}, {@link #gui(CommandSender)} and {@link #commandGui(CommandSender)}.
+ */
 public class LanguageManager {
+    private final JavaPlugin plugin;
     private final LanguageRepository repository;
-    private final LanguageCache cache;
-    private final PlaceholderFormatter placeholderFormatter;
-    private final SmallCapsFormatter smallCapsFormatter;
-    private final MessageLanguageSection messages;
-    private final GuiLanguageSection guiLanguage;
-    private final GuiLanguageSection commandGuiLanguage;
-    private final ItemLanguageSection items;
-    private final FormattingLanguageSection formatting;
-    private final HologramLanguageSection hologram;
     private final AtomicInteger cacheHits = new AtomicInteger();
     private final AtomicInteger cacheMisses = new AtomicInteger();
-    // The active GUI layout's texts.yml, checked before the locale's gui.yml. Null when it has none.
-    private volatile YamlConfiguration layoutTexts;
+    private final Set<String> warnedLegacyKeys = ConcurrentHashMap.newKeySet();
+    private final Map<String, LocaleTexts> playerTexts = new ConcurrentHashMap<>();
+    private final LocaleTexts server;
+    /** The active layout's texts.yml under "", and each texts_<locale>.yml under its locale. */
+    private volatile Map<String, YamlConfiguration> layoutTexts = Map.of();
 
     public LanguageManager(JavaPlugin plugin) {
-        this(plugin, LanguageFileType.values());
-    }
-
-    public LanguageManager(SmartSpawner plugin, LanguageFileType... fileTypes) {
-        this((JavaPlugin) plugin, fileTypes);
-    }
-
-    private LanguageManager(JavaPlugin plugin, LanguageFileType... fileTypes) {
-        repository = new LanguageRepository(plugin, fileTypes);
+        this.plugin = plugin;
+        repository = new LanguageRepository(plugin);
         repository.initialize();
-
-        cache = new LanguageCache(cacheHits, cacheMisses);
-        placeholderFormatter = new PlaceholderFormatter(cache, cacheHits, cacheMisses);
-        smallCapsFormatter = new SmallCapsFormatter(cache, cacheHits, cacheMisses);
-        messages = new MessageLanguageSection(
-                repository::current,
-                placeholderFormatter::apply
-        );
-        guiLanguage = createGuiSection("GUI", LanguageFileType.GUI);
-        commandGuiLanguage = createGuiSection("command GUI", LanguageFileType.COMMAND_GUI);
-        items = new ItemLanguageSection(
-                repository::current,
-                () -> repository.isActive(LanguageFileType.ITEMS),
-                cache,
-                placeholderFormatter,
-                placeholderFormatter::apply
-        );
-        formatting = new FormattingLanguageSection(
-                repository::current,
-                () -> repository.isActive(LanguageFileType.FORMATTING),
-                cache,
-                placeholderFormatter,
-                placeholderFormatter::apply
-        );
-        hologram = new HologramLanguageSection(plugin, repository::current);
+        server = newTexts(repository::server, () -> repository.serverLocale());
     }
 
-    private GuiLanguageSection createGuiSection(String label, LanguageFileType fileType) {
-        return new GuiLanguageSection(
-                label,
-                () -> fileType == LanguageFileType.COMMAND_GUI
-                        ? repository.current().commandGui()
-                        : repository.current().gui(),
-                fileType == LanguageFileType.GUI ? () -> layoutTexts : () -> null,
-                () -> repository.isActive(fileType),
-                placeholderFormatter::apply,
-                1000,
-                250,
-                250
-        );
+    private LocaleTexts newTexts(java.util.function.Supplier<LocaleData> locale, java.util.function.Supplier<String> name) {
+        return new LocaleTexts(plugin, locale, () -> layoutTextsFor(name.get()), this::warnLegacyKey,
+                cacheHits, cacheMisses);
+    }
+
+    private List<YamlConfiguration> layoutTextsFor(String locale) {
+        Map<String, YamlConfiguration> texts = layoutTexts;
+        if (texts.isEmpty()) return List.of();
+        List<YamlConfiguration> result = new ArrayList<>(2);
+        YamlConfiguration own = texts.get(locale);
+        if (own != null) result.add(own);
+        YamlConfiguration shared = texts.get("");
+        if (shared != null) result.add(shared);
+        return result;
+    }
+
+    private void warnLegacyKey(String message) {
+        if (warnedLegacyKeys.add(message)) {
+            plugin.getLogger().warning(message + ". The old name still works in this version; "
+                    + "update the code or addon that asks for it.");
+        }
     }
 
     public String getDefaultLocale() {
-        return repository.defaultLocale();
-    }
-
-    public void loadLanguages() {
-        repository.loadLanguages();
-    }
-
-    public void loadLanguages(LanguageFileType... fileTypes) {
-        repository.loadLanguages(fileTypes);
+        return repository.serverLocale();
     }
 
     public void reloadLanguages() {
-        clearCache();
         repository.reload();
+        playerTexts.clear();
+        clearCache();
     }
 
     /**
-     * Loads the active layout's text overrides for the spawner GUIs. {@code GuiLayoutConfig} calls this
-     * whenever it loads a layout, so both reload paths pick it up.
+     * Loads the active layout's text overrides for the spawner GUIs: {@code texts.yml}, and any
+     * {@code texts_<locale>.yml} next to it for players in that locale. {@code GuiLayoutConfig} calls
+     * this whenever it loads a layout, so both reload paths pick it up.
      */
     public void loadLayoutTexts(File file) {
-        layoutTexts = file.isFile() ? YamlConfiguration.loadConfiguration(file) : null;
-        guiLanguage.clearCache();
+        Map<String, YamlConfiguration> texts = new HashMap<>();
+        if (file.isFile()) texts.put("", YamlConfiguration.loadConfiguration(file));
+        File[] localized = file.getParentFile() == null ? null
+                : file.getParentFile().listFiles((dir, name) -> name.startsWith("texts_") && name.endsWith(".yml"));
+        if (localized != null) {
+            for (File localeFile : localized) {
+                String locale = localeFile.getName().substring("texts_".length(), localeFile.getName().length() - 4);
+                texts.put(locale, YamlConfiguration.loadConfiguration(localeFile));
+            }
+        }
+        layoutTexts = Map.copyOf(texts);
+        server.getGui().clearCache();
+        playerTexts.values().forEach(t -> t.getGui().clearCache());
     }
 
-    public String getMessage(String key, Map<String, String> placeholders) {
-        return messages.message(key, placeholders);
+    /** The texts a sender should see: their own language for a player when auto-detect is on, otherwise the server's. */
+    public LocaleTexts texts(CommandSender viewer) {
+        String locale = viewerLocale(viewer);
+        if (locale == null) return server;
+        return playerTexts.computeIfAbsent(locale, name -> newTexts(() -> {
+            LocaleData data = repository.forLocale(name);
+            return data != null ? data : repository.server();
+        }, () -> name));
     }
 
-    public String getMessageWithoutPrefix(String key, Map<String, String> placeholders) {
-        return messages.messageWithoutPrefix(key, placeholders);
+    /** The locale a viewer sees, for keying caches of built items. Empty for the server language. */
+    public String localeKey(CommandSender viewer) {
+        String locale = viewerLocale(viewer);
+        return locale == null ? "" : locale;
+    }
+
+    /** The viewer's own locale when it differs from the server's and can be loaded, otherwise {@code null}. */
+    private String viewerLocale(CommandSender viewer) {
+        if (!repository.autoDetect() || !(viewer instanceof Player player)) return null;
+        String locale = repository.match(player.locale());
+        if (locale == null || locale.equals(repository.serverLocale())) return null;
+        return repository.forLocale(locale) == null ? null : locale;
+    }
+
+    public boolean isAutoDetect() {
+        return repository.autoDetect();
+    }
+
+    public Set<String> getAvailableLocales() {
+        return repository.availableLocales();
+    }
+
+    // ---- messages (server language; MessageService picks the player's own) ----
+
+    public Component getMessage(String key, Map<String, String> placeholders) {
+        return server.getMessages().message(key, placeholders);
     }
 
     public String getMessageForConsole(String key, Map<String, String> placeholders) {
-        return messages.consoleMessage(key, placeholders);
-    }
-
-    public String getTitle(String key, Map<String, String> placeholders) {
-        return messages.title(key, placeholders);
-    }
-
-    public String getSubtitle(String key, Map<String, String> placeholders) {
-        return messages.subtitle(key, placeholders);
-    }
-
-    public String getActionBar(String key, Map<String, String> placeholders) {
-        return messages.actionBar(key, placeholders);
+        return server.getMessages().consoleMessage(key, placeholders);
     }
 
     public String getSound(String key) {
-        return messages.sound(key);
-    }
-
-    String getRawMessage(String path, Map<String, String> placeholders) {
-        return messages.raw(path, placeholders);
+        return server.getMessages().sound(key);
     }
 
     public boolean keyExists(String key) {
-        return messages.contains(key);
+        return server.getMessages().contains(key);
     }
 
-    public String getCommandConfig(String path, String defaultValue) {
-        return messages.commandConfig(path, defaultValue);
+    public Component getCommandText(String path, String defaultValue) {
+        return server.getMessages().commandText(path, defaultValue);
     }
 
-    public String getCommandConfig(String path, String defaultValue, Map<String, String> placeholders) {
-        return messages.commandConfig(path, defaultValue, placeholders);
+    public Component getCommandText(String path, String defaultValue, Map<String, String> placeholders) {
+        return server.getMessages().commandText(path, defaultValue, placeholders);
     }
+
+    // ---- GUIs ----
 
     public GuiLanguageSection gui() {
-        return guiLanguage;
+        return server.getGui();
+    }
+
+    public GuiLanguageSection gui(CommandSender viewer) {
+        return texts(viewer).getGui();
     }
 
     public GuiLanguageSection commandGui() {
-        return commandGuiLanguage;
+        return server.getCommandGui();
     }
 
-    public String getGuiTitle(String key) {
-        return guiLanguage.title(key);
+    public GuiLanguageSection commandGui(CommandSender viewer) {
+        return texts(viewer).getCommandGui();
     }
 
-    public String getGuiTitle(String key, Map<String, String> placeholders) {
-        return guiLanguage.title(key, placeholders);
-    }
-
-    public String getGuiConfigString(String key, String defaultValue) {
-        return guiLanguage.configString(key, defaultValue);
-    }
-
-    public String getGuiItemName(String key) {
-        return guiLanguage.name(key);
-    }
-
-    public String getGuiItemName(String key, Map<String, String> placeholders) {
-        return guiLanguage.name(key, placeholders);
-    }
-
-    public String[] getGuiItemLore(String key) {
-        return guiLanguage.lore(key);
-    }
-
-    public String[] getGuiItemLore(String key, Map<String, String> placeholders) {
-        return guiLanguage.lore(key, placeholders);
-    }
-
-    public List<String> getGuiItemLoreAsList(String key) {
-        return guiLanguage.loreList(key);
-    }
-
-    public List<String> getGuiItemLoreAsList(String key, Map<String, String> placeholders) {
-        return guiLanguage.loreList(key, placeholders);
-    }
-
-    public List<String> getGuiItemLoreWithMultilinePlaceholders(
-            String key,
-            Map<String, String> placeholders
-    ) {
-        return guiLanguage.loreWithMultilinePlaceholders(key, placeholders);
-    }
+    // ---- items (always the server language: an item outlives whoever first saw it) ----
 
     public String getVanillaItemName(Material material) {
-        return items.vanillaName(material);
+        return server.getItems().vanillaName(material);
     }
 
-    public String[] getVanillaItemLore(Material material) {
-        return items.vanillaLore(material);
+    public List<Component> getVanillaItemLore(Material material) {
+        return server.getItems().vanillaLore(material);
     }
 
-    public String getItemName(String key) {
-        return items.name(key);
+    public Component getItemName(String key, Map<String, String> placeholders) {
+        return server.getItems().name(key, placeholders);
     }
 
-    public String getItemName(String key, Map<String, String> placeholders) {
-        return items.name(key, placeholders);
+    /** The text at {@code key} in items.yml as written, or {@code null} when the file has none. */
+    public String getItemText(String key) {
+        return repository.server().items().getString(key);
     }
 
     public String getItemVariantKey(String section, String variant, String field) {
-        return items.variantKey(section, variant, field);
+        return server.getItems().variantKey(section, variant, field);
     }
 
-    public String[] getItemLore(String key) {
-        return items.lore(key);
+    public List<Component> getItemLore(String key, Map<String, String> placeholders) {
+        return server.getItems().lore(key, placeholders);
     }
 
-    public String[] getItemLore(String key, Map<String, String> placeholders) {
-        return items.lore(key, placeholders);
+    public Component buildTranslatableLootLine(String templateKey, Material material, String amount, String chance) {
+        return server.getItems().translatableLootLine(templateKey, material, amount, chance);
     }
 
-    public List<String> getItemLoreWithMultilinePlaceholders(
-            String key,
-            Map<String, String> placeholders
-    ) {
-        return items.loreWithMultilinePlaceholders(key, placeholders);
+    public Component buildTranslatableLootLine(String templateKey, ItemStack item, String amount, String chance) {
+        return server.getItems().translatableLootLine(templateKey, getItemDisplayName(item), amount, chance);
     }
 
-    public Component buildTranslatableLootLine(
-            String templateKey,
-            Material material,
-            String amount,
-            String chance
-    ) {
-        return items.translatableLootLine(templateKey, material, amount, chance);
-    }
-
-    public Component buildTranslatableGuiLootLine(
-            String templateKey,
-            Material material,
-            String amount,
-            String chance
-    ) {
-        return guiLanguage.translatableLootLine(templateKey, material, amount, chance);
-    }
-
-    /**
-     * As above, but names the item from a real {@link ItemStack} so its effective name is used (a tipped
-     * arrow shows "Arrow of Strength", not "Tipped Arrow"). Falls back to the material name when the item
-     * is null.
-     */
-    public Component buildTranslatableGuiLootLine(
-            String templateKey,
-            ItemStack item,
-            String amount,
-            String chance
-    ) {
-        return guiLanguage.translatableLootLine(templateKey, getItemDisplayName(item), amount, chance);
-    }
-
-    public Component buildTranslatableLootLine(
-            String templateKey,
-            ItemStack item,
-            String amount,
-            String chance
-    ) {
-        return items.translatableLootLine(templateKey, getItemDisplayName(item), amount, chance);
+    public List<Component> buildItemLoreAsComponents(String key, Map<String, String> stringPlaceholders,
+                                                     List<Component> lootItemComponents, String emptyLootKey) {
+        return server.getItems().loreComponents(key, stringPlaceholders, lootItemComponents, emptyLootKey);
     }
 
     /**
@@ -305,79 +230,41 @@ public class LanguageManager {
         return item.effectiveName();
     }
 
-    public List<Component> buildItemLoreAsComponents(
-            String key,
-            Map<String, String> stringPlaceholders,
-            List<Component> lootItemComponents,
-            String emptyLootKey
-    ) {
-        return items.loreComponents(key, stringPlaceholders, lootItemComponents, emptyLootKey);
-    }
-
-    public List<Component> buildGuiLoreAsComponents(
-            String key,
-            Map<String, String> stringPlaceholders,
-            List<Component> lootItemComponents,
-            String emptyLootKey
-    ) {
-        return guiLanguage.loreComponents(key, stringPlaceholders, lootItemComponents, emptyLootKey);
-    }
+    // ---- formatting and holograms (server language) ----
 
     public String formatNumber(double number) {
-        return formatting.number(number);
+        return server.getFormatting().number(number);
     }
 
     public String getFormattedMobName(EntityType type) {
-        return formatting.mobName(type);
+        return server.getFormatting().mobName(type);
     }
 
     public String getHologramText() {
-        return hologram.text();
-    }
-
-    public void clearCache() {
-        cache.clear();
-        items.clearCache();
-        guiLanguage.clearCache();
-        commandGuiLanguage.clearCache();
-    }
-
-    public String applyPlaceholdersAndColors(String text, Map<String, String> placeholders) {
-        return placeholderFormatter.apply(text, placeholders);
-    }
-
-    public String applyOnlyPlaceholders(String text, Map<String, String> placeholders) {
-        return placeholderFormatter.applyOnlyPlaceholders(text, placeholders);
+        return server.getHologram().text();
     }
 
     public String getSmallCaps(String text) {
-        return smallCapsFormatter.apply(text);
+        return server.getSmallCapsFormatter().apply(text);
     }
 
     public String formatEnumName(String enumName) {
-        return placeholderFormatter.formatEnumName(enumName);
+        return server.getPlaceholderFormatter().formatEnumName(enumName);
     }
 
-    public String getColorCode(String path) {
-        return guiLanguage.colorCode(path);
+    public String applyOnlyPlaceholders(String text, Map<String, String> placeholders) {
+        return server.getPlaceholderFormatter().applyOnlyPlaceholders(text, placeholders);
+    }
+
+    public void clearCache() {
+        server.clearCache();
+        playerTexts.values().forEach(LocaleTexts::clearCache);
     }
 
     public Map<String, Object> getCacheStats() {
         Map<String, Object> stats = new HashMap<>();
-        stats.put("string_cache_size", cache.getStringCacheSize());
-        stats.put("string_cache_capacity", cache.getStringCacheCapacity());
-        stats.put("lore_cache_size", cache.getLoreCacheSize());
-        stats.put("lore_cache_capacity", cache.getLoreCacheCapacity());
-        stats.put("lore_list_cache_size", cache.getLoreListCacheSize());
-        stats.put("lore_list_cache_capacity", cache.getLoreListCacheCapacity());
-        guiLanguage.addCacheStats(stats, "gui");
-        commandGuiLanguage.addCacheStats(stats, "command_gui");
-        stats.put("entity_name_cache_size", cache.getEntityNameCacheSize());
-        stats.put("entity_name_cache_capacity", cache.getEntityNameCacheCapacity());
-        stats.put("small_caps_cache_size", cache.getSmallCapsCacheSize());
-        stats.put("small_caps_cache_capacity", cache.getSmallCapsCacheCapacity());
-        stats.put("material_name_cache_size", cache.getMaterialNameCacheSize());
-        stats.put("material_name_cache_capacity", cache.getMaterialNameCacheCapacity());
+        server.addCacheStats(stats, "");
+        playerTexts.forEach((locale, texts) -> texts.addCacheStats(stats, locale + "_"));
         stats.put("cache_hits", cacheHits.get());
         stats.put("cache_misses", cacheMisses.get());
         stats.put("hit_ratio", cacheHits.get() > 0

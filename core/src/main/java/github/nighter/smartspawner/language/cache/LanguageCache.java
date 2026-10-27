@@ -1,81 +1,44 @@
 package github.nighter.smartspawner.language.cache;
 
 import github.nighter.smartspawner.utils.LRUCache;
+import net.kyori.adventure.text.Component;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/** The parsed-text caches of one locale. Components are immutable, so a cached one is shared safely. */
 public final class LanguageCache {
-    private final LRUCache<String, String> stringCache;
-    private final LRUCache<String, String[]> loreCache;
-    private final LRUCache<String, List<String>> loreListCache;
-    private final LRUCache<String, String> entityNameCache;
-    private final LRUCache<String, String> smallCapsCache;
-    private final LRUCache<String, String> materialNameCache;
+    private final LRUCache<String, Component> textCache = new LRUCache<>(1000);
+    private final LRUCache<String, Component> chatCache = new LRUCache<>(500);
+    private final LRUCache<String, String> entityNameCache = new LRUCache<>(250);
+    private final LRUCache<String, String> smallCapsCache = new LRUCache<>(500);
+    private final LRUCache<String, String> materialNameCache = new LRUCache<>(250);
     private final AtomicInteger cacheHits;
     private final AtomicInteger cacheMisses;
 
     public LanguageCache(AtomicInteger cacheHits, AtomicInteger cacheMisses) {
-        this.stringCache = new LRUCache<>(1000);
-        this.loreCache = new LRUCache<>(250);
-        this.loreListCache = new LRUCache<>(250);
-        this.entityNameCache = new LRUCache<>(250);
-        this.smallCapsCache = new LRUCache<>(500);
-        this.materialNameCache = new LRUCache<>(250);
         this.cacheHits = cacheHits;
         this.cacheMisses = cacheMisses;
     }
 
-    public String getCachedString(String key) {
-        String cached = stringCache.get(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-        cacheMisses.incrementAndGet();
-        return null;
+    public Component getText(String key) {
+        return count(textCache.get(key));
     }
 
-    public void putCachedString(String key, String value) {
-        stringCache.put(key, value);
+    public void putText(String key, Component value) {
+        textCache.put(key, value);
     }
 
-    public String[] getCachedLore(String key) {
-        String[] cached = loreCache.get(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-        cacheMisses.incrementAndGet();
-        return null;
+    public Component getChat(String key) {
+        return count(chatCache.get(key));
     }
 
-    public void putCachedLore(String key, String[] value) {
-        loreCache.put(key, value);
-    }
-
-    public List<String> getCachedLoreList(String key) {
-        List<String> cached = loreListCache.get(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-        cacheMisses.incrementAndGet();
-        return null;
-    }
-
-    public void putCachedLoreList(String key, List<String> value) {
-        loreListCache.put(key, value);
+    public void putChat(String key, Component value) {
+        chatCache.put(key, value);
     }
 
     public String getCachedEntityName(String key) {
-        String cached = entityNameCache.get(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-        cacheMisses.incrementAndGet();
-        return null;
+        return count(entityNameCache.get(key));
     }
 
     public void putCachedEntityName(String key, String value) {
@@ -83,13 +46,7 @@ public final class LanguageCache {
     }
 
     public String getCachedMaterialName(String key) {
-        String cached = materialNameCache.get(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-        cacheMisses.incrementAndGet();
-        return null;
+        return count(materialNameCache.get(key));
     }
 
     public void putCachedMaterialName(String key, String value) {
@@ -97,13 +54,7 @@ public final class LanguageCache {
     }
 
     public String getCachedSmallCaps(String key) {
-        String cached = smallCapsCache.get(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-        cacheMisses.incrementAndGet();
-        return null;
+        return count(smallCapsCache.get(key));
     }
 
     public void putCachedSmallCaps(String key, String value) {
@@ -111,59 +62,26 @@ public final class LanguageCache {
     }
 
     public void clear() {
-        stringCache.clear();
-        loreCache.clear();
-        loreListCache.clear();
+        textCache.clear();
+        chatCache.clear();
         entityNameCache.clear();
         smallCapsCache.clear();
         materialNameCache.clear();
     }
 
-    public int getStringCacheSize() {
-        return stringCache.size();
+    public void addStats(Map<String, Object> stats, String prefix) {
+        stats.put(prefix + "text_cache_size", textCache.size());
+        stats.put(prefix + "text_cache_capacity", textCache.capacity());
+        stats.put(prefix + "chat_cache_size", chatCache.size());
+        stats.put(prefix + "chat_cache_capacity", chatCache.capacity());
+        stats.put(prefix + "entity_name_cache_size", entityNameCache.size());
+        stats.put(prefix + "small_caps_cache_size", smallCapsCache.size());
+        stats.put(prefix + "material_name_cache_size", materialNameCache.size());
     }
 
-    public int getStringCacheCapacity() {
-        return stringCache.capacity();
-    }
-
-    public int getLoreCacheSize() {
-        return loreCache.size();
-    }
-
-    public int getLoreCacheCapacity() {
-        return loreCache.capacity();
-    }
-
-    public int getLoreListCacheSize() {
-        return loreListCache.size();
-    }
-
-    public int getLoreListCacheCapacity() {
-        return loreListCache.capacity();
-    }
-
-    public int getEntityNameCacheSize() {
-        return entityNameCache.size();
-    }
-
-    public int getEntityNameCacheCapacity() {
-        return entityNameCache.capacity();
-    }
-
-    public int getSmallCapsCacheSize() {
-        return smallCapsCache.size();
-    }
-
-    public int getSmallCapsCacheCapacity() {
-        return smallCapsCache.capacity();
-    }
-
-    public int getMaterialNameCacheSize() {
-        return materialNameCache.size();
-    }
-
-    public int getMaterialNameCacheCapacity() {
-        return materialNameCache.capacity();
+    private <T> T count(T cached) {
+        if (cached != null) cacheHits.incrementAndGet();
+        else cacheMisses.incrementAndGet();
+        return cached;
     }
 }

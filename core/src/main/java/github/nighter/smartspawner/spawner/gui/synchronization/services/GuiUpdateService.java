@@ -119,7 +119,7 @@ public class GuiUpdateService {
         if ((flags & UPDATE_CHEST) != 0) {
             GuiButton storageButton = holder.getStorageButton();
             if (storageButton != null) {
-                needsUpdate |= updateChestItem(inventory, spawner, storageButton);
+                needsUpdate |= updateChestItem(inventory, spawner, player, storageButton);
             }
         }
 
@@ -133,7 +133,7 @@ public class GuiUpdateService {
         if ((flags & UPDATE_EXP) != 0) {
             GuiButton expButton = holder.getExpButton();
             if (expButton != null) {
-                needsUpdate |= updateExpItem(inventory, spawner, expButton);
+                needsUpdate |= updateExpItem(inventory, spawner, player, expButton);
             }
         }
 
@@ -145,14 +145,14 @@ public class GuiUpdateService {
     /**
      * Updates the chest/storage item in inventory.
      */
-    private boolean updateChestItem(Inventory inventory, SpawnerData spawner, GuiButton button) {
+    private boolean updateChestItem(Inventory inventory, SpawnerData spawner, Player player, GuiButton button) {
         int storageSlot = button.getSlot();
         if (storageSlot < 0) {
             return false;
         }
 
         ItemStack currentChestItem = inventory.getItem(storageSlot);
-        ItemStack newChestItem = spawnerMenuUI.createLootStorageItem(spawner, button);
+        ItemStack newChestItem = spawnerMenuUI.createLootStorageItem(player, spawner, button);
 
         if (areItemsEqual(currentChestItem, newChestItem)) {
             return false;
@@ -164,14 +164,14 @@ public class GuiUpdateService {
     /**
      * Updates the exp item in inventory.
      */
-    private boolean updateExpItem(Inventory inventory, SpawnerData spawner, GuiButton button) {
+    private boolean updateExpItem(Inventory inventory, SpawnerData spawner, Player player, GuiButton button) {
         int expSlot = button.getSlot();
         if (expSlot < 0) {
             return false;
         }
 
         ItemStack currentExpItem = inventory.getItem(expSlot);
-        ItemStack newExpItem = spawnerMenuUI.createExpItem(spawner, button);
+        ItemStack newExpItem = spawnerMenuUI.createExpItem(player, spawner, button);
 
         if (areItemsEqual(currentExpItem, newExpItem)) {
             return false;

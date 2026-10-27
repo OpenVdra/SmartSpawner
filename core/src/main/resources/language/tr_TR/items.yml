@@ -1,8 +1,9 @@
-# SmartSpawner – items.yml
-# Spawner eşyalarının görüntülenme isimleri ve düşen eşya isimleri.
+# SmartSpawner items and holograms
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
+# A mob or material section overrides default key by key. Keys it leaves out come from default.
 
-# Smart spawner eşyalarının envanterde ve araç ipuçlarındaki görünümü
-# Kullanılabilir değişkenler: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 smart_spawner:
   default:
     name: '<#5db5f1>{entity} Spawner'
@@ -16,7 +17,6 @@ smart_spawner:
       - ' <#5db5f1> Düşenler:'
       - '{loot_items}'
       - ''
-  # Yaratığa özel bölümler, belirtilen anahtar için varsayılanı ezer. Belirtilmeyen anahtarlar varsayılanı kullanır.
   PIG:
     name: '<#ff77b7>{entity} Spawner'
     loot_items: '  <#fff0f7> • {amount}x {item_name} <#ff8fc7>(%{chance})'
@@ -42,8 +42,7 @@ smart_spawner:
       - '{loot_items}'
       - ''
 
-# Eşya spawnerı (item spawner) eşyalarının envanterde ve araç ipuçlarındaki görünümü
-# Kullanılabilir değişkenler: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 item_spawner:
   default:
     name: '<#5db5f1>{entity} Spawner'
@@ -57,7 +56,6 @@ item_spawner:
       - ' <#5db5f1> Düşenler:'
       - '{loot_items}'
       - ''
-  # Materyale özel bölümler, belirtilen anahtar için varsayılanı ezer. Belirtilmeyen anahtarlar varsayılanı kullanır.
   DIAMOND:
     name: '<#00e5ff>{entity} Spawner'
     loot_items: '  <#eafdff> • {amount}x {item_name} <#00b8d4>(%{chance})'
@@ -83,10 +81,16 @@ item_spawner:
       - '{loot_items}'
       - ''
 
-# Vanilla spawner eşyalarının envanterde ve araç ipuçlarındaki görünümü
-# Kullanılabilir değişkenler: {entity}, {ᴇɴᴛɪᴛʏ}
-# Özel vanilla spawner ismi ve lore'u kullanmak istemiyorsanız bu bölümü silebilirsiniz
+# {entity} {entity_small}. Delete this section to keep the game's own name for vanilla spawners.
 vanilla_spawner:
   default:
-    name: "{entity} Spawner"
+    name: '{entity} Spawner'
     lore:
+
+# Lines above each spawner when holograms are on.
+# {entity} {entity_small} {stack_size} {current_exp} {max_exp} {used_slots} {max_slots} {percent_storage_decimal} {percent_storage_rounded} {percent_exp_decimal} {percent_exp_rounded}
+hologram:
+  lines:
+    - '[<#e6e6fa>{stack_size}] <#3498db>{entity} Spawner'
+    - '<#5dade2>• <#e6e6fa>XP: <#37eb9a>{current_exp}<#e6e6fa>/<#37eb9a>{max_exp}'
+    - '<#5dade2>• <#e6e6fa>Eşyalar: <#37eb9a>{used_slots}<#e6e6fa>/<#37eb9a>{max_slots}'

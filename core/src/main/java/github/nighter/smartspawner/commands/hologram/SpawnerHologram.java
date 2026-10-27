@@ -2,8 +2,10 @@ package github.nighter.smartspawner.commands.hologram;
 
 import github.nighter.smartspawner.Scheduler;
 import github.nighter.smartspawner.SmartSpawner;
-import github.nighter.smartspawner.language.format.ColorUtil;
 import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.language.format.TextFormatter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -15,7 +17,9 @@ import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 public class SpawnerHologram {
     private final SmartSpawner plugin;
@@ -38,7 +42,7 @@ public class SpawnerHologram {
     private static final AxisAngle4f ROTATION = new AxisAngle4f(0, 0, 0, 0);
 
     // Cached color-translated template (static part; recomputed after reload)
-    private String cachedProcessedTemplate = null;
+    private Component cachedProcessedTemplate = null;
 
     // Cached small caps of the display name (recomputed only when the name changes)
     private String cachedEntityName = null;
@@ -116,11 +120,26 @@ public class SpawnerHologram {
     // Template & text helpers
     // -------------------------------------------------------------------------
 
-    /** Returns the hologram template with colour codes already translated.
-     *  Result is cached until {@link #invalidateTemplateCache()} is called. */
-    private String getProcessedTemplate() {
+    /** The placeholders a hologram line can use, in the order {@link #computeText()} fills them. */
+    private static final String[] PLACEHOLDERS = {
+            "entity", "entity_small", "stack_size", "current_exp", "max_exp", "used_slots", "max_slots",
+            "percent_storage_decimal", "percent_storage_rounded", "percent_exp_decimal", "percent_exp_rounded"
+    };
+    /** A placeholder's slot in the parsed template: private-use characters around its index. */
+    private static final Pattern SLOT = Pattern.compile("\uE000(\\d+)\uE001");
+
+    /**
+     * Returns the hologram template, parsed once with every placeholder left as a slot. Updates then
+     * only drop values into the slots, as plain text, instead of parsing MiniMessage again. Cached
+     * until {@link #invalidateTemplateCache()} is called.
+     */
+    private Component getProcessedTemplate() {
         if (cachedProcessedTemplate == null) {
-            cachedProcessedTemplate = ColorUtil.translateHexColorCodes(languageManager.getHologramText());
+            String template = languageManager.getHologramText().replace("{ᴇɴᴛɪᴛʏ}", "{entity_small}");
+            for (int i = 0; i < PLACEHOLDERS.length; i++) {
+                template = template.replace("{" + PLACEHOLDERS[i] + "}", "\uE000" + i + "\uE001");
+            }
+            cachedProcessedTemplate = TextFormatter.parse(template, Map.of());
         }
         return cachedProcessedTemplate;
     }
@@ -130,8 +149,8 @@ public class SpawnerHologram {
         cachedProcessedTemplate = null;
     }
 
-    /** Builds the final display string from cached data. Must be called on the owning region thread. */
-    private String computeText() {
+    /** Builds the final display text from cached data. Must be called on the owning region thread. */
+    private Component computeText() {
         // Refresh the small caps name only when the display name changes
         if (cachedEntityName == null || !cachedEntityName.equals(displayName)) {
             cachedEntityName = displayName != null ? displayName : languageManager.getFormattedMobName(entityType);
@@ -141,18 +160,24 @@ public class SpawnerHologram {
         double pctStorage = maxSlots > 0 ? (double) currentItems / maxSlots * 100 : 0;
         double pctExp = maxExp > 0 ? (double) currentExp / maxExp * 100 : 0;
 
-        return getProcessedTemplate()
-                .replace("{entity}", cachedEntityName)
-                .replace("{ᴇɴᴛɪᴛʏ}", cachedEntitySmallCaps)
-                .replace("{stack_size}", String.valueOf(stackSize))
-                .replace("{current_exp}", languageManager.formatNumber(currentExp))
-                .replace("{max_exp}", languageManager.formatNumber(maxExp))
-                .replace("{used_slots}", languageManager.formatNumber(currentItems))
-                .replace("{max_slots}", languageManager.formatNumber(maxSlots))
-                .replace("{percent_storage_decimal}", formatOneDecimal(pctStorage))
-                .replace("{percent_storage_rounded}", String.valueOf((int) Math.round(pctStorage)))
-                .replace("{percent_exp_decimal}", formatOneDecimal(pctExp))
-                .replace("{percent_exp_rounded}", String.valueOf((int) Math.round(pctExp)));
+        String[] values = {
+                cachedEntityName,
+                cachedEntitySmallCaps,
+                String.valueOf(stackSize),
+                languageManager.formatNumber(currentExp),
+                languageManager.formatNumber(maxExp),
+                languageManager.formatNumber(currentItems),
+                languageManager.formatNumber(maxSlots),
+                formatOneDecimal(pctStorage),
+                String.valueOf((int) Math.round(pctStorage)),
+                formatOneDecimal(pctExp),
+                String.valueOf((int) Math.round(pctExp))
+        };
+        // A mob name may carry legacy colours; legacyValue keeps those and never parses anything else.
+        return getProcessedTemplate().replaceText(TextReplacementConfig.builder()
+                .match(SLOT)
+                .replacement((match, builder) -> TextFormatter.legacyValue(values[Integer.parseInt(match.group(1))]))
+                .build());
     }
 
     /** Faster substitute for {@code String.format("%.1f", value)}. */
@@ -171,11 +196,11 @@ public class SpawnerHologram {
 
         // Compute the text on the calling (region) thread – avoids doing string work
         // inside the entity-thread lambda and keeps the lambda allocation tiny.
-        final String finalText = computeText();
+        final Component finalText = computeText();
 
         Scheduler.runEntityTask(display, () -> {
             if (display.isValid()) {
-                display.setText(finalText);
+                display.text(finalText);
             }
         });
     }
@@ -211,13 +236,13 @@ public class SpawnerHologram {
         } else {
             // Pre-compute text here (region thread) so the entity-thread lambda
             // only needs to call display.setText() – no extra task dispatch.
-            final String finalText = computeText();
+            final Component finalText = computeText();
             Scheduler.runEntityTask(display, () -> {
                 if (!display.isValid()) {
                     textDisplay.set(null);
                     createHologram();
                 } else {
-                    display.setText(finalText);
+                    display.text(finalText);
                 }
             });
         }

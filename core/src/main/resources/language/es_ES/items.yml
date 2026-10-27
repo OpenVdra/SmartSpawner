@@ -1,8 +1,9 @@
-# SmartSpawner – items.yml
-# Spawner item display names and drop item names.
+# SmartSpawner items and holograms
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
+# A mob or material section overrides default key by key. Keys it leaves out come from default.
 
-# Appearance of smart spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 smart_spawner:
   default:
     name: 'Generador de <#5db5f1>{entity}'
@@ -10,20 +11,19 @@ smart_spawner:
     loot_items_empty: '  <#ecf0f1> •  Ninguno'
     lore:
       - ''
-      - ' <#5db5f1> ᴅᴇᴛᴀʟʟᴇ:'
+      - ' <#5db5f1> <smallcaps>Detalle</smallcaps>:'
       - '  <#ecf0f1> • <white>Dar experiencia: <green>{exp}'
       - ''
       - ' <#5db5f1> ʙᴏᴛíɴ:'
       - '{loot_items}'
       - ''
-  # Entity-specific sections override default per key. Unspecified keys use default.
   PIG:
     name: 'Generador de <#ff77b7>{entity}'
     loot_items: '  <#fff0f7> • {amount} {item_name} <#ff8fc7>({chance}%)'
     loot_items_empty: '  <#fff0f7> •  Ninguno'
     lore:
       - ''
-      - ' <#ff77b7> ᴅᴇᴛᴀʟʟᴇ:'
+      - ' <#ff77b7> <smallcaps>Detalle</smallcaps>:'
       - '  <#fff0f7> • <white>Dar experiencia: <#ff8fc7>{exp}'
       - ''
       - ' <#ff77b7> ʙᴏᴛíɴ:'
@@ -35,15 +35,14 @@ smart_spawner:
     loot_items_empty: '  <#fff4cc> •  Ninguno'
     lore:
       - ''
-      - ' <#ffb300> ᴅᴇᴛᴀʟʟᴇ:'
+      - ' <#ffb300> <smallcaps>Detalle</smallcaps>:'
       - '  <#fff4cc> • <white>Dar experiencia: <#ffd54f>{exp}'
       - ''
       - ' <#ffb300> ʙᴏᴛíɴ:'
       - '{loot_items}'
       - ''
 
-# Appearance of item spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 item_spawner:
   default:
     name: 'Generador de <#5db5f1>{entity}'
@@ -51,20 +50,19 @@ item_spawner:
     loot_items_empty: '  <#ecf0f1> •  Ninguno'
     lore:
       - ''
-      - ' <#5db5f1> ᴅᴇᴛᴀʟʟᴇ:'
+      - ' <#5db5f1> <smallcaps>Detalle</smallcaps>:'
       - '  <#ecf0f1> • <white>Dar experiencia: <green>{exp}'
       - ''
       - ' <#5db5f1> ʙᴏᴛíɴ:'
       - '{loot_items}'
       - ''
-  # Material-specific sections override default per key. Unspecified keys use default.
   DIAMOND:
     name: 'Generador de <#00e5ff>{entity}'
     loot_items: '  <#eafdff> • {amount} {item_name} <#00b8d4>({chance}%)'
     loot_items_empty: '  <#eafdff> •  Ninguno'
     lore:
       - ''
-      - ' <#00e5ff> ᴅᴇᴛᴀʟʟᴇ:'
+      - ' <#00e5ff> <smallcaps>Detalle</smallcaps>:'
       - '  <#eafdff> • <white>Dar experiencia: <#00b8d4>{exp}'
       - ''
       - ' <#00e5ff> ʙᴏᴛíɴ:'
@@ -76,17 +74,23 @@ item_spawner:
     loot_items_empty: '  <#f5ecff> •  Ninguno'
     lore:
       - ''
-      - ' <#b66cff> ᴅᴇᴛᴀʟʟᴇ:'
+      - ' <#b66cff> <smallcaps>Detalle</smallcaps>:'
       - '  <#f5ecff> • <white>Dar experiencia: <#d6a5ff>{exp}'
       - ''
       - ' <#b66cff> ʙᴏᴛíɴ:'
       - '{loot_items}'
       - ''
 
-# Appearance of vanilla spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}
-# Delete this section if you don't want to use custom vanilla spawners name and lore
+# {entity} {entity_small}. Delete this section to keep the game's own name for vanilla spawners.
 vanilla_spawner:
   default:
-    name: "Generador de {entity}"
+    name: 'Generador de {entity}'
     lore:
+
+# Lines above each spawner when holograms are on.
+# {entity} {entity_small} {stack_size} {current_exp} {max_exp} {used_slots} {max_slots} {percent_storage_decimal} {percent_storage_rounded} {percent_exp_decimal} {percent_exp_rounded}
+hologram:
+  lines:
+    - '<dark_gray>[<white>{stack_size}<dark_gray>] Generador(es) de <#5db5f1>{entity}'
+    - '<#5db5f1>• <white>Experiencia: <green>{current_exp}<white>/<green>{max_exp}'
+    - '<#5db5f1>• <white>Objetos: <yellow>{used_slots}<white>/<yellow>{max_slots}'

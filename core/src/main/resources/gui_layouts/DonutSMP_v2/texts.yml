@@ -2,106 +2,92 @@
 # Replaces these GUI texts from language/<locale>/gui.yml while this layout is active. Delete a key to use the language text.
 # Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
 
-gui_title_main:
-  single_spawner: '<#545454>{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
-  stacked_spawner: '<#545454>{amount} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀꜱ'
+main:
+  title: '<#545454>{entity_small} <smallcaps>Spawner</smallcaps>'
+  title_stacked: '<#545454>{amount} {entity_small} <smallcaps>Spawners</smallcaps>'
+  storage:
+    name: '<#f97603>sᴘᴀᴡɴᴇʀ sᴛᴏʀᴀɢᴇ'
+    lore:
+      - '{loot_items}'
+    loot_items: '<#f97603>{amount} <white>{item_name}'
+    loot_items_empty: '<#f97603>No items configured'
+  info:
+    name: '<#fce300>{stack_size} {entity_small} <smallcaps>Spawner</smallcaps>'
+    lore:
+      - '<#fce300>● <white>Click to sell items and collect xp'
+      - '<#fce300>Storage:<white> {percent_storage_decimal}% <#fce300>Filled.'
+      - '<#fce300>Exp:<white> {percent_exp_decimal}% <#fce300>Stored.'
+    lore_no_shop:
+      - '<#fce300>● <white>Click to collect xp'
+      - '<#fce300>Storage:<white> {percent_storage_decimal}% <#fce300>Filled.'
+      - '<#fce300>Exp:<white> {percent_exp_decimal}% <#fce300>Stored.'
+    lore_full: ''
+    lore_inactive: ''
+    lore_no_loot: '<#ff3333><smallcaps>No loot configured</smallcaps>'
+  exp:
+    name: '<#7afc00><smallcaps>Collect exp</smallcaps>'
+    lore:
+      - '<#7afc00>{current_exp} <white>XP Points'
 
-spawner_storage_item:
-  name: '<#f97603>sᴘᴀᴡɴᴇʀ sᴛᴏʀᴀɢᴇ'
-  lore:
-    - '{loot_items}'
-  loot_items: '<#f97603>{amount} <white>{item_name}'
-  loot_items_empty: '<#f97603>No items configured'
+storage:
+  title: '<#545454>{amount} {entity_small} <smallcaps>Spawners</smallcaps>'
+  title_single: '<#545454>{amount} {entity_small} <smallcaps>Spawner</smallcaps>'
+  previous_page:
+    name: '<#7afc00><smallcaps>Previous</smallcaps>'
+    lore:
+      - '<white>Click to go back a page'
+  next_page:
+    name: '<#7afc00><smallcaps>Next</smallcaps>'
+    lore:
+      - '<white>Click to go forward a page'
+  sell:
+    name: '<#fc0000><smallcaps>Sell all</smallcaps>'
+    lore:
+      - '<white>Click to sell all mob drops!'
+  sell_and_exp:
+    name: '<#fc0000><smallcaps>Sell</smallcaps> & <smallcaps>Exp</smallcaps>'
+    lore:
+      - '<white>Click to sell items and collect experience!'
+  back:
+    name: '<#fc0000><smallcaps>Return</smallcaps>'
+    lore:
+      - '<white>Click to return to the main menu'
+  take_all:
+    name: '<#fce300><smallcaps>Take all</smallcaps>'
+    lore:
+      - '<#fce300>● <white>Collect loot from the storage'
+  drop_page:
+    name: '<#00f986><smallcaps>Drop loot</smallcaps>'
+    lore:
+      - '<white>Click to drop all the loot on the page'
+  info:
+    name: '<#00f986>{stack_size} {entity_small} <smallcaps>Spawner</smallcaps>'
+    lore:
+      - '{loot_items}'
+      - '<#00f986>({percent_storage_decimal}% filled)'
+      - '<#7afc00>({percent_exp_decimal}% xp stored)'
+    loot_items: '<#00f986>{amount} <white>{item_name}'
+    loot_items_empty: '<#00f986>No items in storage'
 
-spawner_info_item:
-  name: '<#fce300>{stack_size} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
-  lore:
-    - '<#fce300>● <white>Click to sell items and collect xp'
-    - '<#fce300>Storage:<white> {percent_storage_decimal}% <#fce300>Filled.'
-    - '<#fce300>Exp:<white> {percent_exp_decimal}% <#fce300>Stored.'
-  lore_no_shop:
-    - '<#fce300>● <white>Click to collect xp'
-    - '<#fce300>Storage:<white> {percent_storage_decimal}% <#fce300>Filled.'
-    - '<#fce300>Exp:<white> {percent_exp_decimal}% <#fce300>Stored.'
-  lore_full: ''
-  lore_inactive: ''
-  lore_no_loot: '<#ff3333>ɴᴏ ʟᴏᴏᴛ ᴄᴏɴꜰɪɢᴜʀᴇᴅ'
-
-exp_info_item:
-  name: '<#7afc00>ᴄᴏʟʟᴇᴄᴛ ᴇxᴘ'
-  lore:
-    - '<#7afc00>{current_exp} <white>XP Points'
-
-gui_title_sell_confirm: '<#545454>ᴄᴏɴꜰɪʀᴍ ꜱᴇʟʟ'
-
-button_sell_cancel:
-  name: '<#f50001>ᴄᴀɴᴄᴇʟ'
-  lore:
-    - '<white>Click to cancel'
-
-button_sell_confirm:
-  name: '<#01ff00>ᴄᴏɴꜰɪʀᴍ'
-  lore:
-    - '<white>Click to sell all items'
-    - '<gray>(${total_sell_price})'
-
-button_sell_confirm_with_exp:
-  name: '<#01ff00>ᴄᴏɴꜰɪʀᴍ'
-  lore:
-    - '<white>Click to sell all items and collect xp'
-    - '<gray>(${total_sell_price} + {current_exp} xp)'
-
-button_sell_info:
-  name: '<#02e57d>ʟᴏᴏᴛ'
-  lore:
-    - '{loot_items}'
-  loot_items: '<#02e57d>{amount} <white>{item_name}'
-  loot_items_empty: '<#02e57d>No items to sell'
-
-gui_title_storage_single_spawner: '<#545454>{amount} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
-
-gui_title_storage: '<#545454>{amount} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀꜱ'
-
-navigation_button_previous:
-  name: '<#7afc00>ᴘʀᴇᴠɪᴏᴜꜱ'
-  lore:
-    - '<white>Click to go back a page'
-
-navigation_button_next:
-  name: '<#7afc00>ɴᴇxᴛ'
-  lore:
-    - '<white>Click to go forward a page'
-
-sell_button:
-  name: '<#fc0000>ꜱᴇʟʟ ᴀʟʟ'
-  lore:
-    - '<white>Click to sell all mob drops!'
-
-sell_and_exp_button:
-  name: '<#fc0000>ꜱᴇʟʟ & ᴇxᴘ'
-  lore:
-    - '<white>Click to sell items and collect experience!'
-
-return_button:
-  name: '<#fc0000>ʀᴇᴛᴜʀɴ'
-  lore:
-    - '<white>Click to return to the main menu'
-
-take_all_button:
-  name: '<#fce300>ᴛᴀᴋᴇ ᴀʟʟ'
-  lore:
-    - '<#fce300>● <white>Collect loot from the storage'
-
-drop_page_button:
-  name: '<#00f986>ᴅʀᴏᴘ ʟᴏᴏᴛ'
-  lore:
-    - '<white>Click to drop all the loot on the page'
-
-storage_spawner_info_button:
-  name: '<#00f986>{stack_size} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
-  lore:
-    - '{loot_items}'
-    - '<#00f986>({percent_storage_decimal}% filled)'
-    - '<#7afc00>({percent_exp_decimal}% xp stored)'
-  loot_items: '<#00f986>{amount} <white>{item_name}'
-  loot_items_empty: '<#00f986>No items in storage'
+sell_confirm:
+  title: '<#545454><smallcaps>Confirm sell</smallcaps>'
+  cancel:
+    name: '<#f50001><smallcaps>Cancel</smallcaps>'
+    lore:
+      - '<white>Click to cancel'
+  confirm:
+    name: '<#01ff00><smallcaps>Confirm</smallcaps>'
+    lore:
+      - '<white>Click to sell all items'
+      - '<gray>(${total_sell_price})'
+  confirm_with_exp:
+    name: '<#01ff00><smallcaps>Confirm</smallcaps>'
+    lore:
+      - '<white>Click to sell all items and collect xp'
+      - '<gray>(${total_sell_price} + {current_exp} xp)'
+  summary:
+    name: '<#02e57d><smallcaps>Loot</smallcaps>'
+    lore:
+      - '{loot_items}'
+    loot_items: '<#02e57d>{amount} <white>{item_name}'
+    loot_items_empty: '<#02e57d>No items to sell'

@@ -12,6 +12,7 @@ import github.nighter.smartspawner.spawner.gui.synchronization.services.GuiUpdat
 import github.nighter.smartspawner.spawner.gui.synchronization.services.StorageUpdateService;
 import github.nighter.smartspawner.spawner.gui.synchronization.services.TimerUpdateService;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -117,14 +118,14 @@ public class SpawnerGuiViewManager {
     /**
      * Calculates the timer display value for a spawner.
      */
-    public String calculateTimerDisplay(SpawnerData spawner) {
+    public Component calculateTimerDisplay(SpawnerData spawner) {
         return timerUpdateService.calculateTimerDisplay(spawner, null);
     }
 
     /**
      * Calculates the timer display string for a spawner with player context.
      */
-    public String calculateTimerDisplay(SpawnerData spawner, Player player) {
+    public Component calculateTimerDisplay(SpawnerData spawner, Player player) {
         return timerUpdateService.calculateTimerDisplay(spawner, player);
     }
 

@@ -56,7 +56,7 @@ public class SpawnerStackHandler {
     public void handleSpawnerStacking(Player player, Block block, SpawnerData spawnerData, ItemStack itemInHand) {
         // Block stacking while a sell is in progress
         if (spawnerData.isSelling()) {
-            messageService.sendMessage(player, "action_in_progress");
+            messageService.sendMessage(player, "general.action_in_progress");
             return;
         }
 
@@ -109,7 +109,7 @@ public class SpawnerStackHandler {
 
         // Check if either the target or the item is a vanilla spawner
         if (SpawnerTypeChecker.isVanillaSpawner(itemInHand)) {
-            messageService.sendMessage(player, "spawner_different");
+            messageService.sendMessage(player, "stack.different_type");
             return false;
         }
 
@@ -119,13 +119,13 @@ public class SpawnerStackHandler {
 
         // Both must be item spawners or both must be regular spawners
         if (isItemSpawnerItem != isTargetItemSpawner) {
-            messageService.sendMessage(player, "spawner_different");
+            messageService.sendMessage(player, "stack.different_type");
             return false;
         }
 
         String handConfigName = SpawnerTypeChecker.getConfigName(itemInHand);
         if (handConfigName != null && !currentName(handConfigName, targetSpawner).equals(targetSpawner.getConfigName())) {
-            messageService.sendMessage(player, "spawner_different");
+            messageService.sendMessage(player, "stack.different_type");
             return false;
         }
 
@@ -135,7 +135,7 @@ public class SpawnerStackHandler {
             Material targetItemMaterial = targetSpawner.getSpawnedItemMaterial();
 
             if (handItemMaterial == null || targetItemMaterial == null || handItemMaterial != targetItemMaterial) {
-                messageService.sendMessage(player, "spawner_different");
+                messageService.sendMessage(player, "stack.different_type");
                 return false;
             }
         } else {
@@ -143,7 +143,7 @@ public class SpawnerStackHandler {
             // Always check the entity type directly without caching
             Optional<EntityType> handEntityTypeOpt = getEntityTypeFromItem(itemInHand);
             if (!handEntityTypeOpt.isPresent()) {
-                messageService.sendMessage(player, "spawner_different");
+                messageService.sendMessage(player, "stack.different_type");
                 return false;
             }
 
@@ -152,7 +152,7 @@ public class SpawnerStackHandler {
 
             // Verify types match
             if (handEntityType != targetEntityType) {
-                messageService.sendMessage(player, "spawner_different");
+                messageService.sendMessage(player, "stack.different_type");
                 return false;
             }
         }
@@ -163,7 +163,7 @@ public class SpawnerStackHandler {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("max", String.valueOf(maxStackSize));
         if (currentStack >= maxStackSize) {
-            messageService.sendMessage(player, "spawner_stack_full", placeholders);
+            messageService.sendMessage(player, "stack.full", placeholders);
             return false;
         }
 
@@ -177,7 +177,7 @@ public class SpawnerStackHandler {
         }
 
         if (!player.hasPermission("smartspawner.stack")) {
-            messageService.sendMessage(player, "no_permission");
+            messageService.sendMessage(player, "command.no_permission");
             return false;
         }
 
@@ -271,7 +271,7 @@ public class SpawnerStackHandler {
 
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("amount", String.valueOf(newStack));
-        messageService.sendMessage(player, "spawner_stack_success", placeholders);
+        messageService.sendMessage(player, "stack.success", placeholders);
     }
 
     /**

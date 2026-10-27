@@ -4,42 +4,30 @@ import github.nighter.smartspawner.language.cache.LanguageCache;
 import github.nighter.smartspawner.language.file.LocaleData;
 import github.nighter.smartspawner.language.format.NumberFormatter;
 import github.nighter.smartspawner.language.format.PlaceholderFormatter;
-import org.bukkit.configuration.file.YamlConfiguration;
+import github.nighter.smartspawner.language.format.TextFormatter;
 import org.bukkit.entity.EntityType;
 
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
+import java.util.Collections;
 import java.util.function.Supplier;
 
+/** Number formats and mob names from {@code formatting.yml}. */
 public final class FormattingLanguageSection {
     private final Supplier<LocaleData> localeSupplier;
-    private final BooleanSupplier enabled;
     private final LanguageCache cache;
-    private final PlaceholderFormatter placeholderFormatter;
-    private final BiFunction<String, Map<String, String>, String> formatter;
+    private final PlaceholderFormatter formatter;
 
-    public FormattingLanguageSection(
-            Supplier<LocaleData> localeSupplier,
-            BooleanSupplier enabled,
-            LanguageCache cache,
-            PlaceholderFormatter placeholderFormatter,
-            BiFunction<String, Map<String, String>, String> formatter
-    ) {
+    public FormattingLanguageSection(Supplier<LocaleData> localeSupplier, LanguageCache cache,
+                                     PlaceholderFormatter formatter) {
         this.localeSupplier = localeSupplier;
-        this.enabled = enabled;
         this.cache = cache;
-        this.placeholderFormatter = placeholderFormatter;
         this.formatter = formatter;
     }
 
     public String number(double number) {
-        YamlConfiguration config = enabled.getAsBoolean()
-                ? localeSupplier.get().formatting()
-                : new YamlConfiguration();
-        return new NumberFormatter(config).format(number);
+        return new NumberFormatter(localeSupplier.get().formatting()).format(number);
     }
 
+    /** The mob's name as a section-sign string, ready to be a placeholder value. */
     public String mobName(EntityType type) {
         if (type == null || type == EntityType.UNKNOWN) return "Unknown";
 
@@ -47,17 +35,10 @@ public final class FormattingLanguageSection {
         String cached = cache.getCachedEntityName(cacheKey);
         if (cached != null) return cached;
 
-        String result = null;
-        if (enabled.getAsBoolean()) {
-            result = localeSupplier.get().formatting().getString("mob_names." + type.name());
-            if (result != null) {
-                result = formatter.apply(result, null);
-            }
-        }
-
-        if (result == null) {
-            result = placeholderFormatter.formatEnumName(type.name());
-        }
+        String result = localeSupplier.get().formatting().getString("mob_names." + type.name());
+        result = result == null
+                ? formatter.formatEnumName(type.name())
+                : TextFormatter.toLegacy(formatter.apply(result, Collections.emptyMap()));
         cache.putCachedEntityName(cacheKey, result);
         return result;
     }

@@ -1,41 +1,15 @@
 package github.nighter.smartspawner.language.format;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+/** Lore building shared by the item and GUI sections. */
 public final class LanguageComponentFormatter {
-    private static final Pattern HEX_TEMPLATE_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
-    private static final Map<Character, TextColor> LEGACY_COLOR_MAP;
-
-    static {
-        Map<Character, TextColor> colors = new HashMap<>(16);
-        colors.put('0', TextColor.color(0x000000));
-        colors.put('1', TextColor.color(0x0000AA));
-        colors.put('2', TextColor.color(0x00AA00));
-        colors.put('3', TextColor.color(0x00AAAA));
-        colors.put('4', TextColor.color(0xAA0000));
-        colors.put('5', TextColor.color(0xAA00AA));
-        colors.put('6', TextColor.color(0xFFAA00));
-        colors.put('7', TextColor.color(0xAAAAAA));
-        colors.put('8', TextColor.color(0x555555));
-        colors.put('9', TextColor.color(0x5555FF));
-        colors.put('a', TextColor.color(0x55FF55));
-        colors.put('b', TextColor.color(0x55FFFF));
-        colors.put('c', TextColor.color(0xFF5555));
-        colors.put('d', TextColor.color(0xFF55FF));
-        colors.put('e', TextColor.color(0xFFFF55));
-        colors.put('f', TextColor.color(0xFFFFFF));
-        LEGACY_COLOR_MAP = Collections.unmodifiableMap(colors);
-    }
 
     private LanguageComponentFormatter() {
     }
@@ -45,128 +19,53 @@ public final class LanguageComponentFormatter {
     }
 
     /**
-     * Same as the material overload, but the item name is supplied as a ready component. This is how a
-     * caller passes an item's effective name (for example a tipped arrow's potion-specific name) instead
-     * of the plain material translation, so the loot line reads the way the item does in an inventory.
+     * One loot line. {@code {item_name}} is the item's own name as a component, so a vanilla name shows
+     * in each client's language and a tipped arrow reads "Arrow of Strength". It takes the colour in
+     * front of it unless it has its own.
      */
     public static Component translatableLootLine(String template, Component itemName, String amount, String chance) {
         if (template == null) {
-            return noItalic(Component.text(amount + " ")
-                    .append(itemName)
+            return TextFormatter.noItalic(Component.text(amount + " ")
+                    .append(TextFormatter.inert(itemName))
                     .append(Component.text(" (" + chance + ")")));
         }
-
-        String resolved = template
-                .replace("{amount}", amount)
-                .replace("{chance}", chance);
-
-        String placeholder = "{item_name}";
-        int index = resolved.indexOf(placeholder);
-        if (index < 0) {
-            return noItalic(LegacyComponentSerializer.legacySection()
-                    .deserialize(ColorUtil.translateHexColorCodes(resolved)));
-        }
-
-        String beforeRaw = resolved.substring(0, index);
-        String afterRaw = resolved.substring(index + placeholder.length());
-        TextColor itemColor = extractLastColor(beforeRaw, TextColor.color(0xFFFFFF));
-
-        Component before = LegacyComponentSerializer.legacySection()
-                .deserialize(ColorUtil.translateHexColorCodes(beforeRaw));
-        Component after = LegacyComponentSerializer.legacySection()
-                .deserialize(ColorUtil.translateHexColorCodes(afterRaw));
-
-        return noItalic(before
-                .append(itemName.colorIfAbsent(itemColor))
-                .append(after));
+        return TextFormatter.noItalic(TextFormatter.parse(template,
+                Map.of("amount", amount, "chance", chance),
+                Map.of("item_name", itemName)));
     }
 
     /**
-     * Renders a lore template where a single placeholder is replaced by a ready component (an item's
-     * effective name) rather than text. Every other line, and the text around the placeholder, keeps the
-     * legacy colour handling. Used by GUIs that want a readable, correctly translated item name in the
-     * lore instead of a raw config value such as an {@code nbt:} blob.
+     * Lore lines with expansions. A line that holds an expansion's placeholder becomes one line per
+     * component in its list, none when the list is empty. When the placeholder is the whole line the
+     * component is used as it is; otherwise each one is placed into the line's text.
      */
-    public static List<Component> loreWithItemName(
-            List<String> template,
-            Function<String, String> lineFormatter,
-            String placeholder,
-            Component itemName
-    ) {
-        LegacyComponentSerializer legacySerial = LegacyComponentSerializer.legacySection();
+    public static List<Component> lore(List<String> template, Map<String, String> placeholders,
+                                       Map<String, List<Component>> expansions,
+                                       Function<String, Component> lineFormatter) {
         List<Component> result = new ArrayList<>(template.size());
-
         for (String line : template) {
-            int index = line.indexOf(placeholder);
-            if (index < 0) {
-                result.add(noItalic(legacySerial.deserialize(lineFormatter.apply(line))));
+            String expansion = findExpansion(line, expansions);
+            if (expansion == null) {
+                result.add(TextFormatter.noItalic(lineFormatter.apply(line)));
                 continue;
             }
 
-            String beforeRaw = line.substring(0, index);
-            String afterRaw = line.substring(index + placeholder.length());
-            TextColor itemColor = extractLastColor(beforeRaw, TextColor.color(0xFFFFFF));
-
-            Component before = legacySerial.deserialize(lineFormatter.apply(beforeRaw));
-            Component after = legacySerial.deserialize(lineFormatter.apply(afterRaw));
-            result.add(noItalic(before.append(itemName.colorIfAbsent(itemColor)).append(after)));
+            List<Component> items = expansions.get(expansion);
+            boolean wholeLine = line.trim().equals("{" + expansion + "}");
+            for (Component item : items) {
+                result.add(TextFormatter.noItalic(wholeLine
+                        ? item
+                        : TextFormatter.parse(line, placeholders, Map.of(expansion, item))));
+            }
         }
-
         return result;
     }
 
-    public static List<Component> loreComponents(
-            List<String> template,
-            Function<String, String> lineFormatter,
-            Supplier<String> emptyLootLine,
-            List<Component> lootItemComponents
-    ) {
-        LegacyComponentSerializer legacySerial = LegacyComponentSerializer.legacySection();
-        List<Component> result = new ArrayList<>(template.size() + lootItemComponents.size());
-
-        for (String line : template) {
-            if (line.contains("{loot_items}")) {
-                if (lootItemComponents.isEmpty()) {
-                    String emptyRaw = emptyLootLine.get();
-                    result.add(noItalic(legacySerial.deserialize(ColorUtil.translateHexColorCodes(emptyRaw == null ? "" : emptyRaw))));
-                } else {
-                    result.addAll(lootItemComponents);
-                }
-                continue;
-            }
-
-            result.add(noItalic(legacySerial.deserialize(lineFormatter.apply(line))));
+    private static String findExpansion(String line, Map<String, List<Component>> expansions) {
+        if (expansions.isEmpty() || line.indexOf('{') < 0) return null;
+        for (String key : expansions.keySet()) {
+            if (line.contains("{" + key + "}")) return key;
         }
-
-        return result;
-    }
-
-    private static Component noItalic(Component component) {
-        return component.decoration(TextDecoration.ITALIC, false);
-    }
-
-    private static TextColor extractLastColor(String text, TextColor defaultColor) {
-        if (text == null || text.isEmpty()) return defaultColor;
-
-        TextColor last = null;
-        int lastPosition = -1;
-        Matcher matcher = HEX_TEMPLATE_PATTERN.matcher(text);
-        while (matcher.find()) {
-            if (matcher.start() > lastPosition) {
-                lastPosition = matcher.start();
-                last = TextColor.color(Integer.parseInt(matcher.group(1), 16));
-            }
-        }
-
-        for (int i = 0; i < text.length() - 1; i++) {
-            if (text.charAt(i) != '&') continue;
-            TextColor legacyColor = LEGACY_COLOR_MAP.get(Character.toLowerCase(text.charAt(i + 1)));
-            if (legacyColor != null && i > lastPosition) {
-                lastPosition = i;
-                last = legacyColor;
-            }
-        }
-
-        return last != null ? last : defaultColor;
+        return null;
     }
 }

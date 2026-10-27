@@ -1,8 +1,9 @@
-# SmartSpawner – items.yml
-# Spawner item display names and drop item names.
+# SmartSpawner items and holograms
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
+# A mob or material section overrides default key by key. Keys it leaves out come from default.
 
-# Appearance of smart spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 smart_spawner:
   default:
     name: '<#5db5f1>Spawner {entity}'
@@ -16,7 +17,6 @@ smart_spawner:
       - ' <#5db5f1> ᴠậᴛ ᴘʜẩᴍ ʀơɪ:'
       - '{loot_items}'
       - ''
-  # Entity-specific sections override default per key. Unspecified keys use default.
   PIG:
     name: '<#ff77b7>Spawner {entity}'
     loot_items: '  <#fff0f7> • {amount} {item_name} <#ff8fc7>({chance}%)'
@@ -42,8 +42,7 @@ smart_spawner:
       - '{loot_items}'
       - ''
 
-# Appearance of item spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 item_spawner:
   default:
     name: '<#5db5f1>Spawner {entity}'
@@ -57,7 +56,6 @@ item_spawner:
       - ' <#5db5f1> ᴠậᴛ ᴘʜẩᴍ ʀơɪ:'
       - '{loot_items}'
       - ''
-  # Material-specific sections override default per key. Unspecified keys use default.
   DIAMOND:
     name: '<#00e5ff>Spawner {entity}'
     loot_items: '  <#eafdff> • {amount} {item_name} <#00b8d4>({chance}%)'
@@ -83,10 +81,16 @@ item_spawner:
       - '{loot_items}'
       - ''
 
-# Appearance of vanilla spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}
-# Delete this section if you don't want to use custom vanilla spawners name and lore
+# {entity} {entity_small}. Delete this section to keep the game's own name for vanilla spawners.
 vanilla_spawner:
   default:
-    name: "Spawner {entity}"
+    name: 'Spawner {entity}'
     lore:
+
+# Lines above each spawner when holograms are on.
+# {entity} {entity_small} {stack_size} {current_exp} {max_exp} {used_slots} {max_slots} {percent_storage_decimal} {percent_storage_rounded} {percent_exp_decimal} {percent_exp_rounded}
+hologram:
+  lines:
+    - '<dark_gray>[<white>{stack_size}<dark_gray>] <#5db5f1>Spawner {entity}'
+    - '<#5db5f1>• <white>Exp: <green>{current_exp}<white>/<green>{max_exp}'
+    - '<#5db5f1>• <white>Vật phẩm: <yellow>{used_slots}<white>/<yellow>{max_slots}'

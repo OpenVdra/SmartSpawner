@@ -2,6 +2,8 @@ package github.nighter.smartspawner.spawner.gui.storage;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.language.format.TextFormatter;
+import github.nighter.smartspawner.language.section.GuiLanguageSection;
 import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.spawner.config.SpawnerMobHeadTexture;
 import github.nighter.smartspawner.spawner.gui.layout.GuiButton;
@@ -23,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -30,8 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class SpawnerStorageUI {
-    private static final String STORAGE_TITLE = "gui_title_storage";
-    private static final String SINGLE_STORAGE_TITLE = "gui_title_storage_single_spawner";
+    private static final String STORAGE_TITLE = "storage.title";
+    private static final String SINGLE_STORAGE_TITLE = "storage.title_single";
 
     private static final int INVENTORY_SIZE = 54;
 
@@ -55,10 +58,6 @@ public class SpawnerStorageUI {
     // a few KB, so even at this cap the retained memory stays around 1 MB.
     private static final int MAX_SORT_CACHE_SIZE = 300;
     
-    // Cache for title format to avoid repeated language lookups
-    private String cachedStorageTitleFormat = null;
-    private String cachedSingleStorageTitleFormat = null;
-
     // Cleanup task to remove stale entries from caches
     private Task cleanupTask;
 
@@ -86,13 +85,12 @@ public class SpawnerStorageUI {
         pageIndicatorCache.clear();
         sortButtonCache.clear();
         staticButtons.clear();
-        cachedStorageTitleFormat = null;
-        cachedSingleStorageTitleFormat = null;
 
         // Reinitialize static buttons
         initializeStaticButtons();
     }
 
+    /** Builds the server-language static buttons up front; other languages are built on first use. */
     private void initializeStaticButtons() {
         GuiLayout layout = layoutConfig.getCurrentStorageLayout();
 
@@ -100,38 +98,23 @@ public class SpawnerStorageUI {
         for (GuiButton button : layout.getAllButtons().values()) {
             String action = getAnyActionFromButton(button);
             if (action == null) continue;
-
-            switch (action) {
-                case "return_main":
-                    getStaticButton("return", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("return_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("return_button.lore"));
-                    });
-                    break;
-                case "take_all":
-                    getStaticButton("takeAll", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("take_all_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("take_all_button.lore"));
-                    });
-                    break;
-                case "sort_items":
-                    // Sort button is created dynamically (material stored for later)
-                    break;
-                case "drop_page":
-                    getStaticButton("dropPage", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("drop_page_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("drop_page_button.lore"));
-                    });
-                    break;
-                case "open_filter":
-                    getStaticButton("itemFilter", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("item_filter_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("item_filter_button.lore"));
-                    });
-                    break;
-                // Note: Sell buttons are created dynamically to show current total sell price
+            String textKey = staticButtonTextKey(action);
+            if (textKey != null) {
+                getStaticButton(null, textKey, button);
             }
+            // Note: Sort and sell buttons are created dynamically to show current values
         }
+    }
+
+    /** The gui.yml button for an action whose item never changes, or null. */
+    private static String staticButtonTextKey(String action) {
+        return switch (action) {
+            case "return_main" -> "storage.back";
+            case "take_all" -> "storage.take_all";
+            case "drop_page" -> "storage.drop_page";
+            case "open_filter" -> "storage.filter";
+            default -> null;
+        };
     }
 
     /**
@@ -169,41 +152,34 @@ public class SpawnerStorageUI {
      * Uses cached title format pattern for performance.
      * Optimized to only compute entity placeholders if they're used in the title.
      *
+     * @param viewer The player the title is for
      * @param spawner The spawner data
      * @param page Current page number
      * @param totalPages Total number of pages
      * @return Formatted title with page information
      */
-    public String getStorageTitle(SpawnerData spawner, int page, int totalPages) {
-        String titleKey = STORAGE_TITLE;
-        String titleFormat;
-        if (spawner.getStackSize() == 1 && languageManager.gui().contains(SINGLE_STORAGE_TITLE)) {
-            titleKey = SINGLE_STORAGE_TITLE;
-            if (cachedSingleStorageTitleFormat == null) {
-                cachedSingleStorageTitleFormat = languageManager.getGuiTitle(titleKey);
-            }
-            titleFormat = cachedSingleStorageTitleFormat;
-        } else {
-            if (cachedStorageTitleFormat == null) {
-                cachedStorageTitleFormat = languageManager.getGuiTitle(titleKey);
-            }
-            titleFormat = cachedStorageTitleFormat;
-        }
-        
+    public Component storageTitle(Player viewer, SpawnerData spawner, int page, int totalPages) {
+        GuiLanguageSection gui = languageManager.gui(viewer);
+        String titleKey = spawner.getStackSize() == 1 && gui.contains(SINGLE_STORAGE_TITLE)
+                ? SINGLE_STORAGE_TITLE
+                : STORAGE_TITLE;
+        String titleFormat = gui.raw(titleKey);
+
         // Build base placeholders (always present)
         Map<String, String> placeholders = new HashMap<>(4);
         placeholders.put("current_page", String.valueOf(page));
         placeholders.put("total_pages", String.valueOf(totalPages));
 
         // OPTIMIZATION: Only compute entity placeholders if they exist in the title format
-        if (titleFormat.contains("{entity}") || titleFormat.contains("{ᴇɴᴛɪᴛʏ}")) {
+        boolean smallEntity = titleFormat.contains("{ᴇɴᴛɪᴛʏ}") || titleFormat.contains("{entity_small}");
+        if (titleFormat.contains("{entity}") || smallEntity) {
             String entityName = spawner.getDisplayName();
 
             if (titleFormat.contains("{entity}")) {
                 placeholders.put("entity", entityName);
             }
-            if (titleFormat.contains("{ᴇɴᴛɪᴛʏ}")) {
-                placeholders.put("ᴇɴᴛɪᴛʏ", languageManager.getSmallCaps(entityName));
+            if (smallEntity) {
+                placeholders.put("entity_small", languageManager.getSmallCaps(entityName));
             }
         }
 
@@ -212,7 +188,12 @@ public class SpawnerStorageUI {
             placeholders.put("amount", String.valueOf(spawner.getStackSize()));
         }
 
-        return languageManager.getGuiTitle(titleKey, placeholders);
+        return gui.title(titleKey, placeholders);
+    }
+
+    /** {@link #storageTitle} for {@code InventoryView.setTitle}, which only takes a string. */
+    public String getStorageTitle(Player viewer, SpawnerData spawner, int page, int totalPages) {
+        return TextFormatter.toLegacy(storageTitle(viewer, spawner, page, totalPages));
     }
 
     public Inventory createStorageInventory(Player player, SpawnerData spawner, int page, int totalPages) {
@@ -230,15 +211,27 @@ public class SpawnerStorageUI {
         Inventory pageInv = Bukkit.createInventory(
                 new StoragePageHolder(spawner, page, totalPages, layout),
                 INVENTORY_SIZE,
-                getStorageTitle(spawner, page, totalPages)
+                storageTitle(player, spawner, page, totalPages)
         );
 
         // Populate the inventory
-        updateDisplay(pageInv, spawner, page, totalPages);
+        updateDisplay(player, pageInv, spawner, page, totalPages);
         return pageInv;
     }
 
+    /** Repaints for the inventory's viewer; the buttons are in that player's language. */
     public void updateDisplay(Inventory inventory, SpawnerData spawner, int page, int totalPages) {
+        Player viewer = null;
+        for (HumanEntity human : inventory.getViewers()) {
+            if (human instanceof Player player) {
+                viewer = player;
+                break;
+            }
+        }
+        updateDisplay(viewer, inventory, spawner, page, totalPages);
+    }
+
+    private void updateDisplay(Player viewer, Inventory inventory, SpawnerData spawner, int page, int totalPages) {
         if (!spawner.getInventoryLock().tryLock()) {
             return;
         }
@@ -268,7 +261,7 @@ public class SpawnerStorageUI {
         addPageItems(updates, slotsToEmpty, spawner, page);
 
         // Add navigation buttons based on layout
-        addNavigationButtons(updates, spawner, page, totalPages, layout);
+        addNavigationButtons(viewer, updates, spawner, page, totalPages, layout);
 
         // Apply all updates in a batch
         for (int slot : slotsToEmpty) {
@@ -318,11 +311,13 @@ public class SpawnerStorageUI {
         }
     }
 
-    private void addNavigationButtons(Map<Integer, ItemStack> updates, SpawnerData spawner, int page,
+    private void addNavigationButtons(Player viewer, Map<Integer, ItemStack> updates, SpawnerData spawner, int page,
                                       int totalPages, GuiLayout layout) {
         if (totalPages == -1) {
             totalPages = calculateTotalPages(spawner);
         }
+        GuiLanguageSection gui = languageManager.gui(viewer);
+        String localeKey = languageManager.localeKey(viewer);
 
         // OPTIMIZATION: Iterate through all buttons and add items based on action
         for (GuiButton button : layout.getAllButtons().values()) {
@@ -337,7 +332,7 @@ public class SpawnerStorageUI {
 
             // Handle info_button (spawner mob head with loot info)
             if (button.isInfoButton()) {
-                updates.put(button.getSlot(), createStorageSpawnerInfoButton(spawner, button));
+                updates.put(button.getSlot(), createStorageSpawnerInfoButton(gui, spawner, button));
                 continue;
             }
 
@@ -349,53 +344,35 @@ public class SpawnerStorageUI {
             switch (action) {
                 case "previous_page":
                     if (page > 1) {
-                        String cacheKey = "prev-" + (page - 1) + "-" + button.getCustomTexture();
+                        String cacheKey = "prev-" + (page - 1) + "-" + button.getCustomTexture() + "-" + localeKey;
                         item = navigationButtonCache.computeIfAbsent(
-                                cacheKey, k -> createNavigationButton("previous", page - 1, button));
+                                cacheKey, k -> createNavigationButton(gui, "previous", page - 1, button));
                     }
                     break;
                 case "next_page":
                     if (page < totalPages) {
-                        String cacheKey = "next-" + (page + 1) + "-" + button.getCustomTexture();
+                        String cacheKey = "next-" + (page + 1) + "-" + button.getCustomTexture() + "-" + localeKey;
                         item = navigationButtonCache.computeIfAbsent(
-                                cacheKey, k -> createNavigationButton("next", page + 1, button));
+                                cacheKey, k -> createNavigationButton(gui, "next", page + 1, button));
                     }
                     break;
                 case "take_all":
-                    item = getStaticButton("takeAll", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("take_all_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("take_all_button.lore"));
-                    });
+                case "drop_page":
+                case "open_filter":
+                case "return_main":
+                    item = getStaticButton(viewer, staticButtonTextKey(action), button);
                     break;
                 case "sort_items":
-                    item = createSortButton(spawner, button);
-                    break;
-                case "drop_page":
-                    item = getStaticButton("dropPage", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("drop_page_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("drop_page_button.lore"));
-                    });
-                    break;
-                case "open_filter":
-                    item = getStaticButton("itemFilter", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("item_filter_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("item_filter_button.lore"));
-                    });
-                    break;
-                case "return_main":
-                    item = getStaticButton("return", button, meta -> {
-                        meta.setDisplayName(languageManager.getGuiItemName("return_button.name"));
-                        meta.setLore(languageManager.getGuiItemLoreAsList("return_button.lore"));
-                    });
+                    item = createSortButton(gui, localeKey, spawner, button);
                     break;
                 case "sell_all":
-                    item = createSellButton(spawner, button);
+                    item = createPriceButton(gui, "storage.sell", spawner, button);
                     break;
                 case "sell_and_exp":
-                    item = createSellAndExpButton(spawner, button);
+                    item = createPriceButton(gui, "storage.sell_and_exp", spawner, button);
                     break;
                 case "collect_exp":
-                    item = createCollectExpButton(spawner, button);
+                    item = createCollectExpButton(gui, spawner, button);
                     break;
             }
 
@@ -448,42 +425,35 @@ public class SpawnerStorageUI {
         return item;
     }
 
-    private ItemStack getStaticButton(String action, GuiButton button, Consumer<ItemMeta> metaModifier) {
-        String cacheKey = action + "|" + button.getMaterial() + "|" + button.getCustomTexture();
-        return staticButtons.computeIfAbsent(
-                cacheKey, ignored -> createButtonWithCustomTexture(button, metaModifier)).clone();
+    /** A button whose item never changes, cached per button look and viewer language. */
+    private ItemStack getStaticButton(Player viewer, String textKey, GuiButton button) {
+        String cacheKey = textKey + "|" + button.getMaterial() + "|" + button.getCustomTexture()
+                + "|" + languageManager.localeKey(viewer);
+        GuiLanguageSection gui = languageManager.gui(viewer);
+        return staticButtons.computeIfAbsent(cacheKey, ignored -> createButtonWithCustomTexture(button, meta -> {
+            meta.displayName(gui.name(textKey + ".name"));
+            meta.lore(gui.lore(textKey + ".lore"));
+        })).clone();
     }
 
-    private ItemStack createNavigationButton(String type, int targetPage, GuiButton button) {
+    private ItemStack createNavigationButton(GuiLanguageSection gui, String type, int targetPage, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("target_page", String.valueOf(targetPage));
 
-        String buttonKey = type.equals("previous") ? "navigation_button_previous" : "navigation_button_next";
-        String buttonName = languageManager.getGuiItemName(buttonKey + ".name", placeholders);
-        String[] buttonLore = languageManager.getGuiItemLore(buttonKey + ".lore", placeholders);
+        String buttonKey = type.equals("previous") ? "storage.previous_page" : "storage.next_page";
+        Component buttonName = gui.name(buttonKey + ".name", placeholders);
+        List<Component> buttonLore = gui.lore(buttonKey + ".lore", placeholders);
 
         return createButtonWithCustomTexture(button, meta -> {
-            meta.setDisplayName(buttonName);
-            if (buttonLore.length > 0) {
-                meta.setLore(Arrays.asList(buttonLore));
+            meta.displayName(buttonName);
+            if (!buttonLore.isEmpty()) {
+                meta.lore(buttonLore);
             }
         });
     }
 
-    private ItemStack createSellButton(SpawnerData spawner, GuiButton button) {
-        Map<String, String> placeholders = new HashMap<>();
-        if (spawner.isSellValueDirty()) {
-            spawner.recalculateSellValue();
-        }
-        placeholders.put("total_sell_price", languageManager.formatNumber(spawner.getAccumulatedSellValue()));
-        
-        return createButtonWithCustomTexture(button, meta -> {
-            meta.setDisplayName(languageManager.getGuiItemName("sell_button.name", placeholders));
-            meta.setLore(languageManager.getGuiItemLoreAsList("sell_button.lore", placeholders));
-        });
-    }
-
-    private ItemStack createSellAndExpButton(SpawnerData spawner, GuiButton button) {
+    /** The sell buttons, which show the current total sell price. */
+    private ItemStack createPriceButton(GuiLanguageSection gui, String textKey, SpawnerData spawner, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
         if (spawner.isSellValueDirty()) {
             spawner.recalculateSellValue();
@@ -491,22 +461,22 @@ public class SpawnerStorageUI {
         placeholders.put("total_sell_price", languageManager.formatNumber(spawner.getAccumulatedSellValue()));
 
         return createButtonWithCustomTexture(button, meta -> {
-            meta.setDisplayName(languageManager.getGuiItemName("sell_and_exp_button.name", placeholders));
-            meta.setLore(languageManager.getGuiItemLoreAsList("sell_and_exp_button.lore", placeholders));
+            meta.displayName(gui.name(textKey + ".name", placeholders));
+            meta.lore(gui.lore(textKey + ".lore", placeholders));
         });
     }
 
-    private ItemStack createCollectExpButton(SpawnerData spawner, GuiButton button) {
+    private ItemStack createCollectExpButton(GuiLanguageSection gui, SpawnerData spawner, GuiButton button) {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("current_exp", languageManager.formatNumber(spawner.getSpawnerExp()));
 
         return createButtonWithCustomTexture(button, meta -> {
-            meta.setDisplayName(languageManager.getGuiItemName("collect_exp_button.name", placeholders));
-            meta.setLore(languageManager.getGuiItemLoreAsList("collect_exp_button.lore", placeholders));
+            meta.displayName(gui.name("storage.collect_exp.name", placeholders));
+            meta.lore(gui.lore("storage.collect_exp.lore", placeholders));
         });
     }
 
-    private ItemStack createSortButton(SpawnerData spawner, GuiButton button) {
+    private ItemStack createSortButton(GuiLanguageSection gui, String localeKey, SpawnerData spawner, GuiButton button) {
         Material currentSort = spawner.getPreferredSortItem();
 
         // Cache key = loot identity (the available_items list) + selected sort + button look.
@@ -517,55 +487,46 @@ public class SpawnerStorageUI {
         String cacheKey = lootKey
                 + "|" + (currentSort == null ? "none" : currentSort.name())
                 + "|" + button.getMaterial()
-                + "|" + button.getCustomTexture();
+                + "|" + button.getCustomTexture()
+                + "|" + localeKey;
 
         return sortButtonCache.computeIfAbsent(
-                cacheKey, ignored -> buildSortButton(spawner, button, currentSort)).clone();
+                cacheKey, ignored -> buildSortButton(gui, spawner, button, currentSort)).clone();
     }
 
-    private ItemStack buildSortButton(SpawnerData spawner, GuiButton button, Material currentSort) {
-        Map<String, String> placeholders = new HashMap<>();
-
-        String selectedItemFormat = languageManager.getGuiItemName("sort_items_button.selected_item");
-        String unselectedItemFormat = languageManager.getGuiItemName("sort_items_button.unselected_item");
-        String noneText = languageManager.getGuiItemName("sort_items_button.no_item");
-
-        StringBuilder availableItems = new StringBuilder();
+    private ItemStack buildSortButton(GuiLanguageSection gui, SpawnerData spawner, GuiButton button, Material currentSort) {
+        // One lore line per loot item, each from the selected or unselected template.
+        List<Component> availableItems = new ArrayList<>();
         if (spawner.getLootConfig() != null && spawner.getLootConfig().getAllItems() != null) {
-            boolean first = true;
             var sortedLoot = spawner.getLootConfig().getAllItems().stream()
                 .sorted(Comparator.comparing(item -> item.material().name()))
                 .toList();
 
             for (var lootItem : sortedLoot) {
-                if (!first) availableItems.append("\n");
                 String itemName = languageManager.getVanillaItemName(lootItem.material());
-                String format = currentSort == lootItem.material() ? selectedItemFormat : unselectedItemFormat;
-                availableItems.append(format.replace("{item_name}", itemName));
-                first = false;
+                String format = currentSort == lootItem.material() ? "storage.sort.selected_item" : "storage.sort.unselected_item";
+                availableItems.add(gui.name(format, Map.of("item_name", itemName)));
             }
         }
 
         if (availableItems.isEmpty()) {
-            availableItems.append(noneText);
+            availableItems.add(gui.name("storage.sort.no_item"));
         }
 
-        placeholders.put("available_items", availableItems.toString());
-
         return createButtonWithCustomTexture(button, meta -> {
-            meta.setDisplayName(languageManager.getGuiItemName("sort_items_button.name", placeholders));
-            meta.setLore(languageManager.getGuiItemLoreWithMultilinePlaceholders("sort_items_button.lore", placeholders));
+            meta.displayName(gui.name("storage.sort.name"));
+            meta.lore(gui.lore("storage.sort.lore", Map.of(), Map.of("available_items", availableItems)));
         });
     }
 
-    private ItemStack createStorageSpawnerInfoButton(SpawnerData spawner, GuiButton button) {
+    private ItemStack createStorageSpawnerInfoButton(GuiLanguageSection gui, SpawnerData spawner, GuiButton button) {
         Map<ItemSignature, Long> storedItems = spawner.getVirtualInventory().getConsolidatedItems();
-        List<Component> lootComponents = buildStorageInfoLootComponents(spawner, storedItems);
+        List<Component> lootComponents = buildStorageInfoLootComponents(gui, spawner, storedItems);
 
         Map<String, String> placeholders = new HashMap<>();
         String entityName = spawner.getDisplayName();
         placeholders.put("entity", entityName);
-        placeholders.put("ᴇɴᴛɪᴛʏ", languageManager.getSmallCaps(entityName));
+        placeholders.put("entity_small", languageManager.getSmallCaps(entityName));
         placeholders.put("stack_size", String.valueOf(spawner.getStackSize()));
 
         int currentItems = spawner.getVirtualInventory().getUsedSlots();
@@ -581,10 +542,10 @@ public class SpawnerStorageUI {
         placeholders.put("percent_exp_rounded", String.valueOf((int) Math.round(percentExpDecimal)));
 
         Consumer<ItemMeta> metaModifier = meta -> {
-            meta.setDisplayName(languageManager.getGuiItemName("storage_spawner_info_button.name", placeholders));
-            List<Component> lore = languageManager.buildGuiLoreAsComponents(
-                    "storage_spawner_info_button.lore", placeholders, lootComponents,
-                    "storage_spawner_info_button.loot_items_empty");
+            meta.displayName(gui.name("storage.info.name", placeholders));
+            List<Component> lore = gui.loreComponents(
+                    "storage.info.lore", placeholders, lootComponents,
+                    "storage.info.loot_items_empty");
             if (!lore.isEmpty()) {
                 meta.lore(lore);
             }
@@ -613,7 +574,7 @@ public class SpawnerStorageUI {
         return item;
     }
 
-    private List<Component> buildStorageInfoLootComponents(SpawnerData spawner,
+    private List<Component> buildStorageInfoLootComponents(GuiLanguageSection gui, SpawnerData spawner,
             Map<ItemSignature, Long> storedItems) {
         Map<Material, Long> materialAmountMap = new HashMap<>();
         for (Map.Entry<ItemSignature, Long> entry : storedItems.entrySet()) {
@@ -636,8 +597,8 @@ public class SpawnerStorageUI {
                 long amount = materialAmountMap.getOrDefault(mat, 0L);
                 String formattedAmount = languageManager.formatNumber(amount);
                 String chance = String.format("%.1f", lootItem.chance()) + "%";
-                components.add(languageManager.buildTranslatableGuiLootLine(
-                        "storage_spawner_info_button.loot_items", mat, formattedAmount, chance));
+                components.add(gui.translatableLootLine(
+                        "storage.info.loot_items", mat, formattedAmount, chance));
             }
         } else {
             List<Map.Entry<ItemSignature, Long>> sortedItems = new ArrayList<>(storedItems.entrySet());
@@ -646,8 +607,8 @@ public class SpawnerStorageUI {
                 Material mat = entry.getKey().getMaterial();
                 long amount = entry.getValue();
                 String formattedAmount = languageManager.formatNumber(amount);
-                components.add(languageManager.buildTranslatableGuiLootLine(
-                        "storage_spawner_info_button.loot_items", mat, formattedAmount, ""));
+                components.add(gui.translatableLootLine(
+                        "storage.info.loot_items", mat, formattedAmount, ""));
             }
         }
         return components;
@@ -697,8 +658,6 @@ public class SpawnerStorageUI {
         navigationButtonCache.clear();
         pageIndicatorCache.clear();
         sortButtonCache.clear();
-        cachedStorageTitleFormat = null;
-        cachedSingleStorageTitleFormat = null;
 
         // Cancel scheduled tasks
         cancelTasks();

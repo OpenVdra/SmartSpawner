@@ -23,8 +23,8 @@ import java.util.logging.Level;
  */
 public class SpawnEggHandler {
     private static final String PERMISSION_CHANGE_TYPE = "smartspawner.changetype";
-    private static final String NO_PERMISSION_KEY = "no_permission";
-    private static final String CHANGED_MESSAGE_KEY = "entity_changed";
+    private static final String NO_PERMISSION_KEY = "command.no_permission";
+    private static final String CHANGED_MESSAGE_KEY = "spawner.entity_changed";
     private static final String SPAWN_EGG_SUFFIX = "_SPAWN_EGG";
 
     private final SmartSpawner plugin;

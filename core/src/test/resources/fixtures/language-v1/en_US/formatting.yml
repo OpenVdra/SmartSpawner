@@ -1,0 +1,104 @@
+# SmartSpawner – formatting.yml
+# Number formatting and mob display names used throughout the plugin.
+
+# ──────────────────────────────────────────────────────
+#                 Number Formatting
+# ──────────────────────────────────────────────────────
+# Controls how large numbers are displayed in-game
+format_number:
+  thousand: "{s}K"    # Example: 5000 → 5K
+  million: "{s}M"     # Example: 2000000 → 2M
+  billion: "{s}B"     # Example: 1500000000 → 1.5B
+  trillion: "{s}T"    # Example: 1000000000000 → 1T
+  default: "{s}"      # Fallback format when no other rule matches
+
+# ──────────────────────────────────────────────────────
+#                 Mob Display Names
+# ──────────────────────────────────────────────────────
+# Defines how mob names appear in spawner GUIs, items, holograms and messages
+mob_names:
+  # Passive Mobs
+  ALLAY: "Allay"
+  ARMADILLO: "Armadillo"
+  AXOLOTL: "Axolotl"
+  BAT: "Bat"
+  BEE: "Bee"
+  CAMEL: "Camel"
+  CAT: "Cat"
+  CHICKEN: "Chicken"
+  COD: "Cod"
+  COW: "Cow"
+  DOLPHIN: "Dolphin"
+  DONKEY: "Donkey"
+  FOX: "Fox"
+  FROG: "Frog"
+  GLOW_SQUID: "Glow Squid"
+  GOAT: "Goat"
+  HORSE: "Horse"
+  IRON_GOLEM: "Iron Golem"
+  COPPER_GOLEM: "Copper Golem"
+  LLAMA: "Llama"
+  MOOSHROOM: "Mooshroom"
+  MULE: "Mule"
+  OCELOT: "Ocelot"
+  PANDA: "Panda"
+  PARROT: "Parrot"
+  PIG: "Pig"
+  POLAR_BEAR: "Polar Bear"
+  PUFFERFISH: "Pufferfish"
+  RABBIT: "Rabbit"
+  SALMON: "Salmon"
+  SHEEP: "Sheep"
+  SNIFFER: "Sniffer"
+  SNOW_GOLEM: "Snow Golem"
+  SQUID: "Squid"
+  STRIDER: "Strider"
+  SULFUR_CUBE: "Sulfur Cube"
+  TADPOLE: "Tadpole"
+  TRADER_LLAMA: "Trader Llama"
+  TROPICAL_FISH: "Tropical Fish"
+  TURTLE: "Turtle"
+  VILLAGER: "Villager"
+  WANDERING_TRADER: "Wandering Trader"
+  WOLF: "Wolf"
+
+  # Hostile Mobs
+  BLAZE: "Blaze"
+  BOGGED: "Bogged"
+  BREEZE: "Breeze"
+  CAVE_SPIDER: "Cave Spider"
+  CREAKING: "Creaking"
+  CREEPER: "Creeper"
+  DROWNED: "Drowned"
+  ELDER_GUARDIAN: "Elder Guardian"
+  ENDERMAN: "Enderman"
+  ENDERMITE: "Endermite"
+  EVOKER: "Evoker"
+  GHAST: "Ghast"
+  HAPPY_GHAST: "Happy Ghast"
+  GUARDIAN: "Guardian"
+  HOGLIN: "Hoglin"
+  HUSK: "Husk"
+  MAGMA_CUBE: "Magma Cube"
+  PHANTOM: "Phantom"
+  PIGLIN: "Piglin"
+  PIGLIN_BRUTE: "Piglin Brute"
+  PILLAGER: "Pillager"
+  RAVAGER: "Ravager"
+  SHULKER: "Shulker"
+  SILVERFISH: "Silverfish"
+  SKELETON: "Skeleton"
+  SKELETON_HORSE: "Skeleton Horse"
+  SLIME: "Slime"
+  SPIDER: "Spider"
+  STRAY: "Stray"
+  VEX: "Vex"
+  VINDICATOR: "Vindicator"
+  WARDEN: "Warden"
+  WITCH: "Witch"
+  WITHER_SKELETON: "Wither Skeleton"
+  ZOGLIN: "Zoglin"
+  ZOMBIE: "Zombie"
+  ZOMBIE_HORSE: "Zombie Horse"
+  ZOMBIE_VILLAGER: "Zombie Villager"
+  ZOMBIFIED_PIGLIN: "Zombified Piglin"

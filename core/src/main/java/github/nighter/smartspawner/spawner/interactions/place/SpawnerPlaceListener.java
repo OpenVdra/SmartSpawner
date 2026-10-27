@@ -307,7 +307,7 @@ public class SpawnerPlaceListener implements Listener {
             showActivationParticles(block);
         }
 
-        messageService.sendMessage(player, "spawner_activated");
+        messageService.sendMessage(player, "spawner.activated");
     }
 
     private void createSmartItemSpawner(Block block, Player player, Material itemMaterial, String configName, int stackSize) {
@@ -339,7 +339,7 @@ public class SpawnerPlaceListener implements Listener {
             showActivationParticles(block);
         }
 
-        messageService.sendMessage(player, "spawner_activated");
+        messageService.sendMessage(player, "spawner.activated");
     }
 
     private void showActivationParticles(Block block) {

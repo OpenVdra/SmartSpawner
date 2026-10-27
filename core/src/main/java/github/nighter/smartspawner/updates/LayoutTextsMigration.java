@@ -1,6 +1,5 @@
 package github.nighter.smartspawner.updates;
 
-import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.format.TextFormatter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -52,21 +52,18 @@ public final class LayoutTextsMigration {
 
     private LayoutTextsMigration() {}
 
-    /** Call before {@code LanguageManager} and {@code GuiLayoutConfig} read the config. */
-    public static void run(SmartSpawner plugin) {
-        if (migrate(plugin.getDataFolder(), plugin::getResource, LocalDate.now(), plugin.getLogger())) {
-            // config.yml was rewritten on disk, so Bukkit's cached copy is stale.
-            plugin.reloadConfig();
-        }
+    static boolean migrate(File dataFolder, Function<String, InputStream> resources, LocalDate today, Logger log) {
+        return migrate(dataFolder, resources, LanguageBackup.once(dataFolder, today, log), log);
     }
 
     /**
      * Takes the data folder and a resource lookup rather than the plugin so it can be exercised without
-     * a server.
+     * a server. Runs after {@link LanguageRestructure}, so the old folders are already in the new layout.
      *
      * @return true when {@code config.yml} was rewritten and the caller must reload it
      */
-    static boolean migrate(File dataFolder, Function<String, InputStream> resources, LocalDate today, Logger log) {
+    static boolean migrate(File dataFolder, Function<String, InputStream> resources, Supplier<String> backupOnce,
+                           Logger log) {
         File languageDir = new File(dataFolder, "language");
         File configFile = new File(dataFolder, "config.yml");
         YamlConfiguration config = configFile.isFile() ? YamlConfiguration.loadConfiguration(configFile) : null;
@@ -79,7 +76,7 @@ public final class LayoutTextsMigration {
                 .toList();
         if (folders.isEmpty() && !activeIsLegacy) return false;
 
-        String backup = LanguageBackup.create(dataFolder, today, log);
+        String backup = backupOnce.get();
         if (backup == null) {
             log.warning("Left the DonutSMP language folders as they are, because the backup failed.");
             return false;
@@ -192,12 +189,20 @@ public final class LayoutTextsMigration {
     }
 
     /**
-     * Equal once rendered. Shipped text moved from legacy codes to MiniMessage, so an owner's unedited
-     * {@code &a} value must still match the shipped {@code <green>} one.
+     * Placeholders whose old and new names render the same. Filled in for the comparison, because a
+     * placeholder left unresolved shows its name, and the names differ.
+     */
+    private static final Map<String, String> ALIASED_PLACEHOLDERS = Map.of("entity_small", "\u0000entity");
+
+    /**
+     * Equal once rendered. Shipped text moved from legacy codes to MiniMessage, and from
+     * {@code {ᴇɴᴛɪᴛʏ}} to {@code {entity_small}}, so an owner's unedited {@code &a {ᴇɴᴛɪᴛʏ}} value must
+     * still match the shipped {@code <green>{entity_small}} one.
      */
     static boolean sameText(Object a, Object b) {
         if (a instanceof String first && b instanceof String second) {
-            return first.equals(second) || TextFormatter.toLegacy(first).equals(TextFormatter.toLegacy(second));
+            return first.equals(second) || TextFormatter.toLegacy(first, ALIASED_PLACEHOLDERS)
+                    .equals(TextFormatter.toLegacy(second, ALIASED_PLACEHOLDERS));
         }
         if (a instanceof List<?> first && b instanceof List<?> second) {
             if (first.size() != second.size()) return false;

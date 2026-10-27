@@ -155,7 +155,7 @@ public class GiveSubCommand extends BaseSubCommand {
     private int giveByName(CommandContext<CommandSourceStack> context, String name, int amount) {
         SpawnerNames.Resolved resolved = SpawnerNames.resolve(plugin, name);
         if (resolved == null) {
-            return fail(context, "give.invalid_mob_type");
+            return fail(context, "command.give.invalid_mob_type");
         }
         if (resolved.mob() != null) {
             return giveMob(context, resolved.mob(), amount);
@@ -168,7 +168,7 @@ public class GiveSubCommand extends BaseSubCommand {
         try {
             entityType = EntityType.valueOf(mobType.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            return fail(context, "give.invalid_mob_type");
+            return fail(context, "command.give.invalid_mob_type");
         }
         return give(context, spawnerItemFactory.createVanillaSpawnerItem(entityType, amount),
                 plugin.getLanguageManager().getFormattedMobName(entityType), amount);
@@ -178,7 +178,7 @@ public class GiveSubCommand extends BaseSubCommand {
         String keyword = StringArgumentType.getString(context, "spawner").toLowerCase(Locale.ROOT);
         String[] parts = StringArgumentType.getString(context, "legacy").trim().split(" +");
         if (parts.length > 2 || !keyword.endsWith("_spawner") || !SpawnerNames.RESERVED.contains(keyword)) {
-            return fail(context, "give.invalid_mob_type");
+            return fail(context, "command.give.invalid_mob_type");
         }
 
         int amount = 1;
@@ -189,7 +189,7 @@ public class GiveSubCommand extends BaseSubCommand {
                 amount = 0;
             }
             if (amount < 1 || amount > MAX_AMOUNT) {
-                return fail(context, "give.invalid_mob_type");
+                return fail(context, "command.give.invalid_mob_type");
             }
         }
 
@@ -199,11 +199,11 @@ public class GiveSubCommand extends BaseSubCommand {
                 return giveVanilla(context, name, amount);
             case "item_spawner": {
                 var item = plugin.getItemSpawnerSettingsConfig().resolve(name);
-                return item == null ? fail(context, "give.invalid_item_spawner") : giveItem(context, item, amount);
+                return item == null ? fail(context, "command.give.invalid_item_spawner") : giveItem(context, item, amount);
             }
             default: {
                 var mob = plugin.getSpawnerSettingsConfig().resolve(name);
-                return mob == null ? fail(context, "give.invalid_mob_type") : giveMob(context, mob, amount);
+                return mob == null ? fail(context, "command.give.invalid_mob_type") : giveMob(context, mob, amount);
             }
         }
     }
@@ -234,7 +234,7 @@ public class GiveSubCommand extends BaseSubCommand {
             var playerSelector = context.getArgument("player", PlayerSelectorArgumentResolver.class);
             List<Player> players = playerSelector.resolve(context.getSource());
             if (players.isEmpty()) {
-                plugin.getMessageService().sendMessage(sender, "give.player_not_found");
+                plugin.getMessageService().sendMessage(sender, "command.give.player_not_found");
                 return 0;
             }
             Player target = players.get(0);
@@ -255,8 +255,8 @@ public class GiveSubCommand extends BaseSubCommand {
             targetPlaceholders.put("entity", displayName);
             targetPlaceholders.put("ᴇɴᴛɪᴛʏ", smallCapsName);
 
-            plugin.getMessageService().sendMessage(sender, "give.spawner_given", senderPlaceholders);
-            plugin.getMessageService().sendMessage(target, "give.spawner_received", targetPlaceholders);
+            plugin.getMessageService().sendMessage(sender, "command.give.spawner_given", senderPlaceholders);
+            plugin.getMessageService().sendMessage(target, "command.give.spawner_received", targetPlaceholders);
             return 1;
         } catch (Exception e) {
             plugin.getLogger().severe("Error executing give command: " + e.getMessage());
@@ -282,7 +282,7 @@ public class GiveSubCommand extends BaseSubCommand {
         }
 
         if (droppedItems) {
-            plugin.getMessageService().sendMessage(target, "give.inventory_full");
+            plugin.getMessageService().sendMessage(target, "command.give.inventory_full");
         }
 
         target.updateInventory();

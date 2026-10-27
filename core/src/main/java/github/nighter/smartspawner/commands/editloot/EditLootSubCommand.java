@@ -66,20 +66,20 @@ public class EditLootSubCommand extends BaseSubCommand {
 
     @Override
     public int execute(CommandContext<CommandSourceStack> context) {
-        plugin.getMessageService().sendMessage(context.getSource().getSender(), "editloot.usage");
+        plugin.getMessageService().sendMessage(context.getSource().getSender(), "command.editloot.usage");
         return 0;
     }
 
     private int open(CommandContext<CommandSourceStack> context, String name) {
         CommandSender sender = context.getSource().getSender();
         if (!(sender instanceof Player player)) {
-            plugin.getMessageService().sendMessage(sender, "player_only");
+            plugin.getMessageService().sendMessage(sender, "command.player_only");
             return 0;
         }
 
         LootEditorService.EntryRef ref = service.findEntry(name);
         if (ref == null) {
-            plugin.getMessageService().sendMessage(player, "editloot.unknown_entry", Map.of("name", name));
+            plugin.getMessageService().sendMessage(player, "command.editloot.unknown_entry", Map.of("name", name));
             return 0;
         }
 

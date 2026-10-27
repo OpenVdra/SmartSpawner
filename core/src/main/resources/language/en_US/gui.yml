@@ -1,303 +1,524 @@
-# SmartSpawner – gui.yml
-# GUI item names, lore, titles, and button labels.
+# SmartSpawner GUI text
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
 
-# ──────────────────────────────────────────────────────
-#                  Main GUI
-# ──────────────────────────────────────────────────────
-gui_title_main:
-  single_spawner: '{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ'
-  stacked_spawner: '{amount} {ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀꜱ'
+main:
+  # {amount} {entity} {entity_small}
+  title: '{entity_small} <smallcaps>Spawner</smallcaps>'
+  title_stacked: '{amount} {entity_small} <smallcaps>Spawners</smallcaps>'
 
-spawner_storage_item:
-  # Available placeholders for name:
-  # {max_slots} - Maximum number of slots in the storage (formatted with commas)
-  # {current_items} - Current number of items in the storage
-  # {percent_storage_rounded} - Percentage of storage used (0-100)
-  # {total_sell_price} - Total sell value currently stored in the spawner
-  # {entity} - The spawner's entity type (normal capitalization)
-  # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  name: '<white>ᴏᴘᴇɴ <#5db5f1>ꜱᴛᴏʀᴀɢᴇ'
+  # {current_items} {max_slots} {percent_storage_rounded} {total_sell_price} {loot_items} {entity} {entity_small}
+  storage:
+    name: '<white><smallcaps>Open</smallcaps> <#5db5f1><smallcaps>Storage</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Here you can view and'
+      - '   <white>manage all items stored'
+      - '   <white>in this spawner.'
+      - ''
+      - ' <#5db5f1>★ <smallcaps>Capacity</smallcaps>: <white>{percent_storage_rounded}%'
+      - '{loot_items}'
+      - ''
+      - '<#5db5f1> ▸ Click to open storage!'
+    # One line of {loot_items}: {item_name} {amount} {raw_amount} {chance}
+    loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
+    loot_items_empty: '  <dark_gray>• <white>No items stored'
 
-  # Available placeholders for all lore lines:
-  # {max_slots} - Maximum number of slots in the storage (formatted with commas)
-  # {current_items} - Current number of items in the storage
-  # {percent_storage_rounded} - Percentage of storage used (0-100)
-  # {total_sell_price} - Total sell value currently stored in the spawner
-  # {loot_items} - The complete formatted list of loot items
-  # {entity} - The spawner's entity type (normal capitalization)
-  # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Here you can view and'
-    - '   <white>manage all items stored'
-    - '   <white>in this spawner.'
-    - ''
-    - ' <#5db5f1>★ ᴄᴀᴘᴀᴄɪᴛʏ: <white>{percent_storage_rounded}%'
-    - '{loot_items}'
-    - ''
-    - '<#5db5f1> ▸ Click to open storage!'
+  # {entity} {entity_small} {stack_size} {range} {delay} {min_mobs} {max_mobs} {current_items} {max_items} {percent_storage_rounded} {percent_storage_decimal} {current_exp} {max_exp} {raw_current_exp} {raw_max_exp} {percent_exp_rounded} {percent_exp_decimal} {time} {total_sell_price}
+  info:
+    name: ' <white><smallcaps>Spawner</smallcaps> <#5db5f1><smallcaps>Information</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Stats</smallcaps>:'
+      - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+      - '   <dark_gray>• <white>Range: <yellow>{range} <white>blocks'
+      - '   <dark_gray>• <white>Mobs: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+      - '   <dark_gray>• <white>Delay: <yellow>{delay} <white>seconds'
+      - ''
+      - ' <#5db5f1>★ <smallcaps>Next spawn</smallcaps>: <white>{time}'
+      - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+      - '   <dark_gray>• <white>Storage: <yellow>{percent_storage_rounded}%'
+      - '   <dark_gray>• <white>Sell value: <green>${total_sell_price}'
+      - ''
+      - '<#5db5f1> ▸ Left click: <white>Sell & collect EXP'
+    # Used when the player cannot sell.
+    lore_no_shop:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Stats</smallcaps>:'
+      - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+      - '   <dark_gray>• <white>Range: <yellow>{range} <white>blocks'
+      - '   <dark_gray>• <white>Mobs: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+      - '   <dark_gray>• <white>Delay: <yellow>{delay} <white>seconds'
+      - ''
+      - ' <#5db5f1>★ <smallcaps>Next spawn</smallcaps>: <white>{time}'
+      - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+      - '   <dark_gray>• <white>Storage: <yellow>{percent_storage_rounded}%'
+      - ''
+    # Shown as {time} when the spawner is not counting down.
+    lore_full: '<#ff4444><smallcaps>Full capacity</smallcaps>'
+    lore_inactive: '<#ff4444><smallcaps>Inactive</smallcaps>'
+    lore_no_loot: '<#ff4444><smallcaps>No drops configured</smallcaps>'
 
-  # This defines how each loot item will be displayed when using {loot_items}
-  # Available placeholders for each loot item:
-  # {item_name} - The name of the item (normal capitalization)
-  # {amount} - Number of items (formatted with commas)
-  # {raw_amount} - Number of items (without formatting)
-  # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
-  loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
-  loot_items_empty: '  <dark_gray>• <white>No items stored'
+  # {current_exp} {max_exp} {percent_exp_rounded} {percent_exp_decimal}
+  exp:
+    name: '<white><smallcaps>Collect</smallcaps> <#5db5f1><smallcaps>Exp</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Collect EXP or use'
+      - '   <white>EXP to repair your'
+      - '   <white>Mending <white>gear.'
+      - ''
+      - ' <#5db5f1>★ <smallcaps>Capacity</smallcaps>: <white>{percent_exp_rounded}%'
+      - '  <dark_gray>• <white>Stored EXP: <green>{current_exp}<white>/<green>{max_exp}'
+      - ''
+      - '<#5db5f1> ▸ Click to collect EXP!'
 
+storage:
+  # {current_page} {total_pages} {amount} {entity} {entity_small}
+  title: '[{current_page}/{total_pages}] <smallcaps>Spawner storage</smallcaps>'
+  # Used instead of title for a spawner that is not stacked.
+  title_single: '[{current_page}/{total_pages}] <smallcaps>Spawner storage</smallcaps>'
 
-# Available placeholders:
-# {entity}           - Formatted entity name (e.g., "Zombie")
-# {ᴇɴᴛɪᴛʏ}           - Entity name in small caps (e.g., "ᴢᴏᴍʙɪᴇ")
-# {stack_size}       - Number of spawners stacked at this location
-# {range}            - Spawning range in blocks
-# {delay}            - Spawn delay in seconds
-# {min_mobs}         - Minimum number of mobs to spawn
-# {max_mobs}         - Maximum number of mobs to spawn
-# {current_items}    - Current number of items stored
-# {max_items}        - Maximum storage capacity for items
-# {percent_storage_rounded}  - Storage usage as integer percentage (e.g., "87")
-# {percent_storage_decimal} - Storage usage as formatted percentage with decimal (e.g., "87.5")
-# {current_exp}      - Current experience stored (formatted with commas)
-# {max_exp}          - Maximum experience capacity (formatted with commas)
-# {raw_current_exp}  - Raw current experience number
-# {raw_max_exp}      - Raw maximum experience number
-# {percent_exp_rounded}      - Experience storage as integer percentage
-# {percent_exp_decimal}    - Experience storage as formatted percentage with decimal (e.g., "42.7")
-# {time}             - Time until the next spawn, or a status text when inactive/full/no loot
-# {total_sell_price} - Total sell value currently stored in the spawner
-spawner_info_item:
-  name: ' <white>ꜱᴘᴀᴡɴᴇʀ <#5db5f1>ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ꜱᴛᴀᴛꜱ:'
-    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
-    - '   <dark_gray>• <white>Range: <yellow>{range} <white>blocks'
-    - '   <dark_gray>• <white>Mobs: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
-    - '   <dark_gray>• <white>Delay: <yellow>{delay} <white>seconds'
-    - ''
-    - ' <#5db5f1>★ ɴᴇxᴛ ꜱᴘᴀᴡɴ: <white>{time}'
-    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
-    - '   <dark_gray>• <white>Storage: <yellow>{percent_storage_rounded}%'
-    - '   <dark_gray>• <white>Sell value: <green>${total_sell_price}'
-    - ''
-    - '<#5db5f1> ▸ Left click: <white>Sell & collect EXP'
-  lore_no_shop:
-    - ''
-    - ' <#5db5f1>ℹ ꜱᴛᴀᴛꜱ:'
-    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
-    - '   <dark_gray>• <white>Range: <yellow>{range} <white>blocks'
-    - '   <dark_gray>• <white>Mobs: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
-    - '   <dark_gray>• <white>Delay: <yellow>{delay} <white>seconds'
-    - ''
-    - ' <#5db5f1>★ ɴᴇxᴛ ꜱᴘᴀᴡɴ: <white>{time}'
-    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
-    - '   <dark_gray>• <white>Storage: <yellow>{percent_storage_rounded}%'
-    - ''
-  lore_full: '<#ff4444>ꜰᴜʟʟ ᴄᴀᴘᴀᴄɪᴛʏ'
-  lore_inactive: '<#ff4444>ɪɴᴀᴄᴛɪᴠᴇ'
-  lore_no_loot: '<#ff4444>ɴᴏ ᴅʀᴏᴘꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ'
+  # {target_page}
+  previous_page:
+    name: '<#37eb9a><smallcaps>Previous page</smallcaps>'
+    lore:
+      - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
+  next_page:
+    name: '<#37eb9a><smallcaps>Next page</smallcaps>'
+    lore:
+      - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
 
-exp_info_item:
-  name: '<white>ᴄᴏʟʟᴇᴄᴛ <#5db5f1>ᴇxᴘ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Collect EXP or use'
-    - '   <white>EXP to repair your'
-    - '   <white>Mending <white>gear.'
-    - ''
-    - ' <#5db5f1>★ ᴄᴀᴘᴀᴄɪᴛʏ: <white>{percent_exp_rounded}%'
-    - '  <dark_gray>• <white>Stored EXP: <green>{current_exp}<white>/<green>{max_exp}'
-    - ''
-    - '<#5db5f1> ▸ Click to collect EXP!'
+  # {total_sell_price}
+  sell:
+    name: '<white><smallcaps>Sell</smallcaps> <green><smallcaps>Items</smallcaps>'
+    lore:
+      - ''
+      - ' <green>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>You will sell all items'
+      - '   <white>from the storage.'
+      - ''
+      - '<green> ▸ Click to sell!'
+  sell_and_exp:
+    name: '<white><smallcaps>Sell and</smallcaps> <green><smallcaps>Collect exp</smallcaps>'
+    lore:
+      - ''
+      - ' <green>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>You will sell all items'
+      - '   <white>and collect stored EXP.'
+      - '  <dark_gray>• <white>Estimated total: <green>${total_sell_price}'
+      - ''
+      - '<green> ▸ Click to continue!'
 
-# ──────────────────────────────────────────────────────
-#                Sell Confirmation GUI
-# ──────────────────────────────────────────────────────
-gui_title_sell_confirm: 'ᴄᴏɴꜰɪʀᴍ ꜱᴀʟᴇ'
+  back:
+    name: '<white><smallcaps>Back to</smallcaps> <#ff6b6b><smallcaps>Main menu</smallcaps>'
+    lore:
+      - ''
+      - ' <#dadada>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Click to return'
+      - '   <white>to the previous menu.'
+      - ''
+      - '<red> ▸ Click to go back!'
 
-button_sell_cancel:
-  name: '<white>ᴄᴀɴᴄᴇʟ <#ff6b6b>ꜱᴀʟᴇ'
-  lore:
-    - ''
-    - ' <#ff6b6b>⚠ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Click to return'
-    - '   <white>without selling anything.'
-    - ''
-    - '<#ff6b6b> ▸ Click to cancel!'
+  take_all:
+    name: '<white><smallcaps>Take</smallcaps> <#5db5f1><smallcaps>All</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>You will take all'
+      - '   <white>items from this page.'
+      - ''
+      - '<#5db5f1> ▸ Click to take!'
 
-button_sell_confirm:
-  name: '<white>ᴄᴏɴꜰɪʀᴍ <#5db5f1>ꜱᴀʟᴇ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ You will receive:'
-    - '  <dark_gray>• <white>Money: <green>${total_sell_price}'
-    - ''
-    - '<#5db5f1> ▸ Click to confirm the sale!'
+  filter:
+    name: '<white><smallcaps>Filter</smallcaps> <#5db5f1><smallcaps>Drops</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Configure allowed and'
+      - '   <white>blocked items for this spawner.'
+      - ''
+      - '<#5db5f1> ▸ Click to configure filters!'
 
-button_sell_confirm_with_exp:
-  name: '<white>ᴄᴏɴꜰɪʀᴍ ꜱᴀʟᴇ <#5db5f1>ᴀɴᴅ ᴇxᴘ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ You will receive:'
-    - '  <dark_gray>• <white>Money: <green>${total_sell_price}'
-    - '  <dark_gray>• <white>EXP: <green>{current_exp}'
-    - ''
-    - '<#5db5f1> ▸ Click to confirm!'
+  # {available_items} is the list built from selected_item, unselected_item and no_item ({item_name}).
+  sort:
+    name: '<white><smallcaps>Sort</smallcaps> <#5db5f1><smallcaps>Items</smallcaps>'
+    lore:
+      - ''
+      - '{available_items}'
+      - ''
+      - '<#5db5f1> ▸ Click to sort!'
+    selected_item: ' <#5db5f1>• {item_name}'
+    unselected_item: ' <white>• {item_name}'
+    no_item: ' <gray>• None'
 
-# Available placeholders for button_sell_info:
-# {entity} - Formatted entity or item name
-# {ᴇɴᴛɪᴛʏ} - Entity or item name in small caps
-# {current_items} - Used storage slots
-# {max_items} - Maximum storage slots
-# {current_exp} - Stored experience
-# {total_sell_price} - Total sell value
-# {percent_storage_decimal} - Storage usage with 1 decimal (e.g., "87.5")
-# {percent_storage_rounded} - Storage usage rounded to whole number (e.g., "88")
-# {loot_items} - Expands to the generated loot item lines
-# Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
-button_sell_info:
-  name: '<white>ꜱᴀʟᴇ <#5db5f1>ꜱᴜᴍᴍᴀʀʏ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '{loot_items}'
-    - '  <dark_gray>• <green>+ <white>EXP: <yellow>{current_exp}'
-    - '  <dark_gray>• <green>+ <white>Money: <green>${total_sell_price}'
-  loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
-  loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>No items to sell'
+  drop_page:
+    name: '<white><smallcaps>Drop</smallcaps> <#ff6b6b><smallcaps>Page</smallcaps>'
+    lore:
+      - ''
+      - ' <#ff6b6b>⚠ <smallcaps>Warning</smallcaps>:'
+      - '  <dark_gray>• <white>You will drop every item'
+      - '   <white>from this page on the ground.'
+      - ''
+      - '<#ff6b6b> ▸ Click to drop!'
 
-# ──────────────────────────────────────────────────────
-#             Spawner Storage GUI
-# ──────────────────────────────────────────────────────
-# Available placeholders for gui_title_storage:
-# {current_page}     - Current page number
-# {total_pages}      - Total number of pages
-# {entity}           - Formatted entity name (e.g., "Zombie")
-# {ᴇɴᴛɪᴛʏ}           - Entity name in small caps (e.g., "ᴢᴏᴍʙɪᴇ")
-# {amount}           - Number of spawners stacked
-gui_title_storage: '[{current_page}/{total_pages}] ꜱᴘᴀᴡɴᴇʀ ꜱᴛᴏʀᴀɢᴇ'
+  # {current_exp}
+  collect_exp:
+    name: '<white><smallcaps>Collect</smallcaps> <#5db5f1><smallcaps>Exp</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Available EXP: <green>{current_exp}'
+      - ''
+      - '<#5db5f1> ▸ Click to collect!'
 
-navigation_button_previous:
-  name: '<#37eb9a>ᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ'
-  lore:
-    - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
+  # Empty unless a layout places the info button in the storage. Same placeholders as main.storage.
+  info:
+    name: ''
+    lore:
 
-navigation_button_next:
-  name: '<#37eb9a>ɴᴇxᴛ ᴘᴀɢᴇ'
-  lore:
-    - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
+# {total_sell_price} {current_exp}
+sell_confirm:
+  title: '<smallcaps>Confirm sale</smallcaps>'
 
-sell_button:
-  name: '<white>ꜱᴇʟʟ <green>ɪᴛᴇᴍꜱ'
-  lore:
-    - ''
-    - ' <green>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>You will sell all items'
-    - '   <white>from the storage.'
-    - ''
-    - '<green> ▸ Click to sell!'
+  cancel:
+    name: '<white><smallcaps>Cancel</smallcaps> <#ff6b6b><smallcaps>Sale</smallcaps>'
+    lore:
+      - ''
+      - ' <#ff6b6b>⚠ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Click to return'
+      - '   <white>without selling anything.'
+      - ''
+      - '<#ff6b6b> ▸ Click to cancel!'
 
-sell_and_exp_button:
-  name: '<white>ꜱᴇʟʟ ᴀɴᴅ <green>ᴄᴏʟʟᴇᴄᴛ ᴇxᴘ'
-  lore:
-    - ''
-    - ' <green>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>You will sell all items'
-    - '   <white>and collect stored EXP.'
-    - '  <dark_gray>• <white>Estimated total: <green>${total_sell_price}'
-    - ''
-    - '<green> ▸ Click to continue!'
+  confirm:
+    name: '<white><smallcaps>Confirm</smallcaps> <#5db5f1><smallcaps>Sale</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ You will receive:'
+      - '  <dark_gray>• <white>Money: <green>${total_sell_price}'
+      - ''
+      - '<#5db5f1> ▸ Click to confirm the sale!'
 
-return_button:
-  name: '<white>ʙᴀᴄᴋ ᴛᴏ <#ff6b6b>ᴍᴀɪɴ ᴍᴇɴᴜ'
-  lore:
-    - ''
-    - ' <#dadada>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Click to return'
-    - '   <white>to the previous menu.'
-    - ''
-    - '<red> ▸ Click to go back!'
+  confirm_with_exp:
+    name: '<white><smallcaps>Confirm sale</smallcaps> <#5db5f1><smallcaps>And exp</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ You will receive:'
+      - '  <dark_gray>• <white>Money: <green>${total_sell_price}'
+      - '  <dark_gray>• <white>EXP: <green>{current_exp}'
+      - ''
+      - '<#5db5f1> ▸ Click to confirm!'
 
-take_all_button:
-  name: '<white>ᴛᴀᴋᴇ <#5db5f1>ᴀʟʟ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>You will take all'
-    - '   <white>items from this page.'
-    - ''
-    - '<#5db5f1> ▸ Click to take!'
+  # {entity} {entity_small} {current_items} {max_items} {current_exp} {total_sell_price} {percent_storage_decimal} {percent_storage_rounded} {loot_items}
+  summary:
+    name: '<white><smallcaps>Sale</smallcaps> <#5db5f1><smallcaps>Summary</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '{loot_items}'
+      - '  <dark_gray>• <green>+ <white>EXP: <yellow>{current_exp}'
+      - '  <dark_gray>• <green>+ <white>Money: <green>${total_sell_price}'
+    # One line of {loot_items}: {amount} {item_name} {chance}
+    loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
+    loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>No items to sell'
 
-item_filter_button:
-  name: '<white>ꜰɪʟᴛᴇʀ <#5db5f1>ᴅʀᴏᴘꜱ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Configure allowed and'
-    - '   <white>blocked items for this spawner.'
-    - ''
-    - '<#5db5f1> ▸ Click to configure filters!'
+filter:
+  title: '    <smallcaps>Allowed           blocked</smallcaps>'
 
-sort_items_button:
-  name: '<white>ꜱᴏʀᴛ <#5db5f1>ɪᴛᴇᴍꜱ'
-  lore:
-    - ''
-    - '{available_items}'
-    - ''
-    - '<#5db5f1> ▸ Click to sort!'
-  selected_item: ' <#5db5f1>• {item_name}'
-  unselected_item: ' <white>• {item_name}'
-  no_item: ' <gray>• None'
+  divider:
+    name: '<white><smallcaps>Drop</smallcaps> <#5db5f1><smallcaps>Filter</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+      - '  <dark_gray>• <white>Left side: allowed items'
+      - '  <dark_gray>• <white>Right side: blocked items'
+      - ''
+      - '<#5db5f1> ▸ Click to return to storage!'
 
-drop_page_button:
-  name: '<white>ᴅʀᴏᴘ <#ff6b6b>ᴘᴀɢᴇ'
-  lore:
-    - ''
-    - ' <#ff6b6b>⚠ ᴡᴀʀɴɪɴɢ:'
-    - '  <dark_gray>• <white>You will drop every item'
-    - '   <white>from this page on the ground.'
-    - ''
-    - '<#ff6b6b> ▸ Click to drop!'
+  # {item_name}
+  allowed:
+    name: '<white>{item_name}<#37eb9a> allowed'
+    lore:
+      - '<#37eb9a> ▸ <white>Click to block this item!'
+  blocked:
+    name: '<white>{item_name}<#ff6b6b> blocked'
+    lore:
+      - '<#ff6b6b> ▸ <white>Click to allow this item!'
 
-collect_exp_button:
-  name: '<white>ᴄᴏʟʟᴇᴄᴛ <#5db5f1>ᴇxᴘ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Available EXP: <green>{current_exp}'
-    - ''
-    - '<#5db5f1> ▸ Click to collect!'
+# The GUIs opened by commands: /ss list, /ss near, /ss prices and /ss editloot.
+command:
+  # {target_page} {previous_menu}
+  navigation:
+    previous_page:
+      name: '<#37eb9a><smallcaps>Previous page</smallcaps>'
+      lore:
+        - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
+    next_page:
+      name: '<#37eb9a><smallcaps>Next page</smallcaps>'
+      lore:
+        - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
+    close:
+      name: '<#ff6b6b><smallcaps>Close</smallcaps>'
+      lore:
+        - '<#ff6b6b> ▸ <white>Click to close!'
+    back:
+      name: '<white><smallcaps>Back to</smallcaps> <#ff6b6b>{previous_menu}'
+      lore:
+        - '<red> ▸ <white>Click to go back!'
+    # What {previous_menu} shows.
+    menu_names:
+      server_selection: '<smallcaps>Server selection</smallcaps>'
+      world_selection: '<smallcaps>World selection</smallcaps>'
+      spawner_list: '<smallcaps>Spawner list</smallcaps>'
+      spawner_management: '<smallcaps>Spawner management</smallcaps>'
 
-storage_spawner_info_button:
-  name: ''
-  lore:
+  list:
+    # {server}. Only shown on cross-server setups.
+    servers:
+      title: '<smallcaps>Select server</smallcaps>'
+      current:
+        name: '<#37eb9a>{server}'
+        lore:
+          - ''
+          - ' <#37eb9a>ℹ <smallcaps>Status</smallcaps>:'
+          - '  <dark_gray>• <white>Current server'
+          - ''
+          - '<#37eb9a> ▸ Click to view spawners!'
+      remote:
+        name: '<#f0c857>{server}'
+        lore:
+          - ''
+          - ' <#f0c857>ℹ <smallcaps>Status</smallcaps>:'
+          - '  <dark_gray>• <white>Remote server'
+          - ''
+          - '<#f0c857> ▸ Click to view spawners!'
 
-# ──────────────────────────────────────────────────────
-#             Filter Configuration GUI
-# ──────────────────────────────────────────────────────
-gui_title_filter_config: '    ᴀʟʟᴏᴡᴇᴅ           ʙʟᴏᴄᴋᴇᴅ'
+    # {world_name} {total} {total_stacked} {remote_world_lore} {server}
+    worlds:
+      title: '<smallcaps>Select world</smallcaps>'
+      title_server: '{server} <smallcaps>Worlds</smallcaps>'
+      names:
+        overworld: 'Overworld'
+        nether: 'Nether'
+        the_end: 'The End'
+        custom: 'World {world_name}'
+      buttons:
+        NORMAL:
+          name: '<#37eb9a>{world_name}'
+          lore:
+            - ''
+            - ' <#37eb9a>ℹ <smallcaps>Stats</smallcaps>:'
+            - '  <dark_gray>• <white>Spawner blocks: <yellow>{total}'
+            - '  <dark_gray>• <white>Stacked spawners: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#37eb9a> ▸ Click to open the list!'
+        NETHER:
+          name: '<#ff6b6b>{world_name}'
+          lore:
+            - ''
+            - ' <#ff6b6b>ℹ <smallcaps>Stats</smallcaps>:'
+            - '  <dark_gray>• <white>Spawner blocks: <yellow>{total}'
+            - '  <dark_gray>• <white>Stacked spawners: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#ff6b6b> ▸ Click to open the list!'
+        THE_END:
+          name: '<#c8a2ff>{world_name}'
+          lore:
+            - ''
+            - ' <#c8a2ff>ℹ <smallcaps>Stats</smallcaps>:'
+            - '  <dark_gray>• <white>Spawner blocks: <yellow>{total}'
+            - '  <dark_gray>• <white>Stacked spawners: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#c8a2ff> ▸ Click to open the list!'
+        CUSTOM:
+          name: '<#5db5f1>{world_name}'
+          lore:
+            - ''
+            - ' <#5db5f1>ℹ <smallcaps>Stats</smallcaps>:'
+            - '  <dark_gray>• <white>Spawner blocks: <yellow>{total}'
+            - '  <dark_gray>• <white>Stacked spawners: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#5db5f1> ▸ Click to open the list!'
+      remote_lore:
+        - ''
+        - ' <#f0c857>ℹ <smallcaps>Remote world</smallcaps>:'
+        - '  <dark_gray>• <white>Server: <yellow>{server}'
 
-filter_divider:
-  name: '<white>ᴅʀᴏᴘ <#5db5f1>ꜰɪʟᴛᴇʀ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  <dark_gray>• <white>Left side: allowed items'
-    - '  <dark_gray>• <white>Right side: blocked items'
-    - ''
-    - '<#5db5f1> ▸ Click to return to storage!'
+    # {current} {total} {world} {server} {available_options} {option_name} {id} {entity} {size} {status} {last_player} {x} {y} {z}
+    spawners:
+      title: '[{current}/{total}] {world}'
+      title_remote: '[{current}/{total}] {world} ({server})'
+      filter:
+        name: '<white><smallcaps>Filter</smallcaps> <#5db5f1><smallcaps>Spawners</smallcaps>'
+        lore:
+          - ''
+          - '{available_options}'
+          - ''
+          - '<#5db5f1> ▸ Click to change filter!'
+      filter_options:
+        all: 'All'
+        active: 'Active'
+        inactive: 'Inactive'
+      sort:
+        name: '<white><smallcaps>Sort</smallcaps> <#5db5f1><smallcaps>Spawners</smallcaps>'
+        lore:
+          - ''
+          - '{available_options}'
+          - ''
+          - '<#5db5f1> ▸ Click to change sorting!'
+      sort_options:
+        default: 'Default (ID)'
+        stack_size_asc: 'Stack size (↑)'
+        stack_size_desc: 'Stack size (↓)'
+      selected_option: ' <#5db5f1>• {option_name}'
+      unselected_option: ' <white>• {option_name}'
+      spawner:
+        name: '<white><smallcaps>Spawner</smallcaps> <#5db5f1>#{id}'
+        lore:
+          - ''
+          - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+          - '  <dark_gray>• <white>Entity: <yellow>{entity}'
+          - '  <dark_gray>• <white>Stack: <yellow>{size}'
+          - '  <dark_gray>• <white>Status: {status}'
+          - '  <dark_gray>• <white>Last player: <yellow>{last_player}'
+          - '  <dark_gray>• <white>Location: <gray>x: {x}, y: {y}, z: {z}'
+          - ''
+          - '<#5db5f1> ▸ Click to manage this spawner!'
+        remote_lore:
+          - ''
+          - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+          - '  <dark_gray>• <white>Entity: <yellow>{entity}'
+          - '  <dark_gray>• <white>Stack: <yellow>{size}'
+          - '  <dark_gray>• <white>Status: {status}'
+          - '  <dark_gray>• <white>Last player: <yellow>{last_player}'
+          - '  <dark_gray>• <white>Location: <gray>x: {x}, y: {y}, z: {z}'
+          - ''
+          - '<#ff6b6b> ⚠ Cannot manage remote spawner!'
+        last_player_none: 'None'
+        status:
+          active: '<#00e689>Active'
+          inactive: '<#ff6b6b>Inactive'
 
-filter_item_allowed:
-  name: '<white>{item_name}<#37eb9a> allowed'
-  lore:
-    - '<#37eb9a> ▸ <white>Click to block this item!'
+    manage:
+      title: '<smallcaps>Manage spawner</smallcaps>'
+      teleport:
+        name: '<white><smallcaps>Teleport</smallcaps> <#5db5f1><smallcaps>To spawner</smallcaps>'
+        lore:
+          - '<#5db5f1> ▸ <white>Click to teleport!'
+      open_spawner:
+        name: '<white><smallcaps>Open</smallcaps> <#5db5f1><smallcaps>Spawner gui</smallcaps>'
+        lore:
+          - '<#5db5f1> ▸ <white>Click to open the menu!'
+      remove:
+        name: '<white><smallcaps>Remove</smallcaps> <#ff6b6b><smallcaps>Spawner</smallcaps>'
+        lore:
+          - '<#ff6b6b> ▸ <white>Click to remove this spawner!'
 
-filter_item_blocked:
-  name: '<white>{item_name}<#ff6b6b> blocked'
-  lore:
-    - '<#ff6b6b> ▸ <white>Click to allow this item!'
+  # {current_page} {total_pages} {item_name} {price} {price_source} {custom_price} {shop_price}
+  prices:
+    title: '[{current_page}/{total_pages}] <smallcaps>Sell prices</smallcaps>'
+    item:
+      name: '<white>{item_name} <#5db5f1><smallcaps>Price</smallcaps>'
+      lore:
+        - ''
+        - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+        - '  <dark_gray>• <white>Final price: <green>${price}'
+        - '  <dark_gray>• <white>Source: <yellow>{price_source}'
+        - '  <dark_gray>• <white>Custom price: <green>${custom_price}'
+        - '  <dark_gray>• <white>Shop price: <green>${shop_price}'
 
+  # {entry} {label} {item} {amount} {chance} {durability} {max}
+  editloot:
+    mob_loot_title: '<smallcaps>Mob loot</smallcaps> • {entry}'
+    item_loot_title: '<smallcaps>Item loot</smallcaps> • {entry}'
+    capture_add_title: '<smallcaps>Drop an item to add</smallcaps>'
+    capture_replace_title: '<smallcaps>Drop the new item</smallcaps>'
+
+    loot_entry:
+      name: '<white><smallcaps>Loot</smallcaps> <#37eb9a>{label}'
+      lore:
+        - ''
+        - ' <#37eb9a>ℹ <smallcaps>Information</smallcaps>:'
+        - '  <dark_gray>• <white>Item: <yellow>{item}'
+        - '  <dark_gray>• <white>Amount: <yellow>{amount}'
+        - '  <dark_gray>• <white>Chance: <yellow>{chance}%'
+        - '  <dark_gray>• <white>Durability: <yellow>{durability}'
+        - ''
+        - '<#37eb9a> ▸ <white>Left click to edit values!'
+        - '<#37eb9a> ▸ <white>Right click to change the item!'
+
+    loot_broken:
+      name: '<white><smallcaps>Loot</smallcaps> <#ff6b6b>{label}'
+      lore:
+        - ''
+        - ' <#ff6b6b>⚠ <smallcaps>Warning</smallcaps>:'
+        - '  <dark_gray>• <white>This item could not be read.'
+        - '  <dark_gray>• <white>Value: <yellow>{item}'
+        - ''
+        - '<#ff6b6b> ▸ <white>Right click to set a new item!'
+
+    add_loot:
+      name: '<white><smallcaps>Add</smallcaps> <#37eb9a><smallcaps>Loot</smallcaps>'
+      lore:
+        - ''
+        - ' <#37eb9a>ℹ <smallcaps>Information</smallcaps>:'
+        - '  <dark_gray>• <white>Add another loot item.'
+        - ''
+        - '<#37eb9a> ▸ <white>Click to choose an item!'
+
+    capture_hint:
+      name: '<white><smallcaps>Drop an item</smallcaps> <#5db5f1><smallcaps>In the middle</smallcaps>'
+      lore:
+        - ''
+        - ' <#5db5f1>ℹ <smallcaps>Information</smallcaps>:'
+        - '  <dark_gray>• <white>The item is saved exactly as it is.'
+        - '  <dark_gray>• <white>You get it back when you leave.'
+
+    cancel:
+      name: '<white><smallcaps>Cancel</smallcaps> <#ff6b6b><smallcaps>Capture</smallcaps>'
+      lore:
+        - ''
+        - ' <#ff6b6b>ℹ <smallcaps>Information</smallcaps>:'
+        - '  <dark_gray>• <white>Discard this capture.'
+        - ''
+        - '<#ff6b6b> ▸ <white>Click to cancel!'
+
+    confirm:
+      name: '<white><smallcaps>Confirm</smallcaps> <#37eb9a><smallcaps>Item</smallcaps>'
+      lore:
+        - ''
+        - ' <#37eb9a>ℹ <smallcaps>Information</smallcaps>:'
+        - '  <dark_gray>• <white>Continue to set amount and chance.'
+        - ''
+        - '<#37eb9a> ▸ <white>Click to continue!'
+
+    # Text inside the loot settings dialog. Keep it short.
+    dialog_title:
+      name: '<smallcaps>Loot settings</smallcaps>'
+    dialog_body:
+      name: '<gray>Amount and durability accept a range like <white>0-2<gray>.'
+    dialog_save:
+      name: '<green>✔ <white>Save'
+    dialog_cancel:
+      name: '<red>← <white>Cancel'
+    dialog_delete:
+      name: '<dark_red>✖ <white>Delete loot'
+    field_amount:
+      name: 'Amount (e.g. 1 or 0-2)'
+    field_chance:
+      name: 'Chance % (0-100)'
+    field_durability:
+      name: 'Durability (blank for none, e.g. 1-384)'
+    error_amount:
+      name: '<red>Amount must be whole numbers 0-{max}, and min not above max.'
+    error_chance:
+      name: '<red>Chance must be a number from 0 to 100.'
+    error_durability:
+      name: '<red>Durability must be whole numbers, and min not above max.'

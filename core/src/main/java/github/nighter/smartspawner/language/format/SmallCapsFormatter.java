@@ -2,17 +2,11 @@ package github.nighter.smartspawner.language.format;
 
 import github.nighter.smartspawner.language.cache.LanguageCache;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public final class SmallCapsFormatter {
     private final LanguageCache cache;
-    private final AtomicInteger cacheHits;
-    private final AtomicInteger cacheMisses;
 
-    public SmallCapsFormatter(LanguageCache cache, AtomicInteger cacheHits, AtomicInteger cacheMisses) {
+    public SmallCapsFormatter(LanguageCache cache) {
         this.cache = cache;
-        this.cacheHits = cacheHits;
-        this.cacheMisses = cacheMisses;
     }
 
     public String apply(String text) {
@@ -23,11 +17,9 @@ public final class SmallCapsFormatter {
         String cacheKey = "smallcaps|" + text;
         String cached = cache.getCachedSmallCaps(cacheKey);
         if (cached != null) {
-            cacheHits.incrementAndGet();
             return cached;
         }
 
-        cacheMisses.incrementAndGet();
         String smallCapsText = toSmallCaps(text);
         cache.putCachedSmallCaps(cacheKey, smallCapsText);
         return smallCapsText;

@@ -13,7 +13,6 @@ import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -169,10 +168,10 @@ public class LootEditorDialogs {
                 String label = service.addLoot(form.target(), form.entryKey(), form.pending(),
                         amount[0], amount[1], chance, durabilityMin, durabilityMax);
                 returnItem(player, form.pending());
-                plugin.getMessageService().sendMessage(player, "editloot.loot_added", Map.of("label", label));
+                plugin.getMessageService().sendMessage(player, "command.editloot.loot_added", Map.of("label", label));
             } else {
                 if (service.readLoot(form.target(), form.entryKey(), form.lootKey()) == null) {
-                    plugin.getMessageService().sendMessage(player, "editloot.entry_missing");
+                    plugin.getMessageService().sendMessage(player, "command.editloot.entry_missing");
                     ui.openLootList(player, form.target(), form.entryKey());
                     return;
                 }
@@ -180,7 +179,7 @@ public class LootEditorDialogs {
                 service.setLootChance(form.target(), form.entryKey(), form.lootKey(), chance);
                 service.setLootDurability(form.target(), form.entryKey(), form.lootKey(),
                         durabilityMin, durabilityMax);
-                plugin.getMessageService().sendMessage(player, "editloot.loot_saved",
+                plugin.getMessageService().sendMessage(player, "command.editloot.loot_saved",
                         Map.of("label", form.lootKey()));
             }
             ui.openLootList(player, form.target(), form.entryKey());
@@ -200,12 +199,12 @@ public class LootEditorDialogs {
     private void onDelete(Player player, Form form) {
         show(player, () -> {
             if (service.readLoot(form.target(), form.entryKey(), form.lootKey()) == null) {
-                plugin.getMessageService().sendMessage(player, "editloot.entry_missing");
+                plugin.getMessageService().sendMessage(player, "command.editloot.entry_missing");
                 ui.openLootList(player, form.target(), form.entryKey());
                 return;
             }
             service.removeLoot(form.target(), form.entryKey(), form.lootKey());
-            plugin.getMessageService().sendMessage(player, "editloot.loot_deleted",
+            plugin.getMessageService().sendMessage(player, "command.editloot.loot_deleted",
                     Map.of("label", form.lootKey()));
             ui.openLootList(player, form.target(), form.entryKey());
         });
@@ -319,11 +318,10 @@ public class LootEditorDialogs {
     }
 
     /**
-     * The language files hold legacy colour codes, which a plain {@code Component.text} would show to
-     * the player verbatim, so they are deserialized rather than wrapped.
+     * Dialog text. It is display text, so a {@code <click>} in the language file cannot turn a dialog
+     * line into a command.
      */
     private Component label(String key, Map<String, String> placeholders) {
-        return LegacyComponentSerializer.legacySection().deserialize(
-                plugin.getLanguageManager().commandGui().name(key + ".name", placeholders));
+        return plugin.getLanguageManager().commandGui().name(key + ".name", placeholders);
     }
 }

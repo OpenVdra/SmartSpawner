@@ -6,6 +6,10 @@
 # Language folder under language/. Bundled: en_US, es_ES, tr_TR, vi_VN, zh_CN.
 language: en_US
 
+# true shows messages and GUIs in each player's client language when a folder for it exists, false uses language for everyone.
+# Spawner items, holograms and the console always use language.
+language_auto_detect: false
+
 # GUI layout folder under gui_layouts/. Bundled: default, DonutSMP, DonutSMP_v2. Also sets the GUI text style.
 gui_layout: default
 

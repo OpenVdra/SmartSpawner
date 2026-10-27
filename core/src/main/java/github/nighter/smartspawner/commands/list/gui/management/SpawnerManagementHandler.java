@@ -57,12 +57,12 @@ public class SpawnerManagementHandler implements Listener {
         // Local spawner actions
         SpawnerData spawner = spawnerManager.getSpawnerById(spawnerId);
         if (spawner == null) {
-            messageService.sendMessage(player, "list.teleport_failed");
+            messageService.sendMessage(player, "command.list.teleport_failed");
             return;
         }
 
         if (plugin.getSpawnerRemovalService().isRemovalPending(spawner)) {
-            messageService.sendMessage(player, "action_in_progress");
+            messageService.sendMessage(player, "general.action_in_progress");
             return;
         }
 
@@ -76,7 +76,7 @@ public class SpawnerManagementHandler implements Listener {
     private void handleTeleport(Player player, SpawnerData spawner) {
         Location loc = spawner.getSpawnerLocation().clone().add(0.5, 1, 0.5);
         player.teleportAsync(loc);
-        messageService.sendMessage(player, "list.teleported_to_spawner");
+        messageService.sendMessage(player, "command.list.teleported_to_spawner");
         player.closeInventory();
     }
 
@@ -103,13 +103,13 @@ public class SpawnerManagementHandler implements Listener {
                     }
 
                     if (error != null || !Boolean.TRUE.equals(removed)) {
-                        messageService.sendMessage(player, "action_in_progress");
+                        messageService.sendMessage(player, "general.action_in_progress");
                         return;
                     }
 
                     Map<String, String> placeholders = new HashMap<>();
                     placeholders.put("id", spawner.getSpawnerId());
-                    messageService.sendMessage(player, "list.spawner_removed", placeholders);
+                    messageService.sendMessage(player, "command.list.spawner_removed", placeholders);
                     player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                     handleBack(player, worldName, listPage);
                 })

@@ -1,106 +1,94 @@
 package github.nighter.smartspawner.language.file;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The loaded locales. The server locale ({@code language} in config.yml) is always loaded and falls
+ * back to the bundled {@code en_US}, so a key missing from an owner's file, or from a custom locale,
+ * still has text. Players' own locales ({@code language_auto_detect}) are loaded the first time a
+ * player with that client language needs one, and fall back to the server locale.
+ */
 public final class LanguageRepository {
     private final JavaPlugin plugin;
-    private final Set<LanguageFileType> activeFileTypes;
-    private final Map<String, LocaleData> locales = new HashMap<>();
-    private final Set<String> loadedLocales = new HashSet<>();
-    private String defaultLocale;
-    private LocaleData defaultLocaleData;
+    private final LanguageFiles files;
+    private final Map<String, Optional<LocaleData>> playerLocales = new ConcurrentHashMap<>();
+    private volatile String serverLocale;
+    private volatile boolean autoDetect;
+    private volatile LocaleData server;
+    private volatile Set<String> available = Set.of();
 
-    public LanguageRepository(JavaPlugin plugin, LanguageFileType... fileTypes) {
+    public LanguageRepository(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.activeFileTypes = fileTypes.length == 0
-                ? EnumSet.noneOf(LanguageFileType.class)
-                : EnumSet.copyOf(Arrays.asList(fileTypes));
-        this.defaultLocale = configuredLocale();
+        this.files = new LanguageFiles(plugin);
     }
 
     public void initialize() {
-        loadLanguages();
-        files().saveDefaultFiles();
-        cacheDefaultLocale();
-    }
-
-    public void loadLanguages(LanguageFileType... ignoredFileTypes) {
-        File languageDirectory = new File(plugin.getDataFolder(), "language");
-        if (!languageDirectory.exists() && !languageDirectory.mkdirs()) {
-            plugin.getLogger().severe("Failed to create language directory!");
-            return;
-        }
-
-        locales.remove(defaultLocale);
-        files().loadLocale(defaultLocale, locales);
-        loadedLocales.add(defaultLocale);
-        cacheDefaultLocale();
+        reload();
     }
 
     public void reload() {
-        defaultLocale = configuredLocale();
-        loadedLocales.add(defaultLocale);
+        serverLocale = plugin.getConfig().getString("language", LanguageFiles.BASE_LOCALE);
+        autoDetect = plugin.getConfig().getBoolean("language_auto_detect", false);
         // A bundled locale selected for the first time is extracted here.
-        files().saveDefaultFiles();
+        files.saveDefaultFiles(LanguageFiles.localesInUse(plugin.getDataFolder(), serverLocale, autoDetect));
 
-        for (String locale : Set.copyOf(loadedLocales)) {
-            locales.remove(locale);
-            new LanguageFiles(plugin, defaultLocale, activeFileTypes).loadLocale(locale, locales);
+        LocaleData base = files.loadBundled(LanguageFiles.BASE_LOCALE, null);
+        LocaleData loaded = files.load(serverLocale, base);
+        if (loaded == null) {
+            plugin.getLogger().severe("Language " + serverLocale + " has no folder under language/ and is not bundled. "
+                    + "Using the bundled " + LanguageFiles.BASE_LOCALE + " texts.");
+            loaded = base;
         }
-
-        cacheDefaultLocale();
-        plugin.getLogger().info("Successfully reloaded language files for language " + defaultLocale);
+        server = loaded;
+        available = files.availableLocales();
+        playerLocales.clear();
     }
 
-    public String defaultLocale() {
-        return defaultLocale;
+    public String serverLocale() {
+        return serverLocale;
     }
 
-    public LocaleData current() {
-        return defaultLocaleData;
+    public LocaleData server() {
+        return server;
     }
 
-    public boolean isActive(LanguageFileType fileType) {
-        return activeFileTypes.contains(fileType);
+    public boolean autoDetect() {
+        return autoDetect;
     }
 
-    private LanguageFiles files() {
-        return new LanguageFiles(plugin, defaultLocale, activeFileTypes);
-    }
-
-    private String configuredLocale() {
-        return plugin.getConfig().getString("language", "en_US");
-    }
-
-    private void cacheDefaultLocale() {
-        defaultLocaleData = locales.get(defaultLocale);
-        if (defaultLocaleData != null) {
-            return;
+    /**
+     * The locale folder name to use for a client language, or {@code null} for the server locale. An
+     * exact match ({@code vi_VN}) wins, then the same language ({@code es_MX} gets {@code es_ES}).
+     */
+    public String match(Locale clientLocale) {
+        if (clientLocale == null) return null;
+        String tag = clientLocale.toString();
+        String language = clientLocale.getLanguage();
+        String sameLanguage = null;
+        for (String locale : available) {
+            if (locale.equalsIgnoreCase(tag)) return locale;
+            if (sameLanguage == null && !language.isEmpty()
+                    && locale.toLowerCase(Locale.ROOT).startsWith(language.toLowerCase(Locale.ROOT) + "_")) {
+                sameLanguage = locale;
+            }
         }
-
-        plugin.getLogger().severe("Failed to cache default locale data for " + defaultLocale);
-        defaultLocaleData = emptyLocale();
-        locales.put(defaultLocale, defaultLocaleData);
+        return sameLanguage;
     }
 
-    private LocaleData emptyLocale() {
-        return new LocaleData(
-                new YamlConfiguration(),
-                new YamlConfiguration(),
-                new YamlConfiguration(),
-                new YamlConfiguration(),
-                new YamlConfiguration(),
-                new YamlConfiguration(),
-                new YamlConfiguration()
-        );
+    /** A player locale's files, falling back to the server locale. {@code null} when it cannot be loaded. */
+    public LocaleData forLocale(String locale) {
+        if (locale == null || locale.equals(serverLocale)) return server;
+        return playerLocales.computeIfAbsent(locale, name -> Optional.ofNullable(files.load(name, server)))
+                .orElse(null);
+    }
+
+    public Set<String> availableLocales() {
+        return available;
     }
 }

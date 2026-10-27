@@ -42,7 +42,7 @@ public class PricesSubCommand extends BaseSubCommand {
 
         // Check if sell integration is available
         if (!plugin.hasSellIntegration()) {
-            messageService.sendMessage(player, "prices.not_available");
+            messageService.sendMessage(player, "command.prices.not_available");
             return 0;
         }
 

@@ -95,9 +95,9 @@ public class LootEditorUI {
         ItemStack icon = loot.preview().clone();
         ItemMeta meta = icon.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(lang().commandGui().name("editloot.loot_entry.name", placeholders));
+            meta.displayName(lang().commandGui().name("editloot.loot_entry.name", placeholders));
             List<Component> lore = lang().commandGui().loreWithItemName(
-                    "editloot.loot_entry.lore", placeholders, "{item}", lang().getItemDisplayName(loot.preview()));
+                    "editloot.loot_entry.lore", placeholders, "item", lang().getItemDisplayName(loot.preview()));
             if (!lore.isEmpty()) {
                 meta.lore(lore);
             }
@@ -147,10 +147,10 @@ public class LootEditorUI {
         if (meta == null) {
             return;
         }
-        meta.setDisplayName(lang().commandGui().name(key + ".name", placeholders));
-        List<String> lore = new ArrayList<>(lang().commandGui().loreList(key + ".lore", placeholders));
+        meta.displayName(lang().commandGui().name(key + ".name", placeholders));
+        List<Component> lore = lang().commandGui().lore(key + ".lore", placeholders);
         if (!lore.isEmpty()) {
-            meta.setLore(lore);
+            meta.lore(lore);
         }
         item.setItemMeta(meta);
     }

@@ -1,141 +1,305 @@
-# SmartSpawner – messages.yml
-# Each entry supports: message, title, subtitle, action_bar, sound, enabled.
-#
-#   MESSAGE STRUCTURE:
-#   message_name:               # Unique identifier for the message
-#     enabled: true/false       # Enable or disable this entire message (default: true if not specified)
-#     message: "Text content"   # Main chat message (optional)
-#     title: "Title text"       # Title display (optional)
-#     subtitle: "Subtitle"      # Subtitle display (optional)
-#     action_bar: "Text"        # Action bar text (optional)
-#     sound: sound.effect       # Sound to play (optional)
-#
-#   KEY FEATURES:
-#   - If "enabled: false" is set, none of the components will be sent to the player
-#   - If multiple components are present (message, title, action_bar, sound), all will be sent
-#   - All components are optional - you can use any combination as needed
-#   - The "message" field is not required and can be omitted if you only want other components
+# SmartSpawner messages
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
+# Each message can use message, title, subtitle, action_bar and sound. enabled: false mutes it.
 
 prefix: '<#3498db>SᴍᴀʀᴛSᴘᴀᴡɴᴇʀ <dark_gray>⏩ <reset>'
 
-missing_message_key:
+# {key}
+missing_key:
   message: '<#ff4444>缺少消息键：<white>{key}'
 
-# ──────────────────────────────────────────────────────
-#              Player Interaction (General)
-# ──────────────────────────────────────────────────────
-spawner_activated:
-  message: '刷怪笼已<green>激活<reset>。你现在可以收集掉落物和经验了。'
-  sound: block.beacon.activate
+general:
+  inventory_full:
+    message: '<#ff4444>你的背包已满。'
+  click_too_fast:
+    message: '<#ff4444>你点击得太快了。'
+    sound: block.note_block.bass
+  action_in_progress:
+    message: '<#f0c857>已有操作正在进行，请稍候。'
+    action_bar: '<#f0c857>操作正在进行，请稍候。'
+  action_failed:
+    message: '<#ff4444>操作失败，请重试。'
+    action_bar: '<#ff4444>操作失败，请重试。'
+  # {time}
+  action_not_ready:
+    message: '<#f0c857>此操作尚未就绪，请在 <white>{time}<#f0c857> 后重试。'
+    sound: block.note_block.bass
 
-inventory_full:
-  message: '<#ff4444>你的背包已满。'
+spawner:
+  activated:
+    message: '刷怪笼已<green>激活<reset>。你现在可以收集掉落物和经验了。'
+    sound: block.beacon.activate
+  # {entity}
+  entity_changed:
+    message: '刷怪笼已变为 <yellow>{entity}<white>。'
+    action_bar: '<white>刷怪笼已变为 <yellow>{entity}<white>。'
+    sound: entity.player.levelup
 
-spawner_storage_empty:
-  message: '<#ff4444>刷怪笼存储为空。'
+storage:
+  empty:
+    message: '<#ff4444>刷怪笼存储为空。'
+  in_use:
+    message: '<#ff4444>此刷怪笼存储正被另一名玩家打开。'
+    action_bar: '<#ff4444>存储正被另一名玩家使用。'
 
-action_in_progress:
-  message: '<#f0c857>已有操作正在进行，请稍候。'
-  action_bar: '<#f0c857>操作正在进行，请稍候。'
+# {exp} {exp_mending}
+exp:
+  none:
+    message: '<#ff4444>没有可用的经验。'
+  collected:
+    message: '你收集了 <green>{exp} <white>点经验。'
+    action_bar: '<green>+{exp} 经验'
+  collected_mending:
+    message: '你收集了 <green>{exp} <white>点经验，其中 <red>{exp_mending} <white>用于经验修补。'
+    action_bar: '<green>+{exp} 经验 <white>| <red>-{exp_mending} 用于经验修补'
 
-storage_in_use:
-  message: '<#ff4444>此刷怪笼存储正被另一名玩家打开。'
-  action_bar: '<#ff4444>存储正被另一名玩家使用。'
+stack:
+  different_type:
+    message: '<#ff4444>刷怪笼必须是相同类型才能堆叠。'
+    action_bar: '<#ff4444>刷怪笼必须是相同类型。'
+    sound: block.note_block.pling
+  # {max}
+  full:
+    action_bar: '<#ff4444>最大堆叠限制：<white>{max}'
+    sound: block.note_block.pling
+  # {amount}
+  success:
+    action_bar: '<green>你成功堆叠了 <white>{amount} <green>个刷怪笼。'
+    sound: entity.player.levelup
 
-action_failed:
-  message: '<#ff4444>操作失败，请重试。'
-  action_bar: '<#ff4444>操作失败，请重试。'
+break:
+  no_permission:
+    message: '<#ff4444>你没有权限破坏此刷怪笼。'
+    sound: entity.villager.no
+  silk_touch_required:
+    message: '<#ff4444>你需要精准采集才能破坏此刷怪笼。'
+    action_bar: '<#ff4444>需要精准采集。'
+    sound: item.shield.block
+  wrong_tool:
+    message: '<#ff4444>你无法使用此工具破坏刷怪笼。'
+    action_bar: '<#ff4444>无法使用此工具破坏刷怪笼。'
+    sound: item.shield.block
+  no_drop:
+    message: '<#ff4444>运气不佳，刷怪笼没有掉落。'
+    action_bar: '<#ff4444>刷怪笼没有掉落。'
+    sound: block.note_block.pling
+  sneak_blocked:
+    message: '<#ff4444>此刷怪笼有掉落概率时，你无法破坏整个堆叠。'
+    action_bar: '<#ff4444>无法破坏整个堆叠。'
+    sound: block.note_block.pling
 
-action_not_ready:
-  message: '<#f0c857>此操作尚未就绪，请在 <white>{time}<#f0c857> 后重试。'
-  sound: block.note_block.bass
+# {amount} {price} {exp} {exp_mending}
+sell:
+  nothing_to_sell:
+    message: '<#ff4444>未找到可出售的物品。'
+  success:
+    message: '你出售了 <yellow>{amount} <white>个物品，获得 <green>${price}<white>。'
+    action_bar: '<green>+${price}'
+  success_with_exp:
+    message: '你出售了 <yellow>{amount} <white>个物品，获得 <green>${price}<white>，并收集了 <green>{exp} <white>点经验。'
+    action_bar: '<green>+${price} <white>| <green>+{exp} 经验'
+  success_with_exp_mending:
+    message: '你出售了 <yellow>{amount} <white>个物品，获得 <green>${price}<white>，收集了 <green>{exp} <white>点经验（其中 <red>{exp_mending} <white>用于经验修补）。'
+    action_bar: '<green>+${price} <white>| <green>+{exp} 经验 <white>(<red>-{exp_mending} 经验修补)'
 
-# ──────────────────────────────────────────────────────
-#             Spawner - Main GUI Interactions
-# ──────────────────────────────────────────────────────
-no_exp:
-  message: '<#ff4444>没有可用的经验。'
+command:
+  player_only:
+    message: '<#ff4444>此命令只能由玩家使用。'
+    sound: block.note_block.bass
+  no_permission:
+    message: '<#ff4444>你没有权限执行此操作。'
+    sound: block.note_block.pling
 
-exp_collected:
-  message: '你收集了 <green>{exp} <white>点经验。'
-  action_bar: '<green>+{exp} 经验'
+  list:
+    no_spawners_found:
+      message: '<#ff4444>未找到任何刷怪笼。'
+      sound: block.note_block.pling
+    teleported_to_spawner:
+      message: '已传送到刷怪笼。'
+      sound: entity.enderman.teleport
+    teleport_failed:
+      message: '<#ff4444>无法传送到刷怪笼。'
+      sound: entity.enderman.teleport
+    spawner_removed:
+      message: '<white>刷怪笼已<#ff4444>成功移除<white>。'
+      sound: entity.item.break
 
-exp_collected_with_mending:
-  message: '你收集了 <green>{exp} <white>点经验，其中 <red>{exp_mending} <white>用于经验修补。'
-  action_bar: '<green>+{exp} 经验 <white>| <red>-{exp_mending} 用于经验修补'
+  # {value} {max} {property} {old_value} {new_value} {world} {x} {y} {z}
+  set:
+    usage:
+      message: '用法：<#3498db>/ss set <stack_size|range|delay> \<value> [world x y z]'
+      sound: block.note_block.hat
+    invalid:
+      message: '<#ff4444>无效的值或 SmartSpawner 位置。'
+      sound: block.note_block.pling
+    stack_size_exceeds_max:
+      message: '<#ff4444>堆叠数量 <white>{value} <#ff4444>超过此刷怪笼的最大堆叠数：<white>{max}'
+      sound: block.note_block.pling
+    location_required:
+      message: '<#f0c857>控制台必须提供位置：<#3498db>/ss set <stack_size|range|delay> \<value> \<world> \<x> \<y> \<z>'
+      sound: block.note_block.pling
+    success:
+      message: '已将 <green>{property} <white>从 <yellow>{old_value} <white>设置为 <green>{new_value} <white>，位置：<#3498db>{world} {x} {y} {z}<white>。'
+      sound: entity.experience_orb.pickup
 
-# ──────────────────────────────────────────────────────
-#            Spawner - Storage GUI Interactions
-# ──────────────────────────────────────────────────────
-click_too_fast:
-  message: '<#ff4444>你点击得太快了。'
-  sound: block.note_block.bass
+  # {percent} {count} {radius}
+  near:
+    bossbar:
+      analyzing: '正在扫描附近的刷怪笼... {percent}%'
+      found: '在 {radius} 格范围内找到 {count} 个刷怪笼。'
+      not_found: '在 {radius} 格范围内未找到刷怪笼。'
+    view_gui:
+      button: ' [在界面中查看]'
+      hover: '点击浏览附近找到的 {count} 个刷怪笼。'
+    scan_start:
+      message: '正在扫描 <yellow>{radius} <white>格范围内的刷怪笼...'
+      sound: block.note_block.hat
+    scan_found:
+      message: '在 <yellow>{radius} <white>格范围内找到 <green>{count} <white>个刷怪笼。高亮持续 <yellow>30 秒<white>。'
+      sound: entity.experience_orb.pickup
+    scan_none:
+      message: '<#ff4444>在 <white>{radius} <#ff4444>格范围内未找到刷怪笼。'
+      sound: block.note_block.pling
+    scan_cancelled:
+      message: '<#f0c857>扫描已取消，高亮已移除。'
+      sound: block.note_block.bass
+    no_active_scan:
+      message: '<#ff4444>你没有可取消的进行中扫描。'
+      sound: block.note_block.bass
+    highlights_expired:
+      message: '<#888888>刷怪笼高亮已过期。'
 
-# ──────────────────────────────────────────────────────
-#             Spawner - Stack Interaction
-# ──────────────────────────────────────────────────────
-spawner_different:
-  message: '<#ff4444>刷怪笼必须是相同类型才能堆叠。'
-  action_bar: '<#ff4444>刷怪笼必须是相同类型。'
-  sound: block.note_block.pling
+  # {amount} {entity} {player}
+  give:
+    player_not_found:
+      message: '<#ff4444>未找到玩家。'
+      sound: block.note_block.pling
+    invalid_mob_type:
+      message: '<#ff4444>无效的生物类型或刷怪笼名称。'
+      sound: block.note_block.pling
+    invalid_item_type:
+      message: '<#ff4444>无效的物品类型。'
+      sound: block.note_block.pling
+    invalid_item_spawner:
+      message: '<#ff4444>无效的物品刷怪笼名称。'
+      sound: block.note_block.pling
+    inventory_full:
+      message: '<#ff4444>由于背包已满，部分刷怪笼物品已被丢弃。'
+      sound: block.note_block.pling
+    spawner_received:
+      message: '你获得了 <green>{amount} 个 {entity} <white>刷怪笼。'
+      sound: entity.experience_orb.pickup
+    spawner_given:
+      message: '已给予 <#3498db>{player}<white> <green>{amount} 个 {entity} <white>刷怪笼。'
+      sound: entity.experience_orb.pickup
 
-spawner_stack_full:
-  action_bar: '<#ff4444>最大堆叠限制：<white>{max}'
-  sound: block.note_block.pling
+  hologram:
+    enabled:
+      message: '全息显示已对所有刷怪笼<green>启用<white>。'
+      sound: entity.experience_orb.pickup
+    disabled:
+      message: '全息显示已对所有刷怪笼<#ff4444>禁用<white>。'
+      sound: block.note_block.bass
+    cleared:
+      message: '成功清除<green>所有全息显示<white>。'
+      sound: entity.experience_orb.pickup
+    clear_error:
+      message: '<#ff4444>清除全息显示失败。'
+      sound: block.note_block.pling
 
-spawner_stack_success:
-  action_bar: '<green>你成功堆叠了 <white>{amount} <green>个刷怪笼。'
-  sound: entity.player.levelup
+  # {count}
+  clear:
+    usage:
+      message: '用法：<#3498db>/ss clear <holograms|ghost_spawners>'
+      sound: block.note_block.hat
+    ghost_check_start:
+      message: '正在检查幽灵刷怪笼...'
+      sound: block.note_block.hat
+    ghost_cleared:
+      message: '成功移除 <green>{count} <white>个幽灵刷怪笼。'
+      sound: entity.experience_orb.pickup
+    ghost_none_found:
+      message: '<#ff4444>未找到幽灵刷怪笼。'
+      sound: entity.experience_orb.pickup
 
-# ──────────────────────────────────────────────────────
-#             Spawner - Egg Interaction
-# ──────────────────────────────────────────────────────
-entity_changed:
-  message: '刷怪笼已变为 <yellow>{entity}<white>。'
-  action_bar: '<white>刷怪笼已变为 <yellow>{entity}<white>。'
-  sound: entity.player.levelup
+  prices:
+    not_available:
+      message: '<#ff4444>出售集成不可用。请配置经济设置。'
+      sound: block.note_block.pling
+    no_priceable_items:
+      message: '<#ff4444>未找到有价格的物品。'
+      sound: block.note_block.pling
 
-# ──────────────────────────────────────────────────────
-#             Spawner - Break Interaction
-# ──────────────────────────────────────────────────────
-break_no_permission:
-  message: '<#ff4444>你没有权限破坏此刷怪笼。'
-  sound: entity.villager.no
+  reload:
+    start:
+      message: '<#f0c857>正在重载插件... 请稍候。'
+    success:
+      message: '成功重加载 <#3498db>SmartSpawner<white>。'
+      sound: entity.experience_orb.pickup
+    error:
+      message: '<#ff4444>重加载 SmartSpawner 失败。请检查控制台了解详情。'
+      sound: block.note_block.pling
 
-break_silk_touch:
-  message: '<#ff4444>你需要精准采集才能破坏此刷怪笼。'
-  action_bar: '<#ff4444>需要精准采集。'
-  sound: item.shield.block
+  # {current} {available} {value} {old_value} {new_value}
+  language:
+    current:
+      message: '当前语言：<green>{current} <#888888>| <white>可用：{available}'
+      sound: block.note_block.hat
+    invalid:
+      message: '<#ff4444>未知语言：<white>{value}<#ff4444>。请尝试：<white>{available}'
+      sound: block.note_block.pling
+    already_set:
+      message: '<#f0c857>语言已设置为 <white>{value}<#f0c857>。'
+      sound: block.note_block.hat
+    success:
+      message: '语言已从 <yellow>{old_value} <white>更改为 <green>{new_value}<white>。'
+      sound: entity.experience_orb.pickup
+    error:
+      message: '<#ff4444>更改语言失败。请检查控制台。'
+      sound: block.note_block.pling
 
-break_tool_required:
-  message: '<#ff4444>你无法使用此工具破坏刷怪笼。'
-  action_bar: '<#ff4444>无法使用此工具破坏刷怪笼。'
-  sound: item.shield.block
+  # {current} {available} {value} {old_value} {new_value}
+  gui_layout:
+    current:
+      message: '当前布局：<green>{current} <#888888>| <white>可用：{available}'
+      sound: block.note_block.hat
+    invalid:
+      message: '<#ff4444>未知界面布局：<white>{value}<#ff4444>。请尝试：<white>{available}'
+      sound: block.note_block.pling
+    already_set:
+      message: '<#f0c857>界面布局已设置为 <white>{value}<#f0c857>。'
+      sound: block.note_block.hat
+    success:
+      message: '界面布局已从 <yellow>{old_value} <white>更改为 <green>{new_value}<white>。'
+      sound: entity.experience_orb.pickup
+    error:
+      message: '<#ff4444>更改界面布局失败。请检查控制台。'
+      sound: block.note_block.pling
 
-drop_failed:
-  message: '<#ff4444>运气不佳，刷怪笼没有掉落。'
-  action_bar: '<#ff4444>刷怪笼没有掉落。'
-  sound: block.note_block.pling
-
-sneak_break_blocked:
-  message: '<#ff4444>此刷怪笼有掉落概率时，你无法破坏整个堆叠。'
-  action_bar: '<#ff4444>无法破坏整个堆叠。'
-  sound: block.note_block.pling
-
-# ──────────────────────────────────────────────────────
-#              Sell Integration Messages
-# ──────────────────────────────────────────────────────
-no_sellable_items:
-  message: '<#ff4444>未找到可出售的物品。'
-
-sell_success:
-  message: '你出售了 <yellow>{amount} <white>个物品，获得 <green>${price}<white>。'
-  action_bar: '<green>+${price}'
-
-sell_and_exp_success:
-  message: '你出售了 <yellow>{amount} <white>个物品，获得 <green>${price}<white>，并收集了 <green>{exp} <white>点经验。'
-  action_bar: '<green>+${price} <white>| <green>+{exp} 经验'
-
-sell_and_exp_success_with_mending:
-  message: '你出售了 <yellow>{amount} <white>个物品，获得 <green>${price}<white>，收集了 <green>{exp} <white>点经验（其中 <red>{exp_mending} <white>用于经验修补）。'
-  action_bar: '<green>+${price} <white>| <green>+{exp} 经验 <white>(<red>-{exp_mending} 经验修补)'
+  # {name} {label}
+  editloot:
+    usage:
+      message: '用法：<#37eb9a>/ss editloot <刷怪笼名称><white>。示例：<#37eb9a>/ss editloot blaze_spawner'
+      sound: block.note_block.hat
+    unknown_entry:
+      message: '<#ff4444>没有名为 <white>{name}<#ff4444> 的刷怪笼。使用 Tab 补全查看有效名称。'
+      sound: block.note_block.bass
+    entry_missing:
+      message: '<#ff4444>该条目已不在文件中。'
+      sound: block.note_block.bass
+    loot_added:
+      message: '<#37eb9a>已添加战利品条目 <white>{label}<#37eb9a>。'
+      sound: entity.experience_orb.pickup
+    loot_saved:
+      message: '<#37eb9a>已保存战利品条目 <white>{label}<#37eb9a>。'
+      sound: entity.experience_orb.pickup
+    loot_replaced:
+      message: '<#37eb9a>已更新 <white>{label}<#37eb9a> 的物品。'
+      sound: entity.experience_orb.pickup
+    loot_deleted:
+      message: '<#ff6b6b>已移除战利品条目 <white>{label}<#ff6b6b>。'
+      sound: entity.item.pickup
+    capture_empty:
+      message: '<#ff4444>请先在中间槽位放入物品。'
+      sound: block.note_block.bass

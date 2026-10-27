@@ -39,12 +39,12 @@ public class ClearHologramsSubCommand extends BaseSubCommand {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "minecraft:kill @e[type=text_display]");
             
             // Send success message to player
-            plugin.getMessageService().sendMessage(sender, "hologram.cleared");
+            plugin.getMessageService().sendMessage(sender, "command.hologram.cleared");
 
             return 1;
         } catch (Exception e) {
             plugin.getLogger().severe("Error clearing holograms: " + e.getMessage());
-            plugin.getMessageService().sendMessage(sender, "hologram.clear_error");
+            plugin.getMessageService().sendMessage(sender, "command.hologram.clear_error");
             return 0;
         }
     }

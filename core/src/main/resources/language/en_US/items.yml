@@ -1,8 +1,9 @@
-# SmartSpawner – items.yml
-# Spawner item display names and drop item names.
+# SmartSpawner items and holograms
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
+# A mob or material section overrides default key by key. Keys it leaves out come from default.
 
-# Appearance of smart spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 smart_spawner:
   default:
     name: '<#5db5f1>{entity} Spawner'
@@ -10,23 +11,22 @@ smart_spawner:
     loot_items_empty: '  <#ecf0f1> •  None'
     lore:
       - ''
-      - ' <#5db5f1> ᴅᴇᴛᴀɪʟ:'
+      - ' <#5db5f1> <smallcaps>Detail</smallcaps>:'
       - '  <#ecf0f1> • <white>EXP give: <green>{exp}'
       - ''
-      - ' <#5db5f1> ᴅʀᴏᴘꜱ:'
+      - ' <#5db5f1> <smallcaps>Drops</smallcaps>:'
       - '{loot_items}'
       - ''
-  # Entity-specific sections override default per key. Unspecified keys use default.
   PIG:
     name: '<#ff77b7>{entity} Spawner'
     loot_items: '  <#fff0f7> • {amount} {item_name} <#ff8fc7>({chance}%)'
     loot_items_empty: '  <#fff0f7> •  None'
     lore:
       - ''
-      - ' <#ff77b7> ᴅᴇᴛᴀɪʟ:'
+      - ' <#ff77b7> <smallcaps>Detail</smallcaps>:'
       - '  <#fff0f7> • <white>EXP give: <#ff8fc7>{exp}'
       - ''
-      - ' <#ff77b7> ᴅʀᴏᴘꜱ:'
+      - ' <#ff77b7> <smallcaps>Drops</smallcaps>:'
       - '{loot_items}'
       - ''
   BLAZE:
@@ -35,15 +35,14 @@ smart_spawner:
     loot_items_empty: '  <#fff4cc> •  None'
     lore:
       - ''
-      - ' <#ffb300> ᴅᴇᴛᴀɪʟ:'
+      - ' <#ffb300> <smallcaps>Detail</smallcaps>:'
       - '  <#fff4cc> • <white>EXP give: <#ffd54f>{exp}'
       - ''
-      - ' <#ffb300> ᴅʀᴏᴘꜱ:'
+      - ' <#ffb300> <smallcaps>Drops</smallcaps>:'
       - '{loot_items}'
       - ''
 
-# Appearance of item spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}, {exp}, {loot_items}, {amount}, {item_name}, {chance}
+# {entity} {entity_small} {exp} {loot_items}. One line of {loot_items}: {amount} {item_name} {chance}
 item_spawner:
   default:
     name: '<#5db5f1>{entity} Spawner'
@@ -51,23 +50,22 @@ item_spawner:
     loot_items_empty: '  <#ecf0f1> •  None'
     lore:
       - ''
-      - ' <#5db5f1> ᴅᴇᴛᴀɪʟ:'
+      - ' <#5db5f1> <smallcaps>Detail</smallcaps>:'
       - '  <#ecf0f1> • <white>EXP give: <green>{exp}'
       - ''
-      - ' <#5db5f1> ᴅʀᴏᴘꜱ:'
+      - ' <#5db5f1> <smallcaps>Drops</smallcaps>:'
       - '{loot_items}'
       - ''
-  # Material-specific sections override default per key. Unspecified keys use default.
   DIAMOND:
     name: '<#00e5ff>{entity} Spawner'
     loot_items: '  <#eafdff> • {amount} {item_name} <#00b8d4>({chance}%)'
     loot_items_empty: '  <#eafdff> •  None'
     lore:
       - ''
-      - ' <#00e5ff> ᴅᴇᴛᴀɪʟ:'
+      - ' <#00e5ff> <smallcaps>Detail</smallcaps>:'
       - '  <#eafdff> • <white>EXP give: <#00b8d4>{exp}'
       - ''
-      - ' <#00e5ff> ᴅʀᴏᴘꜱ:'
+      - ' <#00e5ff> <smallcaps>Drops</smallcaps>:'
       - '{loot_items}'
       - ''
   AMETHYST_SHARD:
@@ -76,17 +74,23 @@ item_spawner:
     loot_items_empty: '  <#f5ecff> •  None'
     lore:
       - ''
-      - ' <#b66cff> ᴅᴇᴛᴀɪʟ:'
+      - ' <#b66cff> <smallcaps>Detail</smallcaps>:'
       - '  <#f5ecff> • <white>EXP give: <#d6a5ff>{exp}'
       - ''
-      - ' <#b66cff> ᴅʀᴏᴘꜱ:'
+      - ' <#b66cff> <smallcaps>Drops</smallcaps>:'
       - '{loot_items}'
       - ''
 
-# Appearance of vanilla spawner items in inventory and tooltips
-# Available placeholders: {entity}, {ᴇɴᴛɪᴛʏ}
-# Delete this section if you don't want to use custom vanilla spawners name and lore
+# {entity} {entity_small}. Delete this section to keep the game's own name for vanilla spawners.
 vanilla_spawner:
   default:
-    name: "{entity} Spawner"
+    name: '{entity} Spawner'
     lore:
+
+# Lines above each spawner when holograms are on.
+# {entity} {entity_small} {stack_size} {current_exp} {max_exp} {used_slots} {max_slots} {percent_storage_decimal} {percent_storage_rounded} {percent_exp_decimal} {percent_exp_rounded}
+hologram:
+  lines:
+    - '<dark_gray>[<white>{stack_size}<dark_gray>] <#5db5f1>{entity} Spawner'
+    - '<#5db5f1>• <white>EXP: <green>{current_exp}<white>/<green>{max_exp}'
+    - '<#5db5f1>• <white>Items: <yellow>{used_slots}<white>/<yellow>{max_slots}'

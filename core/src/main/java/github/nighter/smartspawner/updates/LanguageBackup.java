@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -19,6 +20,26 @@ final class LanguageBackup {
     private static final List<String> FOLDERS = List.of("language", "gui_layouts");
 
     private LanguageBackup() {}
+
+    /**
+     * A backup made the first time it is asked for, then reused, so every migration of one startup
+     * shares a single folder. The result, a folder name or {@code null}, is remembered either way.
+     */
+    static Supplier<String> once(File dataFolder, LocalDate today, Logger log) {
+        return new Supplier<>() {
+            private boolean done;
+            private String name;
+
+            @Override
+            public synchronized String get() {
+                if (!done) {
+                    name = create(dataFolder, today, log);
+                    done = true;
+                }
+                return name;
+            }
+        };
+    }
 
     /**
      * @return the backup folder's name, or {@code null} if it could not be written, in which case the

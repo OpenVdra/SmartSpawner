@@ -70,7 +70,7 @@ public class SpawnerBreakListener implements Listener {
         SpawnerRemovalService removalService = plugin.getSpawnerRemovalService();
         if (removalService != null && removalService.isRemovalPending(location)) {
             event.setCancelled(true);
-            messageService.sendMessage(player, "action_in_progress");
+            messageService.sendMessage(player, "general.action_in_progress");
             return;
         }
 
@@ -88,7 +88,7 @@ public class SpawnerBreakListener implements Listener {
 
         if (!player.hasPermission("smartspawner.break")) {
             event.setCancelled(true);
-            messageService.sendMessage(player, "break_no_permission");
+            messageService.sendMessage(player, "break.no_permission");
             return;
         }
 
@@ -136,14 +136,14 @@ public class SpawnerBreakListener implements Listener {
 
         // Block break while a sell is in progress
         if (currentSpawner.isSelling()) {
-            messageService.sendMessage(player, "action_in_progress");
+            messageService.sendMessage(player, "general.action_in_progress");
             return false;
         }
 
         boolean wantsStackBreak = player.isSneaking() && currentSpawner.getStackSize() > 1;
         boolean bypassDropChance = hasDropChanceBypass(player);
         if (wantsStackBreak && breakConfig.isSneakBreakEnabled() && !bypassDropChance && hasSmartSpawnerDropChance(currentSpawner)) {
-            messageService.sendMessage(player, "sneak_break_blocked");
+            messageService.sendMessage(player, "break.sneak_blocked");
             return false;
         }
 
@@ -208,7 +208,7 @@ public class SpawnerBreakListener implements Listener {
                     world.dropItemNaturally(findSafeDropLocation(block, player), spawnerItem);
                 }
             } else {
-                messageService.sendMessage(player, "drop_failed");
+                messageService.sendMessage(player, "break.no_drop");
             }
 
             reduceDurability(tool, player, breakConfig.getDurabilityLoss());
@@ -224,18 +224,18 @@ public class SpawnerBreakListener implements Listener {
         }
 
         if (!player.hasPermission("smartspawner.break")) {
-            messageService.sendMessage(player, "break_no_permission");
+            messageService.sendMessage(player, "break.no_permission");
             return false;
         }
 
         if (!isValidTool(tool)) {
-            messageService.sendMessage(player, "break_tool_required");
+            messageService.sendMessage(player, "break.wrong_tool");
             return false;
         }
 
         if (breakConfig.isSilkTouchRequired()) {
             if (tool.getEnchantmentLevel(Enchantment.SILK_TOUCH) < breakConfig.getSilkTouchLevel()) {
-                messageService.sendMessage(player, "break_silk_touch");
+                messageService.sendMessage(player, "break.silk_touch_required");
                 return false;
             }
         }
@@ -304,7 +304,7 @@ public class SpawnerBreakListener implements Listener {
 
         if (breakConfig.isDirectToInventory()) {
             if (result.getDroppedAmount() <= 0) {
-                messageService.sendMessage(player, "drop_failed");
+                messageService.sendMessage(player, "break.no_drop");
                 return;
             }
             giveSpawnersToPlayer(player, result.getDroppedAmount(), result.getDropTemplate());
@@ -318,7 +318,7 @@ public class SpawnerBreakListener implements Listener {
         }
 
         if (result.getDroppedAmount() <= 0) {
-            messageService.sendMessage(player, "drop_failed");
+            messageService.sendMessage(player, "break.no_drop");
             return;
         }
 
@@ -494,7 +494,7 @@ public class SpawnerBreakListener implements Listener {
             for (ItemStack failedItem : failedItems.values()) {
                 player.getWorld().dropItemNaturally(player.getLocation().toCenterLocation(), failedItem);
             }
-            messageService.sendMessage(player, "inventory_full");
+            messageService.sendMessage(player, "general.inventory_full");
         }
 
         player.updateInventory();
@@ -544,17 +544,17 @@ public class SpawnerBreakListener implements Listener {
         if (isValidTool(tool)) {
             if (breakConfig.isSilkTouchRequired()) {
                 if (tool.getEnchantmentLevel(Enchantment.SILK_TOUCH) < breakConfig.getSilkTouchLevel()) {
-                    messageService.sendMessage(player, "break_silk_touch");
+                    messageService.sendMessage(player, "break.silk_touch_required");
                     return;
                 }
             }
 
             if (!player.hasPermission("smartspawner.break")) {
-                messageService.sendMessage(player, "break_no_permission");
+                messageService.sendMessage(player, "break.no_permission");
             }
 
         } else {
-            messageService.sendMessage(player, "break_tool_required");
+            messageService.sendMessage(player, "break.wrong_tool");
         }
     }
 

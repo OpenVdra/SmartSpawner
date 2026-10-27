@@ -1,5 +1,6 @@
 package github.nighter.smartspawner.updates;
 
+import github.nighter.smartspawner.language.file.LanguageFileType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -138,17 +139,17 @@ public final class ConfigMigrations {
      * used. Renaming a whole message entry is enough, its components move with it.
      */
 
-    /** Renames applied to {@code messages.yml}, whose keys sit at the top level. */
-    public static final List<YamlMigrator.Rename> MESSAGES = List.of();
+    /*
+     * The 1.8.0 move from eight files per locale to four, and every key renamed with it, is not here:
+     * it crosses files, so it lives in LanguageRestructure and language/file/LegacyLanguageKeys. These
+     * lists are for renames inside one file from now on.
+     */
 
-    /** Renames applied to {@code command_messages.yml}, whose keys nest under a command, for example {@code list.no_spawners_found}. */
-    public static final List<YamlMigrator.Rename> COMMAND_MESSAGES = List.of();
+    /** Renames applied to {@code messages.yml}. */
+    public static final List<YamlMigrator.Rename> MESSAGES = List.of();
 
     /** Renames applied to {@code gui.yml}, and to each layout's {@code texts.yml}, which uses the same keys. */
     public static final List<YamlMigrator.Rename> GUI = List.of();
-
-    /** Renames applied to {@code command_gui.yml}. */
-    public static final List<YamlMigrator.Rename> COMMAND_GUI = List.of();
 
     /** Renames applied to {@code formatting.yml}. */
     public static final List<YamlMigrator.Rename> FORMATTING = List.of();
@@ -158,16 +159,14 @@ public final class ConfigMigrations {
 
     /**
      * The rename list for a language file. The switch is exhaustive on purpose: a new
-     * {@link LanguageUpdater.LanguageFileType} will not compile until its list is declared here.
+     * {@link LanguageFileType} will not compile until its list is declared here.
      */
-    public static List<YamlMigrator.Rename> forLanguageFile(LanguageUpdater.LanguageFileType type) {
+    public static List<YamlMigrator.Rename> forLanguageFile(LanguageFileType type) {
         return switch (type) {
-            case MESSAGES         -> MESSAGES;
-            case COMMAND_MESSAGES -> COMMAND_MESSAGES;
-            case GUI              -> GUI;
-            case COMMAND_GUI      -> COMMAND_GUI;
-            case FORMATTING       -> FORMATTING;
-            case ITEMS            -> ITEMS;
+            case MESSAGES   -> MESSAGES;
+            case GUI        -> GUI;
+            case FORMATTING -> FORMATTING;
+            case ITEMS      -> ITEMS;
         };
     }
 
@@ -313,10 +312,14 @@ public final class ConfigMigrations {
 
     private static final String[] ITEM_DEFAULT_SECTIONS = {"smart_spawner", "item_spawner", "vanilla_spawner"};
 
+    /** Keys of items.yml that are not per mob, topped up like any setting. */
+    private static final String[] ITEM_PLAIN_KEYS = {"hologram.lines"};
+
     /**
-     * Tops up only the {@code <section>.default} keys of items.yml. Entity-specific overrides are left
-     * untouched: a mob section deliberately omits keys so they fall back to {@code default}, so blindly
-     * adding every default key there (or adding whole new mob sections) would break that inheritance.
+     * Tops up only the {@code <section>.default} keys of items.yml, plus the hologram lines.
+     * Entity-specific overrides are left untouched: a mob section deliberately omits keys so they fall
+     * back to {@code default}, so blindly adding every default key there (or adding whole new mob
+     * sections) would break that inheritance.
      */
     public static final YamlMigrator.CustomMigration ITEM_DEFAULTS = (user, defaults) -> {
         if (defaults == null) return false;
@@ -334,6 +337,14 @@ public final class ConfigMigrations {
                     user.setComments(path, defaults.getComments(path));
                     changed = true;
                 }
+            }
+        }
+        for (String path : ITEM_PLAIN_KEYS) {
+            if (defaults.contains(path) && !user.contains(path)) {
+                user.set(path, defaults.get(path));
+                String parent = path.substring(0, path.indexOf('.'));
+                if (user.getComments(parent).isEmpty()) user.setComments(parent, defaults.getComments(parent));
+                changed = true;
             }
         }
         return changed;

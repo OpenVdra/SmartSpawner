@@ -71,7 +71,7 @@ public class HologramSubCommand extends BaseSubCommand {
             spawnerManager.refreshAllHolograms();
 
             // Send message to player using MessageService
-            String messageKey = newValue ? "hologram.enabled" : "hologram.disabled";
+            String messageKey = newValue ? "command.hologram.enabled" : "command.hologram.disabled";
             plugin.getMessageService().sendMessage(sender, messageKey);
 
             return 1;

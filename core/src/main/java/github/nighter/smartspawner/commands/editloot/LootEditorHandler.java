@@ -51,7 +51,7 @@ public class LootEditorHandler implements Listener {
         String entryKey = holder.getEntryKey();
 
         if (!service.hasEntry(target, entryKey)) {
-            messageService.sendMessage(player, "editloot.entry_missing");
+            messageService.sendMessage(player, "command.editloot.entry_missing");
             player.closeInventory();
             return;
         }
@@ -119,7 +119,7 @@ public class LootEditorHandler implements Listener {
         if (slot == LootEditorUI.CAPTURE_CONFIRM) {
             ItemStack captured = event.getInventory().getItem(LootEditorUI.CAPTURE_SLOT);
             if (captured == null || captured.getType() == Material.AIR) {
-                messageService.sendMessage(player, "editloot.capture_empty");
+                messageService.sendMessage(player, "command.editloot.capture_empty");
                 return;
             }
 
@@ -155,7 +155,7 @@ public class LootEditorHandler implements Listener {
         String entryKey = holder.getEntryKey();
 
         if (!service.hasEntry(target, entryKey)) {
-            messageService.sendMessage(player, "editloot.entry_missing");
+            messageService.sendMessage(player, "command.editloot.entry_missing");
             returnItem(player, captured);
             player.closeInventory();
             return;
@@ -169,7 +169,7 @@ public class LootEditorHandler implements Listener {
             case REPLACE_LOOT -> {
                 service.setLootItem(target, entryKey, holder.getLootKey(), captured);
                 returnItem(player, captured);
-                messageService.sendMessage(player, "editloot.loot_replaced",
+                messageService.sendMessage(player, "command.editloot.loot_replaced",
                         Map.of("label", holder.getLootKey()));
                 ui.openLootList(player, target, entryKey);
             }

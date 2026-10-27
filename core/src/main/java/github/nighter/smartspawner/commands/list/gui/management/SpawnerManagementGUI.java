@@ -1,5 +1,7 @@
 package github.nighter.smartspawner.commands.list.gui.management;
 
+import github.nighter.smartspawner.language.section.GuiLanguageSection;
+import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.utils.ItemTooltipUtil;
 import github.nighter.smartspawner.language.LanguageManager;
@@ -15,8 +17,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class SpawnerManagementGUI {
@@ -42,36 +42,39 @@ public class SpawnerManagementGUI {
     public void openManagementMenu(Player player, String spawnerId, String worldName, int listPage) {
         SpawnerData spawner = spawnerManager.getSpawnerById(spawnerId);
         if (spawner == null) {
-            messageService.sendMessage(player, "list.teleport_failed");
+            messageService.sendMessage(player, "command.list.teleport_failed");
             return;
         }
 
-        String title = languageManager.commandGui().title("gui_title_spawner_management");
+        GuiLanguageSection gui = languageManager.commandGui(player);
+        Component title = gui.title("list.manage.title");
         Inventory inv = Bukkit.createInventory(
             new SpawnerManagementHolder(spawnerId, worldName, listPage),
             INVENTORY_SIZE, title
         );
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 
-        createActionItem(inv, TELEPORT_SLOT, "spawner_management.teleport", Material.ENDER_PEARL);
-        createActionItem(inv, OPEN_SPAWNER_SLOT, "spawner_management.open_spawner", Material.ENDER_EYE);
-        createActionItem(inv, REMOVE_SLOT, "spawner_management.remove", Material.BARRIER);
+        createActionItem(gui, inv, TELEPORT_SLOT, "list.manage.teleport", Material.ENDER_PEARL);
+        createActionItem(gui, inv, OPEN_SPAWNER_SLOT, "list.manage.open_spawner", Material.ENDER_EYE);
+        createActionItem(gui, inv, REMOVE_SLOT, "list.manage.remove", Material.BARRIER);
 
         createActionItem(
+                gui,
                 inv,
                 BACK_SLOT,
-                "general_navigation.back",
+                "navigation.back",
                 Material.RED_STAINED_GLASS_PANE,
-                previousMenuPlaceholder("spawner_list", "Spawner List")
+                previousMenuPlaceholder(gui, "spawner_list", "Spawner List")
         );
         player.openInventory(inv);
     }
 
-    private void createActionItem(Inventory inv, int slot, String langKey, Material material) {
-        createActionItem(inv, slot, langKey, material, Map.of());
+    private void createActionItem(GuiLanguageSection gui, Inventory inv, int slot, String langKey, Material material) {
+        createActionItem(gui, inv, slot, langKey, material, Map.of());
     }
 
     private void createActionItem(
+            GuiLanguageSection gui,
             Inventory inv,
             int slot,
             String langKey,
@@ -81,11 +84,8 @@ public class SpawnerManagementGUI {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(languageManager.commandGui().name(langKey + ".name", placeholders));
-            List<String> lore = Arrays.asList(
-                    languageManager.commandGui().lore(langKey + ".lore", placeholders)
-            );
-            meta.setLore(lore);
+            meta.displayName(gui.name(langKey + ".name", placeholders));
+            meta.lore(gui.lore(langKey + ".lore", placeholders));
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
             item.setItemMeta(meta);
         }
@@ -93,9 +93,9 @@ public class SpawnerManagementGUI {
         inv.setItem(slot, item);
     }
 
-    private Map<String, String> previousMenuPlaceholder(String menuKey, String defaultName) {
-        String menuName = languageManager.commandGui().configString(
-                "general_navigation.menu_names." + menuKey,
+    private Map<String, String> previousMenuPlaceholder(GuiLanguageSection gui, String menuKey, String defaultName) {
+        String menuName = gui.configString(
+                "navigation.menu_names." + menuKey,
                 defaultName
         );
         return Map.of("previous_menu", menuName);

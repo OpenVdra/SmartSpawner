@@ -1,303 +1,524 @@
-# SmartSpawner – gui.yml
-# GUI item names, lore, titles, and button labels.
+# SmartSpawner GUI text
+# Full guide: https://docs.smartspawner.site/docs/language
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
 
-# ──────────────────────────────────────────────────────
-#                  Main GUI
-# ──────────────────────────────────────────────────────
-gui_title_main:
-  single_spawner: 'ꜱᴘᴀᴡɴᴇʀ {ᴇɴᴛɪᴛʏ}'
-  stacked_spawner: '{amount} ꜱᴘᴀᴡɴᴇʀ {ᴇɴᴛɪᴛʏ}'
+main:
+  # {amount} {entity} {entity_small}
+  title: '<smallcaps>Spawner</smallcaps> {entity_small}'
+  title_stacked: '{amount} <smallcaps>Spawner</smallcaps> {entity_small}'
 
-spawner_storage_item:
-  # Available placeholders for name:
-  # {max_slots} - Maximum number of slots in the storage (formatted with commas)
-  # {current_items} - Current number of items in the storage
-  # {percent_storage_rounded} - Percentage of storage used (0-100)
-  # {total_sell_price} - Total sell value currently stored in the spawner
-  # {entity} - The spawner's entity type (normal capitalization)
-  # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  name: '<white>ᴍở <#5db5f1>ᴋʜᴏ'
+  # {current_items} {max_slots} {percent_storage_rounded} {total_sell_price} {loot_items} {entity} {entity_small}
+  storage:
+    name: '<white>ᴍở <#5db5f1><smallcaps>Kho</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Tại đây bạn có thể xem'
+      - '   <white>và quản lý mọi vật phẩm'
+      - '   <white>trong spawner này.'
+      - ''
+      - ' <#5db5f1>★ ꜱứᴄ ᴄʜứᴀ: <white>{percent_storage_rounded}%'
+      - '{loot_items}'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để mở kho!'
+    # One line of {loot_items}: {item_name} {amount} {raw_amount} {chance}
+    loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
+    loot_items_empty: '  <dark_gray>• <white>Không có vật phẩm'
 
-  # Available placeholders for all lore lines:
-  # {max_slots} - Maximum number of slots in the storage (formatted with commas)
-  # {current_items} - Current number of items in the storage
-  # {percent_storage_rounded} - Percentage of storage used (0-100)
-  # {total_sell_price} - Total sell value currently stored in the spawner
-  # {loot_items} - The complete formatted list of loot items
-  # {entity} - The spawner's entity type (normal capitalization)
-  # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Tại đây bạn có thể xem'
-    - '   <white>và quản lý mọi vật phẩm'
-    - '   <white>trong spawner này.'
-    - ''
-    - ' <#5db5f1>★ ꜱứᴄ ᴄʜứᴀ: <white>{percent_storage_rounded}%'
-    - '{loot_items}'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để mở kho!'
+  # {entity} {entity_small} {stack_size} {range} {delay} {min_mobs} {max_mobs} {current_items} {max_items} {percent_storage_rounded} {percent_storage_decimal} {current_exp} {max_exp} {raw_current_exp} {raw_max_exp} {percent_exp_rounded} {percent_exp_decimal} {time} {total_sell_price}
+  info:
+    name: ' <white>ᴛʜôɴɢ ᴛɪɴ <#5db5f1><smallcaps>Spawner</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
+      - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+      - '   <dark_gray>• <white>Phạm vi: <yellow>{range} <white>khối'
+      - '   <dark_gray>• <white>Sinh vật: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+      - '   <dark_gray>• <white>Thời gian chờ: <yellow>{delay} <white>giây'
+      - ''
+      - ' <#5db5f1>★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: <white>{time}'
+      - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+      - '   <dark_gray>• <white>Kho: <yellow>{percent_storage_rounded}%'
+      - '   <dark_gray>• <white>Giá trị bán: <green>${total_sell_price}'
+      - ''
+      - '<#5db5f1> ▸ Chuột trái: <white>Bán và nhận Exp'
+    # Used when the player cannot sell.
+    lore_no_shop:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
+      - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+      - '   <dark_gray>• <white>Phạm vi: <yellow>{range} <white>khối'
+      - '   <dark_gray>• <white>Sinh vật: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+      - '   <dark_gray>• <white>Thời gian chờ: <yellow>{delay} <white>giây'
+      - ''
+      - ' <#5db5f1>★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: <white>{time}'
+      - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+      - '   <dark_gray>• <white>Kho: <yellow>{percent_storage_rounded}%'
+      - ''
+    # Shown as {time} when the spawner is not counting down.
+    lore_full: '<#ff4444>đã đầʏ ꜱứᴄ ᴄʜứᴀ'
+    lore_inactive: '<#ff4444>ᴋʜôɴɢ ʜᴏạᴛ độɴɢ'
+    lore_no_loot: '<#ff4444>ᴄʜưᴀ ᴄấᴜ ʜìɴʜ ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
 
-  # This defines how each loot item will be displayed when using {loot_items}
-  # Available placeholders for each loot item:
-  # {item_name} - The name of the item (normal capitalization)
-  # {amount} - Number of items (formatted with commas)
-  # {raw_amount} - Number of items (without formatting)
-  # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
-  loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
-  loot_items_empty: '  <dark_gray>• <white>Không có vật phẩm'
+  # {current_exp} {max_exp} {percent_exp_rounded} {percent_exp_decimal}
+  exp:
+    name: '<white>ɴʜậɴ <#5db5f1><smallcaps>Exp</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Nhận Exp hoặc dùng'
+      - '   <white>Exp để sửa chữa'
+      - '   <white>trang bị Mending <white>của bạn.'
+      - ''
+      - ' <#5db5f1>★ ꜱứᴄ ᴄʜứᴀ: <white>{percent_exp_rounded}%'
+      - '  <dark_gray>• <white>Exp đã lưu: <green>{current_exp}<white>/<green>{max_exp}'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để nhận Exp!'
 
+storage:
+  # {current_page} {total_pages} {amount} {entity} {entity_small}
+  title: '[{current_page}/{total_pages}] <smallcaps>Kho spawner</smallcaps>'
+  # Used instead of title for a spawner that is not stacked.
+  title_single: '[{current_page}/{total_pages}] <smallcaps>Kho spawner</smallcaps>'
 
-# Available placeholders:
-# {entity}           - Formatted entity name (e.g., "Zombie")
-# {ᴇɴᴛɪᴛʏ}           - Entity name in small caps (e.g., "ᴢᴏᴍʙɪᴇ")
-# {stack_size}       - Number of spawners stacked at this location
-# {range}            - Spawning range in blocks
-# {delay}            - Spawn delay in seconds
-# {min_mobs}         - Minimum number of mobs to spawn
-# {max_mobs}         - Maximum number of mobs to spawn
-# {current_items}    - Current number of items stored
-# {max_items}        - Maximum storage capacity for items
-# {percent_storage_rounded}  - Storage usage as integer percentage (e.g., "87")
-# {percent_storage_decimal} - Storage usage as formatted percentage with decimal (e.g., "87.5")
-# {current_exp}      - Current experience stored (formatted with commas)
-# {max_exp}          - Maximum experience capacity (formatted with commas)
-# {raw_current_exp}  - Raw current experience number
-# {raw_max_exp}      - Raw maximum experience number
-# {percent_exp_rounded}      - Experience storage as integer percentage
-# {percent_exp_decimal}    - Experience storage as formatted percentage with decimal (e.g., "42.7")
-# {time}             - Time until the next spawn, or a status text when inactive/full/no loot
-# {total_sell_price} - Total sell value currently stored in the spawner
-spawner_info_item:
-  name: ' <white>ᴛʜôɴɢ ᴛɪɴ <#5db5f1>ꜱᴘᴀᴡɴᴇʀ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
-    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
-    - '   <dark_gray>• <white>Phạm vi: <yellow>{range} <white>khối'
-    - '   <dark_gray>• <white>Sinh vật: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
-    - '   <dark_gray>• <white>Thời gian chờ: <yellow>{delay} <white>giây'
-    - ''
-    - ' <#5db5f1>★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: <white>{time}'
-    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
-    - '   <dark_gray>• <white>Kho: <yellow>{percent_storage_rounded}%'
-    - '   <dark_gray>• <white>Giá trị bán: <green>${total_sell_price}'
-    - ''
-    - '<#5db5f1> ▸ Chuột trái: <white>Bán và nhận Exp'
-  lore_no_shop:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
-    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
-    - '   <dark_gray>• <white>Phạm vi: <yellow>{range} <white>khối'
-    - '   <dark_gray>• <white>Sinh vật: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
-    - '   <dark_gray>• <white>Thời gian chờ: <yellow>{delay} <white>giây'
-    - ''
-    - ' <#5db5f1>★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: <white>{time}'
-    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
-    - '   <dark_gray>• <white>Kho: <yellow>{percent_storage_rounded}%'
-    - ''
-  lore_full: '<#ff4444>đã đầʏ ꜱứᴄ ᴄʜứᴀ'
-  lore_inactive: '<#ff4444>ᴋʜôɴɢ ʜᴏạᴛ độɴɢ'
-  lore_no_loot: '<#ff4444>ᴄʜưᴀ ᴄấᴜ ʜìɴʜ ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
+  # {target_page}
+  previous_page:
+    name: '<#37eb9a>ᴛʀᴀɴɢ ᴛʀướᴄ'
+    lore:
+      - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
+  next_page:
+    name: '<#37eb9a><smallcaps>Trang sau</smallcaps>'
+    lore:
+      - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
 
-exp_info_item:
-  name: '<white>ɴʜậɴ <#5db5f1>ᴇxᴘ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Nhận Exp hoặc dùng'
-    - '   <white>Exp để sửa chữa'
-    - '   <white>trang bị Mending <white>của bạn.'
-    - ''
-    - ' <#5db5f1>★ ꜱứᴄ ᴄʜứᴀ: <white>{percent_exp_rounded}%'
-    - '  <dark_gray>• <white>Exp đã lưu: <green>{current_exp}<white>/<green>{max_exp}'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để nhận Exp!'
+  # {total_sell_price}
+  sell:
+    name: '<white>ʙáɴ <green>ᴠậᴛ ᴘʜẩᴍ'
+    lore:
+      - ''
+      - ' <green>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Bạn sẽ bán tất cả vật phẩm'
+      - '   <white>trong kho.'
+      - ''
+      - '<green> ▸ Nhấp để bán!'
+  sell_and_exp:
+    name: '<white>ʙáɴ ᴠà <green>ɴʜậɴ ᴇxᴘ'
+    lore:
+      - ''
+      - ' <green>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Bạn sẽ bán tất cả vật phẩm'
+      - '   <white>và nhận Exp đã lưu.'
+      - '  <dark_gray>• <white>Tổng ước tính: <green>${total_sell_price}'
+      - ''
+      - '<green> ▸ Nhấp để tiếp tục!'
 
-# ──────────────────────────────────────────────────────
-#                Sell Confirmation GUI
-# ──────────────────────────────────────────────────────
-gui_title_sell_confirm: 'xáᴄ ɴʜậɴ ʙáɴ'
+  back:
+    name: '<white>ǫᴜᴀʏ ʟạɪ <#ff6b6b>ᴍᴇɴᴜ ᴄʜíɴʜ'
+    lore:
+      - ''
+      - ' <#dadada>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Nhấp để quay lại'
+      - '   <white>về menu trước.'
+      - ''
+      - '<red> ▸ Nhấp để quay lại!'
 
-button_sell_cancel:
-  name: '<white>ʜủʏ <#ff6b6b>ʙáɴ'
-  lore:
-    - ''
-    - ' <#ff6b6b>⚠ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Nhấp để quay lại'
-    - '   <white>mà không bán gì cả.'
-    - ''
-    - '<#ff6b6b> ▸ Nhấp để hủy!'
+  take_all:
+    name: '<white>ʟấʏ <#5db5f1>ᴛấᴛ ᴄả'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Bạn sẽ lấy tất cả'
+      - '   <white>vật phẩm ở trang này.'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để lấy!'
 
-button_sell_confirm:
-  name: '<white>xáᴄ ɴʜậɴ <#5db5f1>ʙáɴ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ Bạn sẽ nhận:'
-    - '  <dark_gray>• <white>Tiền: <green>${total_sell_price}'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để xác nhận bán!'
+  filter:
+    name: '<white>ʟọᴄ <#5db5f1>ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Cấu hình vật phẩm được phép'
+      - '   <white>và bị chặn cho spawner này.'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để cấu hình bộ lọc!'
 
-button_sell_confirm_with_exp:
-  name: '<white>xáᴄ ɴʜậɴ ʙáɴ <#5db5f1>ᴠà ᴇxᴘ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ Bạn sẽ nhận:'
-    - '  <dark_gray>• <white>Tiền: <green>${total_sell_price}'
-    - '  <dark_gray>• <white>Exp: <green>{current_exp}'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để xác nhận!'
+  # {available_items} is the list built from selected_item, unselected_item and no_item ({item_name}).
+  sort:
+    name: '<white>ꜱắᴘ xếᴘ <#5db5f1>ᴠậᴛ ᴘʜẩᴍ'
+    lore:
+      - ''
+      - '{available_items}'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để sắp xếp!'
+    selected_item: ' <#5db5f1>• {item_name}'
+    unselected_item: ' <white>• {item_name}'
+    no_item: ' <gray>• Không có'
 
-# Available placeholders for button_sell_info:
-# {entity} - Formatted entity or item name
-# {ᴇɴᴛɪᴛʏ} - Entity or item name in small caps
-# {current_items} - Used storage slots
-# {max_items} - Maximum storage slots
-# {current_exp} - Stored experience
-# {total_sell_price} - Total sell value
-# {percent_storage_decimal} - Storage usage with 1 decimal (e.g., "87.5")
-# {percent_storage_rounded} - Storage usage rounded to whole number (e.g., "88")
-# {loot_items} - Expands to the generated loot item lines
-# Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
-button_sell_info:
-  name: '<white>ʙáɴ <#5db5f1>ᴛổɴɢ ᴋếᴛ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '{loot_items}'
-    - '  <dark_gray>• <green>+ <white>Exp: <yellow>{current_exp}'
-    - '  <dark_gray>• <green>+ <white>Tiền: <green>${total_sell_price}'
-  loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
-  loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>Không có vật phẩm để bán'
+  drop_page:
+    name: '<white>ᴛʜả <#ff6b6b><smallcaps>Trang</smallcaps>'
+    lore:
+      - ''
+      - ' <#ff6b6b>⚠ ᴄảɴʜ ʙáᴏ:'
+      - '  <dark_gray>• <white>Bạn sẽ thả mọi vật phẩm'
+      - '   <white>từ trang này xuống đất.'
+      - ''
+      - '<#ff6b6b> ▸ Nhấp để thả!'
 
-# ──────────────────────────────────────────────────────
-#             Spawner Storage GUI
-# ──────────────────────────────────────────────────────
-# Available placeholders for gui_title_storage:
-# {current_page}     - Current page number
-# {total_pages}      - Total number of pages
-# {entity}           - Formatted entity name (e.g., "Zombie")
-# {ᴇɴᴛɪᴛʏ}           - Entity name in small caps (e.g., "ᴢᴏᴍʙɪᴇ")
-# {amount}           - Number of spawners stacked
-gui_title_storage: '[{current_page}/{total_pages}] ᴋʜᴏ ꜱᴘᴀᴡɴᴇʀ'
+  # {current_exp}
+  collect_exp:
+    name: '<white>ɴʜậɴ <#5db5f1><smallcaps>Exp</smallcaps>'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Exp khả dụng: <green>{current_exp}'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để nhận Exp!'
 
-navigation_button_previous:
-  name: '<#37eb9a>ᴛʀᴀɴɢ ᴛʀướᴄ'
-  lore:
-    - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
+  # Empty unless a layout places the info button in the storage. Same placeholders as main.storage.
+  info:
+    name: ''
+    lore:
 
-navigation_button_next:
-  name: '<#37eb9a>ᴛʀᴀɴɢ ꜱᴀᴜ'
-  lore:
-    - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
+# {total_sell_price} {current_exp}
+sell_confirm:
+  title: 'xáᴄ ɴʜậɴ ʙáɴ'
 
-sell_button:
-  name: '<white>ʙáɴ <green>ᴠậᴛ ᴘʜẩᴍ'
-  lore:
-    - ''
-    - ' <green>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Bạn sẽ bán tất cả vật phẩm'
-    - '   <white>trong kho.'
-    - ''
-    - '<green> ▸ Nhấp để bán!'
+  cancel:
+    name: '<white>ʜủʏ <#ff6b6b>ʙáɴ'
+    lore:
+      - ''
+      - ' <#ff6b6b>⚠ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Nhấp để quay lại'
+      - '   <white>mà không bán gì cả.'
+      - ''
+      - '<#ff6b6b> ▸ Nhấp để hủy!'
 
-sell_and_exp_button:
-  name: '<white>ʙáɴ ᴠà <green>ɴʜậɴ ᴇxᴘ'
-  lore:
-    - ''
-    - ' <green>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Bạn sẽ bán tất cả vật phẩm'
-    - '   <white>và nhận Exp đã lưu.'
-    - '  <dark_gray>• <white>Tổng ước tính: <green>${total_sell_price}'
-    - ''
-    - '<green> ▸ Nhấp để tiếp tục!'
+  confirm:
+    name: '<white>xáᴄ ɴʜậɴ <#5db5f1>ʙáɴ'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ Bạn sẽ nhận:'
+      - '  <dark_gray>• <white>Tiền: <green>${total_sell_price}'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để xác nhận bán!'
 
-return_button:
-  name: '<white>ǫᴜᴀʏ ʟạɪ <#ff6b6b>ᴍᴇɴᴜ ᴄʜíɴʜ'
-  lore:
-    - ''
-    - ' <#dadada>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Nhấp để quay lại'
-    - '   <white>về menu trước.'
-    - ''
-    - '<red> ▸ Nhấp để quay lại!'
+  confirm_with_exp:
+    name: '<white>xáᴄ ɴʜậɴ ʙáɴ <#5db5f1>ᴠà ᴇxᴘ'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ Bạn sẽ nhận:'
+      - '  <dark_gray>• <white>Tiền: <green>${total_sell_price}'
+      - '  <dark_gray>• <white>Exp: <green>{current_exp}'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để xác nhận!'
 
-take_all_button:
-  name: '<white>ʟấʏ <#5db5f1>ᴛấᴛ ᴄả'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Bạn sẽ lấy tất cả'
-    - '   <white>vật phẩm ở trang này.'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để lấy!'
+  # {entity} {entity_small} {current_items} {max_items} {current_exp} {total_sell_price} {percent_storage_decimal} {percent_storage_rounded} {loot_items}
+  summary:
+    name: '<white>ʙáɴ <#5db5f1>ᴛổɴɢ ᴋếᴛ'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '{loot_items}'
+      - '  <dark_gray>• <green>+ <white>Exp: <yellow>{current_exp}'
+      - '  <dark_gray>• <green>+ <white>Tiền: <green>${total_sell_price}'
+    # One line of {loot_items}: {amount} {item_name} {chance}
+    loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
+    loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>Không có vật phẩm để bán'
 
-item_filter_button:
-  name: '<white>ʟọᴄ <#5db5f1>ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Cấu hình vật phẩm được phép'
-    - '   <white>và bị chặn cho spawner này.'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để cấu hình bộ lọc!'
+filter:
+  title: '    ᴄʜᴏ ᴘʜéᴘ           ʙị ᴄʜặɴ'
 
-sort_items_button:
-  name: '<white>ꜱắᴘ xếᴘ <#5db5f1>ᴠậᴛ ᴘʜẩᴍ'
-  lore:
-    - ''
-    - '{available_items}'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để sắp xếp!'
-  selected_item: ' <#5db5f1>• {item_name}'
-  unselected_item: ' <white>• {item_name}'
-  no_item: ' <gray>• Không có'
+  divider:
+    name: '<white>ᴛʜả <#5db5f1>ʟọᴄ'
+    lore:
+      - ''
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Bên trái: vật phẩm được phép'
+      - '  <dark_gray>• <white>Bên phải: vật phẩm bị chặn'
+      - ''
+      - '<#5db5f1> ▸ Nhấp để trở về kho!'
 
-drop_page_button:
-  name: '<white>ᴛʜả <#ff6b6b>ᴛʀᴀɴɢ'
-  lore:
-    - ''
-    - ' <#ff6b6b>⚠ ᴄảɴʜ ʙáᴏ:'
-    - '  <dark_gray>• <white>Bạn sẽ thả mọi vật phẩm'
-    - '   <white>từ trang này xuống đất.'
-    - ''
-    - '<#ff6b6b> ▸ Nhấp để thả!'
+  # {item_name}
+  allowed:
+    name: '<white>{item_name}<#37eb9a> được phép'
+    lore:
+      - '<#37eb9a> ▸ <white>Nhấp để chặn vật phẩm này!'
+  blocked:
+    name: '<white>{item_name}<#ff6b6b> bị chặn'
+    lore:
+      - '<#ff6b6b> ▸ <white>Nhấp để cho phép vật phẩm này!'
 
-collect_exp_button:
-  name: '<white>ɴʜậɴ <#5db5f1>ᴇxᴘ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Exp khả dụng: <green>{current_exp}'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để nhận Exp!'
+# The GUIs opened by commands: /ss list, /ss near, /ss prices and /ss editloot.
+command:
+  # {target_page} {previous_menu}
+  navigation:
+    previous_page:
+      name: '<#37eb9a>ᴛʀᴀɴɢ ᴛʀướᴄ'
+      lore:
+        - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
+    next_page:
+      name: '<#37eb9a><smallcaps>Trang sau</smallcaps>'
+      lore:
+        - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
+    close:
+      name: '<#ff6b6b>đóɴɢ'
+      lore:
+        - '<#ff6b6b> ▸ <white>Nhấp để đóng!'
+    back:
+      name: '<white>ǫᴜᴀʏ ʟạɪ <#ff6b6b>{previous_menu}'
+      lore:
+        - '<red> ▸ <white>Nhấp để quay lại!'
+    # What {previous_menu} shows.
+    menu_names:
+      server_selection: 'ᴄʜọɴ ᴍáʏ ᴄʜủ'
+      world_selection: 'ᴄʜọɴ ᴛʜế ɢɪớɪ'
+      spawner_list: 'ᴅᴀɴʜ ꜱáᴄʜ ꜱᴘᴀᴡɴᴇʀ'
+      spawner_management: 'ǫᴜảɴ ʟý ꜱᴘᴀᴡɴᴇʀ'
 
-storage_spawner_info_button:
-  name: ''
-  lore:
+  list:
+    # {server}. Only shown on cross-server setups.
+    servers:
+      title: 'ᴄʜọɴ ᴍáʏ ᴄʜủ'
+      current:
+        name: '<#37eb9a>{server}'
+        lore:
+          - ''
+          - ' <#37eb9a>ℹ ᴛʀạɴɢ ᴛʜáɪ:'
+          - '  <dark_gray>• <white>Máy chủ hiện tại'
+          - ''
+          - '<#37eb9a> ▸ Nhấp để xem các spawner!'
+      remote:
+        name: '<#f0c857>{server}'
+        lore:
+          - ''
+          - ' <#f0c857>ℹ ᴛʀạɴɢ ᴛʜáɪ:'
+          - '  <dark_gray>• <white>Máy chủ từ xa'
+          - ''
+          - '<#f0c857> ▸ Nhấp để xem các spawner!'
 
-# ──────────────────────────────────────────────────────
-#             Filter Configuration GUI
-# ──────────────────────────────────────────────────────
-gui_title_filter_config: '    ᴄʜᴏ ᴘʜéᴘ           ʙị ᴄʜặɴ'
+    # {world_name} {total} {total_stacked} {remote_world_lore} {server}
+    worlds:
+      title: 'ᴄʜọɴ ᴛʜế ɢɪớɪ'
+      title_server: '{server} ᴛʜế ɢɪớɪ'
+      names:
+        overworld: 'Thế Giới Chính'
+        nether: 'Địa Ngục'
+        the_end: 'The End'
+        custom: 'Thế giới {world_name}'
+      buttons:
+        NORMAL:
+          name: '<#37eb9a>{world_name}'
+          lore:
+            - ''
+            - ' <#37eb9a>ℹ ᴛʜốɴɢ ᴋê:'
+            - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+            - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#37eb9a> ▸ Nhấp để mở danh sách!'
+        NETHER:
+          name: '<#ff6b6b>{world_name}'
+          lore:
+            - ''
+            - ' <#ff6b6b>ℹ ᴛʜốɴɢ ᴋê:'
+            - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+            - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#ff6b6b> ▸ Nhấp để mở danh sách!'
+        THE_END:
+          name: '<#c8a2ff>{world_name}'
+          lore:
+            - ''
+            - ' <#c8a2ff>ℹ ᴛʜốɴɢ ᴋê:'
+            - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+            - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#c8a2ff> ▸ Nhấp để mở danh sách!'
+        CUSTOM:
+          name: '<#5db5f1>{world_name}'
+          lore:
+            - ''
+            - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
+            - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+            - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
+            - '{remote_world_lore}'
+            - ''
+            - '<#5db5f1> ▸ Nhấp để mở danh sách!'
+      remote_lore:
+        - ''
+        - ' <#f0c857>ℹ ᴛʜế ɢɪớɪ ᴛừ xᴀ:'
+        - '  <dark_gray>• <white>Máy chủ: <yellow>{server}'
 
-filter_divider:
-  name: '<white>ᴛʜả <#5db5f1>ʟọᴄ'
-  lore:
-    - ''
-    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  <dark_gray>• <white>Bên trái: vật phẩm được phép'
-    - '  <dark_gray>• <white>Bên phải: vật phẩm bị chặn'
-    - ''
-    - '<#5db5f1> ▸ Nhấp để trở về kho!'
+    # {current} {total} {world} {server} {available_options} {option_name} {id} {entity} {size} {status} {last_player} {x} {y} {z}
+    spawners:
+      title: '[{current}/{total}] {world}'
+      title_remote: '[{current}/{total}] {world} ({server})'
+      filter:
+        name: '<white>ʟọᴄ <#5db5f1><smallcaps>Spawner</smallcaps>'
+        lore:
+          - ''
+          - '{available_options}'
+          - ''
+          - '<#5db5f1> ▸ Nhấp để đổi bộ lọc!'
+      filter_options:
+        all: 'Tất cả'
+        active: 'Hoạt động'
+        inactive: 'Không hoạt động'
+      sort:
+        name: '<white>ꜱắᴘ xếᴘ <#5db5f1><smallcaps>Spawner</smallcaps>'
+        lore:
+          - ''
+          - '{available_options}'
+          - ''
+          - '<#5db5f1> ▸ Nhấp để đổi cách sắp xếp!'
+      sort_options:
+        default: 'Mặc định (ID)'
+        stack_size_asc: 'Số lượng stack (↑)'
+        stack_size_desc: 'Số lượng stack (↓)'
+      selected_option: ' <#5db5f1>• {option_name}'
+      unselected_option: ' <white>• {option_name}'
+      spawner:
+        name: '<white><smallcaps>Spawner</smallcaps> <#5db5f1>#{id}'
+        lore:
+          - ''
+          - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+          - '  <dark_gray>• <white>Sinh vật: <yellow>{entity}'
+          - '  <dark_gray>• <white>Stack: <yellow>{size}'
+          - '  <dark_gray>• <white>Trạng thái: {status}'
+          - '  <dark_gray>• <white>Người chơi cuối: <yellow>{last_player}'
+          - '  <dark_gray>• <white>Vị trí: <gray>x: {x}, y: {y}, z: {z}'
+          - ''
+          - '<#5db5f1> ▸ Nhấp để quản lý spawner này!'
+        remote_lore:
+          - ''
+          - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+          - '  <dark_gray>• <white>Sinh vật: <yellow>{entity}'
+          - '  <dark_gray>• <white>Stack: <yellow>{size}'
+          - '  <dark_gray>• <white>Trạng thái: {status}'
+          - '  <dark_gray>• <white>Người chơi cuối: <yellow>{last_player}'
+          - '  <dark_gray>• <white>Vị trí: <gray>x: {x}, y: {y}, z: {z}'
+          - ''
+          - '<#ff6b6b> ⚠ Không thể quản lý spawner từ xa!'
+        last_player_none: 'Không có'
+        status:
+          active: '<#00e689>Hoạt động'
+          inactive: '<#ff6b6b>Không hoạt động'
 
-filter_item_allowed:
-  name: '<white>{item_name}<#37eb9a> được phép'
-  lore:
-    - '<#37eb9a> ▸ <white>Nhấp để chặn vật phẩm này!'
+    manage:
+      title: 'ǫᴜảɴ ʟý ꜱᴘᴀᴡɴᴇʀ'
+      teleport:
+        name: '<white>ᴅịᴄʜ ᴄʜᴜʏểɴ <#5db5f1>đếɴ ꜱᴘᴀᴡɴᴇʀ'
+        lore:
+          - '<#5db5f1> ▸ <white>Nhấp để dịch chuyển!'
+      open_spawner:
+        name: '<white>ᴍở <#5db5f1><smallcaps>Menu spawner</smallcaps>'
+        lore:
+          - '<#5db5f1> ▸ <white>Nhấp để mở menu!'
+      remove:
+        name: '<white>ɢỡ ʙỏ <#ff6b6b><smallcaps>Spawner</smallcaps>'
+        lore:
+          - '<#ff6b6b> ▸ <white>Nhấp để gỡ spawner này!'
 
-filter_item_blocked:
-  name: '<white>{item_name}<#ff6b6b> bị chặn'
-  lore:
-    - '<#ff6b6b> ▸ <white>Nhấp để cho phép vật phẩm này!'
+  # {current_page} {total_pages} {item_name} {price} {price_source} {custom_price} {shop_price}
+  prices:
+    title: '[{current_page}/{total_pages}] ɢɪá ʙáɴ'
+    item:
+      name: '<white>{item_name} <#5db5f1>ɢɪá'
+      lore:
+        - ''
+        - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+        - '  <dark_gray>• <white>Giá cuối: <green>${price}'
+        - '  <dark_gray>• <white>Nguồn: <yellow>{price_source}'
+        - '  <dark_gray>• <white>Giá tùy chỉnh: <green>${custom_price}'
+        - '  <dark_gray>• <white>Giá cửa hàng: <green>${shop_price}'
 
+  # {entry} {label} {item} {amount} {chance} {durability} {max}
+  editloot:
+    mob_loot_title: '<smallcaps>Loot mob</smallcaps> • {entry}'
+    item_loot_title: 'ʟᴏᴏᴛ ᴠậᴛ ᴘʜẩᴍ • {entry}'
+    capture_add_title: 'ᴛʜả ᴠậᴛ ᴘʜẩᴍ để ᴛʜêᴍ'
+    capture_replace_title: 'ᴛʜả ᴠậᴛ ᴘʜẩᴍ ᴍớɪ'
+
+    loot_entry:
+      name: '<white><smallcaps>Loot</smallcaps> <#37eb9a>{label}'
+      lore:
+        - ''
+        - ' <#37eb9a>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+        - '  <dark_gray>• <white>Vật phẩm: <yellow>{item}'
+        - '  <dark_gray>• <white>Số lượng: <yellow>{amount}'
+        - '  <dark_gray>• <white>Tỉ lệ: <yellow>{chance}%'
+        - '  <dark_gray>• <white>Độ bền: <yellow>{durability}'
+        - ''
+        - '<#37eb9a> ▸ <white>Chuột trái để sửa giá trị!'
+        - '<#37eb9a> ▸ <white>Chuột phải để đổi vật phẩm!'
+
+    loot_broken:
+      name: '<white><smallcaps>Loot</smallcaps> <#ff6b6b>{label}'
+      lore:
+        - ''
+        - ' <#ff6b6b>⚠ ᴄảɴʜ ʙáᴏ:'
+        - '  <dark_gray>• <white>Không đọc được vật phẩm này.'
+        - '  <dark_gray>• <white>Giá trị: <yellow>{item}'
+        - ''
+        - '<#ff6b6b> ▸ <white>Chuột phải để đặt vật phẩm mới!'
+
+    add_loot:
+      name: '<white>ᴛʜêᴍ <#37eb9a><smallcaps>Loot</smallcaps>'
+      lore:
+        - ''
+        - ' <#37eb9a>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+        - '  <dark_gray>• <white>Thêm một vật phẩm loot khác.'
+        - ''
+        - '<#37eb9a> ▸ <white>Bấm để chọn vật phẩm!'
+
+    capture_hint:
+      name: '<white>ᴛʜả ᴠậᴛ ᴘʜẩᴍ <#5db5f1>ᴠàᴏ ô ɢɪữᴀ'
+      lore:
+        - ''
+        - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+        - '  <dark_gray>• <white>Vật phẩm được lưu y nguyên.'
+        - '  <dark_gray>• <white>Bạn nhận lại nó khi rời đi.'
+
+    cancel:
+      name: '<white>ʜủʏ <#ff6b6b>ᴄʜọɴ'
+      lore:
+        - ''
+        - ' <#ff6b6b>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+        - '  <dark_gray>• <white>Bỏ lần chọn này.'
+        - ''
+        - '<#ff6b6b> ▸ <white>Bấm để hủy!'
+
+    confirm:
+      name: '<white>xáᴄ ɴʜậɴ <#37eb9a>ᴠậᴛ ᴘʜẩᴍ'
+      lore:
+        - ''
+        - ' <#37eb9a>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+        - '  <dark_gray>• <white>Tiếp tục đặt số lượng và tỉ lệ.'
+        - ''
+        - '<#37eb9a> ▸ <white>Bấm để tiếp tục!'
+
+    # Text inside the loot settings dialog. Keep it short.
+    dialog_title:
+      name: 'ᴄàɪ đặᴛ ʟᴏᴏᴛ'
+    dialog_body:
+      name: '<gray>Số lượng và độ bền chấp nhận khoảng như <white>0-2<gray>.'
+    dialog_save:
+      name: '<green>✔ <white>Lưu'
+    dialog_cancel:
+      name: '<red>← <white>Hủy'
+    dialog_delete:
+      name: '<dark_red>✖ <white>Xóa loot'
+    field_amount:
+      name: 'Số lượng (vd: 1 hoặc 0-2)'
+    field_chance:
+      name: 'Tỉ lệ % (0-100)'
+    field_durability:
+      name: 'Độ bền (để trống nếu không, vd: 1-384)'
+    error_amount:
+      name: '<red>Số lượng phải là số nguyên 0-{max}, và min không lớn hơn max.'
+    error_chance:
+      name: '<red>Tỉ lệ phải là số từ 0 đến 100.'
+    error_durability:
+      name: '<red>Độ bền phải là số nguyên, và min không lớn hơn max.'

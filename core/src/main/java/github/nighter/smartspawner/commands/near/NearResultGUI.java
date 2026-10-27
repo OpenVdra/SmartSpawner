@@ -1,5 +1,7 @@
 package github.nighter.smartspawner.commands.near;
 
+import github.nighter.smartspawner.language.section.GuiLanguageSection;
+import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.list.gui.management.SpawnerManagementGUI;
 import github.nighter.smartspawner.language.LanguageManager;
@@ -61,7 +63,7 @@ public class NearResultGUI implements Listener {
     public void openNearResultGUI(Player player, int page) {
         List<SpawnerData> spawners = highlightManager.getSessionSpawners(player.getUniqueId());
         if (spawners.isEmpty()) {
-            plugin.getMessageService().sendMessage(player, "near.no_active_scan");
+            plugin.getMessageService().sendMessage(player, "command.near.no_active_scan");
             return;
         }
         openPage(player, spawners, page);
@@ -80,7 +82,8 @@ public class NearResultGUI implements Listener {
         titlePlaceholders.put("world", "Near (" + total + ")");
         titlePlaceholders.put("current", String.valueOf(page));
         titlePlaceholders.put("total", String.valueOf(totalPages));
-        String title = languageManager.commandGui().title("gui_title_spawner_list", titlePlaceholders);
+        GuiLanguageSection gui = languageManager.commandGui(player);
+        Component title = gui.title("list.spawners.title", titlePlaceholders);
 
         Inventory inv = Bukkit.createInventory(
                 new NearResultHolder(player.getUniqueId(), page, totalPages),
@@ -89,21 +92,23 @@ public class NearResultGUI implements Listener {
         int start = (page - 1) * SPAWNERS_PER_PAGE;
         int end = Math.min(start + SPAWNERS_PER_PAGE, total);
         for (int i = start; i < end; i++) {
-            inv.addItem(createSpawnerInfoItem(spawners.get(i)));
+            inv.addItem(createSpawnerInfoItem(gui, spawners.get(i)));
         }
 
         if (page > 1) {
             inv.setItem(45, createNavigationButton(
+                    gui,
                     Material.SPECTRAL_ARROW,
-                    "general_navigation.previous_page",
+                    "navigation.previous_page",
                     Map.of("target_page", String.valueOf(page - 1))));
         }
         // Close button at center-bottom
-        inv.setItem(49, createNavigationButton(Material.RED_STAINED_GLASS_PANE, "general_navigation.close"));
+        inv.setItem(49, createNavigationButton(gui, Material.RED_STAINED_GLASS_PANE, "navigation.close"));
         if (page < totalPages) {
             inv.setItem(53, createNavigationButton(
+                    gui,
                     Material.SPECTRAL_ARROW,
-                    "general_navigation.next_page",
+                    "navigation.next_page",
                     Map.of("target_page", String.valueOf(page + 1))));
         }
 
@@ -167,7 +172,7 @@ public class NearResultGUI implements Listener {
         String spawnerId = matcher.group(1);
         SpawnerData spawner = plugin.getSpawnerManager().getSpawnerById(spawnerId);
         if (spawner == null) {
-            plugin.getMessageService().sendMessage(player, "list.teleport_failed");
+            plugin.getMessageService().sendMessage(player, "command.list.teleport_failed");
             return;
         }
 
@@ -186,7 +191,7 @@ public class NearResultGUI implements Listener {
     //  Item creation
     // ──────────────────────────────────────────────────────────────────────────
 
-    private ItemStack createSpawnerInfoItem(SpawnerData spawner) {
+    private ItemStack createSpawnerInfoItem(GuiLanguageSection gui, SpawnerData spawner) {
         EntityType entityType = spawner.getEntityType();
         Location loc = spawner.getSpawnerLocation();
 
@@ -195,9 +200,9 @@ public class NearResultGUI implements Listener {
         placeholders.put("entity", spawner.getDisplayName());
         placeholders.put("size", String.valueOf(spawner.getStackSize()));
         if (spawner.getSpawnerStop().get()) {
-            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.inactive"));
+            placeholders.put("status", gui.configString("list.spawners.spawner.status.inactive", "Inactive"));
         } else {
-            placeholders.put("status", languageManager.commandGui().name("spawner_item_list.status.active"));
+            placeholders.put("status", gui.configString("list.spawners.spawner.status.active", "Active"));
         }
         placeholders.put("x", String.valueOf(loc.getBlockX()));
         placeholders.put("y", String.valueOf(loc.getBlockY()));
@@ -205,20 +210,20 @@ public class NearResultGUI implements Listener {
         String lastPlayer = spawner.getLastInteractedPlayer();
         placeholders.put("last_player", lastPlayer != null
                 ? lastPlayer
-                : languageManager.commandGui().name("spawner_item_list.last_player_none"));
+                : gui.configString("list.spawners.spawner.last_player_none", "None"));
 
         ItemStack spawnerItem;
         if (entityType == null) {
             spawnerItem = new ItemStack(Material.SPAWNER);
             spawnerItem.editMeta(meta -> {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
-                meta.setLore(Arrays.asList(languageManager.commandGui().lore("spawner_item_list.lore", placeholders)));
+                meta.displayName(gui.name("list.spawners.spawner.name", placeholders));
+                meta.lore(gui.lore("list.spawners.spawner.lore", placeholders));
             });
         } else {
             spawnerItem = SpawnerMobHeadTexture.getSpawnerHead(spawner, meta -> {
-                meta.setDisplayName(languageManager.commandGui().name("spawner_item_list.name", placeholders));
-                meta.setLore(Arrays.asList(languageManager.commandGui().lore("spawner_item_list.lore", placeholders)));
+                meta.displayName(gui.name("list.spawners.spawner.name", placeholders));
+                meta.lore(gui.lore("list.spawners.spawner.lore", placeholders));
             });
         }
 
@@ -226,18 +231,19 @@ public class NearResultGUI implements Listener {
         return spawnerItem;
     }
 
-    private ItemStack createNavigationButton(Material material, String namePath) {
-        return createNavigationButton(material, namePath, Collections.emptyMap());
+    private ItemStack createNavigationButton(GuiLanguageSection gui, Material material, String namePath) {
+        return createNavigationButton(gui, material, namePath, Collections.emptyMap());
     }
 
-    private ItemStack createNavigationButton(Material material, String namePath, Map<String, String> placeholders) {
+    private ItemStack createNavigationButton(GuiLanguageSection gui, Material material, String namePath,
+                                             Map<String, String> placeholders) {
         ItemStack button = new ItemStack(material);
         ItemMeta meta = button.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(languageManager.commandGui().name(namePath + ".name", placeholders));
-            List<String> lore = languageManager.commandGui().loreList(namePath + ".lore", placeholders);
+            meta.displayName(gui.name(namePath + ".name", placeholders));
+            List<Component> lore = gui.lore(namePath + ".lore", placeholders);
             if (!lore.isEmpty()) {
-                meta.setLore(lore);
+                meta.lore(lore);
             }
             button.setItemMeta(meta);
         }

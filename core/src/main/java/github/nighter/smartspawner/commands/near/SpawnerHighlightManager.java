@@ -2,14 +2,13 @@ package github.nighter.smartspawner.commands.near;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.Scheduler;
+import github.nighter.smartspawner.language.section.MessageLanguageSection;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import github.nighter.smartspawner.language.format.TextFormatter;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -81,10 +80,10 @@ public class SpawnerHighlightManager implements Listener {
         final double radiusSq = (double) radius * radius;
         final int finalRadius = radius;
 
+        final MessageLanguageSection messages = plugin.getLanguageManager().texts(player).getMessages();
         BossBar bossBar = BossBar.bossBar(
-                TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
-                        "near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
-                        Map.of("percent", "0"))).colorIfAbsent(NamedTextColor.AQUA),
+                messages.commandText("near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
+                        Map.of("percent", "0")).colorIfAbsent(NamedTextColor.AQUA),
                 0f,
                 BossBar.Color.BLUE,
                 BossBar.Overlay.PROGRESS
@@ -95,7 +94,7 @@ public class SpawnerHighlightManager implements Listener {
         player.showBossBar(bossBar);
         player.updateCommands();
 
-        plugin.getMessageService().sendMessage(player, "near.scan_start",
+        plugin.getMessageService().sendMessage(player, "command.near.scan_start",
                 Map.of("radius", String.valueOf(radius)));
 
         Scheduler.runTaskAsync(() -> {
@@ -133,9 +132,8 @@ public class SpawnerHighlightManager implements Listener {
                 if (i % 50 == 0 || i == total - 1) {
                     float progress = (float) (i + 1) / total;
                     int pct = (int) (progress * 100);
-                    bossBar.name(TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
-                            "near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
-                            Map.of("percent", String.valueOf(pct)))).colorIfAbsent(NamedTextColor.AQUA));
+                    bossBar.name(messages.commandText("near.bossbar.analyzing", BOSSBAR_ANALYZING_FALLBACK,
+                            Map.of("percent", String.valueOf(pct))).colorIfAbsent(NamedTextColor.AQUA));
                     bossBar.progress(progress);
                 }
             }
@@ -157,13 +155,13 @@ public class SpawnerHighlightManager implements Listener {
     public void cancelScan(Player player) {
         ScanSession session = activeSessions.remove(player.getUniqueId());
         if (session == null) {
-            plugin.getMessageService().sendMessage(player, "near.no_active_scan");
+            plugin.getMessageService().sendMessage(player, "command.near.no_active_scan");
             return;
         }
         session.cancelled.set(true);
         cleanupSession(session, player);
         player.updateCommands();
-        plugin.getMessageService().sendMessage(player, "near.scan_cancelled");
+        plugin.getMessageService().sendMessage(player, "command.near.scan_cancelled");
     }
 
     public boolean hasActiveSession(UUID uuid) {
@@ -188,16 +186,15 @@ public class SpawnerHighlightManager implements Listener {
 
         int count = spawners.size();
         session.scannedSpawners = new ArrayList<>(spawners);
+        MessageLanguageSection messages = plugin.getLanguageManager().texts(player).getMessages();
 
         if (count == 0) {
-            session.bossBar.name(TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
-                    "near.bossbar.not_found", BOSSBAR_NOT_FOUND_FALLBACK,
-                    Map.of("radius", String.valueOf(radius)))).colorIfAbsent(NamedTextColor.RED));
+            session.bossBar.name(messages.commandText("near.bossbar.not_found", BOSSBAR_NOT_FOUND_FALLBACK,
+                    Map.of("radius", String.valueOf(radius))).colorIfAbsent(NamedTextColor.RED));
             session.bossBar.color(BossBar.Color.RED);
         } else {
-            session.bossBar.name(TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
-                    "near.bossbar.found", BOSSBAR_FOUND_FALLBACK,
-                    Map.of("count", String.valueOf(count), "radius", String.valueOf(radius)))).colorIfAbsent(NamedTextColor.GREEN));
+            session.bossBar.name(messages.commandText("near.bossbar.found", BOSSBAR_FOUND_FALLBACK,
+                    Map.of("count", String.valueOf(count), "radius", String.valueOf(radius))).colorIfAbsent(NamedTextColor.GREEN));
             session.bossBar.color(BossBar.Color.GREEN);
         }
         session.bossBar.progress(1f);
@@ -210,14 +207,13 @@ public class SpawnerHighlightManager implements Listener {
 
         Map<String, String> resultPlaceholders = Map.of("count", String.valueOf(count), "radius", String.valueOf(radius));
         if (count > 0) {
-            String foundMsg = plugin.getLanguageManager().getMessage("near.scan_found", resultPlaceholders);
-            Component textPart = (foundMsg != null && !foundMsg.startsWith("Missing"))
-                    ? LegacyComponentSerializer.legacySection().deserialize(foundMsg)
-                    : Component.empty();
+            Component foundMsg = messages.message("command.near.scan_found", resultPlaceholders);
+            Component textPart = foundMsg != null ? foundMsg : Component.empty();
 
+            // The click is a server-side callback that opens the GUI, never a command, and the text
+            // around it is display text, so nothing in the language file can make it run anything.
             Component viewGuiHint = Component.text()
-                    .append(TextFormatter.fromLegacy(
-                            plugin.getLanguageManager().getCommandConfig("near.view_gui.button", VIEW_GUI_BUTTON_FALLBACK))
+                    .append(messages.commandText("near.view_gui.button", VIEW_GUI_BUTTON_FALLBACK)
                             .colorIfAbsent(NamedTextColor.GOLD)
                             .clickEvent(ClickEvent.callback(audience -> {
                                 if (audience instanceof Player clickPlayer) {
@@ -225,22 +221,21 @@ public class SpawnerHighlightManager implements Listener {
                                 }
                             }))
                             .hoverEvent(HoverEvent.showText(
-                                    TextFormatter.fromLegacy(plugin.getLanguageManager().getCommandConfig(
-                                            "near.view_gui.hover",
+                                    messages.commandText("near.view_gui.hover",
                                             "Click to browse the {count} spawner(s) found nearby",
-                                            Map.of("count", String.valueOf(count)))).colorIfAbsent(NamedTextColor.GRAY))))
+                                            Map.of("count", String.valueOf(count))).colorIfAbsent(NamedTextColor.GRAY))))
                     .build();
 
             player.sendMessage(Component.text().append(textPart).append(viewGuiHint).build());
 
-            String soundKey = plugin.getLanguageManager().getSound("near.scan_found");
+            String soundKey = messages.sound("command.near.scan_found");
             if (soundKey != null) {
                 try {
                     player.playSound(player.getLocation(), soundKey, 1.0f, 1.0f);
                 } catch (Exception ignored) {}
             }
         } else {
-            plugin.getMessageService().sendMessage(player, "near.scan_none", resultPlaceholders);
+            plugin.getMessageService().sendMessage(player, "command.near.scan_none", resultPlaceholders);
         }
 
         Scheduler.runTaskLater(() -> {
@@ -259,7 +254,7 @@ public class SpawnerHighlightManager implements Listener {
             cleanupSession(session, p);
             if (p != null && p.isOnline()) {
                 p.updateCommands();
-                plugin.getMessageService().sendMessage(p, "near.highlights_expired");
+                plugin.getMessageService().sendMessage(p, "command.near.highlights_expired");
             }
         }, HIGHLIGHT_DURATION_TICKS);
     }

@@ -1,62 +1,48 @@
 package github.nighter.smartspawner.language.format;
 
 import github.nighter.smartspawner.language.cache.LanguageCache;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
+/** {@link TextFormatter} with a cache keyed by the text and its placeholders. */
 public final class PlaceholderFormatter {
     private final LanguageCache cache;
-    private final AtomicInteger cacheHits;
-    private final AtomicInteger cacheMisses;
 
-    public PlaceholderFormatter(LanguageCache cache, AtomicInteger cacheHits, AtomicInteger cacheMisses) {
+    public PlaceholderFormatter(LanguageCache cache) {
         this.cache = cache;
-        this.cacheHits = cacheHits;
-        this.cacheMisses = cacheMisses;
     }
 
-    public String apply(String text, Map<String, String> placeholders) {
-        if (text == null) {
-            return null;
-        }
-
+    /** Display text: item names and lore, titles, holograms. See {@link TextFormatter#parse}. */
+    public Component apply(String text, Map<String, String> placeholders) {
+        if (text == null) return null;
         String key = cacheKey(text, placeholders);
-        String cached = cache.getCachedString(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
+        Component cached = cache.getText(key);
+        if (cached != null) return cached;
 
-        cacheMisses.incrementAndGet();
-        String result = TextFormatter.toLegacy(text, placeholders);
-        cache.putCachedString(key, result);
+        Component result = TextFormatter.parse(text, placeholders);
+        cache.putText(key, result);
         return result;
     }
 
+    /** A chat message, which may use click and hover. See {@link TextFormatter#parseChat}. */
+    public Component applyChat(String text, Map<String, String> placeholders) {
+        if (text == null) return null;
+        String key = cacheKey(text, placeholders);
+        Component cached = cache.getChat(key);
+        if (cached != null) return cached;
+
+        Component result = TextFormatter.parseChat(text, placeholders);
+        cache.putChat(key, result);
+        return result;
+    }
+
+    /** Replaces {@code {key}} placeholders and nothing else. The result is still a template, not text. */
     public String applyOnlyPlaceholders(String text, Map<String, String> placeholders) {
-        if (text == null) {
-            return null;
-        }
-
-        String key = cacheKey(text, placeholders);
-        String cached = cache.getCachedString(key);
-        if (cached != null) {
-            cacheHits.incrementAndGet();
-            return cached;
-        }
-
-        cacheMisses.incrementAndGet();
-        String result = replacePlaceholders(text, placeholders);
-        cache.putCachedString(key, result);
-        return result;
-    }
-
-    private String replacePlaceholders(String text, Map<String, String> placeholders) {
-        if (placeholders == null || placeholders.isEmpty()) {
+        if (text == null || placeholders == null || placeholders.isEmpty()) {
             return text;
         }
         String result = text;
@@ -78,41 +64,6 @@ public final class PlaceholderFormatter {
             }
         }
         return result.toString().trim();
-    }
-
-    public List<String> processMultilinePlaceholders(String line, Map<String, String> placeholders) {
-        List<String> result = new ArrayList<>();
-        String multilineKey = findMultilinePlaceholder(line, placeholders);
-
-        if (multilineKey == null) {
-            result.add(apply(line, placeholders));
-            return result;
-        }
-
-        String multilineValue = placeholders.get(multilineKey);
-        String placeholder = "{" + multilineKey + "}";
-        String processedLine = replacePlaceholders(line, placeholders);
-        String[] valueLines = multilineValue.split("\n");
-        String lineStart = processedLine.substring(0, processedLine.indexOf(placeholder));
-
-        result.add(ColorUtil.translateHexColorCodes(processedLine.replace(placeholder, valueLines[0])));
-        for (int i = 1; i < valueLines.length; i++) {
-            result.add(ColorUtil.translateHexColorCodes(lineStart + valueLines[i]));
-        }
-        return result;
-    }
-
-    private String findMultilinePlaceholder(String line, Map<String, String> placeholders) {
-        if (placeholders == null || placeholders.isEmpty()) {
-            return null;
-        }
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            String value = entry.getValue();
-            if (value != null && value.contains("\n") && line.contains("{" + entry.getKey() + "}")) {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 
     public String cacheKey(String key, Map<String, String> placeholders) {

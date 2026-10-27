@@ -1,104 +1,101 @@
-# SmartSpawner – formatting.yml
-# Eklenti genelinde kullanılan sayı biçimlendirmesi ve yaratık görünüm adları.
+# SmartSpawner number formats and mob names
+# Full guide: https://docs.smartspawner.site/docs/language
 
-# ──────────────────────────────────────────────────────
-#                 Sayı Biçimlendirmesi
-# ──────────────────────────────────────────────────────
-# Büyük sayıların oyun içinde nasıl gösterileceğini kontrol eder
+# {s} is the shortened number.
 format_number:
-  thousand: "{s}K"    # Örnek: 5000 → 5K
-  million: "{s}M"     # Örnek: 2000000 → 2M
-  billion: "{s}B"     # Örnek: 1500000000 → 1.5B
-  trillion: "{s}T"    # Örnek: 1000000000000 → 1T
-  default: "{s}"      # Diğer hiçbir kuralla eşleşmediğinde kullanılacak varsayılan biçim
+  thousand: '{s}K'    # Example: 5000 → 5K
+  million: '{s}M'     # Example: 2000000 → 2M
+  billion: '{s}B'     # Example: 1500000000 → 1.5B
+  trillion: '{s}T'    # Example: 1000000000000 → 1T
+  default: '{s}'      # Fallback format when no other rule matches
 
-# ──────────────────────────────────────────────────────
-#                 Yaratık Görünüm Adları
-# ──────────────────────────────────────────────────────
-# Yaratık isimlerinin spawner arayüzlerinde, eşyalarda, hologramlarda ve mesajlarda nasıl görüneceğini tanımlar
+# Mob names shown in GUIs, items, holograms and messages. A mob not listed is named from its ID, so ZOMBIE_VILLAGER shows as Zombie Villager.
 mob_names:
-  # Pasif Yaratıklar
-  ALLAY: "Allay"
-  ARMADILLO: "Tatu"
-  AXOLOTL: "Aksolot"
-  BAT: "Yarasa"
-  BEE: "Arı"
-  CAMEL: "Deve"
-  CAT: "Kedi"
-  CHICKEN: "Tavuk"
-  COD: "Morina"
-  COW: "İnek"
-  DOLPHIN: "Yunus"
-  DONKEY: "Eşek"
-  FOX: "Tilki"
-  FROG: "Kurbağa"
-  GLOW_SQUID: "Parlayan Mürekkep Balığı"
-  GOAT: "Keçi"
-  HORSE: "At"
-  IRON_GOLEM: "Demir Golem"
-  COPPER_GOLEM: "Bakır Golem"
-  LLAMA: "Lama"
-  MOOSHROOM: "Mantar İneği"
-  MULE: "Katır"
-  OCELOT: "Oselot"
-  PANDA: "Panda"
-  PARROT: "Papağan"
-  PIG: "Domuz"
-  POLAR_BEAR: "Kutup Ayısı"
-  PUFFERFISH: "Balon Balığı"
-  RABBIT: "Tavşan"
-  SALMON: "Somon"
-  SHEEP: "Koyun"
-  SNIFFER: "Koklayıcı"
-  SNOW_GOLEM: "Kar Golemi"
-  SQUID: "Mürekkep Balığı"
-  STRIDER: "Lavgezer"
-  SULFUR_CUBE: "Kükürt Küpü"
-  TADPOLE: "İribaş"
-  TRADER_LLAMA: "Tüccar Laması"
-  TROPICAL_FISH: "Tropikal Balık"
-  TURTLE: "Kaplumbağa"
-  VILLAGER: "Köylü"
-  WANDERING_TRADER: "Gezgin Tüccar"
-  WOLF: "Kurt"
+  # Passive Mobs
+  ALLAY: 'Allay'
+  ARMADILLO: 'Tatu'
+  AXOLOTL: 'Aksolot'
+  BAT: 'Yarasa'
+  BEE: 'Arı'
+  CAMEL: 'Deve'
+  CAT: 'Kedi'
+  CHICKEN: 'Tavuk'
+  COD: 'Morina'
+  COW: 'İnek'
+  DOLPHIN: 'Yunus'
+  DONKEY: 'Eşek'
+  FOX: 'Tilki'
+  FROG: 'Kurbağa'
+  GLOW_SQUID: 'Parlayan Mürekkep Balığı'
+  GOAT: 'Keçi'
+  HORSE: 'At'
+  IRON_GOLEM: 'Demir Golem'
+  COPPER_GOLEM: 'Bakır Golem'
+  LLAMA: 'Lama'
+  MOOSHROOM: 'Mantar İneği'
+  MULE: 'Katır'
+  OCELOT: 'Oselot'
+  PANDA: 'Panda'
+  PARROT: 'Papağan'
+  PIG: 'Domuz'
+  POLAR_BEAR: 'Kutup Ayısı'
+  PUFFERFISH: 'Balon Balığı'
+  RABBIT: 'Tavşan'
+  SALMON: 'Somon'
+  SHEEP: 'Koyun'
+  SNIFFER: 'Koklayıcı'
+  SNOW_GOLEM: 'Kar Golemi'
+  SQUID: 'Mürekkep Balığı'
+  STRIDER: 'Lavgezer'
+  SULFUR_CUBE: 'Kükürt Küpü'
+  TADPOLE: 'İribaş'
+  TRADER_LLAMA: 'Tüccar Laması'
+  TROPICAL_FISH: 'Tropikal Balık'
+  TURTLE: 'Kaplumbağa'
+  VILLAGER: 'Köylü'
+  WANDERING_TRADER: 'Gezgin Tüccar'
+  WOLF: 'Kurt'
+  NAUTILUS: 'Notilus'
 
-  # Saldırgan Yaratıklar
-  BLAZE: "Blaze"
-  BOGGED: "Bataklık İskeleti"
-  BREEZE: "Esinti"
-  CAVE_SPIDER: "Mağara Örümceği"
-  CREAKING: "Gıcırdayan"
-  CREEPER: "Creeper"
-  DROWNED: "Boğulmuş"
-  ELDER_GUARDIAN: "Yaşlı Gardiyan"
-  ENDERMAN: "Enderman"
-  ENDERMITE: "Endermite"
-  EVOKER: "Büyücü"
-  GHAST: "Ghast"
-  HAPPY_GHAST: "Mutlu Ghast"
-  GUARDIAN: "Gardiyan"
-  HOGLIN: "Hoglin"
-  HUSK: "Kavrulmuş Zombi"
-  MAGMA_CUBE: "Magma Küpü"
-  PHANTOM: "Fantom"
-  PIGLIN: "Piglin"
-  PIGLIN_BRUTE: "Acımasız Piglin"
-  PILLAGER: "Yağmacı"
-  RAVAGER: "Yıkıcı"
-  SHULKER: "Shulker"
-  SILVERFISH: "Gümüşçün"
-  SKELETON: "İskelet"
-  SKELETON_HORSE: "İskelet At"
-  SLIME: "Balçık"
-  SPIDER: "Örümcek"
-  STRAY: "Buzul İskelet"
-  VEX: "Vex"
-  VINDICATOR: "İntikamcı"
-  WARDEN: "Warden"
-  WITCH: "Cadı"
-  WITHER_SKELETON: "Wither İskeleti"
-  ZOGLIN: "Zoglin"
-  ZOMBIE: "Zombi"
-  ZOMBIE_HORSE: "Zombi At"
-  ZOMBIE_VILLAGER: "Zombi Köylü"
-  ZOMBIFIED_PIGLIN: "Zombi Piglin"
+  # Hostile Mobs
+  BLAZE: 'Blaze'
+  BOGGED: 'Bataklık İskeleti'
+  BREEZE: 'Esinti'
+  CAVE_SPIDER: 'Mağara Örümceği'
+  CREAKING: 'Gıcırdayan'
+  CREEPER: 'Creeper'
+  DROWNED: 'Boğulmuş'
+  ELDER_GUARDIAN: 'Yaşlı Gardiyan'
+  ENDERMAN: 'Enderman'
+  ENDERMITE: 'Endermite'
+  EVOKER: 'Büyücü'
+  GHAST: 'Ghast'
+  HAPPY_GHAST: 'Mutlu Ghast'
+  GUARDIAN: 'Gardiyan'
+  HOGLIN: 'Hoglin'
+  HUSK: 'Kavrulmuş Zombi'
+  MAGMA_CUBE: 'Magma Küpü'
+  PHANTOM: 'Fantom'
+  PIGLIN: 'Piglin'
+  PIGLIN_BRUTE: 'Acımasız Piglin'
+  PILLAGER: 'Yağmacı'
+  RAVAGER: 'Yıkıcı'
+  SHULKER: 'Shulker'
+  SILVERFISH: 'Gümüşçün'
+  SKELETON: 'İskelet'
+  SKELETON_HORSE: 'İskelet At'
+  SLIME: 'Balçık'
+  SPIDER: 'Örümcek'
+  STRAY: 'Buzul İskelet'
+  VEX: 'Vex'
+  VINDICATOR: 'İntikamcı'
+  WARDEN: 'Warden'
+  WITCH: 'Cadı'
+  WITHER_SKELETON: 'Wither İskeleti'
+  ZOGLIN: 'Zoglin'
+  ZOMBIE: 'Zombi'
+  ZOMBIE_HORSE: 'Zombi At'
+  ZOMBIE_VILLAGER: 'Zombi Köylü'
+  ZOMBIFIED_PIGLIN: 'Zombi Piglin'
+  CAMEL_HUSK: 'Kalıntı Deve'
+  ZOMBIE_NAUTILUS: 'Zombi Notilus'

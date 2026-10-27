@@ -134,6 +134,9 @@ class LayoutTextsMigrationTest {
         assertTrue(LayoutTextsMigration.sameText("&#00F986SELL ALL", "<#00F986>SELL ALL"));
         assertTrue(LayoutTextsMigration.sameText(List.of("&7Sell everything"), List.of("<gray>Sell everything")));
         assertFalse(LayoutTextsMigration.sameText("&aSell", "<red>Sell"));
+        assertTrue(LayoutTextsMigration.sameText("&#545454{ᴇɴᴛɪᴛʏ} ꜱᴘᴀᴡɴᴇʀ", "<#545454>{entity_small} <smallcaps>Spawner</smallcaps>"),
+                "the small caps placeholder was renamed, which is no edit");
+        assertFalse(LayoutTextsMigration.sameText("{ᴇɴᴛɪᴛʏ}", "{entity}"));
     }
 
     @Test

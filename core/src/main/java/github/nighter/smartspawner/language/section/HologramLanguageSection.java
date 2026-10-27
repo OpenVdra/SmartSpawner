@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.List;
 import java.util.function.Supplier;
 
+/** The hologram template: {@code hologram.lines} in {@code items.yml}, or the old {@code hologram.text} in config.yml. */
 public final class HologramLanguageSection {
     private final JavaPlugin plugin;
     private final Supplier<LocaleData> localeSupplier;
@@ -16,14 +17,12 @@ public final class HologramLanguageSection {
         this.localeSupplier = localeSupplier;
     }
 
+    /** The unformatted lines, joined with newlines. */
     public String text() {
-        YamlConfiguration hologram = localeSupplier.get().hologram();
-        if (hologram.contains("hologram_text")) {
-            List<String> lines = hologram.getStringList("hologram_text");
-            if (!lines.isEmpty()) return String.join("\n", lines);
-
-            String singleLine = hologram.getString("hologram_text");
-            if (singleLine != null) return singleLine;
+        YamlConfiguration items = localeSupplier.get().items();
+        if (items.contains("hologram.lines")) {
+            if (items.isList("hologram.lines")) return String.join("\n", items.getStringList("hologram.lines"));
+            return items.getString("hologram.lines", "");
         }
 
         if (!plugin.getConfig().contains("hologram.text")) return "";

@@ -147,7 +147,7 @@ public class SpawnerMenuAction implements Listener {
                 }
                 // Check permissions for selling (same logic as handleSpawnerInfoClick)
                 if (!plugin.hasSellIntegration() || !player.hasPermission("smartspawner.sellall")) {
-                    messageService.sendMessage(player, "no_permission");
+                    messageService.sendMessage(player, "command.no_permission");
                     plugin.getGuiButtonInteractionService().playFailSound(
                             player, button, clickType);
                     return true;
@@ -158,7 +158,7 @@ public class SpawnerMenuAction implements Listener {
                     if (spawner.getSpawnerExp() > 0) {
                         success = tryCollectExpForPlayer(player, spawner);
                     } else {
-                        messageService.sendMessage(player, "spawner_storage_empty");
+                        messageService.sendMessage(player, "storage.empty");
                         success = false;
                     }
                     playActionResult(player, button, clickType, success);
@@ -175,7 +175,7 @@ public class SpawnerMenuAction implements Listener {
                 }
                 // Check permissions for selling
                 if (!plugin.hasSellIntegration() || !player.hasPermission("smartspawner.sellall")) {
-                    messageService.sendMessage(player, "no_permission");
+                    messageService.sendMessage(player, "command.no_permission");
                     plugin.getGuiButtonInteractionService().playFailSound(
                             player, button, clickType);
                     return true;
@@ -213,7 +213,7 @@ public class SpawnerMenuAction implements Listener {
     private void handleStorageClick(Player player, SpawnerData spawner, boolean playSound) {
         // Refuse before opening: a refused open would already have closed this menu server-side.
         if (plugin.getSpawnerStorageAction().isStorageInUseByOther(player, spawner)) {
-            messageService.sendMessage(player, "storage_in_use");
+            messageService.sendMessage(player, "storage.in_use");
             return;
         }
         Inventory pageInventory = spawnerStorageUI.createStorageInventory(player, spawner, 1, -1);
@@ -248,13 +248,13 @@ public class SpawnerMenuAction implements Listener {
 
         // Permission check
         if (!player.hasPermission("smartspawner.sellall")) {
-            messageService.sendMessage(player, "no_permission");
+            messageService.sendMessage(player, "command.no_permission");
             return;
         }
 
         // Check if there are items to sell
         if (spawner.getVirtualInventory().getUsedSlots() == 0) {
-            messageService.sendMessage(player, "spawner_storage_empty");
+            messageService.sendMessage(player, "storage.empty");
             if (sourceButton != null) {
                 plugin.getGuiButtonInteractionService().playFailSound(
                         player, sourceButton, sourceClickType);
@@ -283,7 +283,7 @@ public class SpawnerMenuAction implements Listener {
     public boolean tryCollectExpForPlayer(Player player, SpawnerData spawner) {
         long exp = spawner.getSpawnerExp();
         if (exp <= 0) {
-            messageService.sendMessage(player, "no_exp");
+            messageService.sendMessage(player, "exp.none");
             return false;
         }
 
@@ -334,7 +334,7 @@ public class SpawnerMenuAction implements Listener {
         long exp = spawner.getSpawnerExp();
 
         if (exp <= 0 && !isSell) {
-            messageService.sendMessage(player, "no_exp");
+            messageService.sendMessage(player, "exp.none");
             return false;
         }
 
@@ -517,11 +517,11 @@ public class SpawnerMenuAction implements Listener {
             long remainingExp = totalExp - mendingExp;
             placeholders.put("exp_mending", languageManager.formatNumber(mendingExp));
             placeholders.put("exp", languageManager.formatNumber(remainingExp));
-            messageService.sendMessage(player, "exp_collected_with_mending", placeholders);
+            messageService.sendMessage(player, "exp.collected_mending", placeholders);
         } else {
             if (totalExp > 0) {
                 placeholders.put("exp", plugin.getLanguageManager().formatNumber(totalExp));
-                messageService.sendMessage(player, "exp_collected", placeholders);
+                messageService.sendMessage(player, "exp.collected", placeholders);
             }
         }
     }

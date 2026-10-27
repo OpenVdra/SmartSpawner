@@ -187,7 +187,7 @@ public class FolderConfigSubCommand extends BaseSubCommand {
                 "en_US",
                 "smartspawner.command.language",
                 "Change the active SmartSpawner language",
-                "language",
+                "command.language",
                 "language",
                 "Language folder"
         ),
@@ -198,7 +198,7 @@ public class FolderConfigSubCommand extends BaseSubCommand {
                 "default",
                 "smartspawner.command.gui_layout",
                 "Change the active SmartSpawner GUI layout",
-                "gui_layout",
+                "command.gui_layout",
                 "GUI layout",
                 "GUI layout folder"
         );

@@ -103,7 +103,7 @@ public class NearSubCommand extends BaseSubCommand {
         logCommandExecution(context);
 
         if (!(sender instanceof Player player)) {
-            plugin.getMessageService().sendMessage(sender, "player_only");
+            plugin.getMessageService().sendMessage(sender, "command.player_only");
             return 0;
         }
 
@@ -116,7 +116,7 @@ public class NearSubCommand extends BaseSubCommand {
         logCommandExecution(context);
 
         if (!(sender instanceof Player player)) {
-            plugin.getMessageService().sendMessage(sender, "player_only");
+            plugin.getMessageService().sendMessage(sender, "command.player_only");
             return 0;
         }
 
@@ -129,7 +129,7 @@ public class NearSubCommand extends BaseSubCommand {
         logCommandExecution(context);
 
         if (!(sender instanceof Player player)) {
-            plugin.getMessageService().sendMessage(sender, "player_only");
+            plugin.getMessageService().sendMessage(sender, "command.player_only");
             return 0;
         }
 

@@ -2,7 +2,6 @@ package github.nighter.smartspawner.commands.list.gui.serverselection;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.commands.list.ListSubCommand;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * Handles click events in the server selection GUI.
@@ -34,10 +34,9 @@ public class ServerSelectionHandler implements Listener {
         if (clickedItem == null || !clickedItem.hasItemMeta()) return;
 
         ItemMeta meta = clickedItem.getItemMeta();
-        if (meta == null || !meta.hasDisplayName()) return;
+        if (meta == null) return;
 
-        // Extract server name from display name (strip color codes)
-        String serverName = ChatColor.stripColor(meta.getDisplayName());
+        String serverName = meta.getPersistentDataContainer().get(listSubCommand.getServerNameKey(), PersistentDataType.STRING);
 
         if (serverName == null || serverName.isEmpty()) return;
 

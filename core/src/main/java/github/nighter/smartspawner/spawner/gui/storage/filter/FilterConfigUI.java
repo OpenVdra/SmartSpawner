@@ -2,6 +2,8 @@ package github.nighter.smartspawner.spawner.gui.storage.filter;
 
 import github.nighter.smartspawner.SmartSpawner;
 import github.nighter.smartspawner.language.LanguageManager;
+import github.nighter.smartspawner.language.section.GuiLanguageSection;
+import net.kyori.adventure.text.Component;
 import github.nighter.smartspawner.spawner.gui.storage.SpawnerStorageUI;
 import github.nighter.smartspawner.spawner.lootgen.loot.LootItem;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
@@ -38,7 +40,7 @@ public class FilterConfigUI implements Listener {
         this.plugin = plugin;
         this.languageManager = plugin.getLanguageManager();
         this.storageUI = plugin.getSpawnerStorageUI();
-        this.staticButtons = new HashMap<>();
+        this.staticButtons = new java.util.concurrent.ConcurrentHashMap<>();
 
         initializeStaticButtons();
 
@@ -54,21 +56,26 @@ public class FilterConfigUI implements Listener {
     }
 
     private void initializeStaticButtons() {
-        // Create divider button that also functions as return button
-        staticButtons.put("divider", createButton(
+        divider(null);
+    }
+
+    /** The divider, which also works as the return button, cached per viewer language. */
+    private ItemStack divider(Player viewer) {
+        GuiLanguageSection gui = languageManager.gui(viewer);
+        return staticButtons.computeIfAbsent("divider|" + languageManager.localeKey(viewer), ignored -> createButton(
                 Material.CYAN_STAINED_GLASS_PANE,
-                languageManager.getGuiItemName("filter_divider.name"),
-                languageManager.getGuiItemLoreAsList("filter_divider.lore")
+                gui.name("filter.divider.name"),
+                gui.lore("filter.divider.lore")
         ));
     }
 
-    private ItemStack createButton(Material material, String name, List<String> lore) {
+    private ItemStack createButton(Material material, Component name, List<Component> lore) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(name);
+            meta.displayName(name);
             if (!lore.isEmpty()) {
-                meta.setLore(lore);
+                meta.lore(lore);
             }
             item.setItemMeta(meta);
         }
@@ -93,14 +100,14 @@ public class FilterConfigUI implements Listener {
      */
     public void openFilterConfigGUI(Player player, SpawnerData spawner) {
         // Create a new inventory with title from language manager
-        String title = languageManager.getGuiTitle("gui_title_filter_config");
+        Component title = languageManager.gui(player).title("filter.title");
         Inventory filterInventory = Bukkit.createInventory(
                 new FilterConfigHolder(spawner),
                 INVENTORY_SIZE,
                 title);
 
         // Setup the filter inventory
-        setupFilterInventory(filterInventory, spawner);
+        setupFilterInventory(player, filterInventory, spawner);
 
         player.openInventory(filterInventory);
     }
@@ -108,7 +115,8 @@ public class FilterConfigUI implements Listener {
     /**
      * Sets up the filter inventory content
      */
-    private void setupFilterInventory(Inventory inventory, SpawnerData spawner) {
+    private void setupFilterInventory(Player viewer, Inventory inventory, SpawnerData spawner) {
+        GuiLanguageSection gui = languageManager.gui(viewer);
         // Clear the inventory first to prevent duplication bugs
         inventory.clear();
 
@@ -124,7 +132,7 @@ public class FilterConfigUI implements Listener {
         Set<Material> filteredItems = spawner.getFilteredItems();
 
         // Set divider elements (which also act as return buttons)
-        ItemStack divider = staticButtons.get("divider");
+        ItemStack divider = divider(viewer);
         for (Integer slot : DIVIDER_SLOTS) {
             inventory.setItem(slot, divider);
         }
@@ -140,10 +148,10 @@ public class FilterConfigUI implements Listener {
 
             Material itemType = displayItem.getType();
             if (filteredItems.contains(itemType)) {
-                displayItem = addFilterMarkerToItem(displayItem, true);
+                displayItem = addFilterMarkerToItem(gui, displayItem, true);
                 blockedItems.add(displayItem);
             } else {
-                displayItem = addFilterMarkerToItem(displayItem, false);
+                displayItem = addFilterMarkerToItem(gui, displayItem, false);
                 allowedItems.add(displayItem);
             }
         }
@@ -158,7 +166,7 @@ public class FilterConfigUI implements Listener {
     /**
      * Adds appropriate lore to items based on their filter status
      */
-    private ItemStack addFilterMarkerToItem(ItemStack item, boolean isFiltered) {
+    private ItemStack addFilterMarkerToItem(GuiLanguageSection gui, ItemStack item, boolean isFiltered) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             String itemName = languageManager.getVanillaItemName(item.getType());
@@ -167,12 +175,11 @@ public class FilterConfigUI implements Listener {
             Map<String, String> placeholders = new HashMap<>();
             placeholders.put("item_name", itemName);
 
-            String nameKey = isFiltered ? "filter_item_blocked.name" : "filter_item_allowed.name";
-            meta.setDisplayName(languageManager.getGuiItemName(nameKey, placeholders));
+            String textKey = isFiltered ? "filter.blocked" : "filter.allowed";
+            meta.displayName(gui.name(textKey + ".name", placeholders));
 
             // Set the lore with correct status information
-            String loreKey = isFiltered ? "filter_item_blocked.lore" : "filter_item_allowed.lore";
-            meta.setLore(languageManager.getGuiItemLoreAsList(loreKey, placeholders));
+            meta.lore(gui.lore(textKey + ".lore", placeholders));
 
             item.setItemMeta(meta);
         }
@@ -244,7 +251,7 @@ public class FilterConfigUI implements Listener {
 
         if (wasUpdated) {
             // Refresh the inventory display immediately
-            setupFilterInventory(event.getInventory(), spawner);
+            setupFilterInventory(player, event.getInventory(), spawner);
         }
     }
 

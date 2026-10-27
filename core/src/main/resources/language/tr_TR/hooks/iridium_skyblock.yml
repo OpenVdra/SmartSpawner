@@ -1,5 +1,6 @@
-# SmartSpawner - iridium_skyblock.yml
-# Bu dosya sadece IridiumSkyblock entegrasyonu aktif olduğunda güncellenir.
+# SmartSpawner IridiumSkyblock permission names
+# Full guide: https://docs.smartspawner.site/docs/language
+# Only written and read while the IridiumSkyblock hook is active. %permission% is filled in by IridiumSkyblock.
 
 iridium_skyblock:
   permissions:

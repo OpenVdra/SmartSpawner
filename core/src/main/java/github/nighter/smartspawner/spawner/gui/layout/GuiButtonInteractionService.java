@@ -51,7 +51,7 @@ public class GuiButtonInteractionService implements Listener {
             Long previous = getLastButtonClick(player, layoutType, button);
             if (previous != null && now - previous < cooldownNanos) {
                 long remainingNanos = cooldownNanos - (now - previous);
-                plugin.getMessageService().sendMessage(player, "action_not_ready",
+                plugin.getMessageService().sendMessage(player, "general.action_not_ready",
                         Map.of("time", formatRemainingTime(remainingNanos)));
                 return false;
             }

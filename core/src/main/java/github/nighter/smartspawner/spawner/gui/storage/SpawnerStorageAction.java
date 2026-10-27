@@ -91,7 +91,7 @@ public class SpawnerStorageAction implements Listener {
         // which would otherwise allow items to be taken from the virtual inventory twice –
         // once by the player and once by applySellResult.
         if (spawner.isSelling()) {
-            plugin.getMessageService().sendMessage(player, "action_in_progress");
+            plugin.getMessageService().sendMessage(player, "general.action_in_progress");
             return;
         }
 
@@ -226,7 +226,7 @@ public class SpawnerStorageAction implements Listener {
         }
 
         if (!player.hasPermission("smartspawner.sellall")) {
-            messageService.sendMessage(player, "no_permission");
+            messageService.sendMessage(player, "command.no_permission");
             plugin.getGuiButtonInteractionService().playFailSound(
                     player, sourceButton, sourceClickType);
             return;
@@ -239,7 +239,7 @@ public class SpawnerStorageAction implements Listener {
                 boolean success = handleCollectExpAction(player, spawner, inventory);
                 playActionResult(player, sourceButton, sourceClickType, success);
             } else {
-                messageService.sendMessage(player, "spawner_storage_empty");
+                messageService.sendMessage(player, "storage.empty");
                 plugin.getGuiButtonInteractionService().playFailSound(
                         player, sourceButton, sourceClickType);
             }
@@ -390,12 +390,12 @@ public class SpawnerStorageAction implements Listener {
 
                 // Notify if inventory was full
                 if (remaining > 0) {
-                    sendThrottledWarning(player, "inventory_full");
+                    sendThrottledWarning(player, "general.inventory_full");
                 }
             }
         } else {
             // No items moved - inventory full
-            sendThrottledWarning(player, "inventory_full");
+            sendThrottledWarning(player, "general.inventory_full");
         }
     }
 
@@ -460,7 +460,7 @@ public class SpawnerStorageAction implements Listener {
         }
 
         if (pageItems.isEmpty()) {
-            messageService.sendMessage(player, "spawner_storage_empty");
+            messageService.sendMessage(player, "storage.empty");
             return false;
         }
 
@@ -574,7 +574,7 @@ public class SpawnerStorageAction implements Listener {
     }
 
     private void updateInventoryTitle(Player player, SpawnerData spawner, int page, int totalPages) {
-        String newTitle = plugin.getSpawnerStorageUI().getStorageTitle(spawner, page, totalPages);
+        String newTitle = plugin.getSpawnerStorageUI().getStorageTitle(player, spawner, page, totalPages);
 
         try {
             player.getOpenInventory().setTitle(newTitle);
@@ -588,7 +588,7 @@ public class SpawnerStorageAction implements Listener {
         long last = lastItemClickTime.getOrDefault(player.getUniqueId(), 0L);
 
         if ((now - last) < ITEM_CLICK_DELAY_MS) {
-            sendThrottledWarning(player, "click_too_fast");
+            sendThrottledWarning(player, "general.click_too_fast");
             return true;
         }
         return false;
@@ -721,7 +721,7 @@ public class SpawnerStorageAction implements Listener {
         }
 
         if (sourceItems.isEmpty()) {
-            messageService.sendMessage(player, "spawner_storage_empty");
+            messageService.sendMessage(player, "storage.empty");
             return false;
         }
 
@@ -867,7 +867,7 @@ public class SpawnerStorageAction implements Listener {
 
     private void sendTransferMessage(Player player, TransferResult result) {
         if (!result.anyItemMoved) {
-            sendThrottledWarning(player, "inventory_full");
+            sendThrottledWarning(player, "general.inventory_full");
         }
     }
 
@@ -886,7 +886,7 @@ public class SpawnerStorageAction implements Listener {
 
         if (isStorageInUseByOther(player, holder.getSpawnerData())) {
             event.setCancelled(true);
-            messageService.sendMessage(player, "storage_in_use");
+            messageService.sendMessage(player, "storage.in_use");
             // Paper closes the previous menu server-side before this event without telling the client,
             // which would leave the player on a stale GUI whose items it can take. Close it client-side too.
             Scheduler.runEntityTask(player, () -> {

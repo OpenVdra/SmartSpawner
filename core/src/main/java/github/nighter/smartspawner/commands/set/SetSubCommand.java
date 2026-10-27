@@ -75,7 +75,7 @@ public class SetSubCommand extends BaseSubCommand {
     @Override
     public int execute(CommandContext<CommandSourceStack> context) {
         logCommandExecution(context);
-        plugin.getMessageService().sendMessage(context.getSource().getSender(), "set.usage");
+        plugin.getMessageService().sendMessage(context.getSource().getSender(), "command.set.usage");
         return 0;
     }
 
@@ -170,7 +170,7 @@ public class SetSubCommand extends BaseSubCommand {
         placeholders.put("y", String.valueOf(location.getBlockY()));
         placeholders.put("z", String.valueOf(location.getBlockZ()));
 
-        plugin.getMessageService().sendMessage(sender, "set.success", placeholders);
+        plugin.getMessageService().sendMessage(sender, "command.set.success", placeholders);
         return 1;
     }
 
@@ -202,7 +202,7 @@ public class SetSubCommand extends BaseSubCommand {
     }
 
     private void sendInvalid(CommandSender sender) {
-        plugin.getMessageService().sendMessage(sender, "set.invalid");
+        plugin.getMessageService().sendMessage(sender, "command.set.invalid");
     }
 
     private SpawnerData getSpawnerFromArguments(CommandContext<CommandSourceStack> context, CommandSender sender) {
@@ -229,7 +229,7 @@ public class SetSubCommand extends BaseSubCommand {
 
     private SpawnerData getSpawnerPlayerIsLookingAt(CommandSender sender) {
         if (!(sender instanceof Player player)) {
-            plugin.getMessageService().sendMessage(sender, "set.location_required");
+            plugin.getMessageService().sendMessage(sender, "command.set.location_required");
             return null;
         }
 
@@ -262,7 +262,7 @@ public class SetSubCommand extends BaseSubCommand {
                     Map<String, String> placeholders = new HashMap<>();
                     placeholders.put("value", String.valueOf(stackSize));
                     placeholders.put("max", String.valueOf(spawner.getMaxStackSize()));
-                    plugin.getMessageService().sendMessage(sender, "set.stack_size_exceeds_max", placeholders);
+                    plugin.getMessageService().sendMessage(sender, "command.set.stack_size_exceeds_max", placeholders);
                     return false;
                 }
                 spawner.setStackSize(stackSize);

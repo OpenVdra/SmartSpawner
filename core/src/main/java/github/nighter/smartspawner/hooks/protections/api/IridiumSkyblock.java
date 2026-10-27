@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class IridiumSkyblock implements ProtectionHook {
-    private static final String FILE_NAME = "iridium_skyblock.yml";
+    private static final String FILE_NAME = "hooks/iridium_skyblock.yml";
     private static final String DEFAULT_LOCALE = "en_US";
     private static YamlConfiguration language = new YamlConfiguration();
 

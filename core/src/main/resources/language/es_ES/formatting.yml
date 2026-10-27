@@ -1,107 +1,101 @@
-# SmartSpawner – formatting.yml
-# Number formatting and mob display names used throughout the plugin.
+# SmartSpawner number formats and mob names
+# Full guide: https://docs.smartspawner.site/docs/language
 
-# ──────────────────────────────────────────────────────
-#                 Number Formatting
-# ──────────────────────────────────────────────────────
-# Controls how large numbers are displayed in-game
+# {s} is the shortened number.
 format_number:
-  thousand: "{s}K"    # Example: 5000 → 5K
-  million: "{s}M"     # Example: 2000000 → 2M
-  billion: "{s}B"     # Example: 1500000000 → 1.5B
-  trillion: "{s}T"    # Example: 1000000000000 → 1T
-  default: "{s}"      # Fallback format when no other rule matches
+  thousand: '{s}K'    # Example: 5000 → 5K
+  million: '{s}M'     # Example: 2000000 → 2M
+  billion: '{s}B'     # Example: 1500000000 → 1.5B
+  trillion: '{s}T'    # Example: 1000000000000 → 1T
+  default: '{s}'      # Fallback format when no other rule matches
 
-# ──────────────────────────────────────────────────────
-#                 Mob Display Names
-# ──────────────────────────────────────────────────────
-# Defines how mob names appear in spawner GUIs, items, holograms and messages
+# Mob names shown in GUIs, items, holograms and messages. A mob not listed is named from its ID, so ZOMBIE_VILLAGER shows as Zombie Villager.
 mob_names:
   # Passive Mobs
-  ALLAY: "Allay"
-  ARMADILLO: "Armadillo"
-  AXOLOTL: "Ajolote"
-  BAT: "Murciélago"
-  BEE: "Abeja"
-  CAMEL: "Camello"
-  CAT: "Gato"
-  CHICKEN: "Pollo"
-  COD: "Bacalao"
-  COW: "Vaca"
-  DOLPHIN: "Delfín"
-  DONKEY: "Burro"
-  FOX: "Zorro"
-  FROG: "Rana"
-  GLOW_SQUID: "Calamar luminoso"
-  GOAT: "Cabra"
-  HORSE: "Caballo"
-  IRON_GOLEM: "Gólem de hierro"
-  LLAMA: "Llama"
-  MOOSHROOM: "Vacaseta"
-  MULE: "Mula"
-  OCELOT: "Ocelote"
-  PANDA: "Panda"
-  PARROT: "Loro"
-  PIG: "Cerdo"
-  POLAR_BEAR: "Oso polar"
-  PUFFERFISH: "Pez globo"
-  RABBIT: "Conejo"
-  SALMON: "Salmón"
-  SHEEP: "Oveja"
-  SNIFFER: "Sniffer"
-  SNOW_GOLEM: "Gólem de nieve"
-  SQUID: "Calamar"
-  STRIDER: "Lavagante"
-  TADPOLE: "Renacuajo"
-  TRADER_LLAMA: "Llama ambulante"
-  TROPICAL_FISH: "Pez tropical"
-  TURTLE: "Tortuga"
-  VILLAGER: "Aldeano"
-  WANDERING_TRADER: "Vendedor ambulante"
-  WOLF: "Lobo"
-  NAUTILUS: "Nautilo"
-  SULFUR_CUBE: "Cubo de azufre"
-  COPPER_GOLEM: "Gólem de cobre"
-  HAPPY_GHAST: "Ghast feliz"
+  ALLAY: 'Allay'
+  ARMADILLO: 'Armadillo'
+  AXOLOTL: 'Ajolote'
+  BAT: 'Murciélago'
+  BEE: 'Abeja'
+  CAMEL: 'Camello'
+  CAT: 'Gato'
+  CHICKEN: 'Pollo'
+  COD: 'Bacalao'
+  COW: 'Vaca'
+  DOLPHIN: 'Delfín'
+  DONKEY: 'Burro'
+  FOX: 'Zorro'
+  FROG: 'Rana'
+  GLOW_SQUID: 'Calamar luminoso'
+  GOAT: 'Cabra'
+  HORSE: 'Caballo'
+  IRON_GOLEM: 'Gólem de hierro'
+  COPPER_GOLEM: 'Gólem de cobre'
+  LLAMA: 'Llama'
+  MOOSHROOM: 'Vacaseta'
+  MULE: 'Mula'
+  OCELOT: 'Ocelote'
+  PANDA: 'Panda'
+  PARROT: 'Loro'
+  PIG: 'Cerdo'
+  POLAR_BEAR: 'Oso polar'
+  PUFFERFISH: 'Pez globo'
+  RABBIT: 'Conejo'
+  SALMON: 'Salmón'
+  SHEEP: 'Oveja'
+  SNIFFER: 'Sniffer'
+  SNOW_GOLEM: 'Gólem de nieve'
+  SQUID: 'Calamar'
+  STRIDER: 'Lavagante'
+  SULFUR_CUBE: 'Cubo de azufre'
+  TADPOLE: 'Renacuajo'
+  TRADER_LLAMA: 'Llama ambulante'
+  TROPICAL_FISH: 'Pez tropical'
+  TURTLE: 'Tortuga'
+  VILLAGER: 'Aldeano'
+  WANDERING_TRADER: 'Vendedor ambulante'
+  WOLF: 'Lobo'
+  NAUTILUS: 'Nautilo'
 
   # Hostile Mobs
-  BLAZE: "Blaze"
-  BOGGED: "Ciénago"
-  BREEZE: "Breeze"
-  CAVE_SPIDER: "Araña de cueva"
-  CREAKING: "Crepitante"
-  CREEPER: "Creeper"
-  DROWNED: "Ahogado"
-  ELDER_GUARDIAN: "Guardián anciano"
-  ENDERMAN: "Enderman"
-  ENDERMITE: "Endermite"
-  EVOKER: "Evocador"
-  GHAST: "Ghast"
-  GUARDIAN: "Guardián"
-  HOGLIN: "Hoglin"
-  HUSK: "Disecado"
-  MAGMA_CUBE: "Cubo de magma"
-  PHANTOM: "Fantasma"
-  PIGLIN: "Piglin"
-  PIGLIN_BRUTE: "Piglin bruto"
-  PILLAGER: "Saqueador"
-  RAVAGER: "Devastador"
-  SHULKER: "Shulker"
-  SILVERFISH: "Lepisma"
-  SKELETON: "Esqueleto"
-  SKELETON_HORSE: "Caballo esqueleto"
-  SLIME: "Slime"
-  SPIDER: "Araña"
-  STRAY: "Errante"
-  VEX: "Vex"
-  VINDICATOR: "Vindicador"
-  WARDEN: "Warden"
-  WITCH: "Bruja"
-  WITHER_SKELETON: "Esqueleto del wither"
-  ZOGLIN: "Zoglin"
-  ZOMBIE: "Zombi"
-  ZOMBIE_HORSE: "Caballo zombi"
-  ZOMBIE_VILLAGER: "Aldeano zombi"
-  ZOMBIFIED_PIGLIN: "Piglin zombificado"
-  CAMEL_HUSK: "Camello disecado"
-  ZOMBIE_NAUTILUS: "Nautilo zombi"
+  BLAZE: 'Blaze'
+  BOGGED: 'Ciénago'
+  BREEZE: 'Breeze'
+  CAVE_SPIDER: 'Araña de cueva'
+  CREAKING: 'Crepitante'
+  CREEPER: 'Creeper'
+  DROWNED: 'Ahogado'
+  ELDER_GUARDIAN: 'Guardián anciano'
+  ENDERMAN: 'Enderman'
+  ENDERMITE: 'Endermite'
+  EVOKER: 'Evocador'
+  GHAST: 'Ghast'
+  HAPPY_GHAST: 'Ghast feliz'
+  GUARDIAN: 'Guardián'
+  HOGLIN: 'Hoglin'
+  HUSK: 'Disecado'
+  MAGMA_CUBE: 'Cubo de magma'
+  PHANTOM: 'Fantasma'
+  PIGLIN: 'Piglin'
+  PIGLIN_BRUTE: 'Piglin bruto'
+  PILLAGER: 'Saqueador'
+  RAVAGER: 'Devastador'
+  SHULKER: 'Shulker'
+  SILVERFISH: 'Lepisma'
+  SKELETON: 'Esqueleto'
+  SKELETON_HORSE: 'Caballo esqueleto'
+  SLIME: 'Slime'
+  SPIDER: 'Araña'
+  STRAY: 'Errante'
+  VEX: 'Vex'
+  VINDICATOR: 'Vindicador'
+  WARDEN: 'Warden'
+  WITCH: 'Bruja'
+  WITHER_SKELETON: 'Esqueleto del wither'
+  ZOGLIN: 'Zoglin'
+  ZOMBIE: 'Zombi'
+  ZOMBIE_HORSE: 'Caballo zombi'
+  ZOMBIE_VILLAGER: 'Aldeano zombi'
+  ZOMBIFIED_PIGLIN: 'Piglin zombificado'
+  CAMEL_HUSK: 'Camello disecado'
+  ZOMBIE_NAUTILUS: 'Nautilo zombi'

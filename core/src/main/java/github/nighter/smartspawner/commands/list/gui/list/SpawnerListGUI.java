@@ -46,7 +46,7 @@ public class SpawnerListGUI implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         if (!player.hasPermission("smartspawner.command.list")) {
-            messageService.sendMessage(player, "no_permission");
+            messageService.sendMessage(player, "command.no_permission");
             return;
         }
         event.setCancelled(true);
@@ -84,7 +84,7 @@ public class SpawnerListGUI implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         if (!player.hasPermission("smartspawner.list")) {
-            messageService.sendMessage(player, "no_permission");
+            messageService.sendMessage(player, "command.no_permission");
             return;
         }
         event.setCancelled(true);
@@ -225,7 +225,7 @@ public class SpawnerListGUI implements Listener {
                         holder.getCurrentPage()
                 );
             } else {
-                messageService.sendMessage(player, "list.teleport_failed");
+                messageService.sendMessage(player, "command.list.teleport_failed");
             }
         }
     }

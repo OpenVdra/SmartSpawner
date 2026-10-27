@@ -70,7 +70,7 @@ public class SpawnerSellManager {
     public void sellAllItems(Player player, SpawnerData spawner, Runnable onComplete, long expCollected, long expMending) {
         // Single atomic guard – prevents race conditions and double-sell exploits
         if (!spawner.startSelling()) {
-            messageService.sendMessage(player, "action_in_progress");
+            messageService.sendMessage(player, "general.action_in_progress");
             // Notify caller even on rejection so it can do its own cleanup
             if (onComplete != null) onComplete.run();
             return;
@@ -81,7 +81,7 @@ public class SpawnerSellManager {
         // Quick empty-check before any real work
         if (virtualInv.getUsedSlots() == 0) {
             spawner.stopSelling();
-            messageService.sendMessage(player, "spawner_storage_empty");
+            messageService.sendMessage(player, "storage.empty");
             if (onComplete != null) onComplete.run();
             return;
         }
@@ -110,7 +110,7 @@ public class SpawnerSellManager {
                 } finally {
                     spawner.stopSelling();
                 }
-                messageService.sendMessage(player, "action_failed");
+                messageService.sendMessage(player, "general.action_failed");
             });
             return;
         }
@@ -141,7 +141,7 @@ public class SpawnerSellManager {
      */
     private void applySellResult(Player player, SpawnerData spawner, SellResult sellResult, long expCollected, long expMending) {
         if (!sellResult.isSuccessful()) {
-            messageService.sendMessage(player, "no_sellable_items");
+            messageService.sendMessage(player, "sell.nothing_to_sell");
             return;
         }
 
@@ -163,7 +163,7 @@ public class SpawnerSellManager {
         // Deposit money first
         boolean depositSuccess = plugin.getItemPriceManager().getCurrencyManager().deposit(amount, player);
         if (!depositSuccess) {
-            messageService.sendMessage(player, "action_failed");
+            messageService.sendMessage(player, "general.action_failed");
             return;
         }
 
@@ -192,12 +192,12 @@ public class SpawnerSellManager {
             placeholders.put("exp", plugin.getLanguageManager().formatNumber(expGiven));
             if (expMending > 0) {
                 placeholders.put("exp_mending", plugin.getLanguageManager().formatNumber(expMending));
-                messageService.sendMessage(player, "sell_and_exp_success_with_mending", placeholders);
+                messageService.sendMessage(player, "sell.success_with_exp_mending", placeholders);
             } else {
-                messageService.sendMessage(player, "sell_and_exp_success", placeholders);
+                messageService.sendMessage(player, "sell.success_with_exp", placeholders);
             }
         } else {
-            messageService.sendMessage(player, "sell_success", placeholders);
+            messageService.sendMessage(player, "sell.success", placeholders);
         }
         spawner.markLastSellAsProcessed();
     }

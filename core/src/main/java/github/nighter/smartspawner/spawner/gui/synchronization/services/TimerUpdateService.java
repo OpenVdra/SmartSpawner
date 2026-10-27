@@ -8,6 +8,9 @@ import github.nighter.smartspawner.spawner.gui.synchronization.managers.ViewerTr
 import github.nighter.smartspawner.spawner.gui.synchronization.utils.LootPreGenerationHelper;
 import github.nighter.smartspawner.spawner.gui.synchronization.utils.TimerFormatter;
 import github.nighter.smartspawner.spawner.properties.SpawnerData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -30,16 +33,17 @@ public class TimerUpdateService {
 
     // Pre-compiled regex patterns for better performance
     private static final Pattern TIMER_PATTERN = Pattern.compile("\\d{2}:\\d{2}");
+    private static final String TIME_PLACEHOLDER = "{time}";
+
+    // A status instead of a countdown. Rendered per viewer, so each sees it in their own language.
+    private static final String STATUS_INACTIVE = "\u0000inactive";
+    private static final String STATUS_FULL = "\u0000full";
+    private static final String STATUS_NO_LOOT = "\u0000no_loot";
 
     private final SmartSpawner plugin;
     private final LanguageManager languageManager;
     private final LootPreGenerationHelper lootHelper;
     private final ViewerTrackingManager viewerTrackingManager;
-
-    // Cached status text messages for timer display
-    private String cachedInactiveText;
-    private String cachedFullText;
-    private String cachedNoLootText;
 
     // Timer placeholder detection
     private volatile Boolean hasTimerPlaceholders = null;
@@ -56,16 +60,6 @@ public class TimerUpdateService {
         this.languageManager = plugin.getLanguageManager();
         this.lootHelper = new LootPreGenerationHelper(plugin);
         this.viewerTrackingManager = viewerTrackingManager;
-        initializeCachedStrings();
-    }
-
-    /**
-     * Initializes cached strings and detects timer placeholder usage.
-     */
-    private void initializeCachedStrings() {
-        cachedInactiveText = languageManager.getGuiItemName("spawner_info_item.lore_inactive");
-        cachedFullText = languageManager.getGuiItemName("spawner_info_item.lore_full");
-        cachedNoLootText = languageManager.getGuiItemName("spawner_info_item.lore_no_loot");
         checkTimerPlaceholderUsage();
     }
 
@@ -74,8 +68,8 @@ public class TimerUpdateService {
      */
     private void checkTimerPlaceholderUsage() {
         try {
-            String[] loreLines = languageManager.getGuiItemLore("spawner_info_item.lore");
-            String[] loreNoShopLines = languageManager.getGuiItemLore("spawner_info_item.lore_no_shop");
+            List<String> loreLines = languageManager.gui().rawList("main.info.lore");
+            List<String> loreNoShopLines = languageManager.gui().rawList("main.info.lore_no_shop");
 
             boolean hasTimers = false;
 
@@ -133,42 +127,51 @@ public class TimerUpdateService {
         lastTimerUpdate.clear();
         lastTimerValue.clear();
 
-        // Reinitialize and recheck
-        initializeCachedStrings();
+        checkTimerPlaceholderUsage();
     }
 
     /**
-     * Calculates and returns the timer display string for a spawner.
+     * Calculates the timer display for a spawner, in the viewer's language.
      *
      * @param spawner The spawner to calculate timer for
      * @param player The player viewing (can be null)
-     * @return Formatted timer string
+     * @return The countdown, or the status text when the spawner is not counting down
      */
-    public String calculateTimerDisplay(SpawnerData spawner, Player player) {
+    public Component calculateTimerDisplay(SpawnerData spawner, Player player) {
         if (!isTimerPlaceholdersEnabled()) {
-            return "";
+            return Component.empty();
         }
 
         if (player != null && player.getGameMode() == GameMode.SPECTATOR) {
-            return cachedInactiveText;
+            return render(STATUS_INACTIVE, player);
         }
 
         // Check if spawner has no configured loot or experience
         if (spawner.hasNoLootOrExperience()) {
-            return cachedNoLootText;
+            return render(STATUS_NO_LOOT, player);
         }
 
         if (spawner.getIsAtCapacity()) {
-            return cachedFullText;
+            return render(STATUS_FULL, player);
         }
 
         long timeUntilNextSpawn = calculateTimeUntilNextSpawn(spawner);
-        
+
         if (timeUntilNextSpawn == -1) {
-            return cachedInactiveText;
+            return render(STATUS_INACTIVE, player);
         }
-        
-        return TimerFormatter.formatTime(timeUntilNextSpawn);
+
+        return Component.text(TimerFormatter.formatTime(timeUntilNextSpawn));
+    }
+
+    /** A timer value as text for one viewer: the countdown as it is, a status in their language. */
+    private Component render(String value, Player viewer) {
+        return switch (value) {
+            case STATUS_INACTIVE -> languageManager.gui(viewer).name("main.info.lore_inactive");
+            case STATUS_FULL -> languageManager.gui(viewer).name("main.info.lore_full");
+            case STATUS_NO_LOOT -> languageManager.gui(viewer).name("main.info.lore_no_loot");
+            default -> Component.text(value);
+        };
     }
 
     /**
@@ -275,7 +278,8 @@ public class TimerUpdateService {
 
                         int spawnerInfoSlot = getSpawnerInfoSlot(currentInv);
                         if (spawnerInfoSlot >= 0) {
-                            updateSpawnerInfoItemTimer(currentInv, spawner, finalTimerValue, spawnerInfoSlot);
+                            updateSpawnerInfoItemTimer(currentInv, spawner,
+                                    render(finalTimerValue, context.player), spawnerInfoSlot);
                             context.player.updateInventory();
                         }
                     });
@@ -345,8 +349,7 @@ public class TimerUpdateService {
 
             int spawnerInfoSlot = getSpawnerInfoSlot(openInventory);
             if (spawnerInfoSlot >= 0) {
-                String timerValue = cachedInactiveText;
-                updateSpawnerInfoItemTimer(openInventory, spawner, timerValue, spawnerInfoSlot);
+                updateSpawnerInfoItemTimer(openInventory, spawner, render(STATUS_INACTIVE, player), spawnerInfoSlot);
                 player.updateInventory();
             }
         });
@@ -358,16 +361,16 @@ public class TimerUpdateService {
     private String calculateTimerDisplayInternal(SpawnerData spawner) {
         // Check if spawner has no configured loot or experience
         if (spawner.hasNoLootOrExperience()) {
-            return cachedNoLootText;
+            return STATUS_NO_LOOT;
         }
 
         if (spawner.getIsAtCapacity()) {
-            return cachedFullText;
+            return STATUS_FULL;
         }
 
         if (spawner.getSpawnerStop().get()) {
             spawner.clearPreGeneratedLoot();
-            return cachedInactiveText;
+            return STATUS_INACTIVE;
         }
 
         long timeUntilNextSpawn = calculateTimeUntilNextSpawn(spawner);
@@ -409,7 +412,7 @@ public class TimerUpdateService {
                     }
 
                     updateSpawnerInfoItemTimer(
-                            openInv, spawner, finalTimerValue, getSpawnerInfoSlot(openInv));
+                            openInv, spawner, render(finalTimerValue, viewer), getSpawnerInfoSlot(openInv));
                     viewer.updateInventory();
                 });
             }
@@ -459,8 +462,8 @@ public class TimerUpdateService {
      * Updates timer in spawner info item.
      * Optimized to minimize hasItemMeta/getItemMeta calls and object allocations.
      */
-    private void updateSpawnerInfoItemTimer(Inventory inventory, SpawnerData spawner, 
-                                           String timeDisplay, int spawnerInfoSlot) {
+    private void updateSpawnerInfoItemTimer(Inventory inventory, SpawnerData spawner,
+                                           Component timeDisplay, int spawnerInfoSlot) {
         if (spawnerInfoSlot < 0) {
             return;
         }
@@ -477,7 +480,7 @@ public class TimerUpdateService {
         }
 
         // Get lore once - this creates a defensive copy, avoid multiple calls
-        List<String> lore = meta.getLore();
+        List<Component> lore = meta.lore();
         if (lore == null || lore.isEmpty()) {
             return;
         }
@@ -488,11 +491,11 @@ public class TimerUpdateService {
 
         boolean needsUpdate = false;
         int updatedIndex = -1;
-        String updatedLine = null;
+        Component updatedLine = null;
 
         // Fast path: try cached index first
         if (cachedIndex != null && cachedIndex >= 0 && cachedIndex < lore.size()) {
-            String line = lore.get(cachedIndex);
+            Component line = lore.get(cachedIndex);
             updatedLine = tryUpdateTimerLine(line, timeDisplay);
 
             if (updatedLine != null && !updatedLine.equals(line)) {
@@ -508,7 +511,7 @@ public class TimerUpdateService {
         // Slow path: search for timer line if cache miss or invalid
         if (!needsUpdate && cachedIndex == null) {
             for (int i = 0; i < lore.size(); i++) {
-                String line = lore.get(i);
+                Component line = lore.get(i);
                 updatedLine = tryUpdateTimerLine(line, timeDisplay);
 
                 if (updatedLine != null && !updatedLine.equals(line)) {
@@ -523,7 +526,7 @@ public class TimerUpdateService {
 
         if (needsUpdate && updatedIndex >= 0) {
             lore.set(updatedIndex, updatedLine);
-            meta.setLore(lore);
+            meta.lore(lore);
             spawnerItem.setItemMeta(meta);
             // Direct slot update without getting item again
             inventory.setItem(spawnerInfoSlot, spawnerItem);
@@ -534,44 +537,24 @@ public class TimerUpdateService {
      * Attempts to update a timer line. Returns updated line if this line contains timer info,
      * or null if this line doesn't contain timer information.
      */
-    private String tryUpdateTimerLine(String line, String timeDisplay) {
+    private Component tryUpdateTimerLine(Component line, Component timeDisplay) {
+        String text = PlainTextComponentSerializer.plainText().serialize(line);
+
         // Check for placeholder first (initial GUI creation)
-        if (line.contains("{time}")) {
-            return line.replace("{time}", timeDisplay);
+        if (text.contains(TIME_PLACEHOLDER)) {
+            return line.replaceText(TextReplacementConfig.builder()
+                    .matchLiteral(TIME_PLACEHOLDER).replacement(timeDisplay).build());
         }
 
         // Quick reject: skip line if it can't possibly contain timer (no colon = no HH:MM pattern)
-        if (line.indexOf(':') == -1) {
+        if (text.indexOf(':') == -1 || !TIMER_PATTERN.matcher(text).find()) {
             return null;
         }
 
-        // Try to update existing timer pattern
-        String updatedLine = updateExistingTimerLine(line, timeDisplay);
-        if (!updatedLine.equals(line)) {
-            return updatedLine;
-        }
-
-        return null; // This line doesn't contain timer info
-    }
-
-    /**
-     * Updates existing timer line by replacing old value with new.
-     * Only handles timer pattern (HH:MM) replacement for language independence.
-     */
-    private String updateExistingTimerLine(String line, String newTimeDisplay) {
-        // Quick check: if line doesn't contain ':', it can't have a timer
-        int colonIndex = line.indexOf(':');
-        if (colonIndex == -1) {
-            return line;
-        }
-
-        // Check if line contains a timer pattern (HH:MM format) using pre-compiled pattern
-        if (TIMER_PATTERN.matcher(line).find()) {
-            // Replace time pattern directly
-            return TIMER_PATTERN.matcher(line).replaceFirst(newTimeDisplay);
-        }
-
-        return line;
+        // Replace the existing countdown. Only the HH:MM pattern is matched, for language independence.
+        Component updatedLine = line.replaceText(TextReplacementConfig.builder()
+                .match(TIMER_PATTERN).once().replacement(timeDisplay).build());
+        return updatedLine.equals(line) ? null : updatedLine;
     }
 
     private boolean isValidGuiSession(Player player) {
