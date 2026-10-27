@@ -45,6 +45,8 @@ Locales live in `core/src/main/resources/language/<locale>/`, currently `en_US`,
 `ls` that directory rather than trusting this list. The active one is the `language` config key,
 switched at runtime by `/ss language` (`commands/config/FolderConfigSubCommand`).
 
+Use the `write-language-files` skill when adding, renaming, translating or commenting keys.
+
 **A new key must be added to every locale directory.** There is no compile-time check and no test;
 a key present only in `en_US` produces a runtime warning for everyone else. `en_US` is the reference.
 

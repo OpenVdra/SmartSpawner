@@ -33,8 +33,8 @@ The file count is a symptom. What actually confuses server owners:
    26 keys with no grouping (`drop_failed`, `no_exp`, `spawner_different`).
 5. **Comments are long and decorated.** Box banners (`# ─────`), a 15-line structure block at the top
    of `messages.yml`, and the same 7-line placeholder list repeated above every item in `gui.yml`
-   (72 comment lines in `en_US/gui.yml` alone). This breaks the `write-config-comments` house style
-   that `config.yml` already follows. There is no docs page for language files to point at instead.
+   (72 comment lines in `en_US/gui.yml` alone). There is no docs page for language files to point at
+   instead.
 6. **Only legacy colours.** `ColorUtil` handles `&a` and `&#RRGGBB`. No gradients, no MiniMessage,
    which most current plugins and owners expect.
 7. **Custom locales are never migrated.** `LanguageUpdater` only walks `SUPPORTED_LANGUAGES`. An owner
@@ -269,7 +269,9 @@ Also:
 
 ### Comments
 
-Rewrite every shipped language file to the `write-config-comments` rules:
+Rewrite every shipped language file to the rules in the `write-language-files` skill
+(`.claude/skills/write-language-files/SKILL.md`), which is the source of truth for key names, comment
+style, colours and translation checks. Summary:
 
 - **Header: three lines at most.** What the file is, the docs link, the colour formats.
 - **No banners, no structure blocks, no repeated placeholder lists.** A blank line between groups,
