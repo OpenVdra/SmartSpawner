@@ -16,7 +16,7 @@ spawner_storage_item:
   # {total_sell_price} - Total sell value currently stored in the spawner
   # {entity} - The spawner's entity type (normal capitalization)
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  name: '&fDepoyu &#5DB5F1Aç'
+  name: '<white>Depoyu <#5db5f1>Aç'
 
   # Available placeholders for all lore lines:
   # {max_slots} - Maximum number of slots in the storage (formatted with commas)
@@ -28,15 +28,15 @@ spawner_storage_item:
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fBu spawnerda biriken'
-    - '   &ftüm eşyaları buradan'
-    - '   &fgörebilir ve yönetebilirsin.'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Bu spawnerda biriken'
+    - '   <white>tüm eşyaları buradan'
+    - '   <white>görebilir ve yönetebilirsin.'
     - ''
-    - ' &#5DB5F1★ Kapasite: &f{percent_storage_rounded}%'
+    - ' <#5db5f1>★ Kapasite: <white>{percent_storage_rounded}%'
     - '{loot_items}'
     - ''
-    - '&#5DB5F1 ▸ Depoyu açmak için tıkla!'
+    - '<#5db5f1> ▸ Depoyu açmak için tıkla!'
 
   # This defines how each loot item will be displayed when using {loot_items}
   # Available placeholders for each loot item:
@@ -44,8 +44,8 @@ spawner_storage_item:
   # {amount} - Number of items (formatted with commas)
   # {raw_amount} - Number of items (without formatting)
   # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
-  loot_items: '  &8• &f{item_name}&f: &e{amount}'
-  loot_items_empty: '  &8• &fDepoda eşya yok'
+  loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <white>Depoda eşya yok'
 
 
 # Available placeholders:
@@ -69,50 +69,50 @@ spawner_storage_item:
 # {time}             - Time until the next spawn, or a status text when inactive/full/no loot
 # {total_sell_price} - Total sell value currently stored in the spawner
 spawner_info_item:
-  name: ' &fSpawner &#5DB5F1Bilgisi'
+  name: ' <white>Spawner <#5db5f1>Bilgisi'
   lore:
     - ''
-    - ' &#5DB5F1ℹ İstatistikler:'
-    - '   &8• &fStack: &e{stack_size}'
-    - '   &8• &fMenzil: &e{range} &fblok'
-    - '   &8• &fDoğma: &e{min_mobs}&f-&e{max_mobs} &fadet'
-    - '   &8• &fGecikme: &e{delay} &fsaniye'
+    - ' <#5db5f1>ℹ İstatistikler:'
+    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+    - '   <dark_gray>• <white>Menzil: <yellow>{range} <white>blok'
+    - '   <dark_gray>• <white>Doğma: <yellow>{min_mobs}<white>-<yellow>{max_mobs} <white>adet'
+    - '   <dark_gray>• <white>Gecikme: <yellow>{delay} <white>saniye'
     - ''
-    - ' &#5DB5F1★ Sonraki Doğma: &f{time}'
-    - '   &8• &fXP: &e{percent_exp_rounded}%'
-    - '   &8• &fDepo: &e{percent_storage_rounded}%'
-    - '   &8• &fSatış Değeri: &a${total_sell_price}'
+    - ' <#5db5f1>★ Sonraki Doğma: <white>{time}'
+    - '   <dark_gray>• <white>XP: <yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>Depo: <yellow>{percent_storage_rounded}%'
+    - '   <dark_gray>• <white>Satış Değeri: <green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ Sol Tık: &fSatış yap & XP topla'
+    - '<#5db5f1> ▸ Sol Tık: <white>Satış yap & XP topla'
   lore_no_shop:
     - ''
-    - ' &#5DB5F1ℹ İstatistikler:'
-    - '   &8• &fStack: &e{stack_size}'
-    - '   &8• &fMenzil: &e{range} &fblok'
-    - '   &8• &fDoğma: &e{min_mobs}&f-&e{max_mobs} &fadet'
-    - '   &8• &fGecikme: &e{delay} &fsaniye'
+    - ' <#5db5f1>ℹ İstatistikler:'
+    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+    - '   <dark_gray>• <white>Menzil: <yellow>{range} <white>blok'
+    - '   <dark_gray>• <white>Doğma: <yellow>{min_mobs}<white>-<yellow>{max_mobs} <white>adet'
+    - '   <dark_gray>• <white>Gecikme: <yellow>{delay} <white>saniye'
     - ''
-    - ' &#5DB5F1★ Sonraki Doğma: &f{time}'
-    - '   &8• &fXP: &e{percent_exp_rounded}%'
-    - '   &8• &fDepo: &e{percent_storage_rounded}%'
+    - ' <#5db5f1>★ Sonraki Doğma: <white>{time}'
+    - '   <dark_gray>• <white>XP: <yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>Depo: <yellow>{percent_storage_rounded}%'
     - ''
-  lore_full: '&#FF4444Kapasite Dolu'
-  lore_inactive: '&#FF4444İnaktif'
-  lore_no_loot: '&#FF4444Düşen Eşya Ayarlanmamış'
+  lore_full: '<#ff4444>Kapasite Dolu'
+  lore_inactive: '<#ff4444>İnaktif'
+  lore_no_loot: '<#ff4444>Düşen Eşya Ayarlanmamış'
 
 exp_info_item:
-  name: '&fXP &#5DB5F1Topla'
+  name: '<white>XP <#5db5f1>Topla'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fBiriken XP''yi topla veya'
-    - '   &fTamir basılı eşyalarını'
-    - '   &fonarmak için kullan.'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Biriken XP''yi topla veya'
+    - '   <white>Tamir basılı eşyalarını'
+    - '   <white>onarmak için kullan.'
     - ''
-    - ' &#5DB5F1★ Kapasite: &f{percent_exp_rounded}%'
-    - '  &8• &fBiriken XP: &a{current_exp}&f/&a{max_exp}'
+    - ' <#5db5f1>★ Kapasite: <white>{percent_exp_rounded}%'
+    - '  <dark_gray>• <white>Biriken XP: <green>{current_exp}<white>/<green>{max_exp}'
     - ''
-    - '&#5DB5F1 ▸ XP toplamak için tıkla!'
+    - '<#5db5f1> ▸ XP toplamak için tıkla!'
 
 # ──────────────────────────────────────────────────────
 #                Sell Confirmation GUI
@@ -120,33 +120,33 @@ exp_info_item:
 gui_title_sell_confirm: 'Satışı Onayla'
 
 button_sell_cancel:
-  name: '&fSatışı &#FF6B6Bİptal Et'
+  name: '<white>Satışı <#ff6b6b>İptal Et'
   lore:
     - ''
-    - ' &#FF6B6B⚠ Bilgi:'
-    - '  &8• &fHiçbir şey satmadan'
-    - '   &fgeri dönmek için tıkla.'
+    - ' <#ff6b6b>⚠ Bilgi:'
+    - '  <dark_gray>• <white>Hiçbir şey satmadan'
+    - '   <white>geri dönmek için tıkla.'
     - ''
-    - '&#FF6B6B ▸ İptal etmek için tıkla!'
+    - '<#ff6b6b> ▸ İptal etmek için tıkla!'
 
 button_sell_confirm:
-  name: '&fSatışı &#5DB5F1Onayla'
+  name: '<white>Satışı <#5db5f1>Onayla'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Kazanacağın:'
-    - '  &8• &fPara: &a${total_sell_price}'
+    - ' <#5db5f1>ℹ Kazanacağın:'
+    - '  <dark_gray>• <white>Para: <green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ Satışı onaylamak için tıkla!'
+    - '<#5db5f1> ▸ Satışı onaylamak için tıkla!'
 
 button_sell_confirm_with_exp:
-  name: '&fSatışı Onayla &#5DB5F1ve XP Al'
+  name: '<white>Satışı Onayla <#5db5f1>ve XP Al'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Kazanacağın:'
-    - '  &8• &fPara: &a${total_sell_price}'
-    - '  &8• &fXP: &a{current_exp}'
+    - ' <#5db5f1>ℹ Kazanacağın:'
+    - '  <dark_gray>• <white>Para: <green>${total_sell_price}'
+    - '  <dark_gray>• <white>XP: <green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ Onaylamak için tıkla!'
+    - '<#5db5f1> ▸ Onaylamak için tıkla!'
 
 # Available placeholders for button_sell_info:
 # {entity} - Formatted entity or item name
@@ -160,15 +160,15 @@ button_sell_confirm_with_exp:
 # {loot_items} - Expands to the generated loot item lines
 # Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
 button_sell_info:
-  name: '&fSatış &#5DB5F1Özeti'
+  name: '<white>Satış <#5db5f1>Özeti'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
+    - ' <#5db5f1>ℹ Bilgi:'
     - '{loot_items}'
-    - '  &8• &a+ &fXP: &e{current_exp}'
-    - '  &8• &a+ &fPara: &a${total_sell_price}'
-  loot_items: '  &8• &#FF6B6B- &f{item_name}&f: &e{amount}'
-  loot_items_empty: '  &8• &#FF6B6B- &fSatılacak eşya yok'
+    - '  <dark_gray>• <green>+ <white>XP: <yellow>{current_exp}'
+    - '  <dark_gray>• <green>+ <white>Para: <green>${total_sell_price}'
+  loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>Satılacak eşya yok'
 
 # ──────────────────────────────────────────────────────
 #             Spawner Storage GUI
@@ -182,95 +182,95 @@ button_sell_info:
 gui_title_storage: '[{current_page}/{total_pages}] Spawner Deposu'
 
 navigation_button_previous:
-  name: '&#37eb9aÖnceki Sayfa'
+  name: '<#37eb9a>Önceki Sayfa'
   lore:
-    - '&#2cc483 ▸ &#f8f8ffSayfa &#37eb9a{target_page}&#f8f8ff''e gitmek için tıkla'
+    - '<#2cc483> ▸ <#f8f8ff>Sayfa <#37eb9a>{target_page}<#f8f8ff>''e gitmek için tıkla'
 
 navigation_button_next:
-  name: '&#37eb9aSonraki Sayfa'
+  name: '<#37eb9a>Sonraki Sayfa'
   lore:
-    - '&#2cc483 ▸ &#f8f8ffSayfa &#37eb9a{target_page}&#f8f8ff''e gitmek için tıkla'
+    - '<#2cc483> ▸ <#f8f8ff>Sayfa <#37eb9a>{target_page}<#f8f8ff>''e gitmek için tıkla'
 
 sell_button:
-  name: '&fEşyaları &aSat'
+  name: '<white>Eşyaları <green>Sat'
   lore:
     - ''
-    - ' &aℹ Bilgi:'
-    - '  &8• &fDepodaki tüm eşyaları'
-    - '   &fsatıp paraya çevirirsin.'
+    - ' <green>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Depodaki tüm eşyaları'
+    - '   <white>satıp paraya çevirirsin.'
     - ''
-    - '&a ▸ Satmak için tıkla!'
+    - '<green> ▸ Satmak için tıkla!'
 
 sell_and_exp_button:
-  name: '&fSat ve &aXP Topla'
+  name: '<white>Sat ve <green>XP Topla'
   lore:
     - ''
-    - ' &aℹ Bilgi:'
-    - '  &8• &fTüm eşyaları satar ve'
-    - '   &fbiriken XP''yi toplarsın.'
-    - '  &8• &fTahmini Kazanç: &a${total_sell_price}'
+    - ' <green>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Tüm eşyaları satar ve'
+    - '   <white>biriken XP''yi toplarsın.'
+    - '  <dark_gray>• <white>Tahmini Kazanç: <green>${total_sell_price}'
     - ''
-    - '&a ▸ Devam etmek için tıkla!'
+    - '<green> ▸ Devam etmek için tıkla!'
 
 return_button:
-  name: '&fAna Menüye &#FF6B6BDön'
+  name: '<white>Ana Menüye <#ff6b6b>Dön'
   lore:
     - ''
-    - ' &#dadadaℹ Bilgi:'
-    - '  &8• &fBir önceki menüye'
-    - '   &fdönmek için tıkla.'
+    - ' <#dadada>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Bir önceki menüye'
+    - '   <white>dönmek için tıkla.'
     - ''
-    - '&c ▸ Geri dönmek için tıkla!'
+    - '<red> ▸ Geri dönmek için tıkla!'
 
 take_all_button:
-  name: '&fHepsini &#5DB5F1Al'
+  name: '<white>Hepsini <#5db5f1>Al'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fBu sayfadaki tüm'
-    - '   &feşyaları envanterine alırsın.'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Bu sayfadaki tüm'
+    - '   <white>eşyaları envanterine alırsın.'
     - ''
-    - '&#5DB5F1 ▸ Almak için tıkla!'
+    - '<#5db5f1> ▸ Almak için tıkla!'
 
 item_filter_button:
-  name: '&fDüşenleri &#5DB5F1Filtrele'
+  name: '<white>Düşenleri <#5db5f1>Filtrele'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fBu spawner için izin verilen'
-    - '   &fve engellenen eşyaları ayarla.'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Bu spawner için izin verilen'
+    - '   <white>ve engellenen eşyaları ayarla.'
     - ''
-    - '&#5DB5F1 ▸ Filtreleri ayarlamak için tıkla!'
+    - '<#5db5f1> ▸ Filtreleri ayarlamak için tıkla!'
 
 sort_items_button:
-  name: '&fEşyaları &#5DB5F1Sırala'
+  name: '<white>Eşyaları <#5db5f1>Sırala'
   lore:
     - ''
     - '{available_items}'
     - ''
-    - '&#5DB5F1 ▸ Sıralamak için tıkla!'
-  selected_item: ' &#5DB5F1• {item_name}'
-  unselected_item: ' &f• {item_name}'
-  no_item: ' &7• Yok'
+    - '<#5db5f1> ▸ Sıralamak için tıkla!'
+  selected_item: ' <#5db5f1>• {item_name}'
+  unselected_item: ' <white>• {item_name}'
+  no_item: ' <gray>• Yok'
 
 drop_page_button:
-  name: '&fHepsini &#FF6B6BYere At'
+  name: '<white>Hepsini <#ff6b6b>Yere At'
   lore:
     - ''
-    - ' &#FF6B6B⚠ Uyarı:'
-    - '  &8• &fBu sayfadaki tüm eşyaları'
-    - '   &fyere fırlatırsın.'
+    - ' <#ff6b6b>⚠ Uyarı:'
+    - '  <dark_gray>• <white>Bu sayfadaki tüm eşyaları'
+    - '   <white>yere fırlatırsın.'
     - ''
-    - '&#FF6B6B ▸ Yere atmak için tıkla!'
+    - '<#ff6b6b> ▸ Yere atmak için tıkla!'
 
 collect_exp_button:
-  name: '&fXP &#5DB5F1Topla'
+  name: '<white>XP <#5db5f1>Topla'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fMevcut XP: &a{current_exp}'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Mevcut XP: <green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ Toplamak için tıkla!'
+    - '<#5db5f1> ▸ Toplamak için tıkla!'
 
 storage_spawner_info_button:
   name: ''
@@ -282,22 +282,22 @@ storage_spawner_info_button:
 gui_title_filter_config: 'İzin Verilen           Engellenen'
 
 filter_divider:
-  name: '&fEşya &#5DB5F1Filtresi'
+  name: '<white>Eşya <#5db5f1>Filtresi'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fSol taraf: İzin verilen eşyalar'
-    - '  &8• &fSağ taraf: Engellenen eşyalar'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Sol taraf: İzin verilen eşyalar'
+    - '  <dark_gray>• <white>Sağ taraf: Engellenen eşyalar'
     - ''
-    - '&#5DB5F1 ▸ Depoya dönmek için tıkla!'
+    - '<#5db5f1> ▸ Depoya dönmek için tıkla!'
 
 filter_item_allowed:
-  name: '&f{item_name}&#37eb9a düşebilir'
+  name: '<white>{item_name}<#37eb9a> düşebilir'
   lore:
-    - '&#37eb9a ▸ &fBu eşyayı engellemek için tıkla!'
+    - '<#37eb9a> ▸ <white>Bu eşyayı engellemek için tıkla!'
 
 filter_item_blocked:
-  name: '&f{item_name}&#FF6B6B engellendi'
+  name: '<white>{item_name}<#ff6b6b> engellendi'
   lore:
-    - '&#FF6B6B ▸ &fBu eşyaya izin vermek için tıkla!'
+    - '<#ff6b6b> ▸ <white>Bu eşyaya izin vermek için tıkla!'
 

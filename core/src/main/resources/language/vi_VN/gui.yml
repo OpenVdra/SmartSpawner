@@ -16,7 +16,7 @@ spawner_storage_item:
   # {total_sell_price} - Total sell value currently stored in the spawner
   # {entity} - The spawner's entity type (normal capitalization)
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  name: '&fᴍở &#5DB5F1ᴋʜᴏ'
+  name: '<white>ᴍở <#5db5f1>ᴋʜᴏ'
 
   # Available placeholders for all lore lines:
   # {max_slots} - Maximum number of slots in the storage (formatted with commas)
@@ -28,15 +28,15 @@ spawner_storage_item:
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fTại đây bạn có thể xem'
-    - '   &fvà quản lý mọi vật phẩm'
-    - '   &ftrong spawner này.'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Tại đây bạn có thể xem'
+    - '   <white>và quản lý mọi vật phẩm'
+    - '   <white>trong spawner này.'
     - ''
-    - ' &#5DB5F1★ ꜱứᴄ ᴄʜứᴀ: &f{percent_storage_rounded}%'
+    - ' <#5db5f1>★ ꜱứᴄ ᴄʜứᴀ: <white>{percent_storage_rounded}%'
     - '{loot_items}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để mở kho!'
+    - '<#5db5f1> ▸ Nhấp để mở kho!'
 
   # This defines how each loot item will be displayed when using {loot_items}
   # Available placeholders for each loot item:
@@ -44,8 +44,8 @@ spawner_storage_item:
   # {amount} - Number of items (formatted with commas)
   # {raw_amount} - Number of items (without formatting)
   # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
-  loot_items: '  &8• &f{item_name}&f: &e{amount}'
-  loot_items_empty: '  &8• &fKhông có vật phẩm'
+  loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <white>Không có vật phẩm'
 
 
 # Available placeholders:
@@ -69,50 +69,50 @@ spawner_storage_item:
 # {time}             - Time until the next spawn, or a status text when inactive/full/no loot
 # {total_sell_price} - Total sell value currently stored in the spawner
 spawner_info_item:
-  name: ' &fᴛʜôɴɢ ᴛɪɴ &#5DB5F1ꜱᴘᴀᴡɴᴇʀ'
+  name: ' <white>ᴛʜôɴɢ ᴛɪɴ <#5db5f1>ꜱᴘᴀᴡɴᴇʀ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜốɴɢ ᴋê:'
-    - '   &8• &fStack: &e{stack_size}'
-    - '   &8• &fPhạm vi: &e{range} &fkhối'
-    - '   &8• &fSinh vật: &e{min_mobs}&f-&e{max_mobs}'
-    - '   &8• &fThời gian chờ: &e{delay} &fgiây'
+    - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
+    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+    - '   <dark_gray>• <white>Phạm vi: <yellow>{range} <white>khối'
+    - '   <dark_gray>• <white>Sinh vật: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+    - '   <dark_gray>• <white>Thời gian chờ: <yellow>{delay} <white>giây'
     - ''
-    - ' &#5DB5F1★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: &f{time}'
-    - '   &8• &fExp: &e{percent_exp_rounded}%'
-    - '   &8• &fKho: &e{percent_storage_rounded}%'
-    - '   &8• &fGiá trị bán: &a${total_sell_price}'
+    - ' <#5db5f1>★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: <white>{time}'
+    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>Kho: <yellow>{percent_storage_rounded}%'
+    - '   <dark_gray>• <white>Giá trị bán: <green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ Chuột trái: &fBán và nhận Exp'
+    - '<#5db5f1> ▸ Chuột trái: <white>Bán và nhận Exp'
   lore_no_shop:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜốɴɢ ᴋê:'
-    - '   &8• &fStack: &e{stack_size}'
-    - '   &8• &fPhạm vi: &e{range} &fkhối'
-    - '   &8• &fSinh vật: &e{min_mobs}&f-&e{max_mobs}'
-    - '   &8• &fThời gian chờ: &e{delay} &fgiây'
+    - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
+    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+    - '   <dark_gray>• <white>Phạm vi: <yellow>{range} <white>khối'
+    - '   <dark_gray>• <white>Sinh vật: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+    - '   <dark_gray>• <white>Thời gian chờ: <yellow>{delay} <white>giây'
     - ''
-    - ' &#5DB5F1★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: &f{time}'
-    - '   &8• &fExp: &e{percent_exp_rounded}%'
-    - '   &8• &fKho: &e{percent_storage_rounded}%'
+    - ' <#5db5f1>★ ʟầɴ ꜱɪɴʜ ᴛɪếᴘ: <white>{time}'
+    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>Kho: <yellow>{percent_storage_rounded}%'
     - ''
-  lore_full: '&#FF4444đã đầʏ ꜱứᴄ ᴄʜứᴀ'
-  lore_inactive: '&#FF4444ᴋʜôɴɢ ʜᴏạᴛ độɴɢ'
-  lore_no_loot: '&#FF4444ᴄʜưᴀ ᴄấᴜ ʜìɴʜ ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
+  lore_full: '<#ff4444>đã đầʏ ꜱứᴄ ᴄʜứᴀ'
+  lore_inactive: '<#ff4444>ᴋʜôɴɢ ʜᴏạᴛ độɴɢ'
+  lore_no_loot: '<#ff4444>ᴄʜưᴀ ᴄấᴜ ʜìɴʜ ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
 
 exp_info_item:
-  name: '&fɴʜậɴ &#5DB5F1ᴇxᴘ'
+  name: '<white>ɴʜậɴ <#5db5f1>ᴇxᴘ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fNhận Exp hoặc dùng'
-    - '   &fExp để sửa chữa'
-    - '   &ftrang bị Mending &fcủa bạn.'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Nhận Exp hoặc dùng'
+    - '   <white>Exp để sửa chữa'
+    - '   <white>trang bị Mending <white>của bạn.'
     - ''
-    - ' &#5DB5F1★ ꜱứᴄ ᴄʜứᴀ: &f{percent_exp_rounded}%'
-    - '  &8• &fExp đã lưu: &a{current_exp}&f/&a{max_exp}'
+    - ' <#5db5f1>★ ꜱứᴄ ᴄʜứᴀ: <white>{percent_exp_rounded}%'
+    - '  <dark_gray>• <white>Exp đã lưu: <green>{current_exp}<white>/<green>{max_exp}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để nhận Exp!'
+    - '<#5db5f1> ▸ Nhấp để nhận Exp!'
 
 # ──────────────────────────────────────────────────────
 #                Sell Confirmation GUI
@@ -120,33 +120,33 @@ exp_info_item:
 gui_title_sell_confirm: 'xáᴄ ɴʜậɴ ʙáɴ'
 
 button_sell_cancel:
-  name: '&fʜủʏ &#FF6B6Bʙáɴ'
+  name: '<white>ʜủʏ <#ff6b6b>ʙáɴ'
   lore:
     - ''
-    - ' &#FF6B6B⚠ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fNhấp để quay lại'
-    - '   &fmà không bán gì cả.'
+    - ' <#ff6b6b>⚠ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Nhấp để quay lại'
+    - '   <white>mà không bán gì cả.'
     - ''
-    - '&#FF6B6B ▸ Nhấp để hủy!'
+    - '<#ff6b6b> ▸ Nhấp để hủy!'
 
 button_sell_confirm:
-  name: '&fxáᴄ ɴʜậɴ &#5DB5F1ʙáɴ'
+  name: '<white>xáᴄ ɴʜậɴ <#5db5f1>ʙáɴ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bạn sẽ nhận:'
-    - '  &8• &fTiền: &a${total_sell_price}'
+    - ' <#5db5f1>ℹ Bạn sẽ nhận:'
+    - '  <dark_gray>• <white>Tiền: <green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để xác nhận bán!'
+    - '<#5db5f1> ▸ Nhấp để xác nhận bán!'
 
 button_sell_confirm_with_exp:
-  name: '&fxáᴄ ɴʜậɴ ʙáɴ &#5DB5F1ᴠà ᴇxᴘ'
+  name: '<white>xáᴄ ɴʜậɴ ʙáɴ <#5db5f1>ᴠà ᴇxᴘ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bạn sẽ nhận:'
-    - '  &8• &fTiền: &a${total_sell_price}'
-    - '  &8• &fExp: &a{current_exp}'
+    - ' <#5db5f1>ℹ Bạn sẽ nhận:'
+    - '  <dark_gray>• <white>Tiền: <green>${total_sell_price}'
+    - '  <dark_gray>• <white>Exp: <green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để xác nhận!'
+    - '<#5db5f1> ▸ Nhấp để xác nhận!'
 
 # Available placeholders for button_sell_info:
 # {entity} - Formatted entity or item name
@@ -160,15 +160,15 @@ button_sell_confirm_with_exp:
 # {loot_items} - Expands to the generated loot item lines
 # Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
 button_sell_info:
-  name: '&fʙáɴ &#5DB5F1ᴛổɴɢ ᴋếᴛ'
+  name: '<white>ʙáɴ <#5db5f1>ᴛổɴɢ ᴋếᴛ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
     - '{loot_items}'
-    - '  &8• &a+ &fExp: &e{current_exp}'
-    - '  &8• &a+ &fTiền: &a${total_sell_price}'
-  loot_items: '  &8• &#FF6B6B- &f{item_name}&f: &e{amount}'
-  loot_items_empty: '  &8• &#FF6B6B- &fKhông có vật phẩm để bán'
+    - '  <dark_gray>• <green>+ <white>Exp: <yellow>{current_exp}'
+    - '  <dark_gray>• <green>+ <white>Tiền: <green>${total_sell_price}'
+  loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>Không có vật phẩm để bán'
 
 # ──────────────────────────────────────────────────────
 #             Spawner Storage GUI
@@ -182,95 +182,95 @@ button_sell_info:
 gui_title_storage: '[{current_page}/{total_pages}] ᴋʜᴏ ꜱᴘᴀᴡɴᴇʀ'
 
 navigation_button_previous:
-  name: '&#37eb9aᴛʀᴀɴɢ ᴛʀướᴄ'
+  name: '<#37eb9a>ᴛʀᴀɴɢ ᴛʀướᴄ'
   lore:
-    - '&#2cc483 ▸ &#f8f8ffNhấp để đến trang &#37eb9a{target_page}'
+    - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
 
 navigation_button_next:
-  name: '&#37eb9aᴛʀᴀɴɢ ꜱᴀᴜ'
+  name: '<#37eb9a>ᴛʀᴀɴɢ ꜱᴀᴜ'
   lore:
-    - '&#2cc483 ▸ &#f8f8ffNhấp để đến trang &#37eb9a{target_page}'
+    - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
 
 sell_button:
-  name: '&fʙáɴ &aᴠậᴛ ᴘʜẩᴍ'
+  name: '<white>ʙáɴ <green>ᴠậᴛ ᴘʜẩᴍ'
   lore:
     - ''
-    - ' &aℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fBạn sẽ bán tất cả vật phẩm'
-    - '   &ftrong kho.'
+    - ' <green>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Bạn sẽ bán tất cả vật phẩm'
+    - '   <white>trong kho.'
     - ''
-    - '&a ▸ Nhấp để bán!'
+    - '<green> ▸ Nhấp để bán!'
 
 sell_and_exp_button:
-  name: '&fʙáɴ ᴠà &aɴʜậɴ ᴇxᴘ'
+  name: '<white>ʙáɴ ᴠà <green>ɴʜậɴ ᴇxᴘ'
   lore:
     - ''
-    - ' &aℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fBạn sẽ bán tất cả vật phẩm'
-    - '   &fvà nhận Exp đã lưu.'
-    - '  &8• &fTổng ước tính: &a${total_sell_price}'
+    - ' <green>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Bạn sẽ bán tất cả vật phẩm'
+    - '   <white>và nhận Exp đã lưu.'
+    - '  <dark_gray>• <white>Tổng ước tính: <green>${total_sell_price}'
     - ''
-    - '&a ▸ Nhấp để tiếp tục!'
+    - '<green> ▸ Nhấp để tiếp tục!'
 
 return_button:
-  name: '&fǫᴜᴀʏ ʟạɪ &#FF6B6Bᴍᴇɴᴜ ᴄʜíɴʜ'
+  name: '<white>ǫᴜᴀʏ ʟạɪ <#ff6b6b>ᴍᴇɴᴜ ᴄʜíɴʜ'
   lore:
     - ''
-    - ' &#dadadaℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fNhấp để quay lại'
-    - '   &fvề menu trước.'
+    - ' <#dadada>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Nhấp để quay lại'
+    - '   <white>về menu trước.'
     - ''
-    - '&c ▸ Nhấp để quay lại!'
+    - '<red> ▸ Nhấp để quay lại!'
 
 take_all_button:
-  name: '&fʟấʏ &#5DB5F1ᴛấᴛ ᴄả'
+  name: '<white>ʟấʏ <#5db5f1>ᴛấᴛ ᴄả'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fBạn sẽ lấy tất cả'
-    - '   &fvật phẩm ở trang này.'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Bạn sẽ lấy tất cả'
+    - '   <white>vật phẩm ở trang này.'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để lấy!'
+    - '<#5db5f1> ▸ Nhấp để lấy!'
 
 item_filter_button:
-  name: '&fʟọᴄ &#5DB5F1ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
+  name: '<white>ʟọᴄ <#5db5f1>ᴠậᴛ ᴘʜẩᴍ ʀơɪ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fCấu hình vật phẩm được phép'
-    - '   &fvà bị chặn cho spawner này.'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Cấu hình vật phẩm được phép'
+    - '   <white>và bị chặn cho spawner này.'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để cấu hình bộ lọc!'
+    - '<#5db5f1> ▸ Nhấp để cấu hình bộ lọc!'
 
 sort_items_button:
-  name: '&fꜱắᴘ xếᴘ &#5DB5F1ᴠậᴛ ᴘʜẩᴍ'
+  name: '<white>ꜱắᴘ xếᴘ <#5db5f1>ᴠậᴛ ᴘʜẩᴍ'
   lore:
     - ''
     - '{available_items}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để sắp xếp!'
-  selected_item: ' &#5DB5F1• {item_name}'
-  unselected_item: ' &f• {item_name}'
-  no_item: ' &7• Không có'
+    - '<#5db5f1> ▸ Nhấp để sắp xếp!'
+  selected_item: ' <#5db5f1>• {item_name}'
+  unselected_item: ' <white>• {item_name}'
+  no_item: ' <gray>• Không có'
 
 drop_page_button:
-  name: '&fᴛʜả &#FF6B6Bᴛʀᴀɴɢ'
+  name: '<white>ᴛʜả <#ff6b6b>ᴛʀᴀɴɢ'
   lore:
     - ''
-    - ' &#FF6B6B⚠ ᴄảɴʜ ʙáᴏ:'
-    - '  &8• &fBạn sẽ thả mọi vật phẩm'
-    - '   &ftừ trang này xuống đất.'
+    - ' <#ff6b6b>⚠ ᴄảɴʜ ʙáᴏ:'
+    - '  <dark_gray>• <white>Bạn sẽ thả mọi vật phẩm'
+    - '   <white>từ trang này xuống đất.'
     - ''
-    - '&#FF6B6B ▸ Nhấp để thả!'
+    - '<#ff6b6b> ▸ Nhấp để thả!'
 
 collect_exp_button:
-  name: '&fɴʜậɴ &#5DB5F1ᴇxᴘ'
+  name: '<white>ɴʜậɴ <#5db5f1>ᴇxᴘ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fExp khả dụng: &a{current_exp}'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Exp khả dụng: <green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để nhận Exp!'
+    - '<#5db5f1> ▸ Nhấp để nhận Exp!'
 
 storage_spawner_info_button:
   name: ''
@@ -282,22 +282,22 @@ storage_spawner_info_button:
 gui_title_filter_config: '    ᴄʜᴏ ᴘʜéᴘ           ʙị ᴄʜặɴ'
 
 filter_divider:
-  name: '&fᴛʜả &#5DB5F1ʟọᴄ'
+  name: '<white>ᴛʜả <#5db5f1>ʟọᴄ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fBên trái: vật phẩm được phép'
-    - '  &8• &fBên phải: vật phẩm bị chặn'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Bên trái: vật phẩm được phép'
+    - '  <dark_gray>• <white>Bên phải: vật phẩm bị chặn'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để trở về kho!'
+    - '<#5db5f1> ▸ Nhấp để trở về kho!'
 
 filter_item_allowed:
-  name: '&f{item_name}&#37eb9a được phép'
+  name: '<white>{item_name}<#37eb9a> được phép'
   lore:
-    - '&#37eb9a ▸ &fNhấp để chặn vật phẩm này!'
+    - '<#37eb9a> ▸ <white>Nhấp để chặn vật phẩm này!'
 
 filter_item_blocked:
-  name: '&f{item_name}&#FF6B6B bị chặn'
+  name: '<white>{item_name}<#ff6b6b> bị chặn'
   lore:
-    - '&#FF6B6B ▸ &fNhấp để cho phép vật phẩm này!'
+    - '<#ff6b6b> ▸ <white>Nhấp để cho phép vật phẩm này!'
 

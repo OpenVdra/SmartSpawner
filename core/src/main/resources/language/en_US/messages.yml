@@ -16,126 +16,126 @@
 #   - All components are optional - you can use any combination as needed
 #   - The "message" field is not required and can be omitted if you only want other components
 
-prefix: '&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ &8⏩ &r'
+prefix: '<#3498db>SᴍᴀʀᴛSᴘᴀᴡɴᴇʀ <dark_gray>⏩ <reset>'
 
 missing_message_key:
-  message: '&#FF4444Missing message key: &f{key}'
+  message: '<#ff4444>Missing message key: <white>{key}'
 
 # ──────────────────────────────────────────────────────
 #              Player Interaction (General)
 # ──────────────────────────────────────────────────────
 spawner_activated:
-  message: 'The spawner has been&a activated. &rYou can now collect drops and EXP.'
+  message: 'The spawner has been<green> activated. <reset>You can now collect drops and EXP.'
   sound: block.beacon.activate
 
 inventory_full:
-  message: '&#FF4444Your inventory is full.'
+  message: '<#ff4444>Your inventory is full.'
 
 spawner_storage_empty:
-  message: '&#FF4444Spawner storage is empty.'
+  message: '<#ff4444>Spawner storage is empty.'
 
 action_in_progress:
-  message: '&#F0C857There is already an action in progress. Please wait.'
-  action_bar: '&#F0C857Action in progress. Please wait.'
+  message: '<#f0c857>There is already an action in progress. Please wait.'
+  action_bar: '<#f0c857>Action in progress. Please wait.'
 
 storage_in_use:
-  message: '&#FF4444This spawner storage is currently open by another player.'
-  action_bar: '&#FF4444Storage is currently in use by another player.'
+  message: '<#ff4444>This spawner storage is currently open by another player.'
+  action_bar: '<#ff4444>Storage is currently in use by another player.'
 
 action_failed:
-  message: '&#FF4444The action failed. Please try again.'
-  action_bar: '&#FF4444The action failed. Please try again.'
+  message: '<#ff4444>The action failed. Please try again.'
+  action_bar: '<#ff4444>The action failed. Please try again.'
 
 action_not_ready:
-  message: '&#F0C857This action is not ready yet. Try again in &f{time}&#F0C857.'
+  message: '<#f0c857>This action is not ready yet. Try again in <white>{time}<#f0c857>.'
   sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Main GUI Interactions
 # ──────────────────────────────────────────────────────
 no_exp:
-  message: '&#FF4444There is no EXP available'
+  message: '<#ff4444>There is no EXP available'
 
 exp_collected:
-  message: 'You collected &a{exp} &fexperience.'
-  action_bar: '&a+{exp} EXP'
+  message: 'You collected <green>{exp} <white>experience.'
+  action_bar: '<green>+{exp} EXP'
 
 exp_collected_with_mending:
-  message: 'You collected &a{exp} &fexperience. &c{exp_mending} &fwas used on Mending.'
-  action_bar: '&a+{exp} EXP &f| &c-{exp_mending} used on Mending'
+  message: 'You collected <green>{exp} <white>experience. <red>{exp_mending} <white>was used on Mending.'
+  action_bar: '<green>+{exp} EXP <white>| <red>-{exp_mending} used on Mending'
 
 # ──────────────────────────────────────────────────────
 #            Spawner - Storage GUI Interactions
 # ──────────────────────────────────────────────────────
 click_too_fast:
-  message: '&#FF4444You are clicking too fast.'
+  message: '<#ff4444>You are clicking too fast.'
   sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Stack Interaction
 # ──────────────────────────────────────────────────────
 spawner_different:
-  message: '&#FF4444Spawners must be the same type to stack.'
-  action_bar: '&#FF4444Spawners must be the same type.'
+  message: '<#ff4444>Spawners must be the same type to stack.'
+  action_bar: '<#ff4444>Spawners must be the same type.'
   sound: block.note_block.pling
 
 spawner_stack_full:
-  action_bar: '&#FF4444Maximum stack limit: &f{max}'
+  action_bar: '<#ff4444>Maximum stack limit: <white>{max}'
   sound: block.note_block.pling
 
 spawner_stack_success:
-  action_bar: '&aYou successfully stacked &f{amount} &aspawner(s).'
+  action_bar: '<green>You successfully stacked <white>{amount} <green>spawner(s).'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Egg Interaction
 # ──────────────────────────────────────────────────────
 entity_changed:
-  message: 'The spawner changed to &e{entity}&f.'
-  action_bar: '&fThe spawner changed to &e{entity}&f.'
+  message: 'The spawner changed to <yellow>{entity}<white>.'
+  action_bar: '<white>The spawner changed to <yellow>{entity}<white>.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Break Interaction
 # ──────────────────────────────────────────────────────
 break_no_permission:
-  message: '&#FF4444You do not have permission to break this spawner.'
+  message: '<#ff4444>You do not have permission to break this spawner.'
   sound: entity.villager.no
 
 break_silk_touch:
-  message: '&#FF4444You need Silk Touch to break this spawner.'
-  action_bar: '&#FF4444You need Silk Touch.'
+  message: '<#ff4444>You need Silk Touch to break this spawner.'
+  action_bar: '<#ff4444>You need Silk Touch.'
   sound: item.shield.block
 
 break_tool_required:
-  message: '&#FF4444You cannot break spawner with this tool.'
-  action_bar: '&#FF4444Cannot break spawner with this tool.'
+  message: '<#ff4444>You cannot break spawner with this tool.'
+  action_bar: '<#ff4444>Cannot break spawner with this tool.'
   sound: item.shield.block
 
 drop_failed:
-  message: '&#FF4444No luck this time - the spawner did not drop.'
-  action_bar: '&#FF4444The spawner did not drop.'
+  message: '<#ff4444>No luck this time - the spawner did not drop.'
+  action_bar: '<#ff4444>The spawner did not drop.'
   sound: block.note_block.pling
 
 sneak_break_blocked:
-  message: '&#FF4444You cannot break the whole stack when this spawner has drop chance.'
-  action_bar: '&#FF4444Cannot break whole stack.'
+  message: '<#ff4444>You cannot break the whole stack when this spawner has drop chance.'
+  action_bar: '<#ff4444>Cannot break whole stack.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #              Sell Integration Messages
 # ──────────────────────────────────────────────────────
 no_sellable_items:
-  message: '&#FF4444No sellable items were found.'
+  message: '<#ff4444>No sellable items were found.'
 
 sell_success:
-  message: 'You sold &e{amount} &fitem(s) for &a${price}&f.'
-  action_bar: '&a+${price}'
+  message: 'You sold <yellow>{amount} <white>item(s) for <green>${price}<white>.'
+  action_bar: '<green>+${price}'
 
 sell_and_exp_success:
-  message: 'You sold &e{amount} &fitem(s) for &a${price}&f and collected &a{exp} &fEXP.'
-  action_bar: '&a+${price} &f| &a+{exp} EXP'
+  message: 'You sold <yellow>{amount} <white>item(s) for <green>${price}<white> and collected <green>{exp} <white>EXP.'
+  action_bar: '<green>+${price} <white>| <green>+{exp} EXP'
 
 sell_and_exp_success_with_mending:
-  message: 'You sold &e{amount} &fitem(s) for &a${price}&f, collected &a{exp} &fEXP &f(&c{exp_mending} &fused on Mending).'
-  action_bar: '&a+${price} &f| &a+{exp} EXP &f(&c-{exp_mending} Mending)'
+  message: 'You sold <yellow>{amount} <white>item(s) for <green>${price}<white>, collected <green>{exp} <white>EXP <white>(<red>{exp_mending} <white>used on Mending).'
+  action_bar: '<green>+${price} <white>| <green>+{exp} EXP <white>(<red>-{exp_mending} Mending)'

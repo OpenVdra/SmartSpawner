@@ -3,21 +3,21 @@
 # ──────────────────────────────────────────────────────
 general_navigation:
   previous_page:
-    name: '&#37eb9aᴛʀᴀɴɢ ᴛʀướᴄ'
+    name: '<#37eb9a>ᴛʀᴀɴɢ ᴛʀướᴄ'
     lore:
-      - '&#2cc483 ▸ &#f8f8ffNhấp để đến trang &#37eb9a{target_page}'
+      - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
   next_page:
-    name: '&#37eb9aᴛʀᴀɴɢ ꜱᴀᴜ'
+    name: '<#37eb9a>ᴛʀᴀɴɢ ꜱᴀᴜ'
     lore:
-      - '&#2cc483 ▸ &#f8f8ffNhấp để đến trang &#37eb9a{target_page}'
+      - '<#2cc483> ▸ <#f8f8ff>Nhấp để đến trang <#37eb9a>{target_page}'
   close:
-    name: '&#FF6B6Bđóɴɢ'
+    name: '<#ff6b6b>đóɴɢ'
     lore:
-      - '&#FF6B6B ▸ &fNhấp để đóng!'
+      - '<#ff6b6b> ▸ <white>Nhấp để đóng!'
   back:
-    name: '&fǫᴜᴀʏ ʟạɪ &#FF6B6B{previous_menu}'
+    name: '<white>ǫᴜᴀʏ ʟạɪ <#ff6b6b>{previous_menu}'
     lore:
-      - '&c ▸ &fNhấp để quay lại!'
+      - '<red> ▸ <white>Nhấp để quay lại!'
   menu_names:
     server_selection: 'ᴄʜọɴ ᴍáʏ ᴄʜủ'
     world_selection: 'ᴄʜọɴ ᴛʜế ɢɪớɪ'
@@ -25,8 +25,8 @@ general_navigation:
     spawner_management: 'ǫᴜảɴ ʟý ꜱᴘᴀᴡɴᴇʀ'
 
 general:
-  selected_option: ' &#5DB5F1• {option_name}'
-  unselected_option: ' &f• {option_name}'
+  selected_option: ' <#5db5f1>• {option_name}'
+  unselected_option: ' <white>• {option_name}'
 
 # ──────────────────────────────────────────────────────
 #     Server Selection GUI (for cross-server setups)
@@ -36,21 +36,21 @@ gui_title_world_selection_server: '{server} ᴛʜế ɢɪớɪ'
 
 server_selection:
   current_server:
-    name: '&#37eb9a{server}'
+    name: '<#37eb9a>{server}'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴛʀạɴɢ ᴛʜáɪ:'
-      - '  &8• &fMáy chủ hiện tại'
+      - ' <#37eb9a>ℹ ᴛʀạɴɢ ᴛʜáɪ:'
+      - '  <dark_gray>• <white>Máy chủ hiện tại'
       - ''
-      - '&#37eb9a ▸ Nhấp để xem các spawner!'
+      - '<#37eb9a> ▸ Nhấp để xem các spawner!'
   remote_server:
-    name: '&#F0C857{server}'
+    name: '<#f0c857>{server}'
     lore:
       - ''
-      - ' &#F0C857ℹ ᴛʀạɴɢ ᴛʜáɪ:'
-      - '  &8• &fMáy chủ từ xa'
+      - ' <#f0c857>ℹ ᴛʀạɴɢ ᴛʜáɪ:'
+      - '  <dark_gray>• <white>Máy chủ từ xa'
       - ''
-      - '&#F0C857 ▸ Nhấp để xem các spawner!'
+      - '<#f0c857> ▸ Nhấp để xem các spawner!'
 
 # ──────────────────────────────────────────────────────
 #              World Selection GUI
@@ -65,50 +65,50 @@ world_display_names:
 
 world_buttons:
   NORMAL:
-    name: '&#37eb9a{world_name}'
+    name: '<#37eb9a>{world_name}'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴛʜốɴɢ ᴋê:'
-      - '  &8• &fSố spawner: &e{total}'
-      - '  &8• &fTổng spawner đã xếp: &e{total_stacked}'
+      - ' <#37eb9a>ℹ ᴛʜốɴɢ ᴋê:'
+      - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+      - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#37eb9a ▸ Nhấp để mở danh sách!'
+      - '<#37eb9a> ▸ Nhấp để mở danh sách!'
   NETHER:
-    name: '&#FF6B6B{world_name}'
+    name: '<#ff6b6b>{world_name}'
     lore:
       - ''
-      - ' &#FF6B6Bℹ ᴛʜốɴɢ ᴋê:'
-      - '  &8• &fSố spawner: &e{total}'
-      - '  &8• &fTổng spawner đã xếp: &e{total_stacked}'
+      - ' <#ff6b6b>ℹ ᴛʜốɴɢ ᴋê:'
+      - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+      - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#FF6B6B ▸ Nhấp để mở danh sách!'
+      - '<#ff6b6b> ▸ Nhấp để mở danh sách!'
   THE_END:
-    name: '&#C8A2FF{world_name}'
+    name: '<#c8a2ff>{world_name}'
     lore:
       - ''
-      - ' &#C8A2FFℹ ᴛʜốɴɢ ᴋê:'
-      - '  &8• &fSố spawner: &e{total}'
-      - '  &8• &fTổng spawner đã xếp: &e{total_stacked}'
+      - ' <#c8a2ff>ℹ ᴛʜốɴɢ ᴋê:'
+      - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+      - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#C8A2FF ▸ Nhấp để mở danh sách!'
+      - '<#c8a2ff> ▸ Nhấp để mở danh sách!'
   CUSTOM:
-    name: '&#5DB5F1{world_name}'
+    name: '<#5db5f1>{world_name}'
     lore:
       - ''
-      - ' &#5DB5F1ℹ ᴛʜốɴɢ ᴋê:'
-      - '  &8• &fSố spawner: &e{total}'
-      - '  &8• &fTổng spawner đã xếp: &e{total_stacked}'
+      - ' <#5db5f1>ℹ ᴛʜốɴɢ ᴋê:'
+      - '  <dark_gray>• <white>Số spawner: <yellow>{total}'
+      - '  <dark_gray>• <white>Tổng spawner đã xếp: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#5DB5F1 ▸ Nhấp để mở danh sách!'
+      - '<#5db5f1> ▸ Nhấp để mở danh sách!'
 
 remote_world_lore:
   - ''
-  - ' &#F0C857ℹ ᴛʜế ɢɪớɪ ᴛừ xᴀ:'
-  - '  &8• &fMáy chủ: &e{server}'
+  - ' <#f0c857>ℹ ᴛʜế ɢɪớɪ ᴛừ xᴀ:'
+  - '  <dark_gray>• <white>Máy chủ: <yellow>{server}'
 
 # ──────────────────────────────────────────────────────
 #                  Spawner List GUI
@@ -118,12 +118,12 @@ gui_title_spawner_list_remote: '[{current}/{total}] {world} ({server})'
 
 filter:
   button:
-    name: '&fʟọᴄ &#5DB5F1ꜱᴘᴀᴡɴᴇʀ'
+    name: '<white>ʟọᴄ <#5db5f1>ꜱᴘᴀᴡɴᴇʀ'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ Nhấp để đổi bộ lọc!'
+      - '<#5db5f1> ▸ Nhấp để đổi bộ lọc!'
   option_name:
     all: 'Tất cả'
     active: 'Hoạt động'
@@ -131,43 +131,43 @@ filter:
 
 sort:
   button:
-    name: '&fꜱắᴘ xếᴘ &#5DB5F1ꜱᴘᴀᴡɴᴇʀ'
+    name: '<white>ꜱắᴘ xếᴘ <#5db5f1>ꜱᴘᴀᴡɴᴇʀ'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ Nhấp để đổi cách sắp xếp!'
+      - '<#5db5f1> ▸ Nhấp để đổi cách sắp xếp!'
   option_name:
     default: 'Mặc định (ID)'
     stack_size_asc: 'Số lượng stack (↑)'
     stack_size_desc: 'Số lượng stack (↓)'
 
 spawner_item_list:
-  name: '&fꜱᴘᴀᴡɴᴇʀ &#5DB5F1#{id}'
+  name: '<white>ꜱᴘᴀᴡɴᴇʀ <#5db5f1>#{id}'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fSinh vật: &e{entity}'
-    - '  &8• &fStack: &e{size}'
-    - '  &8• &fTrạng thái: {status}'
-    - '  &8• &fNgười chơi cuối: &e{last_player}'
-    - '  &8• &fVị trí: &7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Sinh vật: <yellow>{entity}'
+    - '  <dark_gray>• <white>Stack: <yellow>{size}'
+    - '  <dark_gray>• <white>Trạng thái: {status}'
+    - '  <dark_gray>• <white>Người chơi cuối: <yellow>{last_player}'
+    - '  <dark_gray>• <white>Vị trí: <gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#5DB5F1 ▸ Nhấp để quản lý spawner này!'
+    - '<#5db5f1> ▸ Nhấp để quản lý spawner này!'
   remote_lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fSinh vật: &e{entity}'
-    - '  &8• &fStack: &e{size}'
-    - '  &8• &fTrạng thái: {status}'
-    - '  &8• &fNgười chơi cuối: &e{last_player}'
-    - '  &8• &fVị trí: &7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Sinh vật: <yellow>{entity}'
+    - '  <dark_gray>• <white>Stack: <yellow>{size}'
+    - '  <dark_gray>• <white>Trạng thái: {status}'
+    - '  <dark_gray>• <white>Người chơi cuối: <yellow>{last_player}'
+    - '  <dark_gray>• <white>Vị trí: <gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#FF6B6B ⚠ Không thể quản lý spawner từ xa!'
+    - '<#ff6b6b> ⚠ Không thể quản lý spawner từ xa!'
   last_player_none: 'Không có'
   status:
-    active: '&#00E689Hoạt động'
-    inactive: '&#ff6b6bKhông hoạt động'
+    active: '<#00e689>Hoạt động'
+    inactive: '<#ff6b6b>Không hoạt động'
 
 # ──────────────────────────────────────────────────────
 #              Spawner Management GUI
@@ -176,17 +176,17 @@ gui_title_spawner_management: 'ǫᴜảɴ ʟý ꜱᴘᴀᴡɴᴇʀ'
 
 spawner_management:
   teleport:
-    name: '&fᴅịᴄʜ ᴄʜᴜʏểɴ &#5DB5F1đếɴ ꜱᴘᴀᴡɴᴇʀ'
+    name: '<white>ᴅịᴄʜ ᴄʜᴜʏểɴ <#5db5f1>đếɴ ꜱᴘᴀᴡɴᴇʀ'
     lore:
-      - '&#5DB5F1 ▸ &fNhấp để dịch chuyển!'
+      - '<#5db5f1> ▸ <white>Nhấp để dịch chuyển!'
   open_spawner:
-    name: '&fᴍở &#5DB5F1ᴍᴇɴᴜ ꜱᴘᴀᴡɴᴇʀ'
+    name: '<white>ᴍở <#5db5f1>ᴍᴇɴᴜ ꜱᴘᴀᴡɴᴇʀ'
     lore:
-      - '&#5DB5F1 ▸ &fNhấp để mở menu!'
+      - '<#5db5f1> ▸ <white>Nhấp để mở menu!'
   remove:
-    name: '&fɢỡ ʙỏ &#FF6B6Bꜱᴘᴀᴡɴᴇʀ'
+    name: '<white>ɢỡ ʙỏ <#ff6b6b>ꜱᴘᴀᴡɴᴇʀ'
     lore:
-      - '&#FF6B6B ▸ &fNhấp để gỡ spawner này!'
+      - '<#ff6b6b> ▸ <white>Nhấp để gỡ spawner này!'
 
 # ──────────────────────────────────────────────────────
 #                    Prices GUI
@@ -194,14 +194,14 @@ spawner_management:
 gui_title_prices: '[{current_page}/{total_pages}] ɢɪá ʙáɴ'
 
 price_item:
-  name: '&f{item_name} &#5DB5F1ɢɪá'
+  name: '<white>{item_name} <#5db5f1>ɢɪá'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-    - '  &8• &fGiá cuối: &a${price}'
-    - '  &8• &fNguồn: &e{price_source}'
-    - '  &8• &fGiá tùy chỉnh: &a${custom_price}'
-    - '  &8• &fGiá cửa hàng: &a${shop_price}'
+    - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+    - '  <dark_gray>• <white>Giá cuối: <green>${price}'
+    - '  <dark_gray>• <white>Nguồn: <yellow>{price_source}'
+    - '  <dark_gray>• <white>Giá tùy chỉnh: <green>${custom_price}'
+    - '  <dark_gray>• <white>Giá cửa hàng: <green>${shop_price}'
 
 # ──────────────────────────────────────────────────────
 #              Trình sửa loot (/ss editloot)
@@ -213,74 +213,74 @@ editloot:
   capture_replace_title: 'ᴛʜả ᴠậᴛ ᴘʜẩᴍ ᴍớɪ'
 
   loot_entry:
-    name: '&fʟᴏᴏᴛ &#37eb9a{label}'
+    name: '<white>ʟᴏᴏᴛ <#37eb9a>{label}'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴛʜôɴɢ ᴛɪɴ:'
-      - '  &8• &fVật phẩm: &e{item}'
-      - '  &8• &fSố lượng: &e{amount}'
-      - '  &8• &fTỉ lệ: &e{chance}%'
-      - '  &8• &fĐộ bền: &e{durability}'
+      - ' <#37eb9a>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Vật phẩm: <yellow>{item}'
+      - '  <dark_gray>• <white>Số lượng: <yellow>{amount}'
+      - '  <dark_gray>• <white>Tỉ lệ: <yellow>{chance}%'
+      - '  <dark_gray>• <white>Độ bền: <yellow>{durability}'
       - ''
-      - '&#37eb9a ▸ &fChuột trái để sửa giá trị!'
-      - '&#37eb9a ▸ &fChuột phải để đổi vật phẩm!'
+      - '<#37eb9a> ▸ <white>Chuột trái để sửa giá trị!'
+      - '<#37eb9a> ▸ <white>Chuột phải để đổi vật phẩm!'
 
   loot_broken:
-    name: '&fʟᴏᴏᴛ &#FF6B6B{label}'
+    name: '<white>ʟᴏᴏᴛ <#ff6b6b>{label}'
     lore:
       - ''
-      - ' &#FF6B6B⚠ ᴄảɴʜ ʙáᴏ:'
-      - '  &8• &fKhông đọc được vật phẩm này.'
-      - '  &8• &fGiá trị: &e{item}'
+      - ' <#ff6b6b>⚠ ᴄảɴʜ ʙáᴏ:'
+      - '  <dark_gray>• <white>Không đọc được vật phẩm này.'
+      - '  <dark_gray>• <white>Giá trị: <yellow>{item}'
       - ''
-      - '&#FF6B6B ▸ &fChuột phải để đặt vật phẩm mới!'
+      - '<#ff6b6b> ▸ <white>Chuột phải để đặt vật phẩm mới!'
 
   add_loot:
-    name: '&fᴛʜêᴍ &#37eb9aʟᴏᴏᴛ'
+    name: '<white>ᴛʜêᴍ <#37eb9a>ʟᴏᴏᴛ'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴛʜôɴɢ ᴛɪɴ:'
-      - '  &8• &fThêm một vật phẩm loot khác.'
+      - ' <#37eb9a>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Thêm một vật phẩm loot khác.'
       - ''
-      - '&#37eb9a ▸ &fBấm để chọn vật phẩm!'
+      - '<#37eb9a> ▸ <white>Bấm để chọn vật phẩm!'
 
   capture_hint:
-    name: '&fᴛʜả ᴠậᴛ ᴘʜẩᴍ &#5DB5F1ᴠàᴏ ô ɢɪữᴀ'
+    name: '<white>ᴛʜả ᴠậᴛ ᴘʜẩᴍ <#5db5f1>ᴠàᴏ ô ɢɪữᴀ'
     lore:
       - ''
-      - ' &#5DB5F1ℹ ᴛʜôɴɢ ᴛɪɴ:'
-      - '  &8• &fVật phẩm được lưu y nguyên.'
-      - '  &8• &fBạn nhận lại nó khi rời đi.'
+      - ' <#5db5f1>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Vật phẩm được lưu y nguyên.'
+      - '  <dark_gray>• <white>Bạn nhận lại nó khi rời đi.'
 
   cancel:
-    name: '&fʜủʏ &#FF6B6Bᴄʜọɴ'
+    name: '<white>ʜủʏ <#ff6b6b>ᴄʜọɴ'
     lore:
       - ''
-      - ' &#FF6B6Bℹ ᴛʜôɴɢ ᴛɪɴ:'
-      - '  &8• &fBỏ lần chọn này.'
+      - ' <#ff6b6b>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Bỏ lần chọn này.'
       - ''
-      - '&#FF6B6B ▸ &fBấm để hủy!'
+      - '<#ff6b6b> ▸ <white>Bấm để hủy!'
 
   confirm:
-    name: '&fxáᴄ ɴʜậɴ &#37eb9aᴠậᴛ ᴘʜẩᴍ'
+    name: '<white>xáᴄ ɴʜậɴ <#37eb9a>ᴠậᴛ ᴘʜẩᴍ'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴛʜôɴɢ ᴛɪɴ:'
-      - '  &8• &fTiếp tục đặt số lượng và tỉ lệ.'
+      - ' <#37eb9a>ℹ ᴛʜôɴɢ ᴛɪɴ:'
+      - '  <dark_gray>• <white>Tiếp tục đặt số lượng và tỉ lệ.'
       - ''
-      - '&#37eb9a ▸ &fBấm để tiếp tục!'
+      - '<#37eb9a> ▸ <white>Bấm để tiếp tục!'
 
   # Văn bản dialog. Hiển thị trong dialog của client nên giữ ngắn gọn.
   dialog_title:
     name: 'ᴄàɪ đặᴛ ʟᴏᴏᴛ'
   dialog_body:
-    name: '&7Số lượng và độ bền chấp nhận khoảng như &f0-2&7.'
+    name: '<gray>Số lượng và độ bền chấp nhận khoảng như <white>0-2<gray>.'
   dialog_save:
-    name: '&a✔ &fLưu'
+    name: '<green>✔ <white>Lưu'
   dialog_cancel:
-    name: '&c← &fHủy'
+    name: '<red>← <white>Hủy'
   dialog_delete:
-    name: '&4✖ &fXóa loot'
+    name: '<dark_red>✖ <white>Xóa loot'
   field_amount:
     name: 'Số lượng (vd: 1 hoặc 0-2)'
   field_chance:
@@ -288,8 +288,8 @@ editloot:
   field_durability:
     name: 'Độ bền (để trống nếu không, vd: 1-384)'
   error_amount:
-    name: '&cSố lượng phải là số nguyên 0-{max}, và min không lớn hơn max.'
+    name: '<red>Số lượng phải là số nguyên 0-{max}, và min không lớn hơn max.'
   error_chance:
-    name: '&cTỉ lệ phải là số từ 0 đến 100.'
+    name: '<red>Tỉ lệ phải là số từ 0 đến 100.'
   error_durability:
-    name: '&cĐộ bền phải là số nguyên, và min không lớn hơn max.'
+    name: '<red>Độ bền phải là số nguyên, và min không lớn hơn max.'

@@ -1,5 +1,6 @@
 # SmartSpawner – hologram.yml
-# Text lines shown above each spawner. Supports &#RRGGBB hex and &x color codes.
+# Text lines shown above each spawner.
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
 #
 # Placeholders:
 #   {entity}                  – Mob name
@@ -15,6 +16,6 @@
 #   {percent_exp_rounded}     – XP % rounded (e.g. "50")
 
 hologram_text:
-  - '&8[&f{stack_size}&8] &#5DB5F1Spawner {entity}'
-  - '&#5DB5F1• &fExp: &a{current_exp}&f/&a{max_exp}'
-  - '&#5DB5F1• &fVật phẩm: &e{used_slots}&f/&e{max_slots}'
+  - '<dark_gray>[<white>{stack_size}<dark_gray>] <#5db5f1>Spawner {entity}'
+  - '<#5db5f1>• <white>Exp: <green>{current_exp}<white>/<green>{max_exp}'
+  - '<#5db5f1>• <white>Vật phẩm: <yellow>{used_slots}<white>/<yellow>{max_slots}'

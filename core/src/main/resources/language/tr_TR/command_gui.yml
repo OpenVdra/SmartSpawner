@@ -3,21 +3,21 @@
 # ──────────────────────────────────────────────────────
 general_navigation:
   previous_page:
-    name: '&#37eb9aÖnceki Sayfa'
+    name: '<#37eb9a>Önceki Sayfa'
     lore:
-      - '&#2cc483 ▸ &#37eb9a{target_page}. &#f8f8ffSayfaya &#f8f8ffdönmek için tıkla'
+      - '<#2cc483> ▸ <#37eb9a>{target_page}. <#f8f8ff>Sayfaya <#f8f8ff>dönmek için tıkla'
   next_page:
-    name: '&#37eb9aSonraki Sayfa'
+    name: '<#37eb9a>Sonraki Sayfa'
     lore:
-      - '&#2cc483 ▸ &#37eb9a{target_page}. &#f8f8ffSayfaya &#f8f8ffgitmek için tıkla'
+      - '<#2cc483> ▸ <#37eb9a>{target_page}. <#f8f8ff>Sayfaya <#f8f8ff>gitmek için tıkla'
   close:
-    name: '&#FF6B6BKapat'
+    name: '<#ff6b6b>Kapat'
     lore:
-      - '&#FF6B6B ▸ &fKapatmak için tıkla!'
+      - '<#ff6b6b> ▸ <white>Kapatmak için tıkla!'
   back:
-    name: '&fGeri Dön: &#FF6B6B{previous_menu}'
+    name: '<white>Geri Dön: <#ff6b6b>{previous_menu}'
     lore:
-      - '&c ▸ &fGeri dönmek için tıkla!'
+      - '<red> ▸ <white>Geri dönmek için tıkla!'
   menu_names:
     server_selection: 'Sunucu Seçimi'
     world_selection: 'Dünya Seçimi'
@@ -25,8 +25,8 @@ general_navigation:
     spawner_management: 'Spawner Yönetimi'
 
 general:
-  selected_option: ' &#5DB5F1• {option_name}'
-  unselected_option: ' &f• {option_name}'
+  selected_option: ' <#5db5f1>• {option_name}'
+  unselected_option: ' <white>• {option_name}'
 
 # ──────────────────────────────────────────────────────
 #     Sunucu Seçim Menüsü (Çapraz sunucu kurulumları için)
@@ -36,21 +36,21 @@ gui_title_world_selection_server: '{server} Dünyaları'
 
 server_selection:
   current_server:
-    name: '&#37eb9a{server}'
+    name: '<#37eb9a>{server}'
     lore:
       - ''
-      - ' &#37eb9aℹ Durum:'
-      - '  &8• &fMevcut sunucu'
+      - ' <#37eb9a>ℹ Durum:'
+      - '  <dark_gray>• <white>Mevcut sunucu'
       - ''
-      - '&#37eb9a ▸ Spawnerları görmek için tıkla!'
+      - '<#37eb9a> ▸ Spawnerları görmek için tıkla!'
   remote_server:
-    name: '&#F0C857{server}'
+    name: '<#f0c857>{server}'
     lore:
       - ''
-      - ' &#F0C857ℹ Durum:'
-      - '  &8• &fUzak sunucu'
+      - ' <#f0c857>ℹ Durum:'
+      - '  <dark_gray>• <white>Uzak sunucu'
       - ''
-      - '&#F0C857 ▸ Spawnerları görmek için tıkla!'
+      - '<#f0c857> ▸ Spawnerları görmek için tıkla!'
 
 # ──────────────────────────────────────────────────────
 #              Dünya Seçim Menüsü
@@ -65,50 +65,50 @@ world_display_names:
 
 world_buttons:
   NORMAL:
-    name: '&#37eb9a{world_name}'
+    name: '<#37eb9a>{world_name}'
     lore:
       - ''
-      - ' &#37eb9aℹ İstatistikler:'
-      - '  &8• &fSpawner blokları: &e{total}'
-      - '  &8• &fStacklenmiş spawnerlar: &e{total_stacked}'
+      - ' <#37eb9a>ℹ İstatistikler:'
+      - '  <dark_gray>• <white>Spawner blokları: <yellow>{total}'
+      - '  <dark_gray>• <white>Stacklenmiş spawnerlar: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#37eb9a ▸ Listeyi açmak için tıkla!'
+      - '<#37eb9a> ▸ Listeyi açmak için tıkla!'
   NETHER:
-    name: '&#FF6B6B{world_name}'
+    name: '<#ff6b6b>{world_name}'
     lore:
       - ''
-      - ' &#FF6B6Bℹ İstatistikler:'
-      - '  &8• &fSpawner blokları: &e{total}'
-      - '  &8• &fStacklenmiş spawnerlar: &e{total_stacked}'
+      - ' <#ff6b6b>ℹ İstatistikler:'
+      - '  <dark_gray>• <white>Spawner blokları: <yellow>{total}'
+      - '  <dark_gray>• <white>Stacklenmiş spawnerlar: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#FF6B6B ▸ Listeyi açmak için tıkla!'
+      - '<#ff6b6b> ▸ Listeyi açmak için tıkla!'
   THE_END:
-    name: '&#C8A2FF{world_name}'
+    name: '<#c8a2ff>{world_name}'
     lore:
       - ''
-      - ' &#C8A2FFℹ İstatistikler:'
-      - '  &8• &fSpawner blokları: &e{total}'
-      - '  &8• &fStacklenmiş spawnerlar: &e{total_stacked}'
+      - ' <#c8a2ff>ℹ İstatistikler:'
+      - '  <dark_gray>• <white>Spawner blokları: <yellow>{total}'
+      - '  <dark_gray>• <white>Stacklenmiş spawnerlar: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#C8A2FF ▸ Listeyi açmak için tıkla!'
+      - '<#c8a2ff> ▸ Listeyi açmak için tıkla!'
   CUSTOM:
-    name: '&#5DB5F1{world_name}'
+    name: '<#5db5f1>{world_name}'
     lore:
       - ''
-      - ' &#5DB5F1ℹ İstatistikler:'
-      - '  &8• &fSpawner blokları: &e{total}'
-      - '  &8• &fStacklenmiş spawnerlar: &e{total_stacked}'
+      - ' <#5db5f1>ℹ İstatistikler:'
+      - '  <dark_gray>• <white>Spawner blokları: <yellow>{total}'
+      - '  <dark_gray>• <white>Stacklenmiş spawnerlar: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#5DB5F1 ▸ Listeyi açmak için tıkla!'
+      - '<#5db5f1> ▸ Listeyi açmak için tıkla!'
 
 remote_world_lore:
   - ''
-  - ' &#F0C857ℹ Uzak Dünya:'
-  - '  &8• &fSunucu: &e{server}'
+  - ' <#f0c857>ℹ Uzak Dünya:'
+  - '  <dark_gray>• <white>Sunucu: <yellow>{server}'
 
 # ──────────────────────────────────────────────────────
 #                  Spawner Listesi Menüsü
@@ -118,12 +118,12 @@ gui_title_spawner_list_remote: '[{current}/{total}] {world} ({server})'
 
 filter:
   button:
-    name: '&fFiltrele: &#5DB5F1Spawnerlar'
+    name: '<white>Filtrele: <#5db5f1>Spawnerlar'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ Filtreyi değiştirmek için tıkla!'
+      - '<#5db5f1> ▸ Filtreyi değiştirmek için tıkla!'
   option_name:
     all: 'Tümü'
     active: 'Aktif'
@@ -131,43 +131,43 @@ filter:
 
 sort:
   button:
-    name: '&fSırala: &#5DB5F1Spawnerlar'
+    name: '<white>Sırala: <#5db5f1>Spawnerlar'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ Sıralamayı değiştirmek için tıkla!'
+      - '<#5db5f1> ▸ Sıralamayı değiştirmek için tıkla!'
   option_name:
     default: 'Varsayılan (ID)'
     stack_size_asc: 'Stack miktarı (↑)'
     stack_size_desc: 'Stack miktarı (↓)'
 
 spawner_item_list:
-  name: '&fSpawner &#5DB5F1#{id}'
+  name: '<white>Spawner <#5db5f1>#{id}'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fYaratık: &e{entity}'
-    - '  &8• &fStack: &e{size}'
-    - '  &8• &fDurum: {status}'
-    - '  &8• &fSon oyuncu: &e{last_player}'
-    - '  &8• &fKonum: &7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Yaratık: <yellow>{entity}'
+    - '  <dark_gray>• <white>Stack: <yellow>{size}'
+    - '  <dark_gray>• <white>Durum: {status}'
+    - '  <dark_gray>• <white>Son oyuncu: <yellow>{last_player}'
+    - '  <dark_gray>• <white>Konum: <gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#5DB5F1 ▸ Bu spawnerı yönetmek için tıkla!'
+    - '<#5db5f1> ▸ Bu spawnerı yönetmek için tıkla!'
   remote_lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fYaratık: &e{entity}'
-    - '  &8• &fStack: &e{size}'
-    - '  &8• &fDurum: {status}'
-    - '  &8• &fSon oyuncu: &e{last_player}'
-    - '  &8• &fKonum: &7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Yaratık: <yellow>{entity}'
+    - '  <dark_gray>• <white>Stack: <yellow>{size}'
+    - '  <dark_gray>• <white>Durum: {status}'
+    - '  <dark_gray>• <white>Son oyuncu: <yellow>{last_player}'
+    - '  <dark_gray>• <white>Konum: <gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#FF6B6B ⚠ Uzak spawner yönetilemez!'
+    - '<#ff6b6b> ⚠ Uzak spawner yönetilemez!'
   last_player_none: 'Yok'
   status:
-    active: '&#00E689Aktif'
-    inactive: '&#ff6b6bPasif'
+    active: '<#00e689>Aktif'
+    inactive: '<#ff6b6b>Pasif'
 
 # ──────────────────────────────────────────────────────
 #              Spawner Yönetim Menüsü
@@ -176,17 +176,17 @@ gui_title_spawner_management: 'Spawner Yönetimi'
 
 spawner_management:
   teleport:
-    name: '&fIşınlan: &#5DB5F1Spawner'
+    name: '<white>Işınlan: <#5db5f1>Spawner'
     lore:
-      - '&#5DB5F1 ▸ &fIşınlanmak için tıkla!'
+      - '<#5db5f1> ▸ <white>Işınlanmak için tıkla!'
   open_spawner:
-    name: '&fAç: &#5DB5F1Spawner Menüsü'
+    name: '<white>Aç: <#5db5f1>Spawner Menüsü'
     lore:
-      - '&#5DB5F1 ▸ &fMenüyü açmak için tıkla!'
+      - '<#5db5f1> ▸ <white>Menüyü açmak için tıkla!'
   remove:
-    name: '&fKaldır: &#FF6B6BSpawner'
+    name: '<white>Kaldır: <#ff6b6b>Spawner'
     lore:
-      - '&#FF6B6B ▸ &fBu spawnerı kaldırmak için tıkla!'
+      - '<#ff6b6b> ▸ <white>Bu spawnerı kaldırmak için tıkla!'
 
 # ──────────────────────────────────────────────────────
 #                    Fiyatlar Menüsü
@@ -194,14 +194,14 @@ spawner_management:
 gui_title_prices: '[{current_page}/{total_pages}] Satış Fiyatları'
 
 price_item:
-  name: '&f{item_name} &#5DB5F1Fiyatı'
+  name: '<white>{item_name} <#5db5f1>Fiyatı'
   lore:
     - ''
-    - ' &#5DB5F1ℹ Bilgi:'
-    - '  &8• &fSon fiyat: &a${price}'
-    - '  &8• &fKaynak: &e{price_source}'
-    - '  &8• &fÖzel fiyat: &a${custom_price}'
-    - '  &8• &fMarket fiyatı: &a${shop_price}'
+    - ' <#5db5f1>ℹ Bilgi:'
+    - '  <dark_gray>• <white>Son fiyat: <green>${price}'
+    - '  <dark_gray>• <white>Kaynak: <yellow>{price_source}'
+    - '  <dark_gray>• <white>Özel fiyat: <green>${custom_price}'
+    - '  <dark_gray>• <white>Market fiyatı: <green>${shop_price}'
 
 # ──────────────────────────────────────────────────────
 #              Ganimet Düzenleyici (/ss editloot)
@@ -213,74 +213,74 @@ editloot:
   capture_replace_title: 'Yeni eşyayı bırak'
 
   loot_entry:
-    name: '&fGanimet &#37eb9a{label}'
+    name: '<white>Ganimet <#37eb9a>{label}'
     lore:
       - ''
-      - ' &#37eb9aℹ Bilgi:'
-      - '  &8• &fEşya: &e{item}'
-      - '  &8• &fMiktar: &e{amount}'
-      - '  &8• &fŞans: &e{chance}%'
-      - '  &8• &fDayanıklılık: &e{durability}'
+      - ' <#37eb9a>ℹ Bilgi:'
+      - '  <dark_gray>• <white>Eşya: <yellow>{item}'
+      - '  <dark_gray>• <white>Miktar: <yellow>{amount}'
+      - '  <dark_gray>• <white>Şans: <yellow>{chance}%'
+      - '  <dark_gray>• <white>Dayanıklılık: <yellow>{durability}'
       - ''
-      - '&#37eb9a ▸ &fDeğerleri düzenlemek için sol tıkla!'
-      - '&#37eb9a ▸ &fEşyayı değiştirmek için sağ tıkla!'
+      - '<#37eb9a> ▸ <white>Değerleri düzenlemek için sol tıkla!'
+      - '<#37eb9a> ▸ <white>Eşyayı değiştirmek için sağ tıkla!'
 
   loot_broken:
-    name: '&fGanimet &#FF6B6B{label}'
+    name: '<white>Ganimet <#ff6b6b>{label}'
     lore:
       - ''
-      - ' &#FF6B6B⚠ Uyarı:'
-      - '  &8• &fBu eşya okunamadı.'
-      - '  &8• &fDeğer: &e{item}'
+      - ' <#ff6b6b>⚠ Uyarı:'
+      - '  <dark_gray>• <white>Bu eşya okunamadı.'
+      - '  <dark_gray>• <white>Değer: <yellow>{item}'
       - ''
-      - '&#FF6B6B ▸ &fYeni bir eşya ayarlamak için sağ tıkla!'
+      - '<#ff6b6b> ▸ <white>Yeni bir eşya ayarlamak için sağ tıkla!'
 
   add_loot:
-    name: '&fGanimet &#37eb9aEkle'
+    name: '<white>Ganimet <#37eb9a>Ekle'
     lore:
       - ''
-      - ' &#37eb9aℹ Bilgi:'
-      - '  &8• &fBaşka bir ganimet eşyası ekle.'
+      - ' <#37eb9a>ℹ Bilgi:'
+      - '  <dark_gray>• <white>Başka bir ganimet eşyası ekle.'
       - ''
-      - '&#37eb9a ▸ &fBir eşya seçmek için tıkla!'
+      - '<#37eb9a> ▸ <white>Bir eşya seçmek için tıkla!'
 
   capture_hint:
-    name: '&fEşyayı &#5DB5F1ortadaki yuvaya bırak'
+    name: '<white>Eşyayı <#5db5f1>ortadaki yuvaya bırak'
     lore:
       - ''
-      - ' &#5DB5F1ℹ Bilgi:'
-      - '  &8• &fEşya olduğu gibi kaydedilir.'
-      - '  &8• &fAyrıldığında geri alırsın.'
+      - ' <#5db5f1>ℹ Bilgi:'
+      - '  <dark_gray>• <white>Eşya olduğu gibi kaydedilir.'
+      - '  <dark_gray>• <white>Ayrıldığında geri alırsın.'
 
   cancel:
-    name: '&fSeçimi &#FF6B6Bİptal Et'
+    name: '<white>Seçimi <#ff6b6b>İptal Et'
     lore:
       - ''
-      - ' &#FF6B6Bℹ Bilgi:'
-      - '  &8• &fBu seçimi geri al.'
+      - ' <#ff6b6b>ℹ Bilgi:'
+      - '  <dark_gray>• <white>Bu seçimi geri al.'
       - ''
-      - '&#FF6B6B ▸ &fİptal için tıkla!'
+      - '<#ff6b6b> ▸ <white>İptal için tıkla!'
 
   confirm:
-    name: '&fEşyayı &#37eb9aOnayla'
+    name: '<white>Eşyayı <#37eb9a>Onayla'
     lore:
       - ''
-      - ' &#37eb9aℹ Bilgi:'
-      - '  &8• &fMiktar ve şansı ayarlamaya devam et.'
+      - ' <#37eb9a>ℹ Bilgi:'
+      - '  <dark_gray>• <white>Miktar ve şansı ayarlamaya devam et.'
       - ''
-      - '&#37eb9a ▸ &fDevam etmek için tıkla!'
+      - '<#37eb9a> ▸ <white>Devam etmek için tıkla!'
 
   # Dialog metni. İstemci dialogunda gösterilir, kısa tut.
   dialog_title:
     name: 'Ganimet Ayarları'
   dialog_body:
-    name: '&7Miktar ve dayanıklılık &f0-2&7 gibi aralık kabul eder.'
+    name: '<gray>Miktar ve dayanıklılık <white>0-2<gray> gibi aralık kabul eder.'
   dialog_save:
-    name: '&a✔ &fKaydet'
+    name: '<green>✔ <white>Kaydet'
   dialog_cancel:
-    name: '&c← &fİptal'
+    name: '<red>← <white>İptal'
   dialog_delete:
-    name: '&4✖ &fGanimeti sil'
+    name: '<dark_red>✖ <white>Ganimeti sil'
   field_amount:
     name: 'Miktar (örn. 1 veya 0-2)'
   field_chance:
@@ -288,8 +288,8 @@ editloot:
   field_durability:
     name: 'Dayanıklılık (yoksa boş, örn. 1-384)'
   error_amount:
-    name: '&cMiktar 0-{max} arası tam sayı olmalı ve min, maksı geçmemeli.'
+    name: '<red>Miktar 0-{max} arası tam sayı olmalı ve min, maksı geçmemeli.'
   error_chance:
-    name: '&cŞans 0 ile 100 arası bir sayı olmalı.'
+    name: '<red>Şans 0 ile 100 arası bir sayı olmalı.'
   error_durability:
-    name: '&cDayanıklılık tam sayı olmalı ve min, maksı geçmemeli.'
+    name: '<red>Dayanıklılık tam sayı olmalı ve min, maksı geçmemeli.'

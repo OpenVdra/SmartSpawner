@@ -16,126 +16,126 @@
 #   - All components are optional - you can use any combination as needed
 #   - The "message" field is not required and can be omitted if you only want other components
 
-prefix: '&#3498dbSᴍᴀʀᴛSᴘᴀᴡɴᴇʀ &8⏩ &r'
+prefix: '<#3498db>SᴍᴀʀᴛSᴘᴀᴡɴᴇʀ <dark_gray>⏩ <reset>'
 
 missing_message_key:
-  message: '&#FF4444Thiếu khóa thông báo: &f{key}'
+  message: '<#ff4444>Thiếu khóa thông báo: <white>{key}'
 
 # ──────────────────────────────────────────────────────
 #              Player Interaction (General)
 # ──────────────────────────────────────────────────────
 spawner_activated:
-  message: 'Spawner đã được&a kích hoạt. &rBây giờ bạn có thể nhận vật phẩm và Exp.'
+  message: 'Spawner đã được<green> kích hoạt. <reset>Bây giờ bạn có thể nhận vật phẩm và Exp.'
   sound: block.beacon.activate
 
 inventory_full:
-  message: '&#FF4444Túi đồ của bạn đã đầy.'
+  message: '<#ff4444>Túi đồ của bạn đã đầy.'
 
 spawner_storage_empty:
-  message: '&#FF4444Kho của spawner đang trống.'
+  message: '<#ff4444>Kho của spawner đang trống.'
 
 action_in_progress:
-  message: '&#F0C857Đã có một thao tác đang diễn ra. Vui lòng chờ.'
-  action_bar: '&#F0C857Đang thực hiện thao tác. Vui lòng chờ.'
+  message: '<#f0c857>Đã có một thao tác đang diễn ra. Vui lòng chờ.'
+  action_bar: '<#f0c857>Đang thực hiện thao tác. Vui lòng chờ.'
 
 storage_in_use:
-  message: '&#FF4444Kho của spawner này đang được mở bởi người chơi khác.'
-  action_bar: '&#FF4444Kho đang được sử dụng bởi người khác.'
+  message: '<#ff4444>Kho của spawner này đang được mở bởi người chơi khác.'
+  action_bar: '<#ff4444>Kho đang được sử dụng bởi người khác.'
 
 action_failed:
-  message: '&#FF4444Thao tác thất bại. Vui lòng thử lại.'
-  action_bar: '&#FF4444Thao tác thất bại. Vui lòng thử lại.'
+  message: '<#ff4444>Thao tác thất bại. Vui lòng thử lại.'
+  action_bar: '<#ff4444>Thao tác thất bại. Vui lòng thử lại.'
 
 action_not_ready:
-  message: '&#F0C857Thao tác này chưa sẵn sàng. Vui lòng thử lại sau &f{time}&#F0C857.'
+  message: '<#f0c857>Thao tác này chưa sẵn sàng. Vui lòng thử lại sau <white>{time}<#f0c857>.'
   sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Main GUI Interactions
 # ──────────────────────────────────────────────────────
 no_exp:
-  message: '&#FF4444Không có Exp để nhận'
+  message: '<#ff4444>Không có Exp để nhận'
 
 exp_collected:
-  message: 'Bạn đã nhận &a{exp} &fđiểm kinh nghiệm.'
-  action_bar: '&a+{exp} Exp'
+  message: 'Bạn đã nhận <green>{exp} <white>điểm kinh nghiệm.'
+  action_bar: '<green>+{exp} Exp'
 
 exp_collected_with_mending:
-  message: 'Bạn đã nhận &a{exp} &fđiểm kinh nghiệm. &c{exp_mending} &fđã được dùng để sửa đồ bằng Mending.'
-  action_bar: '&a+{exp} Exp &f| &c-{exp_mending} đã dùng cho Mending'
+  message: 'Bạn đã nhận <green>{exp} <white>điểm kinh nghiệm. <red>{exp_mending} <white>đã được dùng để sửa đồ bằng Mending.'
+  action_bar: '<green>+{exp} Exp <white>| <red>-{exp_mending} đã dùng cho Mending'
 
 # ──────────────────────────────────────────────────────
 #            Spawner - Storage GUI Interactions
 # ──────────────────────────────────────────────────────
 click_too_fast:
-  message: '&#FF4444Bạn đang nhấp quá nhanh.'
+  message: '<#ff4444>Bạn đang nhấp quá nhanh.'
   sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Stack Interaction
 # ──────────────────────────────────────────────────────
 spawner_different:
-  message: '&#FF4444Các spawner phải cùng loại để stack.'
-  action_bar: '&#FF4444Các spawner phải cùng loại.'
+  message: '<#ff4444>Các spawner phải cùng loại để stack.'
+  action_bar: '<#ff4444>Các spawner phải cùng loại.'
   sound: block.note_block.pling
 
 spawner_stack_full:
-  action_bar: '&#FF4444Giới hạn stack tối đa: &f{max}'
+  action_bar: '<#ff4444>Giới hạn stack tối đa: <white>{max}'
   sound: block.note_block.pling
 
 spawner_stack_success:
-  action_bar: '&aBạn đã stack thành công &f{amount} &aspawner.'
+  action_bar: '<green>Bạn đã stack thành công <white>{amount} <green>spawner.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Egg Interaction
 # ──────────────────────────────────────────────────────
 entity_changed:
-  message: 'Spawner đã đổi thành &e{entity}&f.'
-  action_bar: '&fSpawner đã đổi thành &e{entity}&f.'
+  message: 'Spawner đã đổi thành <yellow>{entity}<white>.'
+  action_bar: '<white>Spawner đã đổi thành <yellow>{entity}<white>.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Break Interaction
 # ──────────────────────────────────────────────────────
 break_no_permission:
-  message: '&#FF4444Bạn không có quyền phá spawner này.'
+  message: '<#ff4444>Bạn không có quyền phá spawner này.'
   sound: entity.villager.no
 
 break_silk_touch:
-  message: '&#FF4444Bạn cần Silk Touch để phá spawner này.'
-  action_bar: '&#FF4444Bạn cần Silk Touch.'
+  message: '<#ff4444>Bạn cần Silk Touch để phá spawner này.'
+  action_bar: '<#ff4444>Bạn cần Silk Touch.'
   sound: item.shield.block
 
 break_tool_required:
-  message: '&#FF4444Bạn không thể phá spawner bằng công cụ này.'
-  action_bar: '&#FF4444Không thể phá spawner bằng công cụ này.'
+  message: '<#ff4444>Bạn không thể phá spawner bằng công cụ này.'
+  action_bar: '<#ff4444>Không thể phá spawner bằng công cụ này.'
   sound: item.shield.block
 
 drop_failed:
-  message: '&#FF4444Lần này không may, spawner không rơi ra.'
-  action_bar: '&#FF4444Spawner không rơi ra.'
+  message: '<#ff4444>Lần này không may, spawner không rơi ra.'
+  action_bar: '<#ff4444>Spawner không rơi ra.'
   sound: block.note_block.pling
 
 sneak_break_blocked:
-  message: '&#FF4444Bạn không thể phá cả stack khi spawner này có tỉ lệ rơi.'
-  action_bar: '&#FF4444Không thể phá cả stack.'
+  message: '<#ff4444>Bạn không thể phá cả stack khi spawner này có tỉ lệ rơi.'
+  action_bar: '<#ff4444>Không thể phá cả stack.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #              Sell Integration Messages
 # ──────────────────────────────────────────────────────
 no_sellable_items:
-  message: '&#FF4444Không tìm thấy vật phẩm có thể bán.'
+  message: '<#ff4444>Không tìm thấy vật phẩm có thể bán.'
 
 sell_success:
-  message: 'Bạn đã bán &e{amount} &fvật phẩm với giá &a${price}&f.'
-  action_bar: '&a+${price}'
+  message: 'Bạn đã bán <yellow>{amount} <white>vật phẩm với giá <green>${price}<white>.'
+  action_bar: '<green>+${price}'
 
 sell_and_exp_success:
-  message: 'Bạn đã bán &e{amount} &fvật phẩm với giá &a${price}&f và nhận &a{exp} &fExp.'
-  action_bar: '&a+${price} &f| &a+{exp} Exp'
+  message: 'Bạn đã bán <yellow>{amount} <white>vật phẩm với giá <green>${price}<white> và nhận <green>{exp} <white>Exp.'
+  action_bar: '<green>+${price} <white>| <green>+{exp} Exp'
 
 sell_and_exp_success_with_mending:
-  message: 'Bạn đã bán &e{amount} &fvật phẩm với giá &a${price}&f, nhận &a{exp} &fExp &f(&c{exp_mending} &fđã dùng cho Mending).'
-  action_bar: '&a+${price} &f| &a+{exp} Exp &f(&c-{exp_mending} Mending)'
+  message: 'Bạn đã bán <yellow>{amount} <white>vật phẩm với giá <green>${price}<white>, nhận <green>{exp} <white>Exp <white>(<red>{exp_mending} <white>đã dùng cho Mending).'
+  action_bar: '<green>+${price} <white>| <green>+{exp} Exp <white>(<red>-{exp_mending} Mending)'

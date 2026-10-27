@@ -4,16 +4,16 @@
 iridium_skyblock:
   permissions:
     open_menu:
-      name: '&#5DB5F1ᴘᴇʀᴍɪsᴏ ᴅᴇ ᴍᴇɴú ᴅᴇʟ ɢᴇɴᴇʀᴀᴅᴏʀ'
+      name: '<#5db5f1>ᴘᴇʀᴍɪsᴏ ᴅᴇ ᴍᴇɴú ᴅᴇʟ ɢᴇɴᴇʀᴀᴅᴏʀ'
       lore:
-        - '&7Permiso para permitir a los usuarios abrir el menú.'
+        - '<gray>Permiso para permitir a los usuarios abrir el menú.'
         - ''
-        - '&#5DB5F1&lPermiso'
+        - '<#5db5f1><bold>Permiso'
         - '%permission%'
     stack:
-      name: '&#37eb9aᴘᴇʀᴍɪsᴏ ᴘᴀʀᴀ ᴀᴘɪʟᴀʀ ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
+      name: '<#37eb9a>ᴘᴇʀᴍɪsᴏ ᴘᴀʀᴀ ᴀᴘɪʟᴀʀ ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
       lore:
-        - '&7Permiso para permitir a los usuarios apilar generadores.'
+        - '<gray>Permiso para permitir a los usuarios apilar generadores.'
         - ''
-        - '&#37eb9a&lPermiso'
+        - '<#37eb9a><bold>Permiso'
         - '%permission%'

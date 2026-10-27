@@ -4,16 +4,16 @@
 iridium_skyblock:
   permissions:
     open_menu:
-      name: '&#5DB5F1ǫᴜʏềɴ ᴍở ᴍᴇɴᴜ ꜱᴘᴀᴡɴᴇʀ'
+      name: '<#5db5f1>ǫᴜʏềɴ ᴍở ᴍᴇɴᴜ ꜱᴘᴀᴡɴᴇʀ'
       lore:
-        - '&7Quyền cho phép người dùng mở menu spawner.'
+        - '<gray>Quyền cho phép người dùng mở menu spawner.'
         - ''
-        - '&#5DB5F1&lQuyền'
+        - '<#5db5f1><bold>Quyền'
         - '%permission%'
     stack:
-      name: '&#37eb9aǫᴜʏềɴ ꜱᴛᴀᴄᴋ ꜱᴘᴀᴡɴᴇʀ'
+      name: '<#37eb9a>ǫᴜʏềɴ ꜱᴛᴀᴄᴋ ꜱᴘᴀᴡɴᴇʀ'
       lore:
-        - '&7Quyền cho phép người dùng stack spawner.'
+        - '<gray>Quyền cho phép người dùng stack spawner.'
         - ''
-        - '&#37eb9a&lQuyền'
+        - '<#37eb9a><bold>Quyền'
         - '%permission%'

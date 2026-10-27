@@ -16,59 +16,59 @@
 #   - Tüm bileşenler isteğe bağlıdır - ihtiyacınıza göre herhangi bir kombinasyonu kullanabilirsiniz
 #   - "message" alanı zorunlu değildir ve sadece diğer bileşenleri kullanmak istiyorsanız atlanabilir
 
-prefix: '&#3498dbSmartSpawner &8⏩ &r'
+prefix: '<#3498db>SmartSpawner <dark_gray>⏩ <reset>'
 
 missing_message_key:
-  message: '&#FF4444Eksik mesaj anahtarı: &f{key}'
+  message: '<#ff4444>Eksik mesaj anahtarı: <white>{key}'
 
 # ──────────────────────────────────────────────────────
 #              Oyuncu Etkileşimi (Genel)
 # ──────────────────────────────────────────────────────
 spawner_activated:
-  message: 'Spawner başarıyla&a aktif edildi. &rArtık düşen XP ve eşyaları toplayabilirsin.'
+  message: 'Spawner başarıyla<green> aktif edildi. <reset>Artık düşen XP ve eşyaları toplayabilirsin.'
   sound: block.beacon.activate
 
 inventory_full:
-  message: '&#FF4444Envanterin dolu.'
+  message: '<#ff4444>Envanterin dolu.'
 
 spawner_storage_empty:
-  message: '&#FF4444Spawner deposu şu an boş.'
+  message: '<#ff4444>Spawner deposu şu an boş.'
 
 action_in_progress:
-  message: '&#F0C857Şu anda devam eden bir işlem var. Lütfen bekle.'
-  action_bar: '&#F0C857İşlem sürüyor. Lütfen bekle.'
+  message: '<#f0c857>Şu anda devam eden bir işlem var. Lütfen bekle.'
+  action_bar: '<#f0c857>İşlem sürüyor. Lütfen bekle.'
 
 storage_in_use:
-  message: '&#FF4444Bu spawner deposu şu anda başka bir oyuncu tarafından açık.'
-  action_bar: '&#FF4444Depo başka bir oyuncu tarafından kullanılıyor.'
+  message: '<#ff4444>Bu spawner deposu şu anda başka bir oyuncu tarafından açık.'
+  action_bar: '<#ff4444>Depo başka bir oyuncu tarafından kullanılıyor.'
 
 action_failed:
-  message: '&#FF4444İşlem başarısız oldu. Lütfen tekrar dene.'
-  action_bar: '&#FF4444İşlem başarısız. Lütfen tekrar dene.'
+  message: '<#ff4444>İşlem başarısız oldu. Lütfen tekrar dene.'
+  action_bar: '<#ff4444>İşlem başarısız. Lütfen tekrar dene.'
 
 action_not_ready:
-  message: '&#F0C857Bu işlem henüz hazır değil. &f{time} &#F0C857sonra tekrar deneyin.'
+  message: '<#f0c857>Bu işlem henüz hazır değil. <white>{time} <#f0c857>sonra tekrar deneyin.'
   sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Ana Menü Etkileşimleri
 # ──────────────────────────────────────────────────────
 no_exp:
-  message: '&#FF4444Toplanacak XP bulunmuyor.'
+  message: '<#ff4444>Toplanacak XP bulunmuyor.'
 
 exp_collected:
-  message: '&a{exp} &ftecrübe puanı topladın.'
-  action_bar: '&a+{exp} XP'
+  message: '<green>{exp} <white>tecrübe puanı topladın.'
+  action_bar: '<green>+{exp} XP'
 
 exp_collected_with_mending:
-  message: '&a{exp} &ftecrübe puanı topladın. &c{exp_mending} &fkadarı Tamir için harcandı.'
-  action_bar: '&a+{exp} XP &f| &c-{exp_mending} Tamir için kullanıldı'
+  message: '<green>{exp} <white>tecrübe puanı topladın. <red>{exp_mending} <white>kadarı Tamir için harcandı.'
+  action_bar: '<green>+{exp} XP <white>| <red>-{exp_mending} Tamir için kullanıldı'
 
 # ──────────────────────────────────────────────────────
 #            Spawner - Depo Menüsü Etkileşimleri
 # ──────────────────────────────────────────────────────
 click_too_fast:
-  message: '&#FF4444Çok hızlı tıklıyorsun!'
+  message: '<#ff4444>Çok hızlı tıklıyorsun!'
   sound: block.note_block.bass
 
 # ──────────────────────────────────────────────────────
@@ -78,67 +78,67 @@ click_too_fast:
 #             Spawner - Stack Etkileşimi
 # ──────────────────────────────────────────────────────
 spawner_different:
-  message: '&#FF4444Spawnerları stacklemek için türleri aynı olmalıdır.'
-  action_bar: '&#FF4444Spawner türleri aynı olmalı.'
+  message: '<#ff4444>Spawnerları stacklemek için türleri aynı olmalıdır.'
+  action_bar: '<#ff4444>Spawner türleri aynı olmalı.'
   sound: block.note_block.pling
 
 spawner_stack_full:
-  action_bar: '&#FF4444Maksimum stack sınırına ulaştın: &f{max}'
+  action_bar: '<#ff4444>Maksimum stack sınırına ulaştın: <white>{max}'
   sound: block.note_block.pling
 
 spawner_stack_success:
-  action_bar: '&aBaşarıyla &f{amount} &aspawner stackledin.'
+  action_bar: '<green>Başarıyla <white>{amount} <green>spawner stackledin.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Yumurta Etkileşimi
 # ──────────────────────────────────────────────────────
 entity_changed:
-  message: 'Spawner &e{entity} &ftürüne dönüştürüldü.'
-  action_bar: '&fSpawner &e{entity} &foldu.'
+  message: 'Spawner <yellow>{entity} <white>türüne dönüştürüldü.'
+  action_bar: '<white>Spawner <yellow>{entity} <white>oldu.'
   sound: entity.player.levelup
 
 # ──────────────────────────────────────────────────────
 #             Spawner - Kırma Etkileşimi
 # ──────────────────────────────────────────────────────
 break_no_permission:
-  message: '&#FF4444Bu spawnerı kırmak için yetkin yok.'
+  message: '<#ff4444>Bu spawnerı kırmak için yetkin yok.'
   sound: entity.villager.no
 
 break_silk_touch:
-  message: '&#FF4444Bu spawnerı kırmak için İpeksi Dokunuş büyüsü gerekiyor.'
-  action_bar: '&#FF4444İpeksi Dokunuş büyüsü gerekli.'
+  message: '<#ff4444>Bu spawnerı kırmak için İpeksi Dokunuş büyüsü gerekiyor.'
+  action_bar: '<#ff4444>İpeksi Dokunuş büyüsü gerekli.'
   sound: item.shield.block
 
 break_tool_required:
-  message: '&#FF4444Spawnerı bu aletle kıramazsın. Kazma kullanmalısın.'
-  action_bar: '&#FF4444Bu aletle kırılamaz.'
+  message: '<#ff4444>Spawnerı bu aletle kıramazsın. Kazma kullanmalısın.'
+  action_bar: '<#ff4444>Bu aletle kırılamaz.'
   sound: item.shield.block
 
 drop_failed:
-  message: '&#FF4444Şanssızlık! Spawner kırıldı ama eşya olarak düşmedi.'
-  action_bar: '&#FF4444Spawner düşmedi.'
+  message: '<#ff4444>Şanssızlık! Spawner kırıldı ama eşya olarak düşmedi.'
+  action_bar: '<#ff4444>Spawner düşmedi.'
   sound: block.note_block.pling
 
 sneak_break_blocked:
-  message: '&#FF4444Bu spawnerda düşme şansı olduğu için tüm stacki tek seferde kıramazsın.'
-  action_bar: '&#FF4444Tüm stack aynı anda kırılamaz.'
+  message: '<#ff4444>Bu spawnerda düşme şansı olduğu için tüm stacki tek seferde kıramazsın.'
+  action_bar: '<#ff4444>Tüm stack aynı anda kırılamaz.'
   sound: block.note_block.pling
 
 # ──────────────────────────────────────────────────────
 #              Satış Entegrasyonu Mesajları
 # ──────────────────────────────────────────────────────
 no_sellable_items:
-  message: '&#FF4444Satılabilecek hiçbir eşya bulunamadı.'
+  message: '<#ff4444>Satılabilecek hiçbir eşya bulunamadı.'
 
 sell_success:
-  message: '&e{amount} &fadet eşyayı &a${price} &fkarşılığında sattın.'
-  action_bar: '&a+${price}'
+  message: '<yellow>{amount} <white>adet eşyayı <green>${price} <white>karşılığında sattın.'
+  action_bar: '<green>+${price}'
 
 sell_and_exp_success:
-  message: '&e{amount} &fadet eşyayı &a${price} &fkarşılığında sattın ve &a{exp} &fXP topladın.'
-  action_bar: '&a+${price} &f| &a+{exp} XP'
+  message: '<yellow>{amount} <white>adet eşyayı <green>${price} <white>karşılığında sattın ve <green>{exp} <white>XP topladın.'
+  action_bar: '<green>+${price} <white>| <green>+{exp} XP'
 
 sell_and_exp_success_with_mending:
-  message: '&e{amount} &fadet eşyayı &a${price} &fkarşılığında sattın, &a{exp} &fXP topladın &f(&c{exp_mending} &fTamir için harcandı).'
-  action_bar: '&a+${price} &f| &a+{exp} XP &f(&c-{exp_mending} Tamir)'
+  message: '<yellow>{amount} <white>adet eşyayı <green>${price} <white>karşılığında sattın, <green>{exp} <white>XP topladın <white>(<red>{exp_mending} <white>Tamir için harcandı).'
+  action_bar: '<green>+${price} <white>| <green>+{exp} XP <white>(<red>-{exp_mending} Tamir)'

@@ -4,16 +4,16 @@
 iridium_skyblock:
   permissions:
     open_menu:
-      name: '&#5DB5F1刷怪笼菜单权限'
+      name: '<#5db5f1>刷怪笼菜单权限'
       lore:
-        - '&7允许用户打开刷怪笼菜单的权限。'
+        - '<gray>允许用户打开刷怪笼菜单的权限。'
         - ''
-        - '&#5DB5F1&l权限'
+        - '<#5db5f1><bold>权限'
         - '%permission%'
     stack:
-      name: '&#37eb9a刷怪笼堆叠权限'
+      name: '<#37eb9a>刷怪笼堆叠权限'
       lore:
-        - '&7允许用户堆叠刷怪笼的权限。'
+        - '<gray>允许用户堆叠刷怪笼的权限。'
         - ''
-        - '&#37eb9a&l权限'
+        - '<#37eb9a><bold>权限'
         - '%permission%'

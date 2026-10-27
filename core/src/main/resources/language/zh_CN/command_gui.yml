@@ -3,21 +3,21 @@
 # ──────────────────────────────────────────────────────
 general_navigation:
   previous_page:
-    name: '&#37eb9a上一页'
+    name: '<#37eb9a>上一页'
     lore:
-      - '&#2cc483 ▸ &#f8f8ff点击前往第 &#37eb9a{target_page} 页'
+      - '<#2cc483> ▸ <#f8f8ff>点击前往第 <#37eb9a>{target_page} 页'
   next_page:
-    name: '&#37eb9a下一页'
+    name: '<#37eb9a>下一页'
     lore:
-      - '&#2cc483 ▸ &#f8f8ff点击前往第 &#37eb9a{target_page} 页'
+      - '<#2cc483> ▸ <#f8f8ff>点击前往第 <#37eb9a>{target_page} 页'
   close:
-    name: '&#FF6B6B关闭'
+    name: '<#ff6b6b>关闭'
     lore:
-      - '&#FF6B6B ▸ &f点击以关闭！'
+      - '<#ff6b6b> ▸ <white>点击以关闭！'
   back:
-    name: '&f返回 &#FF6B6B{previous_menu}'
+    name: '<white>返回 <#ff6b6b>{previous_menu}'
     lore:
-      - '&c ▸ &f点击以返回！'
+      - '<red> ▸ <white>点击以返回！'
   menu_names:
     server_selection: '服务器选择'
     world_selection: '维度选择'
@@ -25,8 +25,8 @@ general_navigation:
     spawner_management: '刷怪笼管理'
 
 general:
-  selected_option: ' &#5DB5F1• {option_name}'
-  unselected_option: ' &f• {option_name}'
+  selected_option: ' <#5db5f1>• {option_name}'
+  unselected_option: ' <white>• {option_name}'
 
 # ──────────────────────────────────────────────────────
 #     Server Selection GUI (for cross-server setups)
@@ -36,21 +36,21 @@ gui_title_world_selection_server: '{server} 维度'
 
 server_selection:
   current_server:
-    name: '&#37eb9a{server}'
+    name: '<#37eb9a>{server}'
     lore:
       - ''
-      - ' &#37eb9aℹ 状态：'
-      - '  &8• &f当前服务器'
+      - ' <#37eb9a>ℹ 状态：'
+      - '  <dark_gray>• <white>当前服务器'
       - ''
-      - '&#37eb9a ▸ 点击查看刷怪笼！'
+      - '<#37eb9a> ▸ 点击查看刷怪笼！'
   remote_server:
-    name: '&#F0C857{server}'
+    name: '<#f0c857>{server}'
     lore:
       - ''
-      - ' &#F0C857ℹ 状态：'
-      - '  &8• &f远程服务器'
+      - ' <#f0c857>ℹ 状态：'
+      - '  <dark_gray>• <white>远程服务器'
       - ''
-      - '&#F0C857 ▸ 点击查看刷怪笼！'
+      - '<#f0c857> ▸ 点击查看刷怪笼！'
 
 # ──────────────────────────────────────────────────────
 #              World Selection GUI
@@ -65,50 +65,50 @@ world_display_names:
 
 world_buttons:
   NORMAL:
-    name: '&#37eb9a{world_name}'
+    name: '<#37eb9a>{world_name}'
     lore:
       - ''
-      - ' &#37eb9aℹ 统计：'
-      - '  &8• &f刷怪笼方块：&e{total}'
-      - '  &8• &f堆叠刷怪笼：&e{total_stacked}'
+      - ' <#37eb9a>ℹ 统计：'
+      - '  <dark_gray>• <white>刷怪笼方块：<yellow>{total}'
+      - '  <dark_gray>• <white>堆叠刷怪笼：<yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#37eb9a ▸ 点击打开列表！'
+      - '<#37eb9a> ▸ 点击打开列表！'
   NETHER:
-    name: '&#FF6B6B{world_name}'
+    name: '<#ff6b6b>{world_name}'
     lore:
       - ''
-      - ' &#FF6B6Bℹ 统计：'
-      - '  &8• &f刷怪笼方块：&e{total}'
-      - '  &8• &f堆叠刷怪笼：&e{total_stacked}'
+      - ' <#ff6b6b>ℹ 统计：'
+      - '  <dark_gray>• <white>刷怪笼方块：<yellow>{total}'
+      - '  <dark_gray>• <white>堆叠刷怪笼：<yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#FF6B6B ▸ 点击打开列表！'
+      - '<#ff6b6b> ▸ 点击打开列表！'
   THE_END:
-    name: '&#C8A2FF{world_name}'
+    name: '<#c8a2ff>{world_name}'
     lore:
       - ''
-      - ' &#C8A2FFℹ 统计：'
-      - '  &8• &f刷怪笼方块：&e{total}'
-      - '  &8• &f堆叠刷怪笼：&e{total_stacked}'
+      - ' <#c8a2ff>ℹ 统计：'
+      - '  <dark_gray>• <white>刷怪笼方块：<yellow>{total}'
+      - '  <dark_gray>• <white>堆叠刷怪笼：<yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#C8A2FF ▸ 点击打开列表！'
+      - '<#c8a2ff> ▸ 点击打开列表！'
   CUSTOM:
-    name: '&#5DB5F1{world_name}'
+    name: '<#5db5f1>{world_name}'
     lore:
       - ''
-      - ' &#5DB5F1ℹ 统计：'
-      - '  &8• &f刷怪笼方块：&e{total}'
-      - '  &8• &f堆叠刷怪笼：&e{total_stacked}'
+      - ' <#5db5f1>ℹ 统计：'
+      - '  <dark_gray>• <white>刷怪笼方块：<yellow>{total}'
+      - '  <dark_gray>• <white>堆叠刷怪笼：<yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#5DB5F1 ▸ 点击打开列表！'
+      - '<#5db5f1> ▸ 点击打开列表！'
 
 remote_world_lore:
   - ''
-  - ' &#F0C857ℹ 远程世界：'
-  - '  &8• &f服务器：&e{server}'
+  - ' <#f0c857>ℹ 远程世界：'
+  - '  <dark_gray>• <white>服务器：<yellow>{server}'
 
 # ──────────────────────────────────────────────────────
 #                  Spawner List GUI
@@ -118,12 +118,12 @@ gui_title_spawner_list_remote: '[{current}/{total}] {world} ({server})'
 
 filter:
   button:
-    name: '&f筛选 &#5DB5F1刷怪笼'
+    name: '<white>筛选 <#5db5f1>刷怪笼'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ 点击更改筛选！'
+      - '<#5db5f1> ▸ 点击更改筛选！'
   option_name:
     all: '全部'
     active: '激活'
@@ -131,43 +131,43 @@ filter:
 
 sort:
   button:
-    name: '&f排序 &#5DB5F1刷怪笼'
+    name: '<white>排序 <#5db5f1>刷怪笼'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ 点击更改排序！'
+      - '<#5db5f1> ▸ 点击更改排序！'
   option_name:
     default: '默认 (ID)'
     stack_size_asc: '堆叠数量 (↑)'
     stack_size_desc: '堆叠数量 (↓)'
 
 spawner_item_list:
-  name: '&f刷怪笼 &#5DB5F1#{id}'
+  name: '<white>刷怪笼 <#5db5f1>#{id}'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f实体：&e{entity}'
-    - '  &8• &f堆叠：&e{size}'
-    - '  &8• &f状态：{status}'
-    - '  &8• &f最后玩家：&e{last_player}'
-    - '  &8• &f位置：&7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>实体：<yellow>{entity}'
+    - '  <dark_gray>• <white>堆叠：<yellow>{size}'
+    - '  <dark_gray>• <white>状态：{status}'
+    - '  <dark_gray>• <white>最后玩家：<yellow>{last_player}'
+    - '  <dark_gray>• <white>位置：<gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#5DB5F1 ▸ 点击管理此刷怪笼！'
+    - '<#5db5f1> ▸ 点击管理此刷怪笼！'
   remote_lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f实体：&e{entity}'
-    - '  &8• &f堆叠：&e{size}'
-    - '  &8• &f状态：{status}'
-    - '  &8• &f最后玩家：&e{last_player}'
-    - '  &8• &f位置：&7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>实体：<yellow>{entity}'
+    - '  <dark_gray>• <white>堆叠：<yellow>{size}'
+    - '  <dark_gray>• <white>状态：{status}'
+    - '  <dark_gray>• <white>最后玩家：<yellow>{last_player}'
+    - '  <dark_gray>• <white>位置：<gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#FF6B6B ⚠ 无法管理远程刷怪笼！'
+    - '<#ff6b6b> ⚠ 无法管理远程刷怪笼！'
   last_player_none: '无'
   status:
-    active: '&#00E689激活'
-    inactive: '&#ff6b6b未激活'
+    active: '<#00e689>激活'
+    inactive: '<#ff6b6b>未激活'
 
 # ──────────────────────────────────────────────────────
 #              Spawner Management GUI
@@ -176,17 +176,17 @@ gui_title_spawner_management: '管理刷怪笼'
 
 spawner_management:
   teleport:
-    name: '&f传送 &#5DB5F1至刷怪笼'
+    name: '<white>传送 <#5db5f1>至刷怪笼'
     lore:
-      - '&#5DB5F1 ▸ &f点击传送！'
+      - '<#5db5f1> ▸ <white>点击传送！'
   open_spawner:
-    name: '&f打开 &#5DB5F1刷怪笼界面'
+    name: '<white>打开 <#5db5f1>刷怪笼界面'
     lore:
-      - '&#5DB5F1 ▸ &f点击打开菜单！'
+      - '<#5db5f1> ▸ <white>点击打开菜单！'
   remove:
-    name: '&f移除 &#FF6B6B刷怪笼'
+    name: '<white>移除 <#ff6b6b>刷怪笼'
     lore:
-      - '&#FF6B6B ▸ &f点击移除此刷怪笼！'
+      - '<#ff6b6b> ▸ <white>点击移除此刷怪笼！'
 
 # ──────────────────────────────────────────────────────
 #                    Prices GUI
@@ -194,14 +194,14 @@ spawner_management:
 gui_title_prices: '[{current_page}/{total_pages}] 出售价格'
 
 price_item:
-  name: '&f{item_name} &#5DB5F1价格'
+  name: '<white>{item_name} <#5db5f1>价格'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f最终价格：&a${price}'
-    - '  &8• &f来源：&e{price_source}'
-    - '  &8• &f自定义价格：&a${custom_price}'
-    - '  &8• &f商店价格：&a${shop_price}'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>最终价格：<green>${price}'
+    - '  <dark_gray>• <white>来源：<yellow>{price_source}'
+    - '  <dark_gray>• <white>自定义价格：<green>${custom_price}'
+    - '  <dark_gray>• <white>商店价格：<green>${shop_price}'
 
 # ──────────────────────────────────────────────────────
 #              Loot Editor (/ss editloot)
@@ -213,74 +213,74 @@ editloot:
   capture_replace_title: '放入新物品'
 
   loot_entry:
-    name: '&f战利品 &#37eb9a{label}'
+    name: '<white>战利品 <#37eb9a>{label}'
     lore:
       - ''
-      - ' &#37eb9aℹ 信息：'
-      - '  &8• &f物品：&e{item}'
-      - '  &8• &f数量：&e{amount}'
-      - '  &8• &f概率：&e{chance}%'
-      - '  &8• &f耐久：&e{durability}'
+      - ' <#37eb9a>ℹ 信息：'
+      - '  <dark_gray>• <white>物品：<yellow>{item}'
+      - '  <dark_gray>• <white>数量：<yellow>{amount}'
+      - '  <dark_gray>• <white>概率：<yellow>{chance}%'
+      - '  <dark_gray>• <white>耐久：<yellow>{durability}'
       - ''
-      - '&#37eb9a ▸ &f左键点击编辑数值！'
-      - '&#37eb9a ▸ &f右键点击更换物品！'
+      - '<#37eb9a> ▸ <white>左键点击编辑数值！'
+      - '<#37eb9a> ▸ <white>右键点击更换物品！'
 
   loot_broken:
-    name: '&f战利品 &#FF6B6B{label}'
+    name: '<white>战利品 <#ff6b6b>{label}'
     lore:
       - ''
-      - ' &#FF6B6B⚠ 警告：'
-      - '  &8• &f无法读取此物品。'
-      - '  &8• &f值：&e{item}'
+      - ' <#ff6b6b>⚠ 警告：'
+      - '  <dark_gray>• <white>无法读取此物品。'
+      - '  <dark_gray>• <white>值：<yellow>{item}'
       - ''
-      - '&#FF6B6B ▸ &f右键点击设置新物品！'
+      - '<#ff6b6b> ▸ <white>右键点击设置新物品！'
 
   add_loot:
-    name: '&f添加 &#37eb9a战利品'
+    name: '<white>添加 <#37eb9a>战利品'
     lore:
       - ''
-      - ' &#37eb9aℹ 信息：'
-      - '  &8• &f添加另一个战利品物品。'
+      - ' <#37eb9a>ℹ 信息：'
+      - '  <dark_gray>• <white>添加另一个战利品物品。'
       - ''
-      - '&#37eb9a ▸ &f点击选择物品！'
+      - '<#37eb9a> ▸ <white>点击选择物品！'
 
   capture_hint:
-    name: '&f将物品 &#5DB5F1丢到中间'
+    name: '<white>将物品 <#5db5f1>丢到中间'
     lore:
       - ''
-      - ' &#5DB5F1ℹ 信息：'
-      - '  &8• &f物品将按原样保存。'
-      - '  &8• &f离开时会归还予你。'
+      - ' <#5db5f1>ℹ 信息：'
+      - '  <dark_gray>• <white>物品将按原样保存。'
+      - '  <dark_gray>• <white>离开时会归还予你。'
 
   cancel:
-    name: '&f取消 &#FF6B6B捕获'
+    name: '<white>取消 <#ff6b6b>捕获'
     lore:
       - ''
-      - ' &#FF6B6Bℹ 信息：'
-      - '  &8• &f放弃此捕获。'
+      - ' <#ff6b6b>ℹ 信息：'
+      - '  <dark_gray>• <white>放弃此捕获。'
       - ''
-      - '&#FF6B6B ▸ &f点击取消！'
+      - '<#ff6b6b> ▸ <white>点击取消！'
 
   confirm:
-    name: '&f确认 &#37eb9a物品'
+    name: '<white>确认 <#37eb9a>物品'
     lore:
       - ''
-      - ' &#37eb9aℹ 信息：'
-      - '  &8• &f继续设置数量和概率。'
+      - ' <#37eb9a>ℹ 信息：'
+      - '  <dark_gray>• <white>继续设置数量和概率。'
       - ''
-      - '&#37eb9a ▸ &f点击继续！'
+      - '<#37eb9a> ▸ <white>点击继续！'
 
   # Dialog text. Rendered inside the client dialog, so keep it short.
   dialog_title:
     name: '战利品设置'
   dialog_body:
-    name: '&7数量和耐久支持范围格式，如 &f0-2&7。'
+    name: '<gray>数量和耐久支持范围格式，如 <white>0-2<gray>。'
   dialog_save:
-    name: '&a✔ &f保存'
+    name: '<green>✔ <white>保存'
   dialog_cancel:
-    name: '&c← &f取消'
+    name: '<red>← <white>取消'
   dialog_delete:
-    name: '&4✖ &f删除战利品'
+    name: '<dark_red>✖ <white>删除战利品'
   field_amount:
     name: '数量（例如 1 或 0-2）'
   field_chance:
@@ -288,8 +288,8 @@ editloot:
   field_durability:
     name: '耐久（留空为无，例如 1-384）'
   error_amount:
-    name: '&c数量必须为 0-{max} 的整数，且最小值不能大于最大值。'
+    name: '<red>数量必须为 0-{max} 的整数，且最小值不能大于最大值。'
   error_chance:
-    name: '&c概率必须为 0 到 100 的数字。'
+    name: '<red>概率必须为 0 到 100 的数字。'
   error_durability:
-    name: '&c耐久必须为整数，且最小值不能大于最大值。'
+    name: '<red>耐久必须为整数，且最小值不能大于最大值。'

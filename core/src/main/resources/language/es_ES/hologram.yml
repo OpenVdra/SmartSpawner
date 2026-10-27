@@ -1,5 +1,6 @@
 # SmartSpawner – hologram.yml
-# Text lines shown above each spawner. Supports &#RRGGBB hex and &x color codes.
+# Text lines shown above each spawner.
+# Colours: MiniMessage (<red>, <#5DB5F1>, <gradient:#5DB5F1:#FFFFFF>) or legacy (&c, &#5DB5F1).
 #
 # Placeholders:
 #   {entity}                  – Mob name
@@ -15,6 +16,6 @@
 #   {percent_exp_rounded}     – XP % rounded (e.g. "50")
 
 hologram_text:
-  - '&8[&f{stack_size}&8] Generador(es) de &#5DB5F1{entity}'
-  - '&#5DB5F1• &fExperiencia: &a{current_exp}&f/&a{max_exp}'
-  - '&#5DB5F1• &fObjetos: &e{used_slots}&f/&e{max_slots}'
+  - '<dark_gray>[<white>{stack_size}<dark_gray>] Generador(es) de <#5db5f1>{entity}'
+  - '<#5db5f1>• <white>Experiencia: <green>{current_exp}<white>/<green>{max_exp}'
+  - '<#5db5f1>• <white>Objetos: <yellow>{used_slots}<white>/<yellow>{max_slots}'

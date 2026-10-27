@@ -4,18 +4,18 @@
 iridium_skyblock:
   permissions:
     open_menu:
-      name: '&#5DB5F1Spawner Menü Yetkisi'
+      name: '<#5db5f1>Spawner Menü Yetkisi'
       lore:
-        - '&7Ada üyelerinin spawner menüsünü'
-        - '&7açabilmesi için gereken izin.'
+        - '<gray>Ada üyelerinin spawner menüsünü'
+        - '<gray>açabilmesi için gereken izin.'
         - ''
-        - '&#5DB5F1&lYetki'
+        - '<#5db5f1><bold>Yetki'
         - '%permission%'
     stack:
-      name: '&#37eb9aSpawner Menü Yetkisi'
+      name: '<#37eb9a>Spawner Menü Yetkisi'
       lore:
-        - '&7Ada üyelerinin spawnerları'
-        - '&7stackleyebilmesi için gereken izin.'
+        - '<gray>Ada üyelerinin spawnerları'
+        - '<gray>stackleyebilmesi için gereken izin.'
         - ''
-        - '&#37eb9a&lYetki'
+        - '<#37eb9a><bold>Yetki'
         - '%permission%'

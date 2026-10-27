@@ -3,21 +3,21 @@
 # ──────────────────────────────────────────────────────
 general_navigation:
   previous_page:
-    name: '&#37eb9aᴘáɢɪɴᴀ ᴀɴᴛᴇʀɪᴏʀ'
+    name: '<#37eb9a>ᴘáɢɪɴᴀ ᴀɴᴛᴇʀɪᴏʀ'
     lore:
-      - '&#2cc483 ▸ &#f8f8ffClic para ir a la página &#37eb9a{target_page}'
+      - '<#2cc483> ▸ <#f8f8ff>Clic para ir a la página <#37eb9a>{target_page}'
   next_page:
-    name: '&#37eb9asɪɢᴜɪᴇɴᴛᴇ ᴘáɢɪɴᴀ'
+    name: '<#37eb9a>sɪɢᴜɪᴇɴᴛᴇ ᴘáɢɪɴᴀ'
     lore:
-      - '&#2cc483 ▸ &#f8f8ffClic para ir a la página &#37eb9a{target_page}'
+      - '<#2cc483> ▸ <#f8f8ff>Clic para ir a la página <#37eb9a>{target_page}'
   close:
-    name: '&#FF6B6Bᴄᴇʀʀᴀʀ'
+    name: '<#ff6b6b>ᴄᴇʀʀᴀʀ'
     lore:
-      - '&#FF6B6B ▸ &f¡Clic para cerrar!'
+      - '<#ff6b6b> ▸ <white>¡Clic para cerrar!'
   back:
-    name: '&fᴠᴏʟᴠᴇʀ ᴀ &#FF6B6B{previous_menu}'
+    name: '<white>ᴠᴏʟᴠᴇʀ ᴀ <#ff6b6b>{previous_menu}'
     lore:
-      - '&c ▸ &f¡Clic para volver!'
+      - '<red> ▸ <white>¡Clic para volver!'
   menu_names:
     server_selection: 'sᴇʟᴇᴄᴄɪóɴ ᴅᴇ sᴇʀᴠɪᴅᴏʀ'
     world_selection: 'sᴇʟᴇᴄᴄɪóɴ ᴅᴇ ᴍᴜɴᴅᴏ'
@@ -25,8 +25,8 @@ general_navigation:
     spawner_management: 'ɢᴇsᴛɪóɴ ᴅᴇ ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
 
 general:
-  selected_option: ' &#5DB5F1• {option_name}'
-  unselected_option: ' &f• {option_name}'
+  selected_option: ' <#5db5f1>• {option_name}'
+  unselected_option: ' <white>• {option_name}'
 
 # ──────────────────────────────────────────────────────
 #     Server Selection GUI (for cross-server setups)
@@ -36,21 +36,21 @@ gui_title_world_selection_server: '{server} ᴍᴜɴᴅᴏs'
 
 server_selection:
   current_server:
-    name: '&#37eb9a{server}'
+    name: '<#37eb9a>{server}'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴇsᴛᴀᴅᴏ:'
-      - '  &8• &fServidor actual'
+      - ' <#37eb9a>ℹ ᴇsᴛᴀᴅᴏ:'
+      - '  <dark_gray>• <white>Servidor actual'
       - ''
-      - '&#37eb9a ▸ ¡Clic para ver los generadores!'
+      - '<#37eb9a> ▸ ¡Clic para ver los generadores!'
   remote_server:
-    name: '&#F0C857{server}'
+    name: '<#f0c857>{server}'
     lore:
       - ''
-      - ' &#F0C857ℹ ᴇsᴛᴀᴅᴏ:'
-      - '  &8• &fServidor remoto'
+      - ' <#f0c857>ℹ ᴇsᴛᴀᴅᴏ:'
+      - '  <dark_gray>• <white>Servidor remoto'
       - ''
-      - '&#F0C857 ▸ ¡Clic para ver los generadores!'
+      - '<#f0c857> ▸ ¡Clic para ver los generadores!'
 
 # ──────────────────────────────────────────────────────
 #              World Selection GUI
@@ -65,50 +65,50 @@ world_display_names:
 
 world_buttons:
   NORMAL:
-    name: '&#37eb9a{world_name}'
+    name: '<#37eb9a>{world_name}'
     lore:
       - ''
-      - ' &#37eb9aℹ ᴇsᴛᴀᴅísᴛɪᴄᴀs:'
-      - '  &8• &fNúmero de generadores: &e{total}'
-      - '  &8• &fGeneradores apilados: &e{total_stacked}'
+      - ' <#37eb9a>ℹ ᴇsᴛᴀᴅísᴛɪᴄᴀs:'
+      - '  <dark_gray>• <white>Número de generadores: <yellow>{total}'
+      - '  <dark_gray>• <white>Generadores apilados: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#37eb9a ▸ ¡Clic para abrir la lista!'
+      - '<#37eb9a> ▸ ¡Clic para abrir la lista!'
   NETHER:
-    name: '&#FF6B6B{world_name}'
+    name: '<#ff6b6b>{world_name}'
     lore:
       - ''
-      - ' &#FF6B6Bℹ ᴇsᴛᴀᴅísᴛɪᴄᴀs:'
-      - '  &8• &fNúmero de generadores: &e{total}'
-      - '  &8• &fGeneradores apilados: &e{total_stacked}'
+      - ' <#ff6b6b>ℹ ᴇsᴛᴀᴅísᴛɪᴄᴀs:'
+      - '  <dark_gray>• <white>Número de generadores: <yellow>{total}'
+      - '  <dark_gray>• <white>Generadores apilados: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#FF6B6B ▸ ¡Clic para abrir la lista!'
+      - '<#ff6b6b> ▸ ¡Clic para abrir la lista!'
   THE_END:
-    name: '&#C8A2FF{world_name}'
+    name: '<#c8a2ff>{world_name}'
     lore:
       - ''
-      - ' &#C8A2FFℹ ᴇsᴛᴀᴅísᴛɪᴄᴀs:'
-      - '  &8• &fNúmero de generadores: &e{total}'
-      - '  &8• &fGeneradores apilados: &e{total_stacked}'
+      - ' <#c8a2ff>ℹ ᴇsᴛᴀᴅísᴛɪᴄᴀs:'
+      - '  <dark_gray>• <white>Número de generadores: <yellow>{total}'
+      - '  <dark_gray>• <white>Generadores apilados: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#C8A2FF ▸ ¡Clic para abrir la lista!'
+      - '<#c8a2ff> ▸ ¡Clic para abrir la lista!'
   CUSTOM:
-    name: '&#5DB5F1{world_name}'
+    name: '<#5db5f1>{world_name}'
     lore:
       - ''
-      - ' &#5DB5F1ℹ ꜱᴛᴀᴛꜱ:'
-      - '  &8• &fNúmero de generadores: &e{total}'
-      - '  &8• &fGeneradores apilados: &e{total_stacked}'
+      - ' <#5db5f1>ℹ ꜱᴛᴀᴛꜱ:'
+      - '  <dark_gray>• <white>Número de generadores: <yellow>{total}'
+      - '  <dark_gray>• <white>Generadores apilados: <yellow>{total_stacked}'
       - '{remote_world_lore}'
       - ''
-      - '&#5DB5F1 ▸ ¡Clic para abrir la lista!'
+      - '<#5db5f1> ▸ ¡Clic para abrir la lista!'
 
 remote_world_lore:
   - ''
-  - ' &#F0C857ℹ ᴍᴜɴᴅᴏ ʀᴇᴍᴏᴛᴏ:'
-  - '  &8• &fServidor: &e{server}'
+  - ' <#f0c857>ℹ ᴍᴜɴᴅᴏ ʀᴇᴍᴏᴛᴏ:'
+  - '  <dark_gray>• <white>Servidor: <yellow>{server}'
 
 # ──────────────────────────────────────────────────────
 #                  Spawner List GUI
@@ -118,12 +118,12 @@ gui_title_spawner_list_remote: '[{current}/{total}] {world} ({server})'
 
 filter:
   button:
-    name: '&fғɪʟᴛʀᴀʀ &#5DB5F1ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
+    name: '<white>ғɪʟᴛʀᴀʀ <#5db5f1>ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ ¡Clic para cambiar el filtro!'
+      - '<#5db5f1> ▸ ¡Clic para cambiar el filtro!'
   option_name:
     all: 'Todo'
     active: 'Activo'
@@ -131,43 +131,43 @@ filter:
 
 sort:
   button:
-    name: '&fᴏʀᴅᴇɴ &#5DB5F1ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
+    name: '<white>ᴏʀᴅᴇɴ <#5db5f1>ɢᴇɴᴇʀᴀᴅᴏʀᴇs'
     lore:
       - ''
       - '{available_options}'
       - ''
-      - '&#5DB5F1 ▸ ¡Clic para cambiar el orden!'
+      - '<#5db5f1> ▸ ¡Clic para cambiar el orden!'
   option_name:
     default: 'Por defecto (ID)'
     stack_size_asc: 'Tamaño del stack (↑)'
     stack_size_desc: 'Tamaño del stack (↓)'
 
 spawner_item_list:
-  name: '&fɢᴇɴᴇʀᴀᴅᴏʀ &#5DB5F1#{id}'
+  name: '<white>ɢᴇɴᴇʀᴀᴅᴏʀ <#5db5f1>#{id}'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-    - '  &8• &fEntidad: &e{entity}'
-    - '  &8• &fApilado: &e{size}'
-    - '  &8• &fEstado: {status}'
-    - '  &8• &fÚltimo jugador: &e{last_player}'
-    - '  &8• &fUbicación: &7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+    - '  <dark_gray>• <white>Entidad: <yellow>{entity}'
+    - '  <dark_gray>• <white>Apilado: <yellow>{size}'
+    - '  <dark_gray>• <white>Estado: {status}'
+    - '  <dark_gray>• <white>Último jugador: <yellow>{last_player}'
+    - '  <dark_gray>• <white>Ubicación: <gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#5DB5F1 ▸ ¡Clic para gestionar el generador!'
+    - '<#5db5f1> ▸ ¡Clic para gestionar el generador!'
   remote_lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-    - '  &8• &fEntidad: &e{entity}'
-    - '  &8• &fApilado: &e{size}'
-    - '  &8• &fEstado: {status}'
-    - '  &8• &fÚltimo jugador: &e{last_player}'
-    - '  &8• &fUbicación: &7x: {x}, y: {y}, z: {z}'
+    - ' <#5db5f1>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+    - '  <dark_gray>• <white>Entidad: <yellow>{entity}'
+    - '  <dark_gray>• <white>Apilado: <yellow>{size}'
+    - '  <dark_gray>• <white>Estado: {status}'
+    - '  <dark_gray>• <white>Último jugador: <yellow>{last_player}'
+    - '  <dark_gray>• <white>Ubicación: <gray>x: {x}, y: {y}, z: {z}'
     - ''
-    - '&#FF6B6B ⚠ ¡No se puede gestionar el generador remoto!'
+    - '<#ff6b6b> ⚠ ¡No se puede gestionar el generador remoto!'
   last_player_none: 'Nadie'
   status:
-    active: '&#00E689Activo'
-    inactive: '&#ff6b6bInactivo'
+    active: '<#00e689>Activo'
+    inactive: '<#ff6b6b>Inactivo'
 
 # ──────────────────────────────────────────────────────
 #              Spawner Management GUI
@@ -176,17 +176,17 @@ gui_title_spawner_management: 'ɢᴇsᴛɪᴏɴᴀʀ ɢᴇɴᴇʀᴀᴅᴏʀ'
 
 spawner_management:
   teleport:
-    name: '&fᴛᴇʟᴇᴛʀᴀɴsᴘᴏʀᴛᴀʀsᴇ &#5DB5F1ᴀʟ ɢᴇɴᴇʀᴀᴅᴏʀ'
+    name: '<white>ᴛᴇʟᴇᴛʀᴀɴsᴘᴏʀᴛᴀʀsᴇ <#5db5f1>ᴀʟ ɢᴇɴᴇʀᴀᴅᴏʀ'
     lore:
-      - '&#5DB5F1 ▸ &f¡Clic para teletransportarte!'
+      - '<#5db5f1> ▸ <white>¡Clic para teletransportarte!'
   open_spawner:
-    name: '&fᴀʙʀɪʀ &#5DB5F1ɪɴᴛᴇʀғᴀᴢ ᴅᴇʟ ɢᴇɴᴇʀᴀᴅᴏʀ'
+    name: '<white>ᴀʙʀɪʀ <#5db5f1>ɪɴᴛᴇʀғᴀᴢ ᴅᴇʟ ɢᴇɴᴇʀᴀᴅᴏʀ'
     lore:
-      - '&#5DB5F1 ▸ &f¡Clic para abrir el menú!'
+      - '<#5db5f1> ▸ <white>¡Clic para abrir el menú!'
   remove:
-    name: '&fᴇʟɪᴍɪɴᴀʀ &#FF6B6Bɢᴇɴᴇʀᴀᴅᴏʀ'
+    name: '<white>ᴇʟɪᴍɪɴᴀʀ <#ff6b6b>ɢᴇɴᴇʀᴀᴅᴏʀ'
     lore:
-      - '&#FF6B6B ▸ &f¡Clic para eliminar este generador!'
+      - '<#ff6b6b> ▸ <white>¡Clic para eliminar este generador!'
 
 # ──────────────────────────────────────────────────────
 #                    Prices GUI
@@ -194,14 +194,14 @@ spawner_management:
 gui_title_prices: '[{current_page}/{total_pages}] ᴘʀᴇᴄɪᴏs ᴅᴇ ᴠᴇɴᴛᴀ'
 
 price_item:
-  name: '&f{item_name} &#5DB5F1ᴘʀᴇᴄɪᴏ'
+  name: '<white>{item_name} <#5db5f1>ᴘʀᴇᴄɪᴏ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-    - '  &8• &fPrecio final: &a${price}'
-    - '  &8• &fFuente: &e{price_source}'
-    - '  &8• &fPrecio personalizado: &a${custom_price}'
-    - '  &8• &fPrecio en tienda: &a${shop_price}'
+    - ' <#5db5f1>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+    - '  <dark_gray>• <white>Precio final: <green>${price}'
+    - '  <dark_gray>• <white>Fuente: <yellow>{price_source}'
+    - '  <dark_gray>• <white>Precio personalizado: <green>${custom_price}'
+    - '  <dark_gray>• <white>Precio en tienda: <green>${shop_price}'
 
 # ──────────────────────────────────────────────────────
 #              Loot Editor (/ss editloot)
@@ -213,74 +213,74 @@ editloot:
   capture_replace_title: 'sᴜᴇʟᴛᴀ ᴜɴ ɴᴜᴇᴠᴏ ᴏʙᴊᴇᴛᴏ'
 
   loot_entry:
-    name: '&fʙᴏᴛíɴ &#37eb9a{label}'
+    name: '<white>ʙᴏᴛíɴ <#37eb9a>{label}'
     lore:
       - ''
-      - ' &#37eb9aℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-      - '  &8• &fObjeto: &e{item}'
-      - '  &8• &fCantidad: &e{amount}'
-      - '  &8• &fProbabilidad: &e{chance}%'
-      - '  &8• &fDurabilidad: &e{durability}'
+      - ' <#37eb9a>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+      - '  <dark_gray>• <white>Objeto: <yellow>{item}'
+      - '  <dark_gray>• <white>Cantidad: <yellow>{amount}'
+      - '  <dark_gray>• <white>Probabilidad: <yellow>{chance}%'
+      - '  <dark_gray>• <white>Durabilidad: <yellow>{durability}'
       - ''
-      - '&#37eb9a ▸ &f¡Clic izquierdo para modificar los valores!'
-      - '&#37eb9a ▸ &f¡Clic derecho para modificar los objetos!'
+      - '<#37eb9a> ▸ <white>¡Clic izquierdo para modificar los valores!'
+      - '<#37eb9a> ▸ <white>¡Clic derecho para modificar los objetos!'
 
   loot_broken:
-    name: '&fʙᴏᴛíɴ &#FF6B6B{label}'
+    name: '<white>ʙᴏᴛíɴ <#ff6b6b>{label}'
     lore:
       - ''
-      - ' &#FF6B6B⚠ ᴀᴅᴠᴇʀᴛᴇɴᴄɪᴀ:'
-      - '  &8• &fEste objeto no se puede leer.'
-      - '  &8• &fValor: &e{item}'
+      - ' <#ff6b6b>⚠ ᴀᴅᴠᴇʀᴛᴇɴᴄɪᴀ:'
+      - '  <dark_gray>• <white>Este objeto no se puede leer.'
+      - '  <dark_gray>• <white>Valor: <yellow>{item}'
       - ''
-      - '&#FF6B6B ▸ &f¡Clic derecho para establecer un nuevo objeto!'
+      - '<#ff6b6b> ▸ <white>¡Clic derecho para establecer un nuevo objeto!'
 
   add_loot:
-    name: '&fᴀñᴀᴅɪʀ &#37eb9aʙᴏᴛíɴ'
+    name: '<white>ᴀñᴀᴅɪʀ <#37eb9a>ʙᴏᴛíɴ'
     lore:
       - ''
-      - ' &#37eb9aℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-      - '  &8• &fAñade otro objeto de botín.'
+      - ' <#37eb9a>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+      - '  <dark_gray>• <white>Añade otro objeto de botín.'
       - ''
-      - '&#37eb9a ▸ &f¡Clic para elegir un objeto!'
+      - '<#37eb9a> ▸ <white>¡Clic para elegir un objeto!'
 
   capture_hint:
-    name: '&fsᴏʟᴛᴀʀ ᴜɴ ᴏʙᴊᴇᴛᴏ &#5DB5F1ᴇɴ ᴇʟ ᴍᴇᴅɪᴏ'
+    name: '<white>sᴏʟᴛᴀʀ ᴜɴ ᴏʙᴊᴇᴛᴏ <#5db5f1>ᴇɴ ᴇʟ ᴍᴇᴅɪᴏ'
     lore:
       - ''
-      - ' &#5DB5F1ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-      - '  &8• &fEl objeto se guardará tal cual.'
-      - '  &8• &fSe te devolverá cuando te vayas.'
+      - ' <#5db5f1>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+      - '  <dark_gray>• <white>El objeto se guardará tal cual.'
+      - '  <dark_gray>• <white>Se te devolverá cuando te vayas.'
 
   cancel:
-    name: '&fᴄᴀɴᴄᴇʟᴀʀ &#FF6B6Bᴄᴀᴘᴛᴜʀᴀ'
+    name: '<white>ᴄᴀɴᴄᴇʟᴀʀ <#ff6b6b>ᴄᴀᴘᴛᴜʀᴀ'
     lore:
       - ''
-      - ' &#FF6B6Bℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-      - '  &8• &fDesechar esta captura.'
+      - ' <#ff6b6b>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+      - '  <dark_gray>• <white>Desechar esta captura.'
       - ''
-      - '&#FF6B6B ▸ &f¡Clic para cancelar!'
+      - '<#ff6b6b> ▸ <white>¡Clic para cancelar!'
 
   confirm:
-    name: '&fᴄᴏɴғɪʀᴍᴀʀ &#37eb9aᴏʙᴊᴇᴛᴏ'
+    name: '<white>ᴄᴏɴғɪʀᴍᴀʀ <#37eb9a>ᴏʙᴊᴇᴛᴏ'
     lore:
       - ''
-      - ' &#37eb9aℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
-      - '  &8• &fContinúa estableciendo la cantidad y probabilidad.'
+      - ' <#37eb9a>ℹ ɪɴғᴏʀᴍᴀᴄɪóɴ:'
+      - '  <dark_gray>• <white>Continúa estableciendo la cantidad y probabilidad.'
       - ''
-      - '&#37eb9a ▸ &f¡Clic para continuar!'
+      - '<#37eb9a> ▸ <white>¡Clic para continuar!'
 
   # Dialog text. Rendered inside the client dialog, so keep it short.
   dialog_title:
     name: 'ᴄᴏɴғɪɢᴜʀᴀᴄɪóɴ ᴅᴇ ʙᴏᴛíɴ'
   dialog_body:
-    name: '&7La cantidad y durabilidad aceptan un rango entr &f0 y 2&7.'
+    name: '<gray>La cantidad y durabilidad aceptan un rango entr <white>0 y 2<gray>.'
   dialog_save:
-    name: '&a✔ &fGuardar'
+    name: '<green>✔ <white>Guardar'
   dialog_cancel:
-    name: '&c← &fCancelar'
+    name: '<red>← <white>Cancelar'
   dialog_delete:
-    name: '&4✖ &fEliminar botín'
+    name: '<dark_red>✖ <white>Eliminar botín'
   field_amount:
     name: 'Cantidad (ej. 1 or 0-2)'
   field_chance:
@@ -288,8 +288,8 @@ editloot:
   field_durability:
     name: 'Durabilidad (vacío para ninguno, ej. 1-384)'
   error_amount:
-    name: '&cLa cantidad debe ser un número entero entre 0 y {max}, y el mínimo no puede superar al máximo.'
+    name: '<red>La cantidad debe ser un número entero entre 0 y {max}, y el mínimo no puede superar al máximo.'
   error_chance:
-    name: '&cLa probabilidad debe ser un número del 0 al 100.'
+    name: '<red>La probabilidad debe ser un número del 0 al 100.'
   error_durability:
-    name: '&cLa durabilidad debe ser un número entero, y el mínimo no puede superar al máximo.'
+    name: '<red>La durabilidad debe ser un número entero, y el mínimo no puede superar al máximo.'

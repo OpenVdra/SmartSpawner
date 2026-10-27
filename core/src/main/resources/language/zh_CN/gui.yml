@@ -16,7 +16,7 @@ spawner_storage_item:
   # {total_sell_price} - Total sell value currently stored in the spawner
   # {entity} - The spawner's entity type (normal capitalization)
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  name: '&f打开 &#5DB5F1存储'
+  name: '<white>打开 <#5db5f1>存储'
 
   # Available placeholders for all lore lines:
   # {max_slots} - Maximum number of slots in the storage (formatted with commas)
@@ -28,15 +28,15 @@ spawner_storage_item:
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f你可以在此查看并'
-    - '   &f管理此刷怪笼中'
-    - '   &f存储的所有物品。'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>你可以在此查看并'
+    - '   <white>管理此刷怪笼中'
+    - '   <white>存储的所有物品。'
     - ''
-    - ' &#5DB5F1★ 容量：&f{percent_storage_rounded}%'
+    - ' <#5db5f1>★ 容量：<white>{percent_storage_rounded}%'
     - '{loot_items}'
     - ''
-    - '&#5DB5F1 ▸ 点击打开存储！'
+    - '<#5db5f1> ▸ 点击打开存储！'
 
   # This defines how each loot item will be displayed when using {loot_items}
   # Available placeholders for each loot item:
@@ -44,8 +44,8 @@ spawner_storage_item:
   # {amount} - Number of items (formatted with commas)
   # {raw_amount} - Number of items (without formatting)
   # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
-  loot_items: '  &8• &f{item_name}&f：&e{amount}'
-  loot_items_empty: '  &8• &f无存储物品'
+  loot_items: '  <dark_gray>• <white>{item_name}<white>：<yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <white>无存储物品'
 
 
 # Available placeholders:
@@ -69,50 +69,50 @@ spawner_storage_item:
 # {time}             - Time until the next spawn, or a status text when inactive/full/no loot
 # {total_sell_price} - Total sell value currently stored in the spawner
 spawner_info_item:
-  name: ' &f刷怪笼 &#5DB5F1信息'
+  name: ' <white>刷怪笼 <#5db5f1>信息'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 统计：'
-    - '   &8• &f堆叠：&e{stack_size}'
-    - '   &8• &f范围：&e{range} &f格'
-    - '   &8• &f生物：&e{min_mobs}&f-&e{max_mobs}'
-    - '   &8• &f延迟：&e{delay} &f秒'
+    - ' <#5db5f1>ℹ 统计：'
+    - '   <dark_gray>• <white>堆叠：<yellow>{stack_size}'
+    - '   <dark_gray>• <white>范围：<yellow>{range} <white>格'
+    - '   <dark_gray>• <white>生物：<yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+    - '   <dark_gray>• <white>延迟：<yellow>{delay} <white>秒'
     - ''
-    - ' &#5DB5F1★ 下次生成：&f{time}'
-    - '   &8• &f经验：&e{percent_exp_rounded}%'
-    - '   &8• &f存储：&e{percent_storage_rounded}%'
-    - '   &8• &f出售价值：&a${total_sell_price}'
+    - ' <#5db5f1>★ 下次生成：<white>{time}'
+    - '   <dark_gray>• <white>经验：<yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>存储：<yellow>{percent_storage_rounded}%'
+    - '   <dark_gray>• <white>出售价值：<green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ 左键：&f出售并收集经验'
+    - '<#5db5f1> ▸ 左键：<white>出售并收集经验'
   lore_no_shop:
     - ''
-    - ' &#5DB5F1ℹ 统计：'
-    - '   &8• &f堆叠：&e{stack_size}'
-    - '   &8• &f范围：&e{range} &f格'
-    - '   &8• &f生物：&e{min_mobs}&f-&e{max_mobs}'
-    - '   &8• &f延迟：&e{delay} &f秒'
+    - ' <#5db5f1>ℹ 统计：'
+    - '   <dark_gray>• <white>堆叠：<yellow>{stack_size}'
+    - '   <dark_gray>• <white>范围：<yellow>{range} <white>格'
+    - '   <dark_gray>• <white>生物：<yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+    - '   <dark_gray>• <white>延迟：<yellow>{delay} <white>秒'
     - ''
-    - ' &#5DB5F1★ 下次生成：&f{time}'
-    - '   &8• &f经验：&e{percent_exp_rounded}%'
-    - '   &8• &f存储：&e{percent_storage_rounded}%'
+    - ' <#5db5f1>★ 下次生成：<white>{time}'
+    - '   <dark_gray>• <white>经验：<yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>存储：<yellow>{percent_storage_rounded}%'
     - ''
-  lore_full: '&#FF4444容量已满'
-  lore_inactive: '&#FF4444未激活'
-  lore_no_loot: '&#FF4444未配置掉落物'
+  lore_full: '<#ff4444>容量已满'
+  lore_inactive: '<#ff4444>未激活'
+  lore_no_loot: '<#ff4444>未配置掉落物'
 
 exp_info_item:
-  name: '&f收集 &#5DB5F1经验'
+  name: '<white>收集 <#5db5f1>经验'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f收集经验或使用'
-    - '   &f经验来修复你的'
-    - '   &f经验修补 &f装备。'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>收集经验或使用'
+    - '   <white>经验来修复你的'
+    - '   <white>经验修补 <white>装备。'
     - ''
-    - ' &#5DB5F1★ 容量：&f{percent_exp_rounded}%'
-    - '  &8• &f存储经验：&a{current_exp}&f/&a{max_exp}'
+    - ' <#5db5f1>★ 容量：<white>{percent_exp_rounded}%'
+    - '  <dark_gray>• <white>存储经验：<green>{current_exp}<white>/<green>{max_exp}'
     - ''
-    - '&#5DB5F1 ▸ 点击收集经验！'
+    - '<#5db5f1> ▸ 点击收集经验！'
 
 # ──────────────────────────────────────────────────────
 #                Sell Confirmation GUI
@@ -120,33 +120,33 @@ exp_info_item:
 gui_title_sell_confirm: '确认出售'
 
 button_sell_cancel:
-  name: '&f取消 &#FF6B6B出售'
+  name: '<white>取消 <#ff6b6b>出售'
   lore:
     - ''
-    - ' &#FF6B6B⚠ 信息：'
-    - '  &8• &f点击返回'
-    - '   &f不进行任何出售。'
+    - ' <#ff6b6b>⚠ 信息：'
+    - '  <dark_gray>• <white>点击返回'
+    - '   <white>不进行任何出售。'
     - ''
-    - '&#FF6B6B ▸ 点击取消！'
+    - '<#ff6b6b> ▸ 点击取消！'
 
 button_sell_confirm:
-  name: '&f确认 &#5DB5F1出售'
+  name: '<white>确认 <#5db5f1>出售'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 你将获得：'
-    - '  &8• &f金币：&a${total_sell_price}'
+    - ' <#5db5f1>ℹ 你将获得：'
+    - '  <dark_gray>• <white>金币：<green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ 点击确认出售！'
+    - '<#5db5f1> ▸ 点击确认出售！'
 
 button_sell_confirm_with_exp:
-  name: '&f确认出售 &#5DB5F1并收集经验'
+  name: '<white>确认出售 <#5db5f1>并收集经验'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 你将获得：'
-    - '  &8• &f金币：&a${total_sell_price}'
-    - '  &8• &f经验：&a{current_exp}'
+    - ' <#5db5f1>ℹ 你将获得：'
+    - '  <dark_gray>• <white>金币：<green>${total_sell_price}'
+    - '  <dark_gray>• <white>经验：<green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ 点击确认！'
+    - '<#5db5f1> ▸ 点击确认！'
 
 # Available placeholders for button_sell_info:
 # {entity} - Formatted entity or item name
@@ -160,15 +160,15 @@ button_sell_confirm_with_exp:
 # {loot_items} - Expands to the generated loot item lines
 # Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
 button_sell_info:
-  name: '&f出售 &#5DB5F1摘要'
+  name: '<white>出售 <#5db5f1>摘要'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
+    - ' <#5db5f1>ℹ 信息：'
     - '{loot_items}'
-    - '  &8• &a+ &f经验：&e{current_exp}'
-    - '  &8• &a+ &f金币：&a${total_sell_price}'
-  loot_items: '  &8• &#FF6B6B- &f{item_name}&f：&e{amount}'
-  loot_items_empty: '  &8• &#FF6B6B- &f没有可出售的物品'
+    - '  <dark_gray>• <green>+ <white>经验：<yellow>{current_exp}'
+    - '  <dark_gray>• <green>+ <white>金币：<green>${total_sell_price}'
+  loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>：<yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>没有可出售的物品'
 
 # ──────────────────────────────────────────────────────
 #             Spawner Storage GUI
@@ -182,95 +182,95 @@ button_sell_info:
 gui_title_storage: '[{current_page}/{total_pages}] 刷怪笼存储'
 
 navigation_button_previous:
-  name: '&#37eb9a上一页'
+  name: '<#37eb9a>上一页'
   lore:
-    - '&#2cc483 ▸ &#f8f8ff点击前往第 &#37eb9a{target_page} 页'
+    - '<#2cc483> ▸ <#f8f8ff>点击前往第 <#37eb9a>{target_page} 页'
 
 navigation_button_next:
-  name: '&#37eb9a下一页'
+  name: '<#37eb9a>下一页'
   lore:
-    - '&#2cc483 ▸ &#f8f8ff点击前往第 &#37eb9a{target_page} 页'
+    - '<#2cc483> ▸ <#f8f8ff>点击前往第 <#37eb9a>{target_page} 页'
 
 sell_button:
-  name: '&f出售 &a物品'
+  name: '<white>出售 <green>物品'
   lore:
     - ''
-    - ' &aℹ 信息：'
-    - '  &8• &f你将出售存储中的'
-    - '   &f所有物品。'
+    - ' <green>ℹ 信息：'
+    - '  <dark_gray>• <white>你将出售存储中的'
+    - '   <white>所有物品。'
     - ''
-    - '&a ▸ 点击出售！'
+    - '<green> ▸ 点击出售！'
 
 sell_and_exp_button:
-  name: '&f出售并 &a收集经验'
+  name: '<white>出售并 <green>收集经验'
   lore:
     - ''
-    - ' &aℹ 信息：'
-    - '  &8• &f你将出售所有物品'
-    - '   &f并收集存储的经验。'
-    - '  &8• &f预计总计：&a${total_sell_price}'
+    - ' <green>ℹ 信息：'
+    - '  <dark_gray>• <white>你将出售所有物品'
+    - '   <white>并收集存储的经验。'
+    - '  <dark_gray>• <white>预计总计：<green>${total_sell_price}'
     - ''
-    - '&a ▸ 点击继续！'
+    - '<green> ▸ 点击继续！'
 
 return_button:
-  name: '&f返回 &#FF6B6B主菜单'
+  name: '<white>返回 <#ff6b6b>主菜单'
   lore:
     - ''
-    - ' &#dadadaℹ 信息：'
-    - '  &8• &f点击返回'
-    - '   &f上一菜单。'
+    - ' <#dadada>ℹ 信息：'
+    - '  <dark_gray>• <white>点击返回'
+    - '   <white>上一菜单。'
     - ''
-    - '&c ▸ 点击返回！'
+    - '<red> ▸ 点击返回！'
 
 take_all_button:
-  name: '&f全部 &#5DB5F1取出'
+  name: '<white>全部 <#5db5f1>取出'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f你将取出此页面的'
-    - '   &f所有物品。'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>你将取出此页面的'
+    - '   <white>所有物品。'
     - ''
-    - '&#5DB5F1 ▸ 点击取出！'
+    - '<#5db5f1> ▸ 点击取出！'
 
 item_filter_button:
-  name: '&f筛选 &#5DB5F1掉落物'
+  name: '<white>筛选 <#5db5f1>掉落物'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f配置此刷怪笼允许和'
-    - '   &f阻止的物品。'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>配置此刷怪笼允许和'
+    - '   <white>阻止的物品。'
     - ''
-    - '&#5DB5F1 ▸ 点击配置筛选！'
+    - '<#5db5f1> ▸ 点击配置筛选！'
 
 sort_items_button:
-  name: '&f排序 &#5DB5F1物品'
+  name: '<white>排序 <#5db5f1>物品'
   lore:
     - ''
     - '{available_items}'
     - ''
-    - '&#5DB5F1 ▸ 点击排序！'
-  selected_item: ' &#5DB5F1• {item_name}'
-  unselected_item: ' &f• {item_name}'
-  no_item: ' &7• 无'
+    - '<#5db5f1> ▸ 点击排序！'
+  selected_item: ' <#5db5f1>• {item_name}'
+  unselected_item: ' <white>• {item_name}'
+  no_item: ' <gray>• 无'
 
 drop_page_button:
-  name: '&f丢弃 &#FF6B6B本页'
+  name: '<white>丢弃 <#ff6b6b>本页'
   lore:
     - ''
-    - ' &#FF6B6B⚠ 警告：'
-    - '  &8• &f你将把此页面的所有物品'
-    - '   &f丢弃到地上。'
+    - ' <#ff6b6b>⚠ 警告：'
+    - '  <dark_gray>• <white>你将把此页面的所有物品'
+    - '   <white>丢弃到地上。'
     - ''
-    - '&#FF6B6B ▸ 点击丢弃！'
+    - '<#ff6b6b> ▸ 点击丢弃！'
 
 collect_exp_button:
-  name: '&f收集 &#5DB5F1经验'
+  name: '<white>收集 <#5db5f1>经验'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f可用经验：&a{current_exp}'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>可用经验：<green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ 点击收集！'
+    - '<#5db5f1> ▸ 点击收集！'
 
 storage_spawner_info_button:
   name: ''
@@ -282,22 +282,22 @@ storage_spawner_info_button:
 gui_title_filter_config: '    允许           阻止'
 
 filter_divider:
-  name: '&f掉落物 &#5DB5F1筛选'
+  name: '<white>掉落物 <#5db5f1>筛选'
   lore:
     - ''
-    - ' &#5DB5F1ℹ 信息：'
-    - '  &8• &f左侧：允许的物品'
-    - '  &8• &f右侧：阻止的物品'
+    - ' <#5db5f1>ℹ 信息：'
+    - '  <dark_gray>• <white>左侧：允许的物品'
+    - '  <dark_gray>• <white>右侧：阻止的物品'
     - ''
-    - '&#5DB5F1 ▸ 点击返回存储！'
+    - '<#5db5f1> ▸ 点击返回存储！'
 
 filter_item_allowed:
-  name: '&f{item_name}&#37eb9a 已允许'
+  name: '<white>{item_name}<#37eb9a> 已允许'
   lore:
-    - '&#37eb9a ▸ &f点击阻止此物品！'
+    - '<#37eb9a> ▸ <white>点击阻止此物品！'
 
 filter_item_blocked:
-  name: '&f{item_name}&#FF6B6B 已阻止'
+  name: '<white>{item_name}<#ff6b6b> 已阻止'
   lore:
-    - '&#FF6B6B ▸ &f点击允许此物品！'
+    - '<#ff6b6b> ▸ <white>点击允许此物品！'
 

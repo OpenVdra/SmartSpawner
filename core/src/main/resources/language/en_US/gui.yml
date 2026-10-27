@@ -16,7 +16,7 @@ spawner_storage_item:
   # {total_sell_price} - Total sell value currently stored in the spawner
   # {entity} - The spawner's entity type (normal capitalization)
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
-  name: '&fᴏᴘᴇɴ &#5DB5F1ꜱᴛᴏʀᴀɢᴇ'
+  name: '<white>ᴏᴘᴇɴ <#5db5f1>ꜱᴛᴏʀᴀɢᴇ'
 
   # Available placeholders for all lore lines:
   # {max_slots} - Maximum number of slots in the storage (formatted with commas)
@@ -28,15 +28,15 @@ spawner_storage_item:
   # {ᴇɴᴛɪᴛʏ} - The spawner's entity type (small caps)
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fHere you can view and'
-    - '   &fmanage all items stored'
-    - '   &fin this spawner.'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Here you can view and'
+    - '   <white>manage all items stored'
+    - '   <white>in this spawner.'
     - ''
-    - ' &#5DB5F1★ ᴄᴀᴘᴀᴄɪᴛʏ: &f{percent_storage_rounded}%'
+    - ' <#5db5f1>★ ᴄᴀᴘᴀᴄɪᴛʏ: <white>{percent_storage_rounded}%'
     - '{loot_items}'
     - ''
-    - '&#5DB5F1 ▸ Click to open storage!'
+    - '<#5db5f1> ▸ Click to open storage!'
 
   # This defines how each loot item will be displayed when using {loot_items}
   # Available placeholders for each loot item:
@@ -44,8 +44,8 @@ spawner_storage_item:
   # {amount} - Number of items (formatted with commas)
   # {raw_amount} - Number of items (without formatting)
   # {chance} - The chance of this item dropping (with % symbol, e.g. "8.5%")
-  loot_items: '  &8• &f{item_name}&f: &e{amount}'
-  loot_items_empty: '  &8• &fNo items stored'
+  loot_items: '  <dark_gray>• <white>{item_name}<white>: <yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <white>No items stored'
 
 
 # Available placeholders:
@@ -69,50 +69,50 @@ spawner_storage_item:
 # {time}             - Time until the next spawn, or a status text when inactive/full/no loot
 # {total_sell_price} - Total sell value currently stored in the spawner
 spawner_info_item:
-  name: ' &fꜱᴘᴀᴡɴᴇʀ &#5DB5F1ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ'
+  name: ' <white>ꜱᴘᴀᴡɴᴇʀ <#5db5f1>ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ꜱᴛᴀᴛꜱ:'
-    - '   &8• &fStack: &e{stack_size}'
-    - '   &8• &fRange: &e{range} &fblocks'
-    - '   &8• &fMobs: &e{min_mobs}&f-&e{max_mobs}'
-    - '   &8• &fDelay: &e{delay} &fseconds'
+    - ' <#5db5f1>ℹ ꜱᴛᴀᴛꜱ:'
+    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+    - '   <dark_gray>• <white>Range: <yellow>{range} <white>blocks'
+    - '   <dark_gray>• <white>Mobs: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+    - '   <dark_gray>• <white>Delay: <yellow>{delay} <white>seconds'
     - ''
-    - ' &#5DB5F1★ ɴᴇxᴛ ꜱᴘᴀᴡɴ: &f{time}'
-    - '   &8• &fExp: &e{percent_exp_rounded}%'
-    - '   &8• &fStorage: &e{percent_storage_rounded}%'
-    - '   &8• &fSell value: &a${total_sell_price}'
+    - ' <#5db5f1>★ ɴᴇxᴛ ꜱᴘᴀᴡɴ: <white>{time}'
+    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>Storage: <yellow>{percent_storage_rounded}%'
+    - '   <dark_gray>• <white>Sell value: <green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ Left click: &fSell & collect EXP'
+    - '<#5db5f1> ▸ Left click: <white>Sell & collect EXP'
   lore_no_shop:
     - ''
-    - ' &#5DB5F1ℹ ꜱᴛᴀᴛꜱ:'
-    - '   &8• &fStack: &e{stack_size}'
-    - '   &8• &fRange: &e{range} &fblocks'
-    - '   &8• &fMobs: &e{min_mobs}&f-&e{max_mobs}'
-    - '   &8• &fDelay: &e{delay} &fseconds'
+    - ' <#5db5f1>ℹ ꜱᴛᴀᴛꜱ:'
+    - '   <dark_gray>• <white>Stack: <yellow>{stack_size}'
+    - '   <dark_gray>• <white>Range: <yellow>{range} <white>blocks'
+    - '   <dark_gray>• <white>Mobs: <yellow>{min_mobs}<white>-<yellow>{max_mobs}'
+    - '   <dark_gray>• <white>Delay: <yellow>{delay} <white>seconds'
     - ''
-    - ' &#5DB5F1★ ɴᴇxᴛ ꜱᴘᴀᴡɴ: &f{time}'
-    - '   &8• &fExp: &e{percent_exp_rounded}%'
-    - '   &8• &fStorage: &e{percent_storage_rounded}%'
+    - ' <#5db5f1>★ ɴᴇxᴛ ꜱᴘᴀᴡɴ: <white>{time}'
+    - '   <dark_gray>• <white>Exp: <yellow>{percent_exp_rounded}%'
+    - '   <dark_gray>• <white>Storage: <yellow>{percent_storage_rounded}%'
     - ''
-  lore_full: '&#FF4444ꜰᴜʟʟ ᴄᴀᴘᴀᴄɪᴛʏ'
-  lore_inactive: '&#FF4444ɪɴᴀᴄᴛɪᴠᴇ'
-  lore_no_loot: '&#FF4444ɴᴏ ᴅʀᴏᴘꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ'
+  lore_full: '<#ff4444>ꜰᴜʟʟ ᴄᴀᴘᴀᴄɪᴛʏ'
+  lore_inactive: '<#ff4444>ɪɴᴀᴄᴛɪᴠᴇ'
+  lore_no_loot: '<#ff4444>ɴᴏ ᴅʀᴏᴘꜱ ᴄᴏɴꜰɪɢᴜʀᴇᴅ'
 
 exp_info_item:
-  name: '&fᴄᴏʟʟᴇᴄᴛ &#5DB5F1ᴇxᴘ'
+  name: '<white>ᴄᴏʟʟᴇᴄᴛ <#5db5f1>ᴇxᴘ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fCollect EXP or use'
-    - '   &fEXP to repair your'
-    - '   &fMending &fgear.'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Collect EXP or use'
+    - '   <white>EXP to repair your'
+    - '   <white>Mending <white>gear.'
     - ''
-    - ' &#5DB5F1★ ᴄᴀᴘᴀᴄɪᴛʏ: &f{percent_exp_rounded}%'
-    - '  &8• &fStored EXP: &a{current_exp}&f/&a{max_exp}'
+    - ' <#5db5f1>★ ᴄᴀᴘᴀᴄɪᴛʏ: <white>{percent_exp_rounded}%'
+    - '  <dark_gray>• <white>Stored EXP: <green>{current_exp}<white>/<green>{max_exp}'
     - ''
-    - '&#5DB5F1 ▸ Click to collect EXP!'
+    - '<#5db5f1> ▸ Click to collect EXP!'
 
 # ──────────────────────────────────────────────────────
 #                Sell Confirmation GUI
@@ -120,33 +120,33 @@ exp_info_item:
 gui_title_sell_confirm: 'ᴄᴏɴꜰɪʀᴍ ꜱᴀʟᴇ'
 
 button_sell_cancel:
-  name: '&fᴄᴀɴᴄᴇʟ &#FF6B6Bꜱᴀʟᴇ'
+  name: '<white>ᴄᴀɴᴄᴇʟ <#ff6b6b>ꜱᴀʟᴇ'
   lore:
     - ''
-    - ' &#FF6B6B⚠ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fClick to return'
-    - '   &fwithout selling anything.'
+    - ' <#ff6b6b>⚠ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Click to return'
+    - '   <white>without selling anything.'
     - ''
-    - '&#FF6B6B ▸ Click to cancel!'
+    - '<#ff6b6b> ▸ Click to cancel!'
 
 button_sell_confirm:
-  name: '&fᴄᴏɴꜰɪʀᴍ &#5DB5F1ꜱᴀʟᴇ'
+  name: '<white>ᴄᴏɴꜰɪʀᴍ <#5db5f1>ꜱᴀʟᴇ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ You will receive:'
-    - '  &8• &fMoney: &a${total_sell_price}'
+    - ' <#5db5f1>ℹ You will receive:'
+    - '  <dark_gray>• <white>Money: <green>${total_sell_price}'
     - ''
-    - '&#5DB5F1 ▸ Click to confirm the sale!'
+    - '<#5db5f1> ▸ Click to confirm the sale!'
 
 button_sell_confirm_with_exp:
-  name: '&fᴄᴏɴꜰɪʀᴍ ꜱᴀʟᴇ &#5DB5F1ᴀɴᴅ ᴇxᴘ'
+  name: '<white>ᴄᴏɴꜰɪʀᴍ ꜱᴀʟᴇ <#5db5f1>ᴀɴᴅ ᴇxᴘ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ You will receive:'
-    - '  &8• &fMoney: &a${total_sell_price}'
-    - '  &8• &fEXP: &a{current_exp}'
+    - ' <#5db5f1>ℹ You will receive:'
+    - '  <dark_gray>• <white>Money: <green>${total_sell_price}'
+    - '  <dark_gray>• <white>EXP: <green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ Click to confirm!'
+    - '<#5db5f1> ▸ Click to confirm!'
 
 # Available placeholders for button_sell_info:
 # {entity} - Formatted entity or item name
@@ -160,15 +160,15 @@ button_sell_confirm_with_exp:
 # {loot_items} - Expands to the generated loot item lines
 # Placeholders for button_sell_info.loot_items: {amount}, {item_name}, {chance}
 button_sell_info:
-  name: '&fꜱᴀʟᴇ &#5DB5F1ꜱᴜᴍᴍᴀʀʏ'
+  name: '<white>ꜱᴀʟᴇ <#5db5f1>ꜱᴜᴍᴍᴀʀʏ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
     - '{loot_items}'
-    - '  &8• &a+ &fEXP: &e{current_exp}'
-    - '  &8• &a+ &fMoney: &a${total_sell_price}'
-  loot_items: '  &8• &#FF6B6B- &f{item_name}&f: &e{amount}'
-  loot_items_empty: '  &8• &#FF6B6B- &fNo items to sell'
+    - '  <dark_gray>• <green>+ <white>EXP: <yellow>{current_exp}'
+    - '  <dark_gray>• <green>+ <white>Money: <green>${total_sell_price}'
+  loot_items: '  <dark_gray>• <#ff6b6b>- <white>{item_name}<white>: <yellow>{amount}'
+  loot_items_empty: '  <dark_gray>• <#ff6b6b>- <white>No items to sell'
 
 # ──────────────────────────────────────────────────────
 #             Spawner Storage GUI
@@ -182,95 +182,95 @@ button_sell_info:
 gui_title_storage: '[{current_page}/{total_pages}] ꜱᴘᴀᴡɴᴇʀ ꜱᴛᴏʀᴀɢᴇ'
 
 navigation_button_previous:
-  name: '&#37eb9aᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ'
+  name: '<#37eb9a>ᴘʀᴇᴠɪᴏᴜꜱ ᴘᴀɢᴇ'
   lore:
-    - '&#2cc483 ▸ &#f8f8ffClick to go to page &#37eb9a{target_page}'
+    - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
 
 navigation_button_next:
-  name: '&#37eb9aɴᴇxᴛ ᴘᴀɢᴇ'
+  name: '<#37eb9a>ɴᴇxᴛ ᴘᴀɢᴇ'
   lore:
-    - '&#2cc483 ▸ &#f8f8ffClick to go to page &#37eb9a{target_page}'
+    - '<#2cc483> ▸ <#f8f8ff>Click to go to page <#37eb9a>{target_page}'
 
 sell_button:
-  name: '&fꜱᴇʟʟ &aɪᴛᴇᴍꜱ'
+  name: '<white>ꜱᴇʟʟ <green>ɪᴛᴇᴍꜱ'
   lore:
     - ''
-    - ' &aℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fYou will sell all items'
-    - '   &ffrom the storage.'
+    - ' <green>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>You will sell all items'
+    - '   <white>from the storage.'
     - ''
-    - '&a ▸ Click to sell!'
+    - '<green> ▸ Click to sell!'
 
 sell_and_exp_button:
-  name: '&fꜱᴇʟʟ ᴀɴᴅ &aᴄᴏʟʟᴇᴄᴛ ᴇxᴘ'
+  name: '<white>ꜱᴇʟʟ ᴀɴᴅ <green>ᴄᴏʟʟᴇᴄᴛ ᴇxᴘ'
   lore:
     - ''
-    - ' &aℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fYou will sell all items'
-    - '   &fand collect stored EXP.'
-    - '  &8• &fEstimated total: &a${total_sell_price}'
+    - ' <green>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>You will sell all items'
+    - '   <white>and collect stored EXP.'
+    - '  <dark_gray>• <white>Estimated total: <green>${total_sell_price}'
     - ''
-    - '&a ▸ Click to continue!'
+    - '<green> ▸ Click to continue!'
 
 return_button:
-  name: '&fʙᴀᴄᴋ ᴛᴏ &#FF6B6Bᴍᴀɪɴ ᴍᴇɴᴜ'
+  name: '<white>ʙᴀᴄᴋ ᴛᴏ <#ff6b6b>ᴍᴀɪɴ ᴍᴇɴᴜ'
   lore:
     - ''
-    - ' &#dadadaℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fClick to return'
-    - '   &fto the previous menu.'
+    - ' <#dadada>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Click to return'
+    - '   <white>to the previous menu.'
     - ''
-    - '&c ▸ Click to go back!'
+    - '<red> ▸ Click to go back!'
 
 take_all_button:
-  name: '&fᴛᴀᴋᴇ &#5DB5F1ᴀʟʟ'
+  name: '<white>ᴛᴀᴋᴇ <#5db5f1>ᴀʟʟ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fYou will take all'
-    - '   &fitems from this page.'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>You will take all'
+    - '   <white>items from this page.'
     - ''
-    - '&#5DB5F1 ▸ Click to take!'
+    - '<#5db5f1> ▸ Click to take!'
 
 item_filter_button:
-  name: '&fꜰɪʟᴛᴇʀ &#5DB5F1ᴅʀᴏᴘꜱ'
+  name: '<white>ꜰɪʟᴛᴇʀ <#5db5f1>ᴅʀᴏᴘꜱ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fConfigure allowed and'
-    - '   &fblocked items for this spawner.'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Configure allowed and'
+    - '   <white>blocked items for this spawner.'
     - ''
-    - '&#5DB5F1 ▸ Click to configure filters!'
+    - '<#5db5f1> ▸ Click to configure filters!'
 
 sort_items_button:
-  name: '&fꜱᴏʀᴛ &#5DB5F1ɪᴛᴇᴍꜱ'
+  name: '<white>ꜱᴏʀᴛ <#5db5f1>ɪᴛᴇᴍꜱ'
   lore:
     - ''
     - '{available_items}'
     - ''
-    - '&#5DB5F1 ▸ Click to sort!'
-  selected_item: ' &#5DB5F1• {item_name}'
-  unselected_item: ' &f• {item_name}'
-  no_item: ' &7• None'
+    - '<#5db5f1> ▸ Click to sort!'
+  selected_item: ' <#5db5f1>• {item_name}'
+  unselected_item: ' <white>• {item_name}'
+  no_item: ' <gray>• None'
 
 drop_page_button:
-  name: '&fᴅʀᴏᴘ &#FF6B6Bᴘᴀɢᴇ'
+  name: '<white>ᴅʀᴏᴘ <#ff6b6b>ᴘᴀɢᴇ'
   lore:
     - ''
-    - ' &#FF6B6B⚠ ᴡᴀʀɴɪɴɢ:'
-    - '  &8• &fYou will drop every item'
-    - '   &ffrom this page on the ground.'
+    - ' <#ff6b6b>⚠ ᴡᴀʀɴɪɴɢ:'
+    - '  <dark_gray>• <white>You will drop every item'
+    - '   <white>from this page on the ground.'
     - ''
-    - '&#FF6B6B ▸ Click to drop!'
+    - '<#ff6b6b> ▸ Click to drop!'
 
 collect_exp_button:
-  name: '&fᴄᴏʟʟᴇᴄᴛ &#5DB5F1ᴇxᴘ'
+  name: '<white>ᴄᴏʟʟᴇᴄᴛ <#5db5f1>ᴇxᴘ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fAvailable EXP: &a{current_exp}'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Available EXP: <green>{current_exp}'
     - ''
-    - '&#5DB5F1 ▸ Click to collect!'
+    - '<#5db5f1> ▸ Click to collect!'
 
 storage_spawner_info_button:
   name: ''
@@ -282,22 +282,22 @@ storage_spawner_info_button:
 gui_title_filter_config: '    ᴀʟʟᴏᴡᴇᴅ           ʙʟᴏᴄᴋᴇᴅ'
 
 filter_divider:
-  name: '&fᴅʀᴏᴘ &#5DB5F1ꜰɪʟᴛᴇʀ'
+  name: '<white>ᴅʀᴏᴘ <#5db5f1>ꜰɪʟᴛᴇʀ'
   lore:
     - ''
-    - ' &#5DB5F1ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
-    - '  &8• &fLeft side: allowed items'
-    - '  &8• &fRight side: blocked items'
+    - ' <#5db5f1>ℹ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ:'
+    - '  <dark_gray>• <white>Left side: allowed items'
+    - '  <dark_gray>• <white>Right side: blocked items'
     - ''
-    - '&#5DB5F1 ▸ Click to return to storage!'
+    - '<#5db5f1> ▸ Click to return to storage!'
 
 filter_item_allowed:
-  name: '&f{item_name}&#37eb9a allowed'
+  name: '<white>{item_name}<#37eb9a> allowed'
   lore:
-    - '&#37eb9a ▸ &fClick to block this item!'
+    - '<#37eb9a> ▸ <white>Click to block this item!'
 
 filter_item_blocked:
-  name: '&f{item_name}&#FF6B6B blocked'
+  name: '<white>{item_name}<#ff6b6b> blocked'
   lore:
-    - '&#FF6B6B ▸ &fClick to allow this item!'
+    - '<#ff6b6b> ▸ <white>Click to allow this item!'
 
