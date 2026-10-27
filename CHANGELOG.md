@@ -8,6 +8,10 @@ All notable changes to SmartSpawner are documented in this file.
 - Chinese (Simplified) language, `zh_CN`. Thanks to CTfish0101.
 - Every message and menu text accepts MiniMessage, such as `<red>`, `<#5DB5F1>` and `<gradient:#5DB5F1:#FFFFFF>`, alone or mixed with `&` codes. A new `<smallcaps>` tag writes small capitals. See the new Language Files page.
 - Placeholder values, such as player and item names, can no longer add colours to a message.
+- Chat messages can use `<click>` and `<hover>`. Menus, items, titles and holograms cannot, and a player or item name can never add a click to any text.
+- `language_auto_detect` shows messages and menus in each player's own game language, when that language is installed.
+- A GUI layout can have `texts_<language>.yml` next to its `texts.yml` for players in that language.
+- A text missing from a language file now shows in English instead of a missing-key notice.
 
 ### Fixed
 - Changing `spawner_properties.default.delay` now applies to spawners already placed, after `/ss reload` or a restart. Before, they kept the old delay until broken and placed again.
@@ -16,12 +20,26 @@ All notable changes to SmartSpawner are documented in this file.
 - The shipped language files use MiniMessage instead of `&` codes. Edited texts keep their `&` codes and keep working.
 - Only the active language and GUI layout are written to the plugin folder. Others are added the first time they are selected with `/ss language` or `/ss gui_layout`.
 - Custom language folders now get key renames on update, like the built-in ones.
+- Each language now has four files instead of eight, with keys grouped by menu and topic, and short comments. See the details below.
 - The DonutSMP look is now chosen with `gui_layout` alone. The `en_US_DonutSMP` and `en_US_DonutSMP_v2` languages were removed; their GUI text now comes with the `DonutSMP` and `DonutSMP_v2` layouts, in a new `texts.yml`.
 - A delay set with `/ss set delay` now stays on that spawner through reloads and restarts, instead of following the config.
 
 ### Notes
 - Servers using `language: en_US_DonutSMP` or `en_US_DonutSMP_v2` are switched to `en_US` with the matching layout on the first start, and edited DonutSMP texts and messages are kept. The old language folders are saved in `language.backup-<date>/`. No action is required.
 - Spawners given their own delay with `/ss set delay` before this version go back to the config delay once. Set it again where needed.
+- Language folders, custom ones included, are converted to the new files on the first start. Edited texts are kept, and the old files are saved in `language.backup-<date>/`. No action is required.
+
+<details>
+<summary>Configuration file details</summary>
+
+- `command_messages.yml` is merged into `messages.yml` under `command`, `command_gui.yml` into `gui.yml` under `command`, and `hologram.yml` into `items.yml` as `hologram.lines`.
+- `iridium_skyblock.yml` moved to `language/<language>/hooks/` and is only written while IridiumSkyblock is installed.
+- Message keys are grouped by topic, for example `no_exp` is `exp.none` and `break_tool_required` is `break.wrong_tool`.
+- GUI keys are grouped by menu, for example `sell_button` is `storage.sell` and `gui_title_main.single_spawner` is `main.title`. Layout `texts.yml` files are renamed the same way.
+- New `storage.title_single`, the storage title for a single spawner.
+- New `language_auto_detect` in `config.yml`, off by default.
+
+</details>
 
 ## 1.8.3
 

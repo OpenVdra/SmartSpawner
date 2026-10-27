@@ -9,6 +9,9 @@ package that decides whether a server that upgrades keeps its settings or silent
 | `ConfigMigrations` | The registry of what to migrate: rename tables and custom migrations |
 | `ConfigUpdater` | Applies the engine to `config.yml` |
 | `LanguageUpdater` | Applies it to the language files |
+| `LanguageRestructure` | One-time move of 1.7 language folders to the 1.8 files and keys; also runs `LayoutTextsMigration` |
+| `LayoutTextsMigration` | One-time fold of the old `en_US_DonutSMP*` locales into layout `texts.yml` |
+| `LanguageBackup` | The single `language.backup-<date>/` both of those share |
 | `GuiLayoutUpdater` | Applies it to `gui_layouts/**/*.yml` |
 | `UpdateChecker`, `Version` | Notifies about new plugin releases |
 
@@ -56,7 +59,7 @@ both the old and the new one, so that item drops twice. In `messages.yml` the eq
 Two traps if you touch `lockedSections`:
 
 - The owned sections are **snapshotted before** the top-up runs. Deciding per key while writing lets the first leaf of a brand new section create that section, after which the rest of it looks user-owned and is skipped, leaving it half filled.
-- A message entry is identified by what it **directly contains** (`message`, `title`, `subtitle`, `action_bar`, `sound`, `enabled`), never by depth. `messages.yml` is flat but `command_messages.yml` nests messages under their command, and locking a command section whole would stop any message a later version adds to it from ever reaching the file.
+- A message entry is identified by what it **directly contains** (`message`, `title`, `subtitle`, `action_bar`, `sound`, `enabled`), never by depth. Messages sit under a topic (`general.inventory_full`) or a command (`command.list.no_spawners_found`), and locking a group section whole would stop any message a later version adds to it from ever reaching the file.
 
 ## Renaming or removing a config key
 
@@ -72,7 +75,7 @@ Renames are applied in list order, so a key renamed twice across versions needs 
 to intermediate to current, in that order.
 
 Language files have their own lists, reached through `ConfigMigrations.forLanguageFile(type)`; they
-start empty. Renaming a message key without an entry there is worse than for a config key: the plugin
+are empty since the 1.8.0 restructure, which is not a list (see below). Renaming a message key without an entry there is worse than for a config key: the plugin
 looks messages up by name, so the owner's wording is stranded under the old name while the new name
 arrives carrying the shipped default, and their customisation silently stops being used. Renaming the
 message entry itself is enough, its components move with it. The switch in `forLanguageFile` is
@@ -111,6 +114,29 @@ next rename has an obvious home.
 Every one of these must run **before** the component that reads the file is constructed.
 `configUpdater.checkAndUpdateConfig()` is called at the top of `initializeServices()` for exactly this
 reason.
+
+## The 1.8.0 language restructure
+
+`LanguageRestructure.run` is called before `LanguageUpdater` and `LanguageManager`, at startup and in
+`ReloadSubCommand`. For every folder under `language/` still in the old layout (an old file present,
+or an old key in `messages.yml`/`gui.yml`; never a version) it merges `command_messages.yml`,
+`command_gui.yml` and `hologram.yml` into the new files, moves `iridium_skyblock.yml` to `hooks/`, and
+renames every key by `language/file/LegacyLanguageKeys` (prefix table, longest match wins). Then it
+applies the GUI renames to each layout's `texts.yml`, and only then runs `LayoutTextsMigration`, which
+therefore always sees new-layout folders.
+
+- `messages.yml` and `gui.yml` are **rebuilt from the shipped file** (a custom locale uses `en_US`'s), so they get the new key order and comments; this is the second place the "only ever add" contract is broken, for the same reason as `activity_log.yml`. An owner's message replaces the shipped one whole. `items.yml` and `formatting.yml` keep the owner's keys and only get the shipped comments: rebuilding `items.yml` would add mob sections and break inheritance.
+- No value is dropped: unknown keys keep their path (under `command.` when they came from a command file) and are logged. A value already at its new path wins.
+- An owner who changed only `gui_title_storage` gets it copied to the new `storage.title_single`, which used to fall back to it.
+- `LanguageRestructureTest` runs it on the 1.7 `en_US` files in `src/test/resources/fixtures/language-v1/`, which must stay as shipped in 1.7.
+
+## Testing a migration
+
+Unit tests on fixtures are not enough for a change that moves or rewrites files. Also run it as a real
+upgrade: the last release from GitHub writes its files on an empty data folder, the folder is edited as
+an owner would, then the new jar starts on it. Check that each edit survives, that the logged counts
+match what was edited, and that a second start changes nothing. The `playtest-server` skill has the
+steps ("Upgrade test"). The dev server's `run/` folder is already converted and cannot show this.
 
 ## Moving keys between files, and the one file that is rewritten
 

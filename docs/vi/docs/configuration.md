@@ -45,6 +45,10 @@ Chỉ ngôn ngữ đang dùng được ghi vào thư mục plugin. Xem [File Ng�
 
 </ConfigProperty>
 
+<ConfigProperty name="language_auto_detect" value="false" type="boolean">
+<code>true</code> hiển thị tin nhắn và menu theo ngôn ngữ game của từng người chơi khi có thư mục cho ngôn ngữ đó. <code>false</code> dùng <code>language</code> cho mọi người. Vật phẩm spawner, hologram và console luôn dùng <code>language</code>. Xem [File Ngôn Ngữ](/vi/docs/language#ngon-ngu-rieng-cua-moi-nguoi-choi).
+</ConfigProperty>
+
 <ConfigProperty name="gui_layout" value="default" type="string">
 Thư mục bố cục GUI trong <code>plugins/SmartSpawner/gui_layouts/</code>. Tùy chọn có sẵn: <code>default</code>, <code>DonutSMP</code>, <code>DonutSMP_v2</code>.<br><br>
 Bố cục có thể đổi cả chữ trong GUI, không chỉ nút, qua file <code>texts.yml</code> của nó. Xem [Bố Cục GUI](/vi/docs/gui-layout#chu-cua-bo-cuc).

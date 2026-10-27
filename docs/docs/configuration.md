@@ -47,6 +47,10 @@ Only the active language is written to the plugin folder. See [Language Files](/
 
 </ConfigProperty>
 
+<ConfigProperty name="language_auto_detect" value="false" type="boolean">
+<code>true</code> shows messages and menus in each player's game language when a folder for it exists. <code>false</code> uses <code>language</code> for everyone. Spawner items, holograms and the console always use <code>language</code>. See [Language Files](/docs/language#each-player-s-own-language).
+</ConfigProperty>
+
 <ConfigProperty name="gui_layout" value="default" type="string">
 GUI layout folder to load from <code>plugins/SmartSpawner/gui_layouts/</code>. Built-in options: <code>default</code>, <code>DonutSMP</code>, <code>DonutSMP_v2</code>.<br><br>
 A layout can change GUI text as well as buttons, through its <code>texts.yml</code>. See [GUI Layout](/docs/gui-layout#layout-texts).

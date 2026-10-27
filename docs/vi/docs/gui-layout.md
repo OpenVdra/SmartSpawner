@@ -23,7 +23,7 @@ Chọn bố cục bằng `gui_layout` trong `config.yml` hoặc đổi trực ti
 
 Bố cục có thể có file `texts.yml` thay thế tên, lore và tiêu đề GUI lấy từ `language/<locale>/gui.yml`. File dùng cùng key với `gui.yml` và chỉ ghi những key cần đổi. `DonutSMP` và `DonutSMP_v2` dùng file này cho giao diện của mình, nên chỉ cần chọn bố cục là đủ.
 
-Xóa một key trong `texts.yml` để dùng lại chữ của ngôn ngữ. Bố cục không có `texts.yml` thì dùng chữ của ngôn ngữ ở mọi chỗ. Chữ trong `texts.yml` không được dịch, nên hiển thị giống nhau với mọi `language`.
+Xóa một key trong `texts.yml` để dùng lại chữ của ngôn ngữ. Bố cục không có `texts.yml` thì dùng chữ của ngôn ngữ ở mọi chỗ. Chữ trong `texts.yml` không được dịch, nên hiển thị giống nhau với mọi `language`. Với người chơi dùng ngôn ngữ khác, thêm `texts_<ngôn ngữ>.yml` bên cạnh, ví dụ `texts_vi_VN.yml`; file này được đọc trước.
 
 ## Cách Chỉnh Sửa Của Bạn Được Giữ Lại
 

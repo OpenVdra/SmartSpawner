@@ -34,6 +34,14 @@ deliberately; keep it.
 External code triggers viewer sync through `updateSpawnerMenuViewers`; do not open or rebuild an
 inventory per change from outside — schedule the update and let the synchronization layer coalesce it.
 
+## Text
+
+All text comes from `LanguageManager.gui(viewer)` as Components (see `language/AGENTS.md`). Build for
+the viewer, not the server: pass the `Player` down, and add `languageManager.localeKey(viewer)` to any
+cache key of a built button, because players can each see their own language. Read placeholder usage
+from `gui.raw(key)` / `rawList(key)`, never from formatted text. `{time}` stays literal in a cached
+info item and is swapped on the Component.
+
 ## Folia
 
 Anything that touches an inventory, block or entity must run on that object's region thread. GUIs are

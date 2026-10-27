@@ -1,10 +1,14 @@
 # Plan: simplify the language and GUI files
 
-Status: phases 1 to 3 implemented (layout `texts.yml` and `LayoutTextsMigration`; extraction of the
-active locale and layout only; `TextFormatter` with MiniMessage input, and the shipped files converted
-from `&` codes to MiniMessage). Phases 4 to 6 not started. Phase 4 must compare owner values to shipped
-ones after rendering (`LayoutTextsMigration.sameText`), since owners keep `&` codes while shipped text
-is MiniMessage.
+Status: all six phases implemented. Phase 4: four files per locale, keys renamed through
+`language/file/LegacyLanguageKeys`, migrated once by `updates/LanguageRestructure` (custom locales and
+layout `texts.yml` included, one shared backup), shipped files regenerated for every locale with
+render-identical values. Phase 5: all output is Components; `<click>`, `<hover>` and `<insert>` are
+allowed only in chat `message` lines, never on items or in placeholder values (see
+`TextFormatterSafetyTest`). Phase 6: `language_auto_detect`, a per-locale `LocaleTexts`, fallback
+player locale, server locale, bundled `en_US`, plus layout `texts_<locale>.yml`. Verified by upgrading a
+1.8.3 release data folder (DonutSMP via `language`, edited texts, a custom `de_DE`) to this build. Not
+done: the 15-line comment target, which `gui.yml` misses by design (one placeholder line per button).
 
 The MiniMessage approach follows common practice for Paper plugins, adjusted for what does not fit
 SmartSpawner (see "MiniMessage" below).
