@@ -4,6 +4,9 @@ All notable changes to SmartSpawner are documented in this file.
 
 ## Unreleased
 
+### Added
+- Chinese (Simplified) language, `zh_CN`. Thanks to CTfish0101.
+
 ### Fixed
 - Changing `spawner_properties.default.delay` now applies to spawners already placed, after `/ss reload` or a restart. Before, they kept the old delay until broken and placed again.
 

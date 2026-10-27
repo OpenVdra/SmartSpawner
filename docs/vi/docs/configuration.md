@@ -38,8 +38,10 @@ Thư mục ngôn ngữ được tải từ <code>plugins/SmartSpawner/language/<
 | <code>en_US</code> | Tiếng Anh |
 | <code>en_US_DonutSMP</code> | Tiếng Anh – bố cục DonutSMP |
 | <code>en_US_DonutSMP_v2</code> | Tiếng Anh – bố cục DonutSMP v2 |
+| <code>es_ES</code> | Tiếng Tây Ban Nha |
 | <code>tr_TR</code> | Tiếng Thổ Nhĩ Kỳ |
 | <code>vi_VN</code> | Tiếng Việt |
+| <code>zh_CN</code> | Tiếng Trung (Giản thể) |
 
 Để thêm ngôn ngữ riêng, tạo thư mục mới trong <code>language/</code>, sao chép file từ <code>en_US/</code> làm mẫu rồi dịch nội dung.
 

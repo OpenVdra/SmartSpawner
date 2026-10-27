@@ -55,13 +55,13 @@ server_selection:
 # ──────────────────────────────────────────────────────
 #              World Selection GUI
 # ──────────────────────────────────────────────────────
-gui_title_world_selection: '选择维度'
+gui_title_world_selection: '选择世界'
 
 world_display_names:
   overworld: '主世界'
   nether: '下界'
   the_end: '末地'
-  custom: '维度 {world_name}'
+  custom: '世界 {world_name}'
 
 world_buttons:
   NORMAL:
@@ -210,7 +210,7 @@ editloot:
   mob_loot_title: '生物战利品 • {entry}'
   item_loot_title: '物品战利品 • {entry}'
   capture_add_title: '丢弃物品以添加'
-  capture_replace_title: '丢弃新物品'
+  capture_replace_title: '放入新物品'
 
   loot_entry:
     name: '&f战利品 &#37eb9a{label}'
