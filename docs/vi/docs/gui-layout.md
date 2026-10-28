@@ -9,7 +9,8 @@ plugins/SmartSpawner/gui_layouts/
 ├── default/
 │   ├── main_gui.yml
 │   ├── storage_gui.yml
-│   └── sell_confirm_gui.yml
+│   ├── sell_confirm_gui.yml
+│   └── filter_gui.yml
 ├── DonutSMP/
 │   ├── ...
 │   └── texts.yml
@@ -18,6 +19,15 @@ plugins/SmartSpawner/gui_layouts/
 ```
 
 Chọn bố cục bằng `gui_layout` trong `config.yml` hoặc đổi trực tiếp với `/ss gui_layout <name>`.
+
+## Menu Lọc Vật Phẩm
+
+`filter_gui.yml` chỉnh giao diện menu lọc vật phẩm. Vị trí các ô là cố định: vật phẩm được giữ ở bên trái, vật phẩm bị chặn ở bên phải. Bạn có thể đổi material của cột ở giữa, cột này cũng dùng để quay lại kho.
+
+```yaml
+divider:
+  material: CYAN_STAINED_GLASS_PANE
+```
 
 ## Chữ Của Bố Cục
 

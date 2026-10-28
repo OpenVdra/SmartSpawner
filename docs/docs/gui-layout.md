@@ -9,7 +9,8 @@ plugins/SmartSpawner/gui_layouts/
 ├── default/
 │   ├── main_gui.yml
 │   ├── storage_gui.yml
-│   └── sell_confirm_gui.yml
+│   ├── sell_confirm_gui.yml
+│   └── filter_gui.yml
 ├── DonutSMP/
 │   ├── ...
 │   └── texts.yml
@@ -18,6 +19,15 @@ plugins/SmartSpawner/gui_layouts/
 ```
 
 Select the active layout with `gui_layout` in `config.yml`, or switch it live using `/ss gui_layout <name>`.
+
+## Filter Menu
+
+`filter_gui.yml` sets how the item filter menu looks. The slots are fixed: allowed items on the left, blocked items on the right. You can change the material of the middle column, which also takes you back to storage.
+
+```yaml
+divider:
+  material: CYAN_STAINED_GLASS_PANE
+```
 
 ## Layout Texts
 

@@ -1,0 +1,7 @@
+# Filter GUI Layout Configuration
+# Slot positions are fixed: allowed items on the left, blocked items on the right.
+# Valid materials: https://jd.papermc.io/paper/1.21.8/org/bukkit/Material.html
+
+# Middle column that splits the two sides, also returns to storage when clicked
+divider:
+  material: CYAN_STAINED_GLASS_PANE

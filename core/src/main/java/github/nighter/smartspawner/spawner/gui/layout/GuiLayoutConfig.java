@@ -13,6 +13,7 @@ import github.nighter.smartspawner.spawner.properties.SpawnerData;
 import github.nighter.smartspawner.updates.GuiLayoutUpdater;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,8 +26,10 @@ public class GuiLayoutConfig {
     private static final String STORAGE_GUI_FILE = "storage_gui.yml";
     private static final String MAIN_GUI_FILE = "main_gui.yml";
     private static final String SELL_CONFIRM_GUI_FILE = "sell_confirm_gui.yml";
+    private static final String FILTER_GUI_FILE = "filter_gui.yml";
     private static final String TEXTS_FILE = "texts.yml";
     private static final String DEFAULT_LAYOUT = "default";
+    private static final Material DEFAULT_FILTER_DIVIDER = Material.CYAN_STAINED_GLASS_PANE;
 
     private final SmartSpawner plugin;
     private final File layoutsDir;
@@ -51,6 +54,8 @@ public class GuiLayoutConfig {
     private boolean skipSellConfirmation;
     @Getter
     private String openSound;
+    @Getter
+    private volatile Material filterDividerMaterial = DEFAULT_FILTER_DIVIDER;
 
     public GuiLayoutConfig(SmartSpawner plugin, ExternalGuiLayoutLoader loader,
                            GuiLayoutRegistryImpl registry) {
@@ -113,6 +118,27 @@ public class GuiLayoutConfig {
                         "Failed to read skip_sell_confirmation from sell_confirm_gui.yml, using default (false): " + e.getMessage(), e);
             }
         }
+
+        this.filterDividerMaterial = loadFilterDividerMaterial();
+    }
+
+    /** Filter GUI slots are fixed; only the divider's material is configurable. */
+    private Material loadFilterDividerMaterial() {
+        File filterFile = resolveLayoutFile(FILTER_GUI_FILE);
+        if (filterFile == null) {
+            return DEFAULT_FILTER_DIVIDER;
+        }
+        String name = YamlConfiguration.loadConfiguration(filterFile).getString("divider.material");
+        if (name == null || name.isBlank()) {
+            return DEFAULT_FILTER_DIVIDER;
+        }
+        Material material = Material.matchMaterial(name.trim());
+        if (material == null || material.isAir() || !material.isItem()) {
+            plugin.getLogger().warning("Invalid divider material '" + name + "' in " + FILTER_GUI_FILE
+                    + ", using " + DEFAULT_FILTER_DIVIDER.name());
+            return DEFAULT_FILTER_DIVIDER;
+        }
+        return material;
     }
 
     /**

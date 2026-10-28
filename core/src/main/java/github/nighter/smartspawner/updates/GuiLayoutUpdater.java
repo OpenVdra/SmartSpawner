@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public class GuiLayoutUpdater {
     private static final String GUI_LAYOUTS_DIR = "gui_layouts";
-    private static final String[] LAYOUT_FILES  = {"storage_gui.yml", "main_gui.yml", "sell_confirm_gui.yml"};
+    private static final String[] LAYOUT_FILES  = {"storage_gui.yml", "main_gui.yml", "sell_confirm_gui.yml", "filter_gui.yml"};
     /** The layouts bundled in the jar. Only the active one and those already on disk are extracted. */
     public static final List<String> LAYOUT_NAMES = List.of("default", "DonutSMP", "DonutSMP_v2");
     private static final String TEXTS_FILE      = "texts.yml";

@@ -12,8 +12,11 @@ All notable changes to SmartSpawner are documented in this file.
 - `language_auto_detect` shows messages and menus in each player's own game language, when that language is installed.
 - A GUI layout can have `texts_<language>.yml` next to its `texts.yml` for players in that language.
 - A text missing from a language file now shows in English instead of a missing-key notice.
+- Each GUI layout has a new `filter_gui.yml` to change the material of the middle column in the item filter menu.
 
 ### Fixed
+- Clicking an item in your own inventory while the item filter menu is open no longer adds it to the spawner's filter.
+- Going back to storage from the item filter menu no longer moves your mouse cursor to the middle of the screen.
 - Changing `spawner_properties.default.delay` now applies to spawners already placed, after `/ss reload` or a restart. Before, they kept the old delay until broken and placed again.
 - Servers on an older Minecraft version no longer warn on every start about shipped `spawner_mobs.yml` entries for mobs that version does not have yet, such as `sulfur_cube`. Names added by hand are still checked.
 

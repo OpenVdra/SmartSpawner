@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -59,11 +60,14 @@ public class FilterConfigUI implements Listener {
         divider(null);
     }
 
-    /** The divider, which also works as the return button, cached per viewer language. */
+    /**
+     * The divider, which also works as the return button, cached per viewer language. Its material
+     * comes from the layout's filter_gui.yml; {@link #reload()} clears the cache after a layout change.
+     */
     private ItemStack divider(Player viewer) {
         GuiLanguageSection gui = languageManager.gui(viewer);
         return staticButtons.computeIfAbsent("divider|" + languageManager.localeKey(viewer), ignored -> createButton(
-                Material.CYAN_STAINED_GLASS_PANE,
+                plugin.getGuiLayoutConfig().getFilterDividerMaterial(),
                 gui.name("filter.divider.name"),
                 gui.lore("filter.divider.lore")
         ));
@@ -235,6 +239,11 @@ public class FilterConfigUI implements Listener {
 
         int slot = event.getRawSlot();
 
+        // Only the filter's own slots toggle; a click in the player's inventory must not filter their items
+        if (slot < 0 || slot >= INVENTORY_SIZE) {
+            return;
+        }
+
         // Handle divider clicks (return to storage)
         if (DIVIDER_SLOTS.contains(slot)) {
             returnToStorage(player, spawner);
@@ -252,6 +261,13 @@ public class FilterConfigUI implements Listener {
         if (wasUpdated) {
             // Refresh the inventory display immediately
             setupFilterInventory(player, event.getInventory(), spawner);
+        }
+    }
+
+    @EventHandler
+    public void onFilterInventoryDrag(InventoryDragEvent event) {
+        if (event.getInventory().getHolder(false) instanceof FilterConfigHolder) {
+            event.setCancelled(true);
         }
     }
 
@@ -276,11 +292,14 @@ public class FilterConfigUI implements Listener {
      * Returns to the spawner storage UI
      */
     private void returnToStorage(Player player, SpawnerData spawner) {
-        // Return to storage menu
+        // Refuse before opening: a refused open would already have closed this menu server-side.
+        if (plugin.getSpawnerStorageAction().isStorageInUseByOther(player, spawner)) {
+            plugin.getMessageService().sendMessage(player, "storage.in_use");
+            return;
+        }
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.8f, 1.0f);
-        player.closeInventory();
 
-        // Open storage UI (page 1 with no specific slot focus)
+        // Open over the filter GUI without closing it first, so the client keeps the cursor position
         Inventory pageInventory = storageUI.createStorageInventory(player, spawner, 1, -1);
         player.openInventory(pageInventory);
     }
