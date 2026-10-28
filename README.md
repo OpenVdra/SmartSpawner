@@ -10,76 +10,35 @@ Spawners that generate drops and experience without spawning mobs, for **Paper**
 
 </div>
 
-## How It Works
-* **Virtual Drops:** Spawners generate drops and experience straight into their own storage, without spawning a single mob.
-* **Player Range:** A spawner only works while a player is nearby, like vanilla.
-* **Inspired by DonutSMP:** The spawner style of [DonutSMP](https://www.youtube.com/@DonutSMPServer), on any Paper or Folia server.
+## Overview
+* **Virtual Drops:** Drops and experience go straight into the spawner's storage, without spawning a single mob.
+* **Spawner Menu:** Open storage, collect experience and manage the stack from one menu. Storage is paged, sortable, filterable and sellable.
+* **Stacking:** Right-click a spawner with another of the same type to stack it, or sneak to add a whole stack at once. Drops and experience scale with the stack.
+* **Spawner Types:** Mob spawners, item spawners that generate materials such as diamonds, and custom spawners with their own loot and name.
+* **Admin Tools:** Browse every spawner by world, teleport to it, edit or remove it, and log actions to files or Discord.
 
-## Spawner Menu
-* **One Menu:** Right-click a spawner to open its storage, collect its experience and manage its stack.
-* **Paged Storage:** Take single stacks or everything at once, sort by item, and filter out drops a player does not want.
-* **Selling:** Sell the whole storage in one click through a [supported shop or economy plugin](https://docs.smartspawner.site/docs/integrations/shops/).
-* **Layouts:** Every slot and text can be changed, and presets such as DonutSMP are included.
+Every feature is explained on the [documentation site](https://docs.smartspawner.site/).
 
 <div align="center">
 <table>
   <tr>
-    <th align="center">Spawner menu</th>
-    <th align="center">Storage</th>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/public/screenshots/gui-main.png" alt="The menu of a stack of 129 zombie spawners, with storage, stack and experience buttons" width="352"></td>
-    <td align="center"><img src="docs/public/screenshots/gui-storage.png" alt="Page 1 of 2 of a zombie spawner's storage, full of rotten flesh, with sort, filter, sell and take-all buttons" width="352"></td>
+    <td align="center"><img src="docs/public/gui-showcase.gif" alt="The spawner menu, its storage pages, sorting and taking all items" width="372"></td>
+    <td align="center"><img src="docs/public/screenshots/spawner-hologram.webp" alt="A stack of 129 zombie spawners with a hologram showing its stored experience and items" width="372"></td>
   </tr>
 </table>
 </div>
 
-<p align="center">
-  <img src="docs/public/gui-showcase.gif" alt="Opening a skeleton spawner, browsing its storage, sorting it and taking every item" width="600">
-</p>
+## Requirements
 
-## Stacking
-* **By Hand:** Right-click a spawner with another of the same type to stack it. Sneak to add the whole stack in your hand.
-* **Stack Menu:** Add or remove spawners in exact amounts from the spawner menu.
-* **Scaling:** Drops, experience and storage grow with the stack. 100 spawners give 100 times the drops.
+| Minecraft | Java | Server software |
+| :--- | :---: | :--- |
+| 26.1 – 26.2 | 25 | Paper, Folia, Purpur or compatible forks |
+| 1.21.6 – 1.21.11 | 21 | Paper, Folia, Purpur or compatible forks |
 
-<p align="center">
-  <img src="docs/public/spawner-stacking.gif" alt="Stacking skeleton spawners by hand, then in the stack menu" width="600">
-</p>
+One jar runs on every version listed. The ExcellentEconomy integration needs Java 25, as ExcellentEconomy itself does.
 
-## Holograms
-* **At a Glance:** Floating text above each spawner shows its stack size, stored experience and items.
-* **Toggle:** Turn them on or off with `/ss hologram`. Position, alignment and text are configurable.
-
-<p align="center">
-  <img src="docs/public/screenshots/spawner-hologram.webp" alt="A stack of 129 zombie spawners with a hologram showing 19.4K of 129K experience and 42 of 5.8K items" width="600">
-</p>
-
-## Spawner Types
-* **Mob Spawners:** Every vanilla mob, each with its own loot and experience in `spawner_mobs.yml`.
-* **Item Spawners:** Generate materials such as diamonds or iron, set up in `spawner_items.yml`.
-* **Custom Spawners:** Any number of extra spawners for the same mob or item, each with its own loot and name.
-* **Vanilla Spawners:** Normal Minecraft spawners that spawn real mobs, for mixed setups.
-* **In-game Loot Editor:** Change any spawner's loot with `/ss editloot`, no file editing needed.
-
-## Admin Tools
-* **Spawner List:** Browse every spawner by world, filter active and inactive ones, teleport to them, change them or remove them.
-* **Nearby Scanner:** `/ss near` highlights spawners through walls, visible only to the player who ran it.
-* **Action Logging:** Record who placed, broke, stacked or sold, to log files or a Discord webhook.
-
-<p align="center">
-  <img src="docs/public/spawner-list.gif" alt="Picking a world in the spawner list, filtering its spawners and opening one to manage it" width="600">
-</p>
-
-## More Features
-* **Mineable Spawners:** Require Silk Touch or certain pickaxes, set drop chances, and break up to 64 from a stack while sneaking.
-* **Hoppers:** When turned on in `config.yml`, hoppers under a spawner pull items out of its storage.
-* **Database:** SQLite by default, MySQL or MariaDB for networks that share spawner data.
-* **Languages:** Every message and menu text is editable, with MiniMessage colours, and can follow each player's game language.
-
-## Plugin Compatibility
-
-All integrations are optional and turn on only when their plugin is installed.
+## Compatibility
+All integrations are soft dependencies: nothing is required, and each one turns on only when its plugin is installed.
 
 | Function | Plugins | What SmartSpawner does |
 | :--- | :--- | :--- |
@@ -92,42 +51,33 @@ All integrations are optional and turn on only when their plugin is installed.
 
 Setup for each plugin is in the [integrations guide](https://docs.smartspawner.site/docs/integrations/).
 
-## Version Support
+## Configuration
+* **Files:** `plugins/SmartSpawner/`. `config.yml` for the main settings, `spawner_mobs.yml` and `spawner_items.yml` for loot, `sell_integration.yml` for selling, `activity_log.yml` for logging.
+* **Menus and text:** Every message and menu text is editable in `language/` and `gui_layouts/`, with MiniMessage colours.
+* **Storage:** SQLite by default, MySQL or MariaDB for networks.
+* **Reference:** Every key is documented on the [configuration page](https://docs.smartspawner.site/docs/configuration).
 
-| Minecraft version | Java | Server software | Support status |
-|---|---|---|---|
-| 26.1 – 26.2 | 25 | Paper, Folia, Purpur | Active |
-| 1.21.6 – 1.21.11 | 21 | Paper, Folia, Purpur | Active |
+## Commands
+Aliases: `/ss`, `/spawner`, `/smartspawner`. Each command has its own permission, listed on the [permissions page](https://docs.smartspawner.site/docs/permissions).
 
-One jar runs on every version listed. The ExcellentEconomy integration needs Java 25, as ExcellentEconomy itself does.
-
-## Commands and Permissions
-
-`/ss`, `/spawner` and `/smartspawner` all work. Every command also needs `smartspawner.command.use`.
-
-| Command | Permission | What it does |
-|---|---|---|
-| `/ss give <player> <spawner> [amount]` | `smartspawner.command.give` | Gives spawners to a player |
-| `/ss list` | `smartspawner.command.list` | Opens the admin list of every spawner |
-| `/ss editloot <name>` | `smartspawner.command.editloot` | Edits a spawner's loot in game |
-| `/ss reload` | `smartspawner.command.reload` | Reloads every config file |
-
-| Permission | Default | What it allows |
-|---|---|---|
-| `smartspawner.stack` | Everyone | Stacking spawners |
-| `smartspawner.break` | Everyone | Breaking spawners |
-| `smartspawner.sellall` | Everyone | Selling from spawner storage |
+| Command | Description |
+| :--- | :--- |
+| `/ss give <player> <spawner> [amount]` | Give a mob, item or custom spawner |
+| `/ss give <player> vanilla <mob> [amount]` | Give a vanilla spawner |
+| `/ss list` | Browse, teleport to and manage every spawner |
+| `/ss near [radius]` | Highlight nearby spawners through walls |
+| `/ss editloot <spawner>` | Edit a spawner's loot in game |
+| `/ss set <stack_size\|range\|delay> <value>` | Change the spawner being looked at |
+| `/ss prices` | Show the sell price of every spawner drop |
+| `/ss hologram` | Turn holograms on or off |
+| `/ss language <locale>` / `/ss gui_layout <layout>` | Switch language or menu layout |
+| `/ss reload` | Reload every config file |
 
 Placing and opening a spawner need no permission at all. If players cannot place spawners, another plugin is blocking it.
 
-Full lists: [Commands](https://docs.smartspawner.site/docs/commands) and [Permissions](https://docs.smartspawner.site/docs/permissions).
-
 ## For Developers
 
-<details>
-<summary><b>Java API</b>, click to expand</summary>
-
-Create spawner items, read spawner data and listen to spawner events. Add it from [JitPack](https://jitpack.io/#OpenVdra/SmartSpawner/):
+**Java API:** Create spawner items, read spawner data and listen to spawner events. Add it from [JitPack](https://jitpack.io/#OpenVdra/SmartSpawner/):
 
 ```groovy
 repositories { maven { url 'https://jitpack.io' } }
@@ -150,11 +100,7 @@ public void onStack(SpawnerStackEvent event) {
 
 See the [Developer API guide](https://docs.smartspawner.site/developer-api/).
 
-</details>
-
-<details>
-<summary><b>Building from source</b>, click to expand</summary>
-
+## Building
 Gradle downloads JDK 25 to compile when it is missing. The plugin jar targets Java 21.
 
 ```bash
@@ -172,27 +118,9 @@ The plugin jar lands in `core/build/libs/SmartSpawner-<version>.jar`.
 | Dev client | `./gradlew runClient` |
 | Server and client | `./gradlew runDev` |
 
-Contributions are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md). Translation PRs are welcome too.
 
-</details>
-
-## Quick FAQ
-
-### Why is there a warning under spawners?
-Mojang added this warning in Minecraft 1.21.4. Only OP players see it, and it cannot be removed. See the [1.21.4 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-4).
-
-<img src="docs/public/op-warning.png" alt="The warning Minecraft shows OP players under a spawner" width="500">
-
-### Does it work on Folia?
-Yes. The same jar runs on Paper, Folia and their forks.
-
-### Why can't players place spawners?
-SmartSpawner never asks for a permission to place a spawner. If placing is blocked, another plugin is stopping it, usually a protection, claim or anti-cheat plugin.
-
-### Can players use their own language?
-Yes. With `language_auto_detect` on, messages and menus follow each player's game language when that language is installed.
-
-### Supported languages
+## Languages
 
 | Language | Code | Contributors | Status |
 | :--- | :--- | :--- | :--- |
@@ -203,8 +131,6 @@ Yes. With `language_auto_detect` on, messages and menus follow each player's gam
 | German | `de_DE` | [jannispkz](https://github.com/jannispkz) | 1.6.7 |
 | Italian | `it_IT` | [RV_SkeLe](https://github.com/RVSkeLe) | 1.3.5 |
 
-Want to improve or add a translation? Open a pull request.
-
 ## Support
 * **Bugs and requests:** [GitHub Issues](https://github.com/OpenVdra/SmartSpawner/issues)
 * **Community:** [Discord](https://discord.com/invite/FJN7hJKPyb)
@@ -213,11 +139,7 @@ Want to improve or add a translation? Open a pull request.
 
 Live server and player counts from [bStats](https://bstats.org/plugin/bukkit/SmartSpawner/24822).
 
-<div align="center">
-
-<a href="https://bstats.org/plugin/bukkit/SmartSpawner/24822"><img src="https://bstats.org/signatures/bukkit/SmartSpawner.svg" alt="bStats statistics"></a>
-
-</div>
+[![bStats](https://bstats.org/signatures/bukkit/SmartSpawner.svg)](https://bstats.org/plugin/bukkit/SmartSpawner/24822)
 
 ## License
 Licensed under the [GPL-3.0](LICENSE).
