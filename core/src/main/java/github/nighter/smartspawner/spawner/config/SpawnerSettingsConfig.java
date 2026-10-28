@@ -12,6 +12,11 @@ import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.EntityType;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -75,7 +80,22 @@ public class SpawnerSettingsConfig {
             SupersededConfigNotice.warn(plugin, RESOURCE, LEGACY_RESOURCE);
         }
 
-        parseConfig(YamlConfiguration.loadConfiguration(configFile));
+        parseConfig(YamlConfiguration.loadConfiguration(configFile), shippedMobNames());
+    }
+
+    /**
+     * Top-level names in the shipped file. It lists mobs from the newest Minecraft version, so on an
+     * older server some of them are not mobs yet; those are skipped quietly, and the migrator puts
+     * them back anyway if the owner deletes them.
+     */
+    private Set<String> shippedMobNames() {
+        InputStream stream = plugin.getResource(RESOURCE);
+        if (stream == null) return Set.of();
+        try (Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+            return YamlConfiguration.loadConfiguration(reader).getKeys(false);
+        } catch (IOException e) {
+            return Set.of();
+        }
     }
 
     public void reload() {
@@ -102,7 +122,7 @@ public class SpawnerSettingsConfig {
         return type.name().toLowerCase(Locale.ROOT);
     }
 
-    private void parseConfig(FileConfiguration config) {
+    private void parseConfig(FileConfiguration config, Set<String> shippedMobNames) {
         SpawnerNameNotices.reset();
         definitionsByName.clear();
         aliasToName.clear();
@@ -116,6 +136,7 @@ public class SpawnerSettingsConfig {
 
             EntityType type = entityTypeOf(key);
             if (type == null) {
+                if (shippedMobNames.contains(key)) continue;
                 plugin.getLogger().warning("'" + key + "' in " + RESOURCE + " is not a mob name. Custom spawners go under "
                         + SpawnerFileLayout.CUSTOM_SECTION + ".");
                 continue;

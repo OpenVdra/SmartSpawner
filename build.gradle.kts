@@ -5,7 +5,11 @@ plugins {
     alias(libs.plugins.shadow) apply false
 }
 
-val targetJavaVersion = 25
+// Bytecode and JDK API level of the plugin jar, so it runs on Paper 1.21.11 with Java 21.
+val targetJavaVersion = 21
+// JDK that runs javac. Hooks such as ExcellentEconomy and nightcore ship Java 25 class files,
+// which only a Java 25 compiler can read; `--release` still limits the output to Java 21.
+val compilerJavaVersion = 25
 
 // Forced rather than constrained: only a forced version beats the `strictly` constraints
 // WorldEdit and PlotSquared declare.
@@ -118,12 +122,10 @@ allprojects {
     }
 
     java {
-        val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-        if (JavaVersion.current() < javaVersion) {
-            toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-        }
+        toolchain.languageVersion.set(JavaLanguageVersion.of(compilerJavaVersion))
+        // Hook artifacts declare JVM 25 in their metadata. They are compileOnly and only load when
+        // that plugin is installed, so their JVM requirement is the server's, not ours.
+        disableAutoTargetJvm()
     }
 
     tasks.withType<JavaCompile>().configureEach {

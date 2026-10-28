@@ -15,8 +15,10 @@ All notable changes to SmartSpawner are documented in this file.
 
 ### Fixed
 - Changing `spawner_properties.default.delay` now applies to spawners already placed, after `/ss reload` or a restart. Before, they kept the old delay until broken and placed again.
+- Servers on an older Minecraft version no longer warn on every start about shipped `spawner_mobs.yml` entries for mobs that version does not have yet, such as `sulfur_cube`. Names added by hand are still checked.
 
 ### Changed
+- SmartSpawner now runs on Java 21 again, so Minecraft 1.21.11 servers no longer need Java 25. The ExcellentEconomy integration still needs Java 25, as ExcellentEconomy itself does.
 - The shipped language files use MiniMessage instead of `&` codes. Edited texts keep their `&` codes and keep working.
 - Only the active language and GUI layout are written to the plugin folder. Others are added the first time they are selected with `/ss language` or `/ss gui_layout`.
 - Custom language folders now get key renames on update, like the built-in ones.

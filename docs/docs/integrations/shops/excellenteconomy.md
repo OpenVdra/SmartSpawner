@@ -6,7 +6,7 @@ title: ExcellentEconomy
 
 **Download:** [Modrinth](https://modrinth.com/plugin/excellenteconomy)
 
-ExcellentEconomy can be used directly without Vault.
+ExcellentEconomy can be used directly without Vault. It needs a server running Java 25.
 
 ## Configuration
 

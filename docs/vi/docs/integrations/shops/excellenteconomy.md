@@ -6,7 +6,7 @@ title: ExcellentEconomy
 
 **Tải về:** [Modrinth](https://modrinth.com/plugin/excellenteconomy)
 
-ExcellentEconomy có thể dùng trực tiếp mà không cần Vault.
+ExcellentEconomy có thể dùng trực tiếp mà không cần Vault. Plugin này cần máy chủ chạy Java 25.
 
 ## Cấu hình
 

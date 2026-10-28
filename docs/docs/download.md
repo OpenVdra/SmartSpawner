@@ -19,7 +19,7 @@ Choose your preferred download source:
 |-------------|---------------|
 | **Minecraft Version** | 1.21.6+ |
 | **Server Software** | Paper, Folia, Purpur or compatible forks |
-| **Java Version** | Java 25+ |
+| **Java Version** | Java 21+ (Java 25 for Minecraft 26.x) |
 
 ## Installation
 

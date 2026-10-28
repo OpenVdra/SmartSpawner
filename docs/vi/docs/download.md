@@ -19,7 +19,7 @@ Chọn nguồn tải bạn muốn:
 |---------|----------|
 | **Phiên bản Minecraft** | 1.21.6+ |
 | **Phần mềm máy chủ** | Paper, Folia, Purpur hoặc fork tương thích |
-| **Phiên bản Java** | Java 25+ |
+| **Phiên bản Java** | Java 21+ (Java 25 cho Minecraft 26.x) |
 
 ## Cài Đặt
 
