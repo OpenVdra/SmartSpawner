@@ -14,13 +14,11 @@
 * **Player Range:** A spawner only works while a player is nearby, like vanilla.
 * **Inspired by DonutSMP:** The spawner style of [DonutSMP](https://www.youtube.com/@DonutSMPServer), on any Paper or Folia server.
 
-**Made for:** Survival, Skyblock, Prison, Factions, and any server where spawners matter.
-
 ## Spawner Menu
 * **One Menu:** Right-click a spawner to open its storage, collect its experience and manage its stack.
 * **Paged Storage:** Take single stacks or everything at once, sort by item, and filter out drops a player does not want.
 * **Selling:** Sell the whole storage in one click through a [supported shop or economy plugin](https://docs.smartspawner.site/docs/integrations/shops/).
-* **Layouts:** Every slot and text can be changed, and the DonutSMP look ships as a ready layout.
+* **Layouts:** Every slot and text can be changed, and presets such as DonutSMP are included.
 
 <div align="center">
 <table>
@@ -57,7 +55,7 @@
 </p>
 
 ## Spawner Types
-* **Mob Spawners:** Every vanilla mob, each with its own loot, experience and sell prices in `spawner_mobs.yml`.
+* **Mob Spawners:** Every vanilla mob, each with its own loot and experience in `spawner_mobs.yml`.
 * **Item Spawners:** Generate materials such as diamonds or iron, set up in `spawner_items.yml`.
 * **Custom Spawners:** Any number of extra spawners for the same mob or item, each with its own loot and name.
 * **Vanilla Spawners:** Normal Minecraft spawners that spawn real mobs, for mixed setups.
@@ -179,7 +177,5 @@ Thousands of servers run SmartSpawner.
 <div align="center">
 
 <a href="https://bstats.org/plugin/bukkit/SmartSpawner/24822"><img src="https://bstats.org/signatures/bukkit/SmartSpawner.svg" alt="bStats statistics"></a>
-
-### [Documentation](https://docs.smartspawner.site/) • [Developer API](https://docs.smartspawner.site/developer-api/) • [Discord](https://discord.com/invite/FJN7hJKPyb) • [Issues](https://github.com/OpenVdra/SmartSpawner/issues)
 
 </div>
