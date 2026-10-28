@@ -2,7 +2,7 @@
 
 All notable changes to SmartSpawner are documented in this file.
 
-## Unreleased
+## 1.9.0
 
 ### Added
 - Chinese (Simplified) language, `zh_CN`. Thanks to CTfish0101.

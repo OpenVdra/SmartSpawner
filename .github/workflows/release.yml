@@ -54,9 +54,11 @@ jobs:
       #   1. the section for this version in CHANGELOG.md (the `## <version>` block,
       #      keep-a-changelog style) — this is the normal path: keep CHANGELOG.md up to
       #      date and the notes flow automatically;
-      #   2. the body of an already-published GitHub Release (UI publish);
-      #   3. a fallback line.
-      # Reused for the auto-created release, Modrinth, Hangar and Discord.
+      #   2. the body of an already-published GitHub Release (UI publish).
+      # If neither exists the run fails here, before anything is published, instead of
+      # shipping empty notes. Usually that means the `## Unreleased` heading was not
+      # renamed to `## <version>` before releasing.
+      # Reused for the GitHub release, Modrinth, Hangar and Discord.
       - name: Resolve changelog
         id: changelog
         env:
@@ -64,7 +66,7 @@ jobs:
           RELEASE_BODY: ${{ github.event.release.body }}
         run: |
           BODY=""
-          if [ -z "$BODY" ] && [ -f CHANGELOG.md ]; then
+          if [ -f CHANGELOG.md ]; then
             # Print everything between `## <version> ...` and the next `## ` heading,
             # then strip leading/trailing blank lines.
             BODY=$(awk -v ver="$VERSION" '
@@ -76,7 +78,8 @@ jobs:
             BODY="$RELEASE_BODY"
           fi
           if [ -z "$BODY" ]; then
-            BODY="See the GitHub release for details."
+            echo "::error file=CHANGELOG.md::No '## $VERSION' section in CHANGELOG.md and no release notes on the GitHub release."
+            exit 1
           fi
           {
             echo "body<<__CHANGELOG_EOF__"
@@ -90,6 +93,8 @@ jobs:
       # the changelog resolved above) if it isn't there yet, so "Run workflow" is enough to
       # cut a release. The tag is the bare version (e.g. 1.7.1), no "v" prefix. Creating a
       # release with GITHUB_TOKEN does not re-trigger this workflow, so no double publish.
+      # A release published from the UI with empty notes gets the changelog filled in;
+      # notes written by hand are left alone.
       - name: Ensure GitHub release exists
         id: release
         env:
@@ -97,9 +102,13 @@ jobs:
           REPO: ${{ github.repository }}
           VERSION: ${{ steps.meta.outputs.version }}
           CHANGELOG: ${{ steps.changelog.outputs.body }}
+          RELEASE_BODY: ${{ github.event.release.body }}
         run: |
           if [ "${{ github.event_name }}" = "release" ]; then
             TAG="${{ github.event.release.tag_name }}"
+            if [ -z "$(printf '%s' "$RELEASE_BODY" | tr -d '[:space:]')" ]; then
+              gh release edit "$TAG" --repo "$REPO" --notes "$CHANGELOG"
+            fi
           else
             TAG="$VERSION"
             if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
@@ -181,6 +190,10 @@ jobs:
       # section. The GitHub link is the resolved release URL; Modrinth and Hangar
       # come from the same badges linked in README.md.
       #
+      # Discord renders neither HTML nor headings in embeds, so the changelog is
+      # adapted first: `<details>` blocks (the long configuration notes) are replaced
+      # by a link to the GitHub release, and `### Added` style headings become bold.
+      #
       # Discord embed descriptions are capped at 4096 characters; past that Discord
       # silently truncates the *whole* string, which can chop off the download
       # links at the bottom instead of just the changelog. So we measure the footer
@@ -195,11 +208,17 @@ jobs:
           RELEASE_URL: ${{ steps.release.outputs.url }}
         run: |
           MODRINTH="https://modrinth.com/plugin/smartspawner"
-          SPIGOT="https://www.spigotmc.org/resources/120743/"
           HANGAR="https://hangar.papermc.io/Nighter/SmartSpawner"
 
-          FOOTER=$(printf '\n\n**📥 Download**\n[Modrinth](%s) · [Hangar](%s) · [Spigot](%s) · [GitHub Release](%s)' \
-            "$MODRINTH" "$HANGAR" "$SPIGOT" "$RELEASE_URL")
+          CHANGELOG=$(printf '%s\n' "$CHANGELOG" | awk -v url="$RELEASE_URL" '
+            /^[[:space:]]*<details/ { skip=1; print "*More details on [GitHub](" url ")*"; next }
+            skip { if ($0 ~ /<\/details>/) skip=0; next }
+            /^#+ / { sub(/^#+ +/, ""); print "**" $0 "**"; next }
+            { print }
+          ')
+
+          FOOTER=$(printf '\n\n**📥 Download**\n[Modrinth](%s) · [Hangar](%s) · [GitHub Release](%s)' \
+            "$MODRINTH" "$HANGAR" "$RELEASE_URL")
           TRUNCATED_NOTE=$(printf '\n\n*… Read full changelog on [GitHub](%s)*' "$RELEASE_URL")
 
           # Discord's real limit is 4096; leave headroom since bash's character count
