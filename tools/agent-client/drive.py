@@ -145,28 +145,97 @@ def load(source):
     return requests
 
 
+# How long before its `startedAt` a game's process may have been created. A client takes well under
+# this to boot; a process created earlier than that is another program that reused a dead game's pid.
+BOOT_WINDOW_MS = 10 * 60 * 1000
+
+
+def process_started_ms(pid):
+    """When process `pid` was created, in epoch milliseconds; None when it is not running.
+
+    Only Windows reports the creation time cheaply; elsewhere a live process returns 0, which the
+    caller treats as "running, creation time unknown".
+    """
+    if not isinstance(pid, int) or pid <= 0:
+        return None
+    if sys.platform == "win32":
+        import ctypes
+        from ctypes import wintypes
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+        if not handle:
+            return None
+        try:
+            code = wintypes.DWORD()
+            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(code)) or code.value != 259:  # STILL_ACTIVE
+                return None
+            created, exited, kernel, user = (wintypes.FILETIME() for _ in range(4))
+            if not kernel32.GetProcessTimes(handle, ctypes.byref(created), ctypes.byref(exited),
+                                            ctypes.byref(kernel), ctypes.byref(user)):
+                return 0
+            ticks = (created.dwHighDateTime << 32) | created.dwLowDateTime
+            return ticks // 10000 - 11644473600000          # 100 ns since 1601 -> ms since 1970
+        finally:
+            kernel32.CloseHandle(handle)
+    try:
+        import os
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return None
+    except PermissionError:
+        pass                                                # alive, owned by someone else
+    return 0
+
+
+def game_running(about):
+    """Whether the game that wrote `about` (a parsed ready.json) is still the process behind its pid."""
+    created = process_started_ms(about.get("pid"))
+    if created is None:
+        return False
+    if created == 0:
+        return True
+    started = about.get("startedAt", 0)
+    return started - BOOT_WINDOW_MS <= created <= started
+
+
+def read_ready(queue):
+    ready = queue / READY
+    if not ready.is_file() or ready.stat().st_size == 0:
+        return None
+    try:
+        return json.loads(ready.read_text(encoding="utf-8"))
+    except ValueError:
+        return None                                         # being written this instant
+
+
 def wait_for_ready(queue, timeout, since):
-    """Waits for a game started after `since` to open the queue, in epoch milliseconds.
+    """Waits for a game to open the queue: one started after `since` (epoch ms), or one still running.
 
     Waiting for the file alone is the mistake this exists to avoid. A game takes most of a minute to
     come up, and for all of it the previous run's `ready.json` is still in the directory saying the
     queue is open; a request written then goes into the file the new run is about to rotate away, and
-    is never answered. So the stamp the game writes has to be newer than the moment the wait began.
+    is never answered. So the file must be newer than this command, or its game must still be alive:
+    a client that finished booting just before this command is the one to talk to, and only one game
+    holds a queue at a time (`queue.lock`).
     """
-    ready = queue / READY
     deadline = time.time() + timeout
+    next_note = time.time() + 30
     while time.time() < deadline:
-        if ready.is_file() and ready.stat().st_size > 0:
-            try:
-                about = json.loads(ready.read_text(encoding="utf-8"))
-            except ValueError:
-                about = None          # being written this instant; look again
-            if about is not None and about.get("startedAt", 0) >= since:
-                time.sleep(0.2)
-                return about
+        about = read_ready(queue)
+        if about is not None and (about.get("startedAt", 0) >= since or game_running(about)):
+            time.sleep(0.2)
+            return about
+        if time.time() >= next_note:
+            sys.stderr.write("still waiting for a game to open %s (%.0f s left); %s\n" % (
+                queue, deadline - time.time(),
+                "no ready.json yet" if about is None else
+                "ready.json is from pid %s, which has exited" % about.get("pid")))
+            sys.stderr.flush()
+            next_note = time.time() + 30
         time.sleep(0.2)
-    raise SystemExit("no %s newer than the start of this command in %s after %.0f s; "
-                     "is the game starting?" % (READY, queue, timeout))
+    raise SystemExit("no running game opened %s within %.0f s; is the game starting? "
+                     "Check its log for a crash" % (queue, timeout))
 
 
 def replies(queue, offset):
@@ -182,7 +251,7 @@ def replies(queue, offset):
     return [json.loads(line) for line in lines if line.strip()], end
 
 
-def drive(queue, requests, timeout):
+def drive(queue, requests, timeout, about):
     out = queue / OUT
     offset = out.stat().st_size if out.is_file() else 0
     with (queue / IN).open("a", encoding="utf-8", newline="\n") as handle:
@@ -193,22 +262,35 @@ def drive(queue, requests, timeout):
     wanted = [request["id"] for request in requests]
     answers = {}
     deadline = time.time() + timeout
+    next_liveness = time.time() + 1
+    exited = False
     while wanted and time.time() < deadline:
         found, offset = replies(queue, offset)
         for answer in found:
             answers[answer.get("id")] = answer
             if answer.get("id") in wanted:
                 wanted.remove(answer["id"])
+        if wanted and time.time() >= next_liveness:
+            # A game that crashed or was closed answers nothing more; stop waiting for it, after one
+            # last read for the answers it wrote on the way out (a `stop` is answered, then exits).
+            if not game_running(about):
+                exited = True
+                for answer in replies(queue, offset)[0]:
+                    answers[answer.get("id")] = answer
+                break
+            next_liveness = time.time() + 1
         if wanted:
             time.sleep(0.1)
 
+    unanswered = ("the game (pid %s) exited before answering" % about.get("pid") if exited
+                  else "unanswered after %.0f s" % timeout)
     failed = False
     for request in requests:
         answer = answers.get(request["id"])
         if answer is None:
             failed = True
             print(json.dumps({"id": request["id"], "command": request.get("command"), "ok": False,
-                              "error": "unanswered after %.0f s" % timeout}))
+                              "error": unanswered}))
             continue
         if not answer.get("ok"):
             failed = True
@@ -294,13 +376,19 @@ def main():
     if arguments.ready:
         about = wait_for_ready(queue, arguments.ready, started)
         print(json.dumps({"ready": about}))
-    elif not (queue / READY).is_file():
-        raise SystemExit("%s has no %s; the game has not opened this queue" % (queue, READY))
+    else:
+        about = read_ready(queue)
+        if about is None:
+            raise SystemExit("%s has no %s; the game has not opened this queue. "
+                             "Pass --ready <seconds> to wait for one that is starting" % (queue, READY))
+        if not game_running(about):
+            raise SystemExit("the game that opened %s (pid %s) is no longer running. Start it again, "
+                             "and pass --ready <seconds> to wait for it" % (queue, about.get("pid")))
 
     requests = load(arguments.requests)
     if not requests:
         raise SystemExit("no requests to send")
-    sys.exit(1 if drive(queue, requests, arguments.timeout) else 0)
+    sys.exit(1 if drive(queue, requests, arguments.timeout, about) else 0)
 
 
 if __name__ == "__main__":

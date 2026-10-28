@@ -29,7 +29,7 @@ python tools/agent-client/drive.py tools/agent-client/run/agent/client requests.
 echo '{"command":"client.info"}' | python tools/agent-client/drive.py tools/agent-client/run/agent/client -
 ```
 
-`--ready 400` waits for a client started after the command to open its queue. Captures land in
+`--ready 400` waits up to 400 s for a client to open its queue: one started after the command, or one already running (its `ready.json` pid is still alive). Without `--ready`, and while waiting for answers, `drive.py` fails at once when that client has exited instead of waiting out the timeout. Captures land in
 `run/agent/client/screenshots/<name>.png` at full framebuffer size. `ready.json` lists every command.
 The ones for a plugin's screens:
 
