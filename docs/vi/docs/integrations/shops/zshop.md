@@ -2,7 +2,7 @@
 title: zShop
 ---
 
-# zShop
+# ![](/icons/integrations/zshop.png){.plugin-icon} zShop
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/126561/)
 

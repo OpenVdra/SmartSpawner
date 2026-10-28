@@ -2,7 +2,7 @@
 title: zShop
 ---
 
-# zShop
+# ![](/icons/integrations/zshop.png){.plugin-icon} zShop
 
 **Download:** [SpigotMC](https://www.spigotmc.org/resources/126561/)
 

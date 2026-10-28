@@ -2,7 +2,7 @@
 title: BentoBox
 ---
 
-# BentoBox
+# ![](https://cdn.modrinth.com/data/aBVLHiAW/2ad201b237497093c4957095fa9f97bf61708ed1_96.webp){.plugin-icon} BentoBox
 
 **Tải về:** [Modrinth](https://modrinth.com/plugin/bentobox)
 

@@ -2,7 +2,7 @@
 title: FactionsUUID
 ---
 
-# FactionsUUID
+# ![](/icons/integrations/factionsuuid.png){.plugin-icon} FactionsUUID
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/1035/)
 

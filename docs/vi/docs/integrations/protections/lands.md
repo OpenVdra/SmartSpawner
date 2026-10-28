@@ -2,7 +2,7 @@
 title: Lands
 ---
 
-# Lands
+# ![](/icons/integrations/lands.jpg){.plugin-icon} Lands
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/53313/)
 

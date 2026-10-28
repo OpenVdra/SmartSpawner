@@ -5,6 +5,10 @@ import LucideIcon from '../icon/LucideIcon.vue'
 defineProps({
   title: String,
   icon: String,
+  // A picture in place of the Lucide icon, such as another plugin's logo.
+  image: String,
+  // The image is a white logo on transparent, drawn on a dark tile.
+  dark: Boolean,
   link: String,
   desc: String
 })
@@ -12,7 +16,8 @@ defineProps({
 
 <template>
   <a :href="withBase(link)" class="doc-card">
-    <div v-if="icon" class="card-icon">
+    <img v-if="image" :src="withBase(image)" alt="" class="card-image" :class="{ 'plugin-icon-dark': dark }" />
+    <div v-else-if="icon" class="card-icon">
       <LucideIcon :name="icon" :size="20" />
     </div>
     <div class="card-content">
@@ -49,6 +54,14 @@ defineProps({
   border-radius: 10px;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
+  margin-bottom: 14px;
+}
+
+.card-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: contain;
   margin-bottom: 14px;
 }
 

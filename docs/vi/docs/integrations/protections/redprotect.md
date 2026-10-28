@@ -2,7 +2,7 @@
 title: RedProtect
 ---
 
-# RedProtect
+# ![](https://cdn.modrinth.com/data/loXscTUV/d3cba12115315c4841794e4f8821cb1f9518f3ec_96.webp){.plugin-icon} RedProtect
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/15841/)
 

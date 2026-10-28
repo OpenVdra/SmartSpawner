@@ -2,7 +2,7 @@
 title: minePlots
 ---
 
-# minePlots
+# ![](/icons/integrations/mineplots.svg){.plugin-icon} minePlots
 
 **Download:** [BuiltByBit](https://builtbybit.com/resources/mineplots.21646/)
 

@@ -2,7 +2,7 @@
 title: ExcellentEconomy
 ---
 
-# ExcellentEconomy
+# ![](https://cdn.modrinth.com/data/r0FB9U1e/5e7beb1f67b9ea9dac40616b24fb5fa625a94b66_96.webp){.plugin-icon} ExcellentEconomy
 
 **Download:** [Modrinth](https://modrinth.com/plugin/excellenteconomy)
 

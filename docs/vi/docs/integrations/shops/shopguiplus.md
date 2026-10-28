@@ -2,7 +2,7 @@
 title: ShopGUI+
 ---
 
-# ShopGUI+
+# ![](/icons/integrations/shopguiplus.png){.plugin-icon} ShopGUI+
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/6515/)
 

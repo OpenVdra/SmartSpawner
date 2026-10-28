@@ -27,16 +27,16 @@ custom_prices:
 
 | Plugin | Định danh | Trang |
 |---|---|---|
-| EconomyShopGUI | `EconomyShopGUI`, `EconomyShopGUI-Premium` | [EconomyShopGUI](/vi/docs/integrations/shops/economyshopgui) |
-| ShopGUI+ | `ShopGUIPlus` | [ShopGUI+](/vi/docs/integrations/shops/shopguiplus) |
-| zShop | `zShop` | [zShop](/vi/docs/integrations/shops/zshop) |
+| ![](/icons/integrations/economyshopgui.png){.plugin-icon} EconomyShopGUI | `EconomyShopGUI`, `EconomyShopGUI-Premium` | [EconomyShopGUI](/vi/docs/integrations/shops/economyshopgui) |
+| ![](/icons/integrations/shopguiplus.png){.plugin-icon} ShopGUI+ | `ShopGUIPlus` | [ShopGUI+](/vi/docs/integrations/shops/shopguiplus) |
+| ![](/icons/integrations/zshop.png){.plugin-icon} zShop | `zShop` | [zShop](/vi/docs/integrations/shops/zshop) |
 
 ## Backend tiền tệ
 
 | Plugin | Định danh | Trang |
 |---|---|---|
-| Vault | `VAULT` | [Vault](/vi/docs/integrations/shops/vault) |
-| ExcellentEconomy | `EXCELLENTECONOMY` | [ExcellentEconomy](/vi/docs/integrations/shops/excellenteconomy) |
+| ![](/icons/integrations/vault.png){.plugin-icon} Vault | `VAULT` | [Vault](/vi/docs/integrations/shops/vault) |
+| ![](https://cdn.modrinth.com/data/r0FB9U1e/5e7beb1f67b9ea9dac40616b24fb5fa625a94b66_96.webp){.plugin-icon} ExcellentEconomy | `EXCELLENTECONOMY` | [ExcellentEconomy](/vi/docs/integrations/shops/excellenteconomy) |
 
 ## Chế độ nguồn giá
 

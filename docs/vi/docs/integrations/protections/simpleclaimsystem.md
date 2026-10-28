@@ -2,7 +2,7 @@
 title: SimpleClaimSystem
 ---
 
-# SimpleClaimSystem
+# ![](https://cdn.modrinth.com/data/80Ke0mYG/d9cf637da756d12d3e43f3cebf6731ea60af9f71_96.webp){.plugin-icon} SimpleClaimSystem
 
 **Tải về:** [Modrinth](https://modrinth.com/plugin/simpleclaimsystem)
 

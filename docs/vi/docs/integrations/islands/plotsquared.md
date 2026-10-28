@@ -2,7 +2,7 @@
 title: PlotSquared
 ---
 
-# PlotSquared
+# ![](/icons/integrations/plotsquared.png){.plugin-icon} PlotSquared
 
 **Tải về:** [Modrinth](https://modrinth.com/plugin/plotsquared)
 

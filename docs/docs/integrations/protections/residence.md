@@ -2,7 +2,7 @@
 title: Residence
 ---
 
-# Residence
+# ![](/icons/integrations/residence.jpg){.plugin-icon} Residence
 
 **Download:** [SpigotMC](https://www.spigotmc.org/resources/11480/)
 

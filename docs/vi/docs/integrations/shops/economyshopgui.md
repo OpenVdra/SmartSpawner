@@ -2,7 +2,7 @@
 title: EconomyShopGUI
 ---
 
-# EconomyShopGUI
+# ![](/icons/integrations/economyshopgui.png){.plugin-icon} EconomyShopGUI
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/69927/)
 

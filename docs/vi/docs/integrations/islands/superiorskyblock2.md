@@ -2,7 +2,7 @@
 title: SuperiorSkyblock2
 ---
 
-# SuperiorSkyblock2
+# ![](/icons/integrations/superiorskyblock2.png){.plugin-icon} SuperiorSkyblock2
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/87411/)
 

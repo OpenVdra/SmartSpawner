@@ -2,7 +2,7 @@
 title: WorldGuard
 ---
 
-# WorldGuard
+# ![](https://cdn.modrinth.com/data/DKY9btbd/e1281ffadc4e194780bd31eb89ae6ea2537ec41b_96.webp){.plugin-icon} WorldGuard
 
 **Download:** [Modrinth](https://modrinth.com/plugin/worldguard)
 

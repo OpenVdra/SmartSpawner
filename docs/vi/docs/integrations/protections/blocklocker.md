@@ -2,7 +2,7 @@
 title: BlockLocker
 ---
 
-# BlockLocker
+# ![](https://hangarcdn.papermc.io/avatars/project/3666.webp?v=1){.plugin-icon} BlockLocker
 
 **Tải về:** [SpigotMC](https://www.spigotmc.org/resources/3268/)
 

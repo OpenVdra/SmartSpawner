@@ -2,7 +2,7 @@
 title: Vault
 ---
 
-# Vault
+# ![](/icons/integrations/vault.png){.plugin-icon} Vault
 
 **Download:** [SpigotMC](https://www.spigotmc.org/resources/34315/)
 

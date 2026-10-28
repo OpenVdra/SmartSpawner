@@ -14,10 +14,14 @@ SmartSpawner phát hiện plugin tùy chọn khi khởi động và chỉ bật 
 
 <DocCard icon="Home" title="Đảo và Plot" link="/vi/docs/integrations/islands/" desc="Quyền plot và đảo cho các thao tác spawner." />
 
-<DocCard icon="Swords" title="AuraSkills" link="/vi/docs/integrations/auraskills" desc="Chuyển kinh nghiệm nhận từ spawner thành XP kỹ năng." />
+<DocCard image="https://cdn.modrinth.com/data/uDdZAVls/aadaedbbb7f8c142a625a11081aa0d9bdfafecc2.jpeg" title="AuraSkills" link="/vi/docs/integrations/auraskills" desc="Chuyển kinh nghiệm nhận từ spawner thành XP kỹ năng." />
 
-<DocCard icon="Sparkles" title="MythicMobs" link="/vi/docs/integrations/mythicmobs" desc="Tạo vật phẩm Smart Spawner từ bảng drop mob tùy chỉnh." />
+<DocCard image="https://cdn.modrinth.com/data/NLuc7Jjh/80ddd8e4535a8305eac4edfd5ced1e8e5344e11d_96.webp" dark title="MythicMobs" link="/vi/docs/integrations/mythicmobs" desc="Tạo vật phẩm Smart Spawner từ bảng drop mob tùy chỉnh." />
 
 <DocCard icon="Wrench" title="Khắc Phục Sự Cố" link="/vi/docs/integrations/troubleshooting" desc="Chẩn đoán lỗi phát hiện provider, bán vật phẩm và bảo vệ." />
 
 </CardGrid>
+
+## Plugin được hỗ trợ
+
+<PluginGrid />

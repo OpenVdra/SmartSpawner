@@ -2,7 +2,7 @@
 title: Towny
 ---
 
-# Towny
+# ![](https://cdn.modrinth.com/data/Vs77PB2W/f094516d1b227a8a0495c9e1d0a6f8c58aec5ccf_96.webp){.plugin-icon} Towny
 
 **Tải về:** [Modrinth](https://modrinth.com/plugin/towny)
 

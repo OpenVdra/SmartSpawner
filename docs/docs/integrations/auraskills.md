@@ -2,7 +2,7 @@
 title: AuraSkills
 ---
 
-# AuraSkills
+# ![](https://cdn.modrinth.com/data/uDdZAVls/aadaedbbb7f8c142a625a11081aa0d9bdfafecc2.jpeg){.plugin-icon} AuraSkills
 
 **Download:** [Modrinth](https://modrinth.com/plugin/auraskills)
 

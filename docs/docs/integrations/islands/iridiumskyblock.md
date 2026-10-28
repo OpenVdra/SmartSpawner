@@ -2,7 +2,7 @@
 title: IridiumSkyblock
 ---
 
-# IridiumSkyblock
+# ![](https://cdn.modrinth.com/data/uVMG0MzO/1db3be2f57ed47d7b0dfd30902c437768c34d966.png){.plugin-icon} IridiumSkyblock
 
 **Download:** [Modrinth](https://modrinth.com/plugin/iridiumskyblock)
 

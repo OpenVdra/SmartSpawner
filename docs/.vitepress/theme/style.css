@@ -540,3 +540,44 @@ html:not(.dark) .VPHomeHero .ss-brand-spawner {
         transition: none;
     }
 }
+
+/* Another plugin's icon, before its name in a heading or a table (integration pages). */
+.vp-doc img.plugin-icon {
+    display: inline-block;
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: 4px;
+    object-fit: contain;
+    vertical-align: -0.3em;
+    border-radius: 4px;
+}
+
+.vp-doc td:has(> img.plugin-icon:first-child) {
+    white-space: nowrap;
+}
+
+/* A white logo on transparent (MythicMobs), on a dark tile so it shows in light mode. */
+.plugin-icon-dark {
+    background-color: #202127;
+}
+
+/* The same icon beside its sidebar entry. */
+.VPSidebarItem .text:has(> .sidebar-plugin-icon) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-plugin-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.pager-link .sidebar-plugin-icon {
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: -3px;
+}

@@ -2,7 +2,7 @@
 title: GriefPrevention
 ---
 
-# GriefPrevention
+# ![](https://cdn.modrinth.com/data/O4o4mKaq/6aeade7ea5551c41dbe71e379ea893777356650d_96.webp){.plugin-icon} GriefPrevention
 
 **Tải về:** [Modrinth](https://modrinth.com/plugin/griefprevention)
 
