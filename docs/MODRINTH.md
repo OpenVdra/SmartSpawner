@@ -5,7 +5,6 @@
 [![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_64h.png)](https://modrinth.com/plugin/smartspawner)
 [![hangar](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/hangar_64h.png)](https://hangar.papermc.io/Nighter/SmartSpawner)
 [![ghpages](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/ghpages_64h.png)](https://docs.smartspawner.site/)
-[![discord-plural](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_64h.png)](https://discord.com/invite/FJN7hJKPyb)
 
 </div>
 
@@ -129,6 +128,27 @@ Setup for each plugin is in the [integrations guide](https://docs.smartspawner.s
 
 One jar runs on every version listed. The ExcellentEconomy integration needs Java 25, as ExcellentEconomy itself does.
 
+## Commands and Permissions
+
+`/ss`, `/spawner` and `/smartspawner` all work. Every command also needs `smartspawner.command.use`.
+
+| Command | Permission | What it does |
+|---|---|---|
+| `/ss give <player> <spawner> [amount]` | `smartspawner.command.give` | Gives spawners to a player |
+| `/ss list` | `smartspawner.command.list` | Opens the admin list of every spawner |
+| `/ss editloot <name>` | `smartspawner.command.editloot` | Edits a spawner's loot in game |
+| `/ss reload` | `smartspawner.command.reload` | Reloads every config file |
+
+| Permission | Default | What it allows |
+|---|---|---|
+| `smartspawner.stack` | Everyone | Stacking spawners |
+| `smartspawner.break` | Everyone | Breaking spawners |
+| `smartspawner.sellall` | Everyone | Selling from spawner storage |
+
+Placing and opening a spawner need no permission at all. If players cannot place spawners, another plugin is blocking it.
+
+Full lists: [Commands](https://docs.smartspawner.site/docs/commands) and [Permissions](https://docs.smartspawner.site/docs/permissions).
+
 ## For Developers
 
 <details>
@@ -146,10 +166,12 @@ dependencies { compileOnly 'com.github.OpenVdra:SmartSpawner:<version>' }
 SmartSpawnerAPI api = SmartSpawnerProvider.getAPI();
 player.getInventory().addItem(api.createSpawnerItem(EntityType.ZOMBIE, 5));
 
-// Double what players earn from selling spawner storage.
+// Only VIPs can stack spawners past 1,000.
 @EventHandler
-public void onSell(SpawnerSellEvent event) {
-    event.setMoneyAmount(event.getMoneyAmount() * 2);
+public void onStack(SpawnerStackEvent event) {
+    if (event.getNewStackSize() > 1000 && !event.getPlayer().hasPermission("myserver.vip")) {
+        event.setCancelled(true);
+    }
 }
 ```
 
@@ -159,20 +181,36 @@ See the [Developer API guide](https://docs.smartspawner.site/developer-api/).
 
 ## Quick FAQ
 
-**Does it work on Folia?**  
+### Why is there a warning under spawners?
+Mojang added this warning in Minecraft 1.21.4. Only OP players see it, and it cannot be removed. See the [1.21.4 release notes](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-4).
+
+<img src="https://raw.githubusercontent.com/OpenVdra/SmartSpawner/main/docs/public/op-warning.png" alt="The warning Minecraft shows OP players under a spawner" width="500">
+
+######
+
+### Does it work on Folia?
 Yes. The same jar runs on Paper, Folia and their forks.
 
-**Can players use their own language?**  
+######
+
+### Why can't players place spawners?
+SmartSpawner never asks for a permission to place a spawner. If placing is blocked, another plugin is stopping it, usually a protection, claim or anti-cheat plugin.
+
+######
+
+### Can players use their own language?
 Yes. With `language_auto_detect` on, messages and menus follow each player's game language when that language is installed.
 
-**Supported languages:**  
+######
+
+### Supported languages
 English, Vietnamese, Simplified Chinese, Turkish, German and Italian.
 
 Want to improve or add a translation? [Open a pull request](https://github.com/OpenVdra/SmartSpawner).
 
 ## Statistics
 
-Thousands of servers run SmartSpawner.
+Live server and player counts from [bStats](https://bstats.org/plugin/bukkit/SmartSpawner/24822).
 
 <div align="center">
 
