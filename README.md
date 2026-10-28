@@ -23,10 +23,10 @@
 |--------------------|-------------|-------------------------------------------------|--------|
 | 🇨🇳 Chinese Simplified | `zh_CN`     | [CTfish0101](https://github.com/CTfish0101), [SnowCutieOwO](https://github.com/SnowCutieOwO) | Latest |
 | 🇩🇪 German             | `de_DE`     | [jannispkz](https://github.com/jannispkz)       | v1.6.7 (Outdated) |
-| 🇺🇸 English            | `en_US`     | [Nighter](https://github.com/n1ght3r)           | Latest |
+| 🇺🇸 English            | `en_US`     | [Nighter](https://github.com/whoisnighter)           | Latest |
 | 🇮🇹 Italian            | `it_IT`     | [RV_SkeLe](https://github.com/RVSkeLe)          | v1.3.5 (Outdated) |
 | 🇹🇷 Turkish            | `tr_TR`     | berkkorkmaz, [onurrrk](https://github.com/onurrrk) | Latest |
-| 🇻🇳 Vietnamese         | `vi_VN`     | [Nighter](https://github.com/n1ght3r)           | Latest |
+| 🇻🇳 Vietnamese         | `vi_VN`     | [Nighter](https://github.com/whoisnighter)           | Latest |
 
 ## API
 

@@ -8,7 +8,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "io.github.n1ght3r.mc-run") {
-                useModule("com.github.n1ght3r:mc-run:${requested.version}")
+                useModule("com.github.whoisnighter:mc-run:${requested.version}")
             }
         }
     }

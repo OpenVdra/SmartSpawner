@@ -1,7 +1,7 @@
 # SmartSpawner
 
 Paper/Folia plugin. Spawners generate items and experience into a virtual inventory instead of
-spawning mobs; players interact through GUIs. Java 25, Gradle Kotlin DSL, ~36k LOC across 225 files.
+spawning mobs; players interact through GUIs. Compiled by JDK 25 to Java 21 bytecode (`--release 21`), Gradle Kotlin DSL, ~36k LOC across 225 files.
 
 ## Modules
 
@@ -26,7 +26,7 @@ Every protection/shop/economy plugin is `compileOnly` or `implementation`, never
 Produces `core/build/libs/SmartSpawner-<version>.jar` via `shadowJar`. The plain `jar` task outputs
 `SmartSpawnerJar-*.jar` and is not the plugin artifact.
 
-Local server and client come from the [mc-run](https://github.com/n1ght3r/mc-run) Gradle plugin
+Local server and client come from the [mc-run](https://github.com/whoisnighter/mc-run) Gradle plugin
 (`mcRun { }` block in [core/build.gradle.kts](core/build.gradle.kts), Paper 26.2):
 
 ```bash
