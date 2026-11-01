@@ -105,6 +105,10 @@ public class SpawnerManager {
         String worldName = spawner.getSpawnerLocation().getWorld().getName();
         worldIndex.computeIfAbsent(worldName, k -> new HashSet<>()).add(spawner);
 
+        if (plugin.getAntiEspManager() != null) {
+            plugin.getAntiEspManager().registerSpawner(spawner);
+        }
+
         // Queue for saving
         spawnerStorage.queueSpawnerForSaving(id);
     }
@@ -115,6 +119,10 @@ public class SpawnerManager {
             Location loc = spawner.getSpawnerLocation();
             // Run hologram removal on location thread
             Scheduler.runLocationTask(loc, spawner::removeHologram);
+
+            if (plugin.getAntiEspManager() != null) {
+                plugin.getAntiEspManager().unregisterSpawner(spawner);
+            }
 
             locationIndex.remove(new LocationKey(spawner.getSpawnerLocation()));
 
@@ -165,6 +173,10 @@ public class SpawnerManager {
         // Add to world index
         String worldName = spawner.getSpawnerLocation().getWorld().getName();
         worldIndex.computeIfAbsent(worldName, k -> new HashSet<>()).add(spawner);
+
+        if (plugin.getAntiEspManager() != null) {
+            plugin.getAntiEspManager().registerSpawner(spawner);
+        }
     }
 
     public Set<SpawnerData> getSpawnersInWorld(String worldName) {
