@@ -19,7 +19,7 @@ bstats = { module = "org.bstats:bstats-bukkit", version = "3.2.1" }
 
 # Not shaded: the driver derives its native library path from its own package name, so relocating
 # it breaks extraction. Paper puts it on the server classpath anyway.
-sqlite = { module = "org.xerial:sqlite-jdbc", version = "3.53.4.0" }
+sqlite = { module = "org.xerial:sqlite-jdbc", version = "3.54.1.0" }
 
 # Hooks. Never bundled: the server either has the plugin or the hook stays dormant.
 auraskills = { module = "dev.aurelium:auraskills-api-bukkit", version = "2.4.0" }
