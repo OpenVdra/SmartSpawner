@@ -18,6 +18,8 @@ softdepend:
 
   # Protection/Region Plugins
   - WorldGuard
+  - WorldEdit
+  - FastAsyncWorldEdit
   - GriefPrevention
   - Lands
   - Towny

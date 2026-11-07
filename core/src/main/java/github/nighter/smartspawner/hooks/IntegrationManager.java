@@ -244,16 +244,18 @@ public class IntegrationManager {
         }, true);
     }
 
-    private boolean checkPlugin(String pluginName, PluginCheck checker, boolean logSuccess) {
+    boolean checkPlugin(String pluginName, PluginCheck checker, boolean logSuccess) {
         try {
             if (checker.check()) {
-                if (logSuccess) {
+                if (logSuccess && plugin != null && plugin.getLogger() != null) {
                     plugin.getLogger().info(pluginName + " integration enabled successfully!");
                 }
                 return true;
             }
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to initialize " + pluginName + " integration", e);
+        } catch (Throwable t) {
+            if (plugin != null && plugin.getLogger() != null) {
+                plugin.getLogger().log(Level.WARNING, "Failed to initialize " + pluginName + " integration", t);
+            }
         }
         return false;
     }
@@ -265,7 +267,7 @@ public class IntegrationManager {
     }
 
     @FunctionalInterface
-    private interface PluginCheck {
+    interface PluginCheck {
         boolean check();
     }
 }
