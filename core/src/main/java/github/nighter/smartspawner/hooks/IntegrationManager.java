@@ -252,8 +252,8 @@ public class IntegrationManager {
                 }
                 return true;
             }
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to initialize " + pluginName + " integration", e);
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.WARNING, "Failed to initialize " + pluginName + " integration", t);
         }
         return false;
     }

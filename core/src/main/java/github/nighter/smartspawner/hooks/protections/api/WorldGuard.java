@@ -20,12 +20,16 @@ public class WorldGuard implements ProtectionHook {
             return true;
         }
 
-        LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-        Location loc = new Location(BukkitAdapter.adapt(location.getWorld()), location.getX(), location.getY(), location.getZ());
-        RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
+        try {
+            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+            Location loc = new Location(BukkitAdapter.adapt(location.getWorld()), location.getX(), location.getY(), location.getZ());
+            RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
 
-        return query.testBuild(loc, localPlayer, Flags.BLOCK_BREAK);
+            return query.testBuild(loc, localPlayer, Flags.BLOCK_BREAK);
+        } catch (Throwable t) {
+            return true;
+        }
     }
 
     @Override
@@ -34,12 +38,16 @@ public class WorldGuard implements ProtectionHook {
             return true;
         }
 
-        LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapOfflinePlayer(player);
-        Location loc = new Location(BukkitAdapter.adapt(location.getWorld()), location.getX(), location.getY(), location.getZ());
-        RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
+        try {
+            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+            Location loc = new Location(BukkitAdapter.adapt(location.getWorld()), location.getX(), location.getY(), location.getZ());
+            RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
 
-        return query.testBuild(loc, localPlayer, Flags.BLOCK_PLACE);
+            return query.testBuild(loc, localPlayer, Flags.BLOCK_PLACE);
+        } catch (Throwable t) {
+            return true;
+        }
     }
 
     @Override
@@ -48,11 +56,15 @@ public class WorldGuard implements ProtectionHook {
             return true;
         }
 
-        LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-        Location loc = new Location(BukkitAdapter.adapt(location.getWorld()), location.getX(), location.getY(), location.getZ());
-        RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
+        try {
+            LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+            Location loc = new Location(BukkitAdapter.adapt(location.getWorld()), location.getX(), location.getY(), location.getZ());
+            RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
 
-        return query.testBuild(loc, localPlayer, Flags.INTERACT);
+            return query.testBuild(loc, localPlayer, Flags.INTERACT);
+        } catch (Throwable t) {
+            return true;
+        }
     }
 }
