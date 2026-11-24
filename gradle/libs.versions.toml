@@ -34,7 +34,7 @@ lands = { module = "com.github.IncrediblePlugins:LandsAPI", version = "7.25.4" }
 minecodes-plots = { module = "pl.minecodes.plots:plugin-api", version = "4.6.2" }
 mythicmobs = { module = "io.lumine:Mythic-Dist", version = "5.13.0" }
 nightcore = { module = "su.nightexpress.nightcore:main", version = "2.16.4" }
-plotsquared = { module = "com.intellectualsites.plotsquared:plotsquared-core", version = "7.6.0" }
+plotsquared = { module = "com.intellectualsites.plotsquared:plotsquared-core", version = "7.6.1" }
 redprotect-core = { module = "io.github.fabiozumbi12.RedProtect:RedProtect-Core", version.ref = "redprotect" }
 redprotect-spigot = { module = "io.github.fabiozumbi12.RedProtect:RedProtect-Spigot", version.ref = "redprotect" }
 residence = { module = "com.github.Zrips:Residence", version = "6.0.2.3" }
